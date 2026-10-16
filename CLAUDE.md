@@ -26,6 +26,7 @@ The player controls a hero in real time, builds towers, and defends a fortress a
 - **Few autoloads.** Allowed: `Events` (global signal bus), `RunState` (current run's gold, wave, fortress HP, chosen upgrades). Later possibly `SaveManager`, `Audio`. Nothing else without asking.
   Neither exists yet: each is created (in `autoload/`) by the first feature that actually needs a cross-system signal or run-wide state. Never add empty placeholder signals or fields.
 - **No logic in UI.** UI reads state and emits intents; game systems own the rules.
+- **Level layout rule:** every level has a `%Floor` rect that *is* the playable arena, an `ArenaBounds` `StaticBody2D` (world layer) whose wall shapes' inner edges sit exactly on the floor edges, and Camera2D limits equal to the floor. Keep the three in sync (`test_arena_bounds` checks it).
 - **Run lifecycle:** `main.tscn` (`main.gd`) owns the current `Level` instance. A level emits `run_lost` once and disables itself (`PROCESS_MODE_DISABLED`, which also removes its physics shapes); Main shows `GameOverScreen` and restarts by replacing the level with a fresh instance. No global pause, no autoload.
 
 ## Folder structure

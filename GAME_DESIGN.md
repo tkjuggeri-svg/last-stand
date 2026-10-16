@@ -118,6 +118,7 @@ Controller support is a post-prototype goal (Steam Deck verified is a nice-to-ha
 - Dark fantasy palette: desaturated stone, deep blues/purples, warm torch/fire accents for readability.
 - Readability first: enemies, projectiles, and the hero must be instantly distinguishable at a glance.
 - Camera: follows hero with smoothing, clamped to map bounds. Map should fit roughly 1.5–2 screens.
+  Prototype arena: 1300×900 floor (x −900…400, y −500…400), enclosed by `ArenaBounds` walls on the `world` layer; Camera2D limits equal the floor. Enemies don't collide with walls; lanes must stay inside the arena.
 - Base resolution: **1280×720 for prototyping** (scales to any window). Final value is decided with the art style (pixel art → 640×360; HD → 1920×1080).
 
 ## 7. Out of scope (for now)
