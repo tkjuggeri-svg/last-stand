@@ -2,6 +2,11 @@ extends SceneTree
 ## Automated check for the hero melee attack.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --path . --script res://<this file>
 
+## Swing reach from the hero's centre (tip of the arc in hero.tscn).
+const REACH: float = 68.0
+## Radius of the training dummy's hurtbox.
+const DUMMY_RADIUS: float = 24.0
+
 var _failures: int = 0
 
 
@@ -51,9 +56,39 @@ func _initialize() -> void:
 	_check("holding attack for 1s = 3 swings of 10 (dealt %d)" % dealt, dealt == 30)
 	_check("hitbox off after releasing", shape.disabled)
 
+	# Reach: dummies placed so their hurtbox edge is just inside / just outside the 68 px tip.
+	await _test_reach(level, hero)
+
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	level.free()
 	quit(_failures)
+
+
+func _test_reach(level: Node, hero: Hero) -> void:
+	hero.position = Vector2(-400, 250)  # clear of the scene's own dummies
+	await _frames(30)  # let the cooldown run out
+	var dummy_scene: PackedScene = load("res://tests/training_dummy.tscn")
+	# Edge 1 px inside the tip: would have been 15 px out of reach at the old 52 px.
+	var inside: Node2D = dummy_scene.instantiate()
+	inside.position = hero.position + Vector2(REACH + DUMMY_RADIUS - 1.0, 0)
+	# Edge 1 px beyond the tip, on the opposite side.
+	var outside: Node2D = dummy_scene.instantiate()
+	outside.position = hero.position - Vector2(REACH + DUMMY_RADIUS + 1.0, 0)
+	level.add_child(inside)
+	level.add_child(outside)
+	await _frames(2)
+	var inside_hp: HealthComponent = inside.get_node("%HealthComponent")
+	var outside_hp: HealthComponent = outside.get_node("%HealthComponent")
+
+	hero.attack(inside.position)
+	await _frames(15)
+	_check("reach 68: hits a target whose edge is at 67 px", inside_hp.current_health == 40)
+	await _frames(15)
+	hero.attack(outside.position)
+	await _frames(15)
+	_check("reach 68: misses a target whose edge is at 69 px", outside_hp.current_health == 50)
+	var tip: Vector2 = (hero.get_node("%AttackShape") as CollisionPolygon2D).polygon[3]
+	_check("arc tip is at 68 px (got %.1f)" % tip.length(), is_equal_approx(tip.length(), REACH))
 
 
 func _frames(count: int) -> void:
