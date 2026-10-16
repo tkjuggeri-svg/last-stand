@@ -22,7 +22,7 @@ Tick items as they're finished.
 - [x] Hero: movement (WASD), camera follow
 - [x] `HealthComponent`, `Hurtbox`, `Hitbox`
 - [x] Hero melee attack (mouse-aimed arc)
-- [ ] Fortress with HP
+- [x] Fortress with HP
 - [ ] One lane (`Path2D`) + one enemy type (Ghoul) that walks to the fortress and damages it
 - [ ] Simple spawner: N enemies at an interval
 - [ ] Minimal HUD: fortress HP, hero HP
@@ -106,4 +106,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M1 in progress.** Hero movement + camera, health/damage components, melee attack done; awaiting approval for the next M1 feature.
+**M1 in progress.** Hero movement + camera, health/damage components, melee attack, fortress done; awaiting approval for the next M1 feature.

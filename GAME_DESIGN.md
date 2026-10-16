@@ -45,6 +45,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 
 ### 4.2 Fortress
 - A static structure with HP (start: 100). Enemies that reach it deal damage and die (prototype) or stop and attack it (later).
+- Prototype: 96×96 `StaticBody2D` (blocks the hero), `HealthComponent` + `Hurtbox` that only reacts to `enemy_hitbox`, so the hero can never damage it. Emits `destroyed` at 0 HP; the visual darkens.
 - Fortress HP is shown prominently in the HUD. It does **not** regenerate by default; some upgrades/rewards heal it.
 
 ### 4.3 Enemies

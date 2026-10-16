@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Runs every check for LAST STAND with Godot 4.7.2:
 #   1. editor import   2. every .gd script with all warnings treated as errors
-#   3. automated tests (tests/automated/test_*.gd)   4. every scene in tests/ + main for 120 frames
+#   3. automated tests (tests/automated/test_*.gd)   4. main + every scene in entities/ and tests/ for 120 frames
 # Usage: tests/run_tests.sh            (override the Godot binary with GODOT=/path/to/godot)
 set -u
 cd "$(dirname "$0")/.."
@@ -52,7 +52,7 @@ for test in tests/automated/test_*.gd; do
 done
 
 echo "== Scenes (120 frames each) =="
-for scene in main/main.tscn tests/*.tscn; do
+for scene in main/main.tscn $(find entities -name '*.tscn' | sort) tests/*.tscn; do
 	out="$("$GODOT" --headless --path . "res://$scene" --quit-after 120 2>&1 | clean)"
 	report "$scene" "$out" "${PIPESTATUS[0]}"
 done
