@@ -93,6 +93,7 @@ func _rebuild() -> void:
 	_cost_labels.clear()
 	var empty: bool = _slot.is_empty()
 	_options.visible = empty
+	_details.visible = empty
 	_tower_info.visible = not empty
 	if empty:
 		_title.text = "Build a tower"
@@ -114,6 +115,13 @@ func _rebuild() -> void:
 		_details.text = ""
 		_slot.show_range(data.attack_range)
 		_sell_button.grab_focus.call_deferred()
+	_fit_panel.call_deferred()
+
+
+## The panel hangs from the bottom edge: fit its height to the content (switching between the
+## build cards and the sell view changes it).
+func _fit_panel() -> void:
+	_panel.offset_top = _panel.offset_bottom - _panel.get_combined_minimum_size().y
 
 
 ## A card: the tower's icon beside its name and price, and a Build button.

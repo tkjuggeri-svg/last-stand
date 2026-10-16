@@ -114,6 +114,15 @@ func _build(level: Level) -> void:
 	Input.parse_input_event(press)
 	await _frames(20)
 	await _shot("build_01_menu")
+	# The sell view: stand at the archer and open the menu there.
+	Input.parse_input_event(press)
+	await _frames(5)
+	hero.position = slots[0].position + Vector2(0, 44)
+	await _frames(20)
+	Input.parse_input_event(press)
+	await _frames(20)
+	await _shot("build_01b_sell")
+	Input.parse_input_event(press)
 	hero.position = Vector2(-470, 40)  # off the lane, close enough for the camera to frame the fight
 	await _frames(240)
 	await _shot("build_02_towers_fighting")

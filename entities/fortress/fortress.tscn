@@ -35,6 +35,7 @@ hframes = 4
 
 [node name="LookDecor" type="Node2D" parent="."]
 unique_name_in_owner = true
+process_mode = 3
 
 [node name="BannerSW" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-38, -30)
@@ -366,6 +367,10 @@ energy = 0.25
 texture = ExtResource("7_light")
 texture_scale = 2.2
 metadata/until_look = 3
+
+[node name="Puffs" type="Node2D" parent="."]
+unique_name_in_owner = true
+process_mode = 3
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true

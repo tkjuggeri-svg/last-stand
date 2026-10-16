@@ -27,7 +27,9 @@ var _sprite_rest: Vector2 = Vector2.ZERO
 @onready var health: HealthComponent = %HealthComponent
 @onready var _sprite: Sprite2D = %Sprite
 ## Children shown only for some looks: metadata "from_look" (default 0) and "until_look" (default 4).
+## It and %Puffs keep processing after Game Over (the level is disabled), so the ruin keeps burning.
 @onready var _look_decor: Node2D = %LookDecor
+@onready var _puffs: Node2D = %Puffs
 
 
 func _ready() -> void:
@@ -92,7 +94,7 @@ func _react_to_hit() -> void:
 func _puff(at: Vector2) -> void:
 	var dust: Node2D = DUST_SCENE.instantiate()
 	dust.position = at
-	add_child(dust)
+	_puffs.add_child(dust)
 
 
 func _on_health_died() -> void:

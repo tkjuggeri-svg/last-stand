@@ -21,6 +21,9 @@ const LANE_LOOKAHEAD: float = 24.0
 const STRIKE_DURATION: float = 0.1
 ## Tint while slowed by frost.
 const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
+## Hit recoil of the sprite (display only): how far it jolts, in world px, and for how long.
+const HIT_JOLT: float = 2.0
+const HIT_JOLT_TIME: float = 0.12
 
 @export var data: EnemyData
 
@@ -39,6 +42,8 @@ var _claimed_limit: AttackerLimit = null
 ## Current speed multiplier from slows (1 = normal) and how long it still lasts.
 var _slow_factor: float = 1.0
 var _slow_left: float = 0.0
+var _sprite_rest: Vector2 = Vector2.ZERO
+var _jolt: Tween
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -65,6 +70,7 @@ func _ready() -> void:
 	_attack_range.body_entered.connect(_on_attack_range_body_entered)
 	_attack_range.body_exited.connect(_on_attack_range_body_exited)
 	_hit_spark.animation_finished.connect(_hit_spark.hide)
+	_sprite_rest = _sprite.position
 
 
 func _physics_process(delta: float) -> void:
@@ -221,6 +227,12 @@ func _on_health_changed(_current_health: int, _max_health: int) -> void:
 	flash_material.set_shader_parameter("flash", 1.0)  # visible in the same frame as the hit
 	var flash: Tween = create_tween()
 	flash.tween_property(flash_material, "shader_parameter/flash", 0.0, 0.15)
+	# A quick jolt: up (thrown back), then settle.
+	if _jolt != null:
+		_jolt.kill()
+	_jolt = create_tween()
+	_sprite.position = _sprite_rest + Vector2(0, -HIT_JOLT)
+	_jolt.tween_property(_sprite, "position", _sprite_rest, HIT_JOLT_TIME)
 	_hit_spark.show()
 	_hit_spark.stop()
 	_hit_spark.play(&"spark")
