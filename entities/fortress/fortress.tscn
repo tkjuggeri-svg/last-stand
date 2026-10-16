@@ -1,15 +1,21 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://entities/fortress/fortress.gd" id="1_fortress"]
 [ext_resource type="Script" path="res://core/components/health_component.gd" id="2_health"]
 [ext_resource type="Script" path="res://core/components/hurtbox.gd" id="3_hurtbox"]
 [ext_resource type="Texture2D" path="res://assets/sprites/fortress/fortress.png" id="4_texture"]
+[ext_resource type="SpriteFrames" path="res://entities/fortress/fortress_fx_frames.tres" id="5_fx"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/smoke_puff.png" id="6_smoke"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(96, 96)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
 size = Vector2(104, 104)
+
+[sub_resource type="Gradient" id="Gradient_smoke"]
+offsets = PackedFloat32Array(0, 0.2, 1)
+colors = PackedColorArray(0.55, 0.5, 0.5, 0, 0.75, 0.72, 0.72, 0.8, 0.35, 0.33, 0.36, 0)
 
 [node name="Fortress" type="StaticBody2D"]
 collision_layer = 8
@@ -21,9 +27,245 @@ shape = SubResource("RectangleShape2D_body")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+position = Vector2(0, -32)
 scale = Vector2(2, 2)
 texture = ExtResource("4_texture")
 hframes = 4
+
+[node name="LookDecor" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="BannerSW" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-38, -30)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"banner"
+autoplay = "banner"
+frame_progress = 0.00
+metadata/until_look = 3
+
+[node name="BannerSE" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(58, -30)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"banner"
+autoplay = "banner"
+frame_progress = 0.13
+metadata/until_look = 2
+
+[node name="BannerKeep" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(10, -119)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"banner"
+autoplay = "banner"
+frame_progress = 0.26
+metadata/until_look = 3
+
+[node name="BrazierW" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-20, -2)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"brazier"
+autoplay = "brazier"
+frame_progress = 0.39
+metadata/until_look = 3
+
+[node name="BrazierE" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(20, -2)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"brazier"
+autoplay = "brazier"
+frame_progress = 0.65
+metadata/until_look = 3
+
+[node name="Fire1" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(48, -108)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.00
+metadata/from_look = 1
+metadata/until_look = 3
+
+[node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire1"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 6
+lifetime = 1.8
+texture = ExtResource("6_smoke")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(10, -30)
+initial_velocity_min = 14.0
+initial_velocity_max = 22.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="Fire2" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(6, -98)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.13
+metadata/from_look = 2
+metadata/until_look = 3
+
+[node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire2"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 6
+lifetime = 1.8
+texture = ExtResource("6_smoke")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(10, -30)
+initial_velocity_min = 14.0
+initial_velocity_max = 22.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="Fire3" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-48, -108)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.26
+metadata/from_look = 2
+metadata/until_look = 3
+
+[node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire3"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 6
+lifetime = 1.8
+texture = ExtResource("6_smoke")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(10, -30)
+initial_velocity_min = 14.0
+initial_velocity_max = 22.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="Fire4" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(28, -2)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.39
+metadata/from_look = 2
+
+[node name="Fire5" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-8, -60)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.52
+metadata/from_look = 3
+
+[node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire5"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 6
+lifetime = 1.8
+texture = ExtResource("6_smoke")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(10, -30)
+initial_velocity_min = 14.0
+initial_velocity_max = 22.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="Fire6" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(12, -56)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.65
+metadata/from_look = 3
+
+[node name="Fire7" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-44, -24)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.78
+metadata/from_look = 3
+
+[node name="Fire8" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(48, 14)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.91
+metadata/from_look = 3
+
+[node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire8"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 6
+lifetime = 1.8
+texture = ExtResource("6_smoke")
+emission_shape = 1
+emission_sphere_radius = 3.0
+direction = Vector2(0, -1)
+spread = 18.0
+gravity = Vector2(10, -30)
+initial_velocity_min = 14.0
+initial_velocity_max = 22.0
+scale_amount_min = 2.0
+scale_amount_max = 3.0
+color_ramp = SubResource("Gradient_smoke")
+
+[node name="Fire9" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-44, 20)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.04
+metadata/from_look = 3
+
+[node name="Fire10" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(48, -82)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.30
+metadata/from_look = 3
+
+[node name="Fire11" type="AnimatedSprite2D" parent="LookDecor"]
+position = Vector2(-48, -82)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("5_fx")
+animation = &"fire"
+autoplay = "fire"
+frame_progress = 0.70
+metadata/from_look = 3
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true

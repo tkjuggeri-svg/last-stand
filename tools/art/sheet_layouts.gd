@@ -121,7 +121,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, FROST_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {
@@ -130,12 +130,29 @@ const BUILD_SLOT: Dictionary = {
 }
 
 ## Single-row sheet used directly by a Sprite2D (hframes): healthy, damaged, badly damaged, destroyed.
-## The 48x48 keep (= the 96 px collision box) sits at (2, 2) inside each frame; the rest is drop shadow.
+## 3/4 view: the 48x48 footprint (= the 96 px collision box) is the lower part of each 96x96 frame
+## (art rect 24,40 - 72,88); walls, towers and roofs rise above it.
 const FORTRESS: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress.png",
-	"size": Vector2i(52, 52),
+	"size": Vector2i(96, 96),
 	"frames_count": 4,
 }
+
+## Animated pieces placed on the fortress: waving banners, fires (damage) and wall braziers.
+const FORTRESS_FX: Dictionary = {
+	"png": "res://assets/sprites/fortress/fortress_fx.png",
+	"frames": "res://entities/fortress/fortress_fx_frames.tres",
+	"size": Vector2i(16, 24),
+	"anims": [
+		["banner", 0, 4, 6.0, true],
+		["banner_torn", 1, 4, 6.0, true],
+		["fire", 2, 6, 12.0, true],
+		["brazier", 3, 4, 10.0, true],
+	],
+}
+
+## Particle texture for smoke (fortress fires).
+const SMOKE_PNG: String = "res://assets/sprites/effects/smoke_puff.png"
 
 ## Small UI icons (single images, drawn at the same 2x scale as everything else).
 const COIN_PNG: String = "res://assets/sprites/ui/coin.png"

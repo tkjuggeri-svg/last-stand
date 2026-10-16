@@ -12,6 +12,7 @@ const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 const HeroArt: GDScript = preload("res://tools/art/hero_art.gd")
 const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
+const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 
 const DIRS_4: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
@@ -70,7 +71,9 @@ func _initialize() -> void:
 		"ghoul": func() -> void: _save(_sheet(GhoulArt.new().sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),
-		"fortress": func() -> void: _save(_fortress_sheet(), Layouts.FORTRESS["png"]),
+		"fortress": func() -> void: _save(_sheet([FortressArt.new().sheet_frames()], Layouts.FORTRESS["size"]), Layouts.FORTRESS["png"]),
+		"fortress_fx": func() -> void: _save(_sheet(FortressArt.new().fx_rows(), Layouts.FORTRESS_FX["size"]), Layouts.FORTRESS_FX["png"]),
+		"smoke": func() -> void: _save(FortressArt.new().smoke_puff(), Layouts.SMOKE_PNG),
 		"ground": func() -> void: _save(_ground(), Layouts.GROUND_PNG),
 		"coin": func() -> void: _save(_grid_image(COIN, true), Layouts.COIN_PNG),
 		"towers": func() -> void: _save(_towers_sheet(), Layouts.TOWERS["png"]),
@@ -83,123 +86,6 @@ func _initialize() -> void:
 		if only.is_empty() or only.has(job_name):
 			(jobs[job_name] as Callable).call()
 	quit()
-
-
-# ---------------------------------------------------------------- fortress
-
-func _fortress_sheet() -> Image:
-	var size: Vector2i = Layouts.FORTRESS["size"]
-	var base: Image = _fortress_base()
-	var frames: Array[Image] = [base]
-	for damage: int in [1, 2, 3]:
-		var img: Image = base.duplicate() as Image
-		_damage_fortress(img, damage)
-		frames.append(img)
-	var shadowed: Array[Image] = []
-	for img: Image in frames:
-		_outline(img)
-		var framed: Image = _blank(size)
-		_drop_shadow(framed, img, Vector2i(2, 2), Vector2i(2, 2))
-		framed.blend_rect(img, Rect2i(Vector2i.ZERO, img.get_size()), Vector2i(2, 2))
-		shadowed.append(framed)
-	return _sheet([shadowed], size)
-
-
-## The keep seen from above, 48x48 art px = the 96x96 world-pixel collision box. Light from the top-left.
-func _fortress_base() -> Image:
-	var img: Image = _blank(Vector2i(48, 48))
-	var stone_light: Color = Color("9a96a0")
-	var stone: Color = Color("76727e")
-	var stone_dark: Color = Color("55515d")
-	var mortar: Color = Color("3e3a46")
-	var earth: Color = Color("5c4e3f")
-	var earth_dark: Color = Color("4b3f33")
-	var roof: Color = Color("413c4c")
-	var roof_light: Color = Color("5d5870")
-	var wood: Color = Color("5e3f29")
-	# Courtyard (packed earth with flagstones).
-	_fill_rect(img, Rect2i(5, 5, 38, 38), earth)
-	for y: int in range(9, 39, 4):
-		for x: int in range(9 + (y % 8), 39, 8):
-			_fill_rect(img, Rect2i(x, y, 3, 2), earth_dark)
-	# Curtain walls: 5 px thick, crenellated outer edge, lit top/left faces.
-	for rect: Rect2i in [Rect2i(2, 2, 44, 6), Rect2i(2, 40, 44, 6), Rect2i(2, 2, 6, 44), Rect2i(40, 2, 6, 44)]:
-		_fill_rect(img, rect, stone)
-	for i: int in range(2, 46):
-		var merlon: bool = floori(i / 3.0) % 2 == 0
-		_px(img, Vector2i(i, 2), stone_light if merlon else mortar)
-		_px(img, Vector2i(2, i), stone_light if merlon else mortar)
-		_px(img, Vector2i(i, 45), stone_dark if merlon else mortar)
-		_px(img, Vector2i(45, i), stone_dark if merlon else mortar)
-		_px(img, Vector2i(i, 7), stone_dark)
-		_px(img, Vector2i(7, i), stone_dark)
-		_px(img, Vector2i(i, 40), stone_light)
-		_px(img, Vector2i(40, i), stone_light)
-	# Gate on the west wall, where the lane arrives.
-	_fill_rect(img, Rect2i(2, 20, 6, 8), mortar)
-	_fill_rect(img, Rect2i(3, 21, 4, 6), wood)
-	for y: int in range(21, 27, 2):
-		_fill_rect(img, Rect2i(3, y, 4, 1), Color("3d2a1c"))
-	# Corner towers with conical slate roofs.
-	for c: Vector2i in [Vector2i(7, 7), Vector2i(40, 7), Vector2i(7, 40), Vector2i(40, 40)]:
-		_fill_circle(img, c, 7.2, stone)
-		_fill_circle(img, c + Vector2i(-1, -1), 5.0, stone_light)
-		_fill_circle(img, c, 5.0, stone)
-		_fill_circle(img, c, 4.2, roof)
-		_fill_circle(img, c + Vector2i(-1, -1), 2.0, roof_light)
-		_px(img, c, Color("2e2a36"))
-	# Central keep: stone walls and a hipped slate roof with a ridge.
-	_fill_rect(img, Rect2i(15, 15, 18, 18), stone_dark)
-	_fill_rect(img, Rect2i(15, 15, 17, 17), stone)
-	_fill_rect(img, Rect2i(17, 17, 14, 14), roof)
-	for i: int in range(0, 7):
-		_px(img, Vector2i(17 + i, 17 + i), roof_light)
-		_px(img, Vector2i(30 - i, 17 + i), roof_light)
-		_px(img, Vector2i(17 + i, 30 - i), roof)
-	_fill_rect(img, Rect2i(23, 23, 2, 2), roof_light)
-	# Banner pole and the red banner (the accent colour).
-	_fill_rect(img, Rect2i(24, 16, 1, 8), wood)
-	_fill_rect(img, Rect2i(25, 16, 4, 3), _palette["R"])
-	_px(img, Vector2i(28, 18), _palette["r"])
-	_px(img, Vector2i(26, 17), _palette["y"])
-	return img
-
-
-## Cracks and missing merlons (1), plus a broken tower and fire (2), plus breaches and ruin (3).
-func _damage_fortress(img: Image, damage: int) -> void:
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = 4242 + damage
-	var crack: Color = Color("2a2630")
-	var rubble: Color = Color("6a6570")
-	for i: int in [6, 14, 24][damage - 1]:
-		var p: Vector2i = Vector2i(rng.randi_range(3, 44), rng.randi_range(3, 44))
-		if img.get_pixelv(p).a == 0.0:
-			continue
-		for step: int in rng.randi_range(2, 4):
-			_px(img, p, crack)
-			p += Vector2i(rng.randi_range(-1, 1), 1)
-	for i: int in [4, 8, 16][damage - 1]:
-		var x: int = rng.randi_range(3, 44)
-		_px(img, Vector2i(x, 2), Color(0, 0, 0, 0))
-		_px(img, Vector2i(2, x), Color(0, 0, 0, 0))
-	if damage >= 2:
-		# North-east tower top broken off, small fire on the keep roof.
-		_fill_circle(img, Vector2i(40, 7), 4.2, rubble)
-		for p: Vector2i in [Vector2i(39, 6), Vector2i(41, 8), Vector2i(40, 5), Vector2i(38, 8)]:
-			_px(img, p, crack)
-		for p: Vector2i in [Vector2i(20, 21), Vector2i(21, 20), Vector2i(21, 21), Vector2i(20, 22)]:
-			_px(img, p, Color("e0782e"))
-		_px(img, Vector2i(21, 19), Color("f2c65c"))
-	if damage >= 3:
-		# Breaches in the walls, the keep caved in, the banner gone, everything scorched.
-		for rect: Rect2i in [Rect2i(18, 2, 6, 6), Rect2i(40, 26, 6, 7), Rect2i(10, 40, 7, 6)]:
-			_fill_rect(img, rect, Color(0, 0, 0, 0))
-			for i: int in 7:
-				_px(img, rect.position + Vector2i(rng.randi_range(0, rect.size.x - 1), rng.randi_range(0, rect.size.y - 1)), rubble)
-		_fill_rect(img, Rect2i(17, 17, 14, 14), Color("2c2832"))
-		for i: int in 30:
-			_px(img, Vector2i(rng.randi_range(17, 30), rng.randi_range(15, 30)), rubble if i % 2 == 0 else crack)
-		_tint(img, Color("1a141f"), 0.3)
 
 
 # ---------------------------------------------------------------- towers and their effects

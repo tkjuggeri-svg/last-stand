@@ -154,9 +154,15 @@ func _test_art_matches_collision() -> void:
 	var ghoul_rect: Rect2 = _solid_rect(Layouts.GHOUL, 0, 0)
 	_check("ghoul art fits its 24 px collision circle (%s)" % ghoul_rect.size,
 		absf(ghoul_rect.size.x - 24.0) <= FIT_TOLERANCE and absf(ghoul_rect.get_center().x) <= 2.0)
+	# 3/4 view: the walls stand on the 96x96 collision box and rise above it. The sprite sits 32 px up,
+	# so its art's bottom edge should meet the box's bottom edge (+48) give or take the rubble/shadow.
 	var fortress_rect: Rect2 = _solid_rect(Layouts.FORTRESS, 0, 0)
-	_check("fortress art = its 96x96 collision box, centred (%s)" % fortress_rect,
-		fortress_rect.size.distance_to(Vector2(96, 96)) <= 4.0 and fortress_rect.get_center().length() <= 2.0)
+	var fortress_sprite: Sprite2D = (load("res://entities/fortress/fortress.tscn") as PackedScene).instantiate().get_node("Sprite")
+	var bottom: float = fortress_rect.end.y + fortress_sprite.position.y
+	_check("fortress art stands on its 96x96 collision box (%s, bottom at %.0f)" % [fortress_rect, bottom],
+		fortress_rect.size.x >= 96.0 and fortress_rect.size.x <= 136.0 and absf(fortress_rect.get_center().x) <= 2.0
+		and bottom >= 48.0 and bottom <= 60.0 and fortress_rect.size.y > 120.0)
+	fortress_sprite.get_parent().free()
 	var theme: Theme = load("res://ui/theme/game_theme.tres")
 	_check("HUD text has a dark outline for readability", theme.get_constant(&"outline_size", &"Label") >= 4)
 
