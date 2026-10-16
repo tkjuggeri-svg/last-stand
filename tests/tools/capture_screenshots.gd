@@ -3,7 +3,9 @@ extends SceneTree
 ## Needs a display (not --headless):
 ##   godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=/some/dir [--scenario=combat]
 ## Scenarios: "tour" (default: walk, swing, kill, damaged fortress, Game Over), "combat" (a ghoul fights
-## the hero to death) and "build" (towers on slots, the build menu, towers fighting a wave).
+## the hero to death), "build" (towers on slots, the build menu, towers fighting a wave) and "gallery"
+## (every animation of the given SpriteFrames side by side at game scale, over the real level;
+## --frames=res://a.tres,res://b.tres picks the sheets, default: hero and ghoul).
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -29,6 +31,10 @@ func _initialize() -> void:
 		return
 	if _scenario == "build":
 		await _build(level)
+		quit()
+		return
+	if _scenario == "gallery":
+		await _gallery(level)
 		quit()
 		return
 	await _shot("01_start")
@@ -121,6 +127,41 @@ func _build(level: Level) -> void:
 				wanted.erase(shot_name)
 		if wanted.is_empty():
 			break
+
+
+## Every animation in a grid near the camera; the level keeps running (lights, fog) but is hidden
+## under the grid only where sprites stand. Three shots catch different animation frames.
+func _gallery(level: Level) -> void:
+	var sheets: PackedStringArray = PackedStringArray(["res://entities/hero/hero_frames.tres", "res://entities/enemies/ghoul_frames.tres"])
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--frames="):
+			sheets = arg.trim_prefix("--frames=").split(",")
+	(level.get_node("EnemySpawner") as Node).process_mode = Node.PROCESS_MODE_DISABLED
+	var hero: Hero = level.get_node("Hero")
+	hero.position = Vector2(-500, 150)
+	await _frames(30)
+	hero.hide()
+	var origin: Vector2 = hero.position - Vector2(560, 300)
+	var row: int = 0
+	for path: String in sheets:
+		var frames: SpriteFrames = load(path)
+		var column: int = 0
+		for anim: StringName in frames.get_animation_names():
+			var sprite: AnimatedSprite2D = AnimatedSprite2D.new()
+			sprite.sprite_frames = frames
+			sprite.scale = Vector2(2, 2)
+			sprite.position = origin + Vector2(column * 100 + 50, row * 110 + 60)
+			sprite.play(anim)
+			sprite.animation_finished.connect(func() -> void: sprite.play(anim))
+			level.add_child(sprite)
+			column += 1
+			if column >= 11:
+				column = 0
+				row += 1
+		row += 1
+	for i: int in 3:
+		await _frames(7)
+		await _shot("gallery_%d" % i)
 
 
 func _level_shows(level: Level, what: String) -> bool:

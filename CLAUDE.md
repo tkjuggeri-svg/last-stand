@@ -71,6 +71,8 @@ Commit the `*.gd.uid` files Godot generates next to scripts; they keep reference
 
 ## Pixel art
 
+Full visual rules (palette ramps, light, sizes, animation timing, review checklist): **`ART_DIRECTION.md`**.
+
 - **One art pixel = 2 world pixels** (`ART_SCALE` in `tools/art/sheet_layouts.gd`): every sprite node has `scale = Vector2(2, 2)`, never any other scale, rotation or skew (it would break the pixel grid). At 720p/1080p/1440p/4K this gives even 2/3/4/6 px screen pixels.
 - Nearest-neighbour filtering and 2D pixel snapping are set project-wide; don't override them per node.
 - Style: 16-bit dark fantasy, top-down 3/4 view, 1 px dark outline (`#1a141f`) around characters, soft oval ground shadow, light from the top-left. Muted palette (dark green grass, earthy dirt, grey stone); red is the accent (hero tabard, banner), red eyes for enemies. Characters must stay brighter / higher-contrast than the ground.
@@ -78,8 +80,9 @@ Commit the `*.gd.uid` files Godot generates next to scripts; they keep reference
 - **Visuals follow gameplay, never drive it**: sprites, effects and flashes read state or react to signals; collisions, timings and logic don't depend on them.
 - **Art pipeline:** all art is original and drawn in code. To change art, edit `tools/art/generate_art.gd` (pixel grids / drawing code) and `sheet_layouts.gd` (sheet layout, animation names, fps), then run:
   `godot --headless --path . --script res://tools/art/generate_art.gd` → `godot --headless --path . --import` → `godot --headless --path . --script res://tools/art/build_sprite_frames.gd`.
+  Add `-- --only=hero,ghoul` to the first command to regenerate just some sheets. Drawing code lives in one file per asset family (`hero_art.gd`, `ghoul_art.gd`, `effects_art.gd`, ...) on top of `canvas.gd` (shaded primitives, contours, outline) and `palette.gd` (colour ramps).
   Never hand-edit the generated PNGs or `*_frames.tres`. The arena ground is baked from the level's `Floor`, `Lane` and `Fortress`, so regenerate it after changing those.
-- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir> [--scenario=tour|combat|build]` plays a scripted scene in a real window and saves screenshots.
+- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir> [--scenario=tour|combat|build|gallery]` plays a scripted scene in a real window and saves screenshots (`gallery` shows every animation at game scale). `tools/art/preview_art.gd` saves an enlarged contact sheet of one generated PNG.
 - Balance check: `godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd` plays a full wave per tower setup and prints kills, leaks, fortress HP and gold.
 
 ## GDScript conventions

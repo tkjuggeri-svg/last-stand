@@ -4,15 +4,19 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gq5mj"]
 atlas = ExtResource("1_kmea8")
-region = Rect2(0, 0, 12, 12)
+region = Rect2(0, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jqlfi"]
 atlas = ExtResource("1_kmea8")
-region = Rect2(12, 0, 12, 12)
+region = Rect2(16, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f75h5"]
 atlas = ExtResource("1_kmea8")
-region = Rect2(24, 0, 12, 12)
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wmsr2"]
+atlas = ExtResource("1_kmea8")
+region = Rect2(48, 0, 16, 16)
 
 [resource]
 animations = [{
@@ -25,8 +29,11 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f75h5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wmsr2")
 }],
 "loop": 0,
 "name": &"spark",
-"speed": 20.0
+"speed": 24.0
 }]

@@ -229,7 +229,8 @@ func _test_death_and_restart() -> void:
 	_check("the level is frozen", not level.can_process() and level.is_run_over())
 	_check("the death animation plays", sprite.animation == &"death")
 	await _frames(40)
-	_check("...and keeps playing while the world is frozen (frame %d)" % sprite.frame, sprite.frame == 3)
+	var last_frame: int = sprite.sprite_frames.get_frame_count(&"death") - 1
+	_check("...and keeps playing while the world is frozen (frame %d of %d)" % [sprite.frame, last_frame], sprite.frame == last_frame)
 	(level.get_node("Fortress") as Fortress).destroyed.emit()
 	await _frames(2)
 	_check("no second Game Over afterwards", reasons.size() == 1)

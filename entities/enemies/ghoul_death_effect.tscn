@@ -8,6 +8,7 @@
 script = ExtResource("1_effect")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -10)
 scale = Vector2(2, 2)
 sprite_frames = ExtResource("2_ghoul")
 animation = &"death"

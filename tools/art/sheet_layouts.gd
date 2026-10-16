@@ -8,18 +8,18 @@ const ART_SCALE: int = 2
 const HERO: Dictionary = {
 	"png": "res://assets/sprites/hero/hero.png",
 	"frames": "res://entities/hero/hero_frames.tres",
-	"size": Vector2i(24, 24),
+	"size": Vector2i(32, 40),
 	"anims": [
-		["idle_down", 0, 2, 2.5, true],
-		["idle_up", 1, 2, 2.5, true],
-		["idle_side", 2, 2, 2.5, true],
-		["walk_down", 3, 4, 8.0, true],
-		["walk_up", 4, 4, 8.0, true],
-		["walk_side", 5, 4, 8.0, true],
-		["attack_down", 6, 3, 15.0, false],
-		["attack_up", 7, 3, 15.0, false],
-		["attack_side", 8, 3, 15.0, false],
-		["death", 9, 4, 6.0, false],
+		["idle_down", 0, 4, 5.0, true],
+		["idle_up", 1, 4, 5.0, true],
+		["idle_side", 2, 4, 5.0, true],
+		["walk_down", 3, 6, 11.0, true],
+		["walk_up", 4, 6, 11.0, true],
+		["walk_side", 5, 6, 11.0, true],
+		["attack_down", 6, 4, 20.0, false],
+		["attack_up", 7, 4, 20.0, false],
+		["attack_side", 8, 4, 20.0, false],
+		["death", 9, 6, 8.0, false],
 	],
 }
 
@@ -29,47 +29,47 @@ const SWING: Dictionary = {
 	"frames": "res://entities/hero/swing_frames.tres",
 	"size": Vector2i(72, 72),
 	"anims": [
-		["swing_0", 0, 3, 20.0, false],
-		["swing_1", 1, 3, 20.0, false],
-		["swing_2", 2, 3, 20.0, false],
-		["swing_3", 3, 3, 20.0, false],
-		["swing_4", 4, 3, 20.0, false],
-		["swing_5", 5, 3, 20.0, false],
-		["swing_6", 6, 3, 20.0, false],
-		["swing_7", 7, 3, 20.0, false],
+		["swing_0", 0, 4, 24.0, false],
+		["swing_1", 1, 4, 24.0, false],
+		["swing_2", 2, 4, 24.0, false],
+		["swing_3", 3, 4, 24.0, false],
+		["swing_4", 4, 4, 24.0, false],
+		["swing_5", 5, 4, 24.0, false],
+		["swing_6", 6, 4, 24.0, false],
+		["swing_7", 7, 4, 24.0, false],
 	],
 }
 
 const GHOUL: Dictionary = {
 	"png": "res://assets/sprites/enemies/ghoul.png",
 	"frames": "res://entities/enemies/ghoul_frames.tres",
-	"size": Vector2i(20, 20),
+	"size": Vector2i(32, 32),
 	"anims": [
-		["idle_down", 0, 2, 3.0, true],
-		["idle_up", 1, 2, 3.0, true],
-		["idle_side", 2, 2, 3.0, true],
-		["walk_down", 3, 4, 6.0, true],
-		["walk_up", 4, 4, 6.0, true],
-		["walk_side", 5, 4, 6.0, true],
-		["death", 6, 5, 10.0, false],
-		["attack_down", 7, 3, 6.0, false],
-		["attack_up", 8, 3, 6.0, false],
-		["attack_side", 9, 3, 6.0, false],
+		["idle_down", 0, 4, 5.0, true],
+		["idle_up", 1, 4, 5.0, true],
+		["idle_side", 2, 4, 5.0, true],
+		["walk_down", 3, 6, 8.0, true],
+		["walk_up", 4, 6, 8.0, true],
+		["walk_side", 5, 6, 8.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 12.0, false],
+		["attack_up", 8, 6, 12.0, false],
+		["attack_side", 9, 6, 12.0, false],
 	],
 }
 
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
-	"size": Vector2i(12, 12),
-	"anims": [["spark", 0, 3, 20.0, false]],
+	"size": Vector2i(16, 16),
+	"anims": [["spark", 0, 4, 24.0, false]],
 }
 
 const DUST: Dictionary = {
 	"png": "res://assets/sprites/effects/dust.png",
 	"frames": "res://entities/effects/dust_frames.tres",
-	"size": Vector2i(20, 20),
-	"anims": [["dust", 0, 5, 12.0, false]],
+	"size": Vector2i(24, 24),
+	"anims": [["dust", 0, 6, 14.0, false]],
 }
 
 ## The three towers (24x32 art = 48x64 world px; the base sits at the bottom of the frame).
