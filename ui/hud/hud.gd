@@ -1,25 +1,38 @@
 extends CanvasLayer
-## In-game overlay: fortress and hero HP, enemy counts, and short event notifications.
-## Assign fortress, hero and spawner in the level scene. Parts whose target is not assigned are
-## hidden, so the HUD also runs on its own.
+## In-game overlay: fortress and hero HP, gold, enemy counts, and short event notifications.
+## Assign fortress, hero, spawner, economy and rewards in the level scene. Parts whose target is not
+## assigned are hidden, so the HUD also runs on its own.
 
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
 const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
+const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 
 @export var fortress: Fortress
 @export var hero: Hero
 @export var spawner: EnemySpawner
+@export var economy: Economy
+@export var rewards: WaveRewards
 
 @onready var _fortress_bar: HealthBar = %FortressBar
 @onready var _hero_bar: HealthBar = %HeroBar
 @onready var _enemy_stats_label: Label = %EnemyStatsLabel
 @onready var _feed: NotificationFeed = %NotificationFeed
+@onready var _gold_row: Control = %GoldRow
+@onready var _gold_label: Label = %GoldLabel
 
 
 func _ready() -> void:
 	_fortress_bar.visible = fortress != null
 	_hero_bar.visible = hero != null
 	_enemy_stats_label.visible = spawner != null
+	_gold_row.visible = economy != null
+	if economy != null:
+		if not economy.is_node_ready():
+			await economy.ready
+		economy.gold_changed.connect(_on_gold_changed)
+		_on_gold_changed(economy.get_gold())
+	if rewards != null:
+		rewards.perfect_defense_awarded.connect(_on_perfect_defense_awarded)
 	if spawner != null:
 		spawner.enemy_spawned.connect(_on_enemy_spawned)
 		spawner.enemy_killed.connect(_on_enemy_killed)
@@ -46,3 +59,11 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 
 func _on_enemy_counts_changed(living_count: int, spawned_count: int) -> void:
 	_enemy_stats_label.text = "Enemies alive: %d    Spawned: %d" % [living_count, spawned_count]
+
+
+func _on_gold_changed(gold: int) -> void:
+	_gold_label.text = str(gold)
+
+
+func _on_perfect_defense_awarded(bonus: int) -> void:
+	_feed.push("Perfect defense! +%d gold" % bonus, GOLD_COLOR)

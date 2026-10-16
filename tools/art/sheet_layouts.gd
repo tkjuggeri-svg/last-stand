@@ -83,6 +83,9 @@ const FORTRESS: Dictionary = {
 	"frames_count": 4,
 }
 
+## Small UI icons (single images, drawn at the same 2x scale as everything else).
+const COIN_PNG: String = "res://assets/sprites/ui/coin.png"
+
 const GROUND_PNG: String = "res://assets/sprites/environment/prototype_arena_ground.png"
 ## Width of the visible stone wall band drawn outside the playable floor, in world pixels.
 const WALL_BAND: int = 32

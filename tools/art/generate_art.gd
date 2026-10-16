@@ -184,6 +184,17 @@ const GHOUL_PILE: Array[String] = [
 	".cccccccccc.",
 ]
 
+const COIN: Array[String] = [
+	"..yyyy..",
+	".yYYYYy.",
+	"yYYyyYYy",
+	"yYyYYyYy",
+	"yYyYYyYy",
+	"yYYyyYYy",
+	".yYYYYy.",
+	"..yyyy..",
+]
+
 var _palette: Dictionary = {
 	"o": Color("1a141f"),  # outline / deepest shadow
 	"S": Color("d3d7df"),  # steel highlight
@@ -195,6 +206,7 @@ var _palette: Dictionary = {
 	"b": Color("6f4d34"),  # leather
 	"B": Color("45301f"),  # dark leather / boots
 	"y": Color("c9a24f"),  # gold trim
+	"Y": Color("f0d27a"),  # bright gold (coins, highlights)
 	"G": Color("a5b090"),  # ghoul skin
 	"g": Color("6d7a61"),  # ghoul skin shadow
 	"q": Color("434c3d"),  # ghoul deep shadow
@@ -216,6 +228,7 @@ func _initialize() -> void:
 	_save(_dust_sheet(), Layouts.DUST["png"])
 	_save(_fortress_sheet(), Layouts.FORTRESS["png"])
 	_save(_ground(), Layouts.GROUND_PNG)
+	_save(_grid_image(COIN, true), Layouts.COIN_PNG)
 	quit()
 
 
@@ -787,6 +800,16 @@ func _distance_to_polyline(p: Vector2, points: Array[Vector2]) -> float:
 
 
 # ---------------------------------------------------------------- image helpers
+
+## A single grid as an image, optionally with the standard outline (1 px border added for it).
+func _grid_image(grid: Array[String], outlined: bool) -> Image:
+	var pad: int = 1 if outlined else 0
+	var img: Image = _blank(Vector2i(grid[0].length() + pad * 2, grid.size() + pad * 2))
+	_paste(img, grid, Vector2i(pad, pad))
+	if outlined:
+		_outline(img)
+	return img
+
 
 func _blank(size: Vector2i) -> Image:
 	return Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)

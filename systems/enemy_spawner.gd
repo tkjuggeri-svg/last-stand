@@ -1,11 +1,17 @@
 class_name EnemySpawner
 extends Node2D
 ## Spawns spawn_count enemies at the start of a lane, one every spawn_interval seconds.
-## Spawned enemies become children of this node.
+## Spawned enemies become children of this node. One run (start() until every spawned enemy is gone,
+## killed or used up at the fortress) is reported as wave_started .. wave_cleared.
 
+signal wave_started
+## Every enemy of the current run has been spawned and is gone again.
+signal wave_cleared
 signal enemy_spawned(enemy: Enemy)
 ## A spawned enemy was killed (not when it is used up at the fortress).
 signal enemy_killed(enemy: Enemy)
+## A spawned enemy reached the fortress and was used up.
+signal enemy_reached_fortress(enemy: Enemy)
 ## The number of living enemies or the total spawned changed.
 signal enemy_counts_changed(living_count: int, spawned_count: int)
 
@@ -20,6 +26,7 @@ var _spawned_count: int = 0
 var _living_count: int = 0
 var _time_until_next_spawn: float = 0.0
 var _running: bool = false
+var _wave_open: bool = false
 
 
 func _ready() -> void:
@@ -40,6 +47,7 @@ func _physics_process(delta: float) -> void:
 	_time_until_next_spawn += spawn_interval
 	if _spawned_count >= spawn_count:
 		_running = false
+		_check_wave_cleared()
 
 
 func get_spawned_count() -> int:
@@ -50,11 +58,19 @@ func get_living_count() -> int:
 	return _living_count
 
 
+## True from start() until every enemy of the run is gone (listeners that connect late can check it).
+func is_wave_active() -> bool:
+	return _wave_open
+
+
 ## Starts (or restarts) spawning from the first enemy.
 func start() -> void:
 	_spawned_count = 0
 	_time_until_next_spawn = 0.0
 	_running = true
+	_wave_open = true
+	wave_started.emit()
+	_check_wave_cleared()  # a run with spawn_count 0 is over at once
 
 
 func _spawn_enemy() -> void:
@@ -74,8 +90,17 @@ func _on_enemy_died(enemy: Enemy) -> void:
 	_living_count -= 1
 	enemy_killed.emit(enemy)
 	enemy_counts_changed.emit(_living_count, _spawned_count)
+	_check_wave_cleared()
 
 
-func _on_enemy_reached_fortress(_enemy: Enemy) -> void:
+func _on_enemy_reached_fortress(enemy: Enemy) -> void:
 	_living_count -= 1
+	enemy_reached_fortress.emit(enemy)
 	enemy_counts_changed.emit(_living_count, _spawned_count)
+	_check_wave_cleared()
+
+
+func _check_wave_cleared() -> void:
+	if _wave_open and not _running and _living_count == 0 and _spawned_count >= spawn_count:
+		_wave_open = false
+		wave_cleared.emit()

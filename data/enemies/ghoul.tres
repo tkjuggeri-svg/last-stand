@@ -8,6 +8,7 @@ script = ExtResource("1_data")
 display_name = "Ghoul"
 max_health = 30
 move_speed = 60.0
+gold_reward = 10
 fortress_damage = 10
 hero_damage = 10
 attack_range = 24.0

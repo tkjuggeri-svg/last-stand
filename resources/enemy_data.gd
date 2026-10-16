@@ -6,6 +6,8 @@ extends Resource
 @export var max_health: int = 30
 ## Pixels per second along the lane.
 @export var move_speed: float = 60.0
+## Gold paid when the enemy is killed (by the hero or a tower). Nothing is paid if it reaches the fortress.
+@export var gold_reward: int = 10
 ## Damage dealt to the fortress when the enemy reaches it.
 @export var fortress_damage: int = 10
 ## Melee attack on the hero: damage per hit.

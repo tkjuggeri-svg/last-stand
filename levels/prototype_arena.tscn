@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/prototype_arena_ground.png" id="7_ground"]
+[ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
+[ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
 
 [sub_resource type="Curve2D" id="Curve2D_lane"]
 _data = {
@@ -78,6 +80,19 @@ curve = SubResource("Curve2D_lane")
 
 [node name="Fortress" parent="." instance=ExtResource("2_fortress")]
 
+[node name="Systems" type="Node" parent="."]
+
+[node name="Economy" type="Node" parent="Systems"]
+unique_name_in_owner = true
+script = ExtResource("8_economy")
+starting_gold = 100
+
+[node name="WaveRewards" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "spawner")]
+unique_name_in_owner = true
+script = ExtResource("9_rewards")
+economy = NodePath("../Economy")
+spawner = NodePath("../../EnemySpawner")
+
 [node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
@@ -98,7 +113,9 @@ position_smoothing_enabled = true
 unique_name_in_owner = true
 y_sort_enabled = true
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner") instance=ExtResource("6_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
 spawner = NodePath("../EnemySpawner")
+economy = NodePath("../Systems/Economy")
+rewards = NodePath("../Systems/WaveRewards")
