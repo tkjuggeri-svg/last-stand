@@ -1,10 +1,20 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_data"]
 [ext_resource type="Script" path="res://core/components/health_component.gd" id="3_health"]
 [ext_resource type="Script" path="res://core/components/hurtbox.gd" id="4_hurtbox"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="5_hitbox"]
+[ext_resource type="Script" path="res://core/components/directional_sprite.gd" id="6_sprite"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/ghoul_frames.tres" id="7_frames"]
+[ext_resource type="Shader" path="res://assets/shaders/hit_flash.gdshader" id="8_flash"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/hit_spark_frames.tres" id="9_spark"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("8_flash")
+shader_parameter/flash = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 12.0
@@ -25,9 +35,22 @@ data = ExtResource("2_data")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")
 
-[node name="Body" type="Polygon2D" parent="."]
-color = Color(0.42, 0.55, 0.38, 1)
-polygon = PackedVector2Array(0, -14, 12, -2, 8, 12, -8, 12, -12, -2)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_flash")
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("7_frames")
+animation = &"idle_down"
+autoplay = "idle_down"
+script = ExtResource("6_sprite")
+
+[node name="HitSpark" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("9_spark")
+animation = &"spark"
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true

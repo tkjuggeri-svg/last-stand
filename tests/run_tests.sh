@@ -15,11 +15,16 @@ clean() { grep -v -e '^Godot Engine v' -e '^[[:space:]]*$' || true; }
 
 # Runs Godot with the given arguments; sets $out (cleaned output) and $code (Godot's exit code).
 # The exit code is captured inside the substitution: a pipeline's status is lost after "$(...)".
+# A script that fails to load, or errors before calling quit(), leaves Godot running forever,
+# so every run has a time limit (RUN_TIMEOUT seconds, default 120).
 run_godot() {
 	local raw
-	raw="$("$GODOT" "$@" 2>&1; echo "__exit=$?")"
+	raw="$(timeout "${RUN_TIMEOUT:-120}" "$GODOT" "$@" 2>&1; echo "__exit=$?")"
 	code="${raw##*__exit=}"
 	out="$(printf '%s\n' "${raw%__exit=*}" | clean)"
+	if [[ "$code" -eq 124 ]]; then
+		out="$(printf '%s\nTIMED OUT after %ss (script error or missing quit()?)' "$out" "${RUN_TIMEOUT:-120}")"
+	fi
 }
 
 report() {  # name, output, exit code
@@ -55,14 +60,14 @@ echo "== Automated tests =="
 for test in tests/automated/test_*.gd; do
 	# --fixed-fps: simulate game time as fast as possible, with a deterministic 1/60 s step.
 	run_godot --headless --fixed-fps 60 --path . --script "res://$test"
-	problems="$(echo "$out" | grep -E 'FAIL|ERROR|WARNING' || true)"
+	problems="$(echo "$out" | grep -E 'FAIL|ERROR|WARNING|TIMED OUT' || true)"
 	summary="$(echo "$out" | grep -c '^\[ok\]') checks"
 	report "$test ($summary)" "$problems" "$code"
 done
 
 echo "== Scenes (120 frames each) =="
 for scene in main/main.tscn $(find entities levels ui -name '*.tscn' | sort) tests/*.tscn; do
-	run_godot --headless --path . "res://$scene" --quit-after 120
+	RUN_TIMEOUT=60 run_godot --headless --path . "res://$scene" --quit-after 120
 	report "$scene" "$out" "$code"
 done
 

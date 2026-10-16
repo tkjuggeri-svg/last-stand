@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://systems/enemy_spawner.gd" id="4_spawner"]
 [ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/prototype_arena_ground.png" id="7_ground"]
 
 [sub_resource type="Curve2D" id="Curve2D_lane"]
 _data = {
@@ -19,11 +20,14 @@ size = Vector2(1500, 100)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(100, 1100)
 
-[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress")]
+[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner")]
+y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
+spawner = NodePath("EnemySpawner")
 
 [node name="Backdrop" type="ColorRect" parent="."]
+z_index = -3
 offset_left = -1400.0
 offset_top = -900.0
 offset_right = 900.0
@@ -33,12 +37,21 @@ color = Color(0.06, 0.055, 0.07, 1)
 
 [node name="Floor" type="ColorRect" parent="."]
 unique_name_in_owner = true
+z_index = -2
 offset_left = -900.0
 offset_top = -500.0
 offset_right = 400.0
 offset_bottom = 400.0
 mouse_filter = 2
-color = Color(0.14, 0.13, 0.16, 1)
+color = Color(0.16, 0.24, 0.14, 1)
+
+[node name="Ground" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = -1
+position = Vector2(-932, -532)
+scale = Vector2(2, 2)
+texture = ExtResource("7_ground")
+centered = false
 
 [node name="ArenaBounds" type="StaticBody2D" parent="."]
 collision_mask = 0
@@ -62,15 +75,10 @@ shape = SubResource("RectangleShape2D_wall_v")
 [node name="Lane" type="Path2D" parent="."]
 curve = SubResource("Curve2D_lane")
 
-[node name="LaneVisual" type="Line2D" parent="Lane"]
-points = PackedVector2Array(-700, -250, -300, -250, -300, 0, -48, 0)
-width = 32.0
-default_color = Color(0.24, 0.2, 0.17, 1)
-joint_mode = 2
-
 [node name="Fortress" parent="." instance=ExtResource("2_fortress")]
 
 [node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
+y_sort_enabled = true
 script = ExtResource("4_spawner")
 enemy_scene = ExtResource("5_ghoul")
 lane = NodePath("../Lane")
@@ -79,11 +87,15 @@ lane = NodePath("../Lane")
 position = Vector2(-200, 80)
 
 [node name="Camera2D" type="Camera2D" parent="Hero"]
-limit_left = -900
-limit_top = -500
-limit_right = 400
-limit_bottom = 400
+limit_left = -932
+limit_top = -532
+limit_right = 432
+limit_bottom = 432
 position_smoothing_enabled = true
+
+[node name="Effects" type="Node2D" parent="."]
+unique_name_in_owner = true
+y_sort_enabled = true
 
 [node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")

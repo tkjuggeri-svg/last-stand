@@ -116,12 +116,17 @@ Controller support is a post-prototype goal (Steam Deck verified is a nice-to-ha
 
 ## 6. Presentation
 
-- Dark fantasy palette: desaturated stone, deep blues/purples, warm torch/fire accents for readability.
-- Readability first: enemies, projectiles, and the hero must be instantly distinguishable at a glance.
+- **Art direction (decided in M2): retro 16-bit pixel art**, top-down 3/4 view, in the spirit of classic action RPGs but entirely original. Chunky sprites with 1 px dark outlines and strong silhouettes, crisp pixels (nearest filtering, 1 art px = 2 world px), muted dark fantasy palette: dark green grass, earthy brown dirt, grey stone, restrained red accents (the knight's tabard and plume, the fortress banner, ghoul eyes).
+- Readability first: enemies, projectiles, and the hero must be instantly distinguishable at a glance. The ground is deliberately low-contrast; characters are brighter and outlined.
+- Hero: a knight in steel plate with a red tabard and plume; sword always visible. Idle, walk and attack in 4 directions.
+- Ghoul: pale grey-green, hunched, ragged, bone claws, glowing red eyes. Idle and shambling walk in 4 directions; white hit flash + spark when struck; collapses into a heap of rags and bones with a dust puff when killed.
+- Fortress: walled keep with four corner towers, a gate facing the lane and a red banner; shows cracks (≤ 2/3 HP), a broken tower and fire (≤ 1/3 HP), and ruins (destroyed).
+- Arena: dark grass with dry patches, stones, bones and twigs; a dirt lane from a small graveyard (where the dead rise) to a clearing around the fortress; a battlemented stone wall around the edge.
+- Effects stay small: an 8-direction crescent sword trail matching the 68 px reach, a short hit spark, a death collapse with dust.
 - HUD (prototype): top-left shows fortress/hero HP bars and "Enemies alive / Spawned"; top-right shows a short fading feed ("Ghoul incoming!", "Ghoul slain!", max 4 lines, ~2.5 s each). Nothing is drawn in the middle of the screen.
 - Camera: follows hero with smoothing, clamped to map bounds. Map should fit roughly 1.5–2 screens.
   Prototype arena: 1300×900 floor (x −900…400, y −500…400), enclosed by `ArenaBounds` walls on the `world` layer; Camera2D limits equal the floor. Enemies don't collide with walls; lanes must stay inside the arena.
-- Base resolution: **1280×720 for prototyping** (scales to any window). Final value is decided with the art style (pixel art → 640×360; HD → 1920×1080).
+- Base resolution: **1280×720** (canvas_items stretch). With 1 art px = 2 world px, pixels stay even at 720p, 1080p, 1440p and 4K.
 
 ## 7. Out of scope (for now)
 
@@ -133,4 +138,3 @@ Multiplayer, story/cutscenes, procedural maps, multiple biomes, localization, mo
 - When the hero gets a `Hurtbox`, a Ghoul touching the hero would also be "used up" by its fortress hitbox. Decide: separate contact-damage hitbox vs. fortress-only damage (e.g. a dedicated layer or arrival check).
 - Should the hero physically block enemies (body collision), or only fight them?
 - Build phase: timed or untimed?
-- Pixel art or HD art direction?

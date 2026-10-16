@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://ui/widgets/health_bar.tscn" id="2_bar"]
 [ext_resource type="PackedScene" path="res://ui/widgets/notification_feed.tscn" id="3_feed"]
+[ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="4_theme"]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
@@ -11,6 +12,7 @@ script = ExtResource("1_hud")
 offset_right = 440.0
 offset_bottom = 110.0
 mouse_filter = 2
+theme = ExtResource("4_theme")
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 
@@ -45,3 +47,4 @@ offset_top = 16.0
 offset_right = -16.0
 offset_bottom = 136.0
 grow_horizontal = 0
+theme = ExtResource("4_theme")

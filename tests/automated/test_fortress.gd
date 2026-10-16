@@ -13,13 +13,13 @@ func _initialize() -> void:
 	var pulse_shape: CollisionShape2D = level.get_node("%PulseShape")
 	var pulse_timer: Timer = level.get_node("%PulseTimer")
 	var label: Label = level.get_node("%FortressLabel")
-	var body: Polygon2D = fortress.get_node("%Body")
-	var start_color: Color = body.color
+	var sprite: Sprite2D = fortress.get_node("%Sprite")
 	var destroyed_count: Array[int] = [0]
 	fortress.destroyed.connect(func() -> void: destroyed_count[0] += 1)
 	await _frames(2)
 
 	_check("starts at 100/100", fortress.health.current_health == 100 and fortress.health.max_health == 100)
+	_check("starts with the healthy look", sprite.frame == Fortress.Look.HEALTHY)
 	_check("test label shows HP", label.text == "Fortress HP: 100 / 100")
 
 	# The test scene's timer pulse: on at 0.5 s (hit), off at 1.0 s, on at 1.5 s.
@@ -58,14 +58,23 @@ func _initialize() -> void:
 	_check("hero blocked by fortress (y=%.1f)" % hero.position.y, hero.position.y >= 63.0 and hero.position.y < 66.0)
 
 	# Enemy hits: 9 more pulses destroy it, extra pulses do nothing.
+	var looks_seen: Array[int] = []
 	for _i: int in 11:
 		pulse_shape.set_deferred("disabled", false)
 		await _frames(3)
 		pulse_shape.set_deferred("disabled", true)
 		await _frames(3)
+		if not looks_seen.has(sprite.frame):
+			looks_seen.append(sprite.frame)
+	_check("sprite steps through damaged looks as HP drops (%s)" % [looks_seen],
+		looks_seen == [Fortress.Look.HEALTHY, Fortress.Look.DAMAGED, Fortress.Look.BADLY_DAMAGED, Fortress.Look.DESTROYED])
 	_check("destroyed at 0 HP", fortress.health.current_health == 0 and fortress.health.is_dead())
 	_check("destroyed emitted exactly once", destroyed_count[0] == 1)
-	_check("visual darkened", body.color != start_color and body.color == Fortress.DESTROYED_COLOR)
+	_check("destroyed look shown", sprite.frame == Fortress.Look.DESTROYED)
+	_check("look thresholds: >2/3 healthy, >1/3 damaged, >0 badly damaged",
+		Fortress.look_for(67, 100) == Fortress.Look.HEALTHY and Fortress.look_for(66, 100) == Fortress.Look.DAMAGED
+		and Fortress.look_for(34, 100) == Fortress.Look.DAMAGED and Fortress.look_for(33, 100) == Fortress.Look.BADLY_DAMAGED
+		and Fortress.look_for(1, 100) == Fortress.Look.BADLY_DAMAGED)
 	_check("test label shows destroyed", label.text == "Fortress DESTROYED")
 
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)

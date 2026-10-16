@@ -1,6 +1,7 @@
 class_name Hero
 extends CharacterBody2D
 ## The player-controlled hero. Moves with the move_* actions and swings a melee attack toward the mouse.
+## Visuals (DirectionalSprite, swing trail) only follow the gameplay state; they never drive it.
 
 @export var move_speed: float = 200.0
 ## How long the swing's hitbox stays active, in seconds.
@@ -15,7 +16,12 @@ var _cooldown_left: float = 0.0
 @onready var health: HealthComponent = %HealthComponent
 @onready var _attack_pivot: Node2D = %AttackPivot
 @onready var _attack_shape: CollisionPolygon2D = %AttackShape
-@onready var _attack_visual: Polygon2D = %AttackVisual
+@onready var _attack_visual: AnimatedSprite2D = %AttackVisual
+@onready var _sprite: DirectionalSprite = %Sprite
+
+
+func _ready() -> void:
+	_attack_visual.animation_finished.connect(_attack_visual.hide)
 
 
 func _physics_process(delta: float) -> void:
@@ -24,16 +30,21 @@ func _physics_process(delta: float) -> void:
 	# Holding the button keeps swinging, limited by the cooldown.
 	if Input.is_action_pressed("attack"):
 		attack(get_global_mouse_position())
+	_update_animation()
 
 
 ## Swings toward a point in the world. Does nothing while the previous swing is on cooldown.
 func attack(target_position: Vector2) -> void:
 	if _cooldown_left > 0.0:
 		return
-	_attack_pivot.rotation = (target_position - global_position).angle()
+	var direction: Vector2 = target_position - global_position
+	_attack_pivot.rotation = direction.angle()
 	_cooldown_left = attack_cooldown
 	_attack_time_left = attack_duration
 	_set_attack_active(true)
+	_sprite.face(direction)
+	_sprite.play_state("attack", true)
+	_play_swing_trail(direction.angle())
 
 
 func _move() -> void:
@@ -55,4 +66,21 @@ func _set_attack_active(active: bool) -> void:
 	# Turning the shape on makes hurtboxes inside it register a new hit, so each swing hits once.
 	# Deferred because physics shapes should not change in the middle of a physics step.
 	_attack_shape.set_deferred("disabled", not active)
-	_attack_visual.visible = active
+
+
+func _update_animation() -> void:
+	if _sprite.is_playing_state("attack"):
+		return  # let the swing pose finish
+	if velocity.is_zero_approx():
+		_sprite.play_state("idle")
+	else:
+		_sprite.face(velocity)
+		_sprite.play_state("walk")
+
+
+## The trail art exists for 8 directions (every 45 degrees); the hitbox itself follows the exact aim.
+func _play_swing_trail(angle: float) -> void:
+	var index: int = posmod(roundi(angle / (PI / 4.0)), 8)
+	_attack_visual.show()
+	_attack_visual.stop()
+	_attack_visual.play(StringName("swing_%d" % index))

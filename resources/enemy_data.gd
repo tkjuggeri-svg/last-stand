@@ -8,3 +8,5 @@ extends Resource
 @export var move_speed: float = 60.0
 ## Damage dealt to the fortress when the enemy reaches it.
 @export var fortress_damage: int = 10
+## Visual played where the enemy is killed (a one-shot scene). Optional.
+@export var death_effect: PackedScene

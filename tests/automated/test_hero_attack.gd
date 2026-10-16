@@ -15,7 +15,7 @@ func _initialize() -> void:
 	root.add_child(level)
 	var hero: Hero = level.get_node("Hero")
 	var shape: CollisionPolygon2D = hero.get_node("%AttackShape")
-	var visual: Polygon2D = hero.get_node("%AttackVisual")
+	var visual: AnimatedSprite2D = hero.get_node("%AttackVisual")
 	var right: HealthComponent = level.get_node("Dummies/DummyRight/HealthComponent")
 	var left: HealthComponent = level.get_node("Dummies/DummyLeft/HealthComponent")
 	var down: HealthComponent = level.get_node("Dummies/DummyDown/HealthComponent")

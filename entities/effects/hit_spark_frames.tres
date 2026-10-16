@@ -1,0 +1,32 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/hit_spark.png" id="1_kmea8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gq5mj"]
+atlas = ExtResource("1_kmea8")
+region = Rect2(0, 0, 12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jqlfi"]
+atlas = ExtResource("1_kmea8")
+region = Rect2(12, 0, 12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f75h5"]
+atlas = ExtResource("1_kmea8")
+region = Rect2(24, 0, 12, 12)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gq5mj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jqlfi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f75h5")
+}],
+"loop": 0,
+"name": &"spark",
+"speed": 20.0
+}]

@@ -51,7 +51,7 @@ func _initialize() -> void:
 	_check("no new enemies spawn (%d spawned)" % spawns_after_game_over[0], spawns_after_game_over[0] == 0)
 	_check("enemies stopped moving", _enemy_positions(spawner) == positions_before)
 	_check("hero ignores input", hero.global_position == hero_before)
-	_check("hero swing stays off", (hero.get_node("%AttackVisual") as Polygon2D).visible == false)
+	_check("hero swing stays off", (hero.get_node("%AttackVisual") as CanvasItem).visible == false)
 
 	# --- Only one Game Over ---
 	fortress.destroyed.emit()

@@ -32,7 +32,21 @@ Tick items as they're finished.
 
 ---
 
-## M2 — Tower Defense Layer
+## M2 — Visual Identity: Retro 16-bit Pixel Art
+- [x] Pixel-art pipeline: original art drawn in code (`tools/art/`), 1 art px = 2 world px, nearest filtering, pixel snapping
+- [x] Hero knight: idle / walk / attack in 4 directions (side mirrored), visible sword
+- [x] Ghoul: idle / walk in 4 directions, death animation, white hit flash + hit spark
+- [x] Fortress: top-down keep with 4 looks (healthy, damaged, badly damaged, destroyed)
+- [x] Arena: baked ground (dark grass, dirt lane from the level's Path2D, stones, dead grass, debris, graveyard spawn), visible stone wall band
+- [x] Effects: 8-direction sword swing trail, hit spark, death collapse + dust
+- [x] HUD readability: outlined text, framed bars
+- [x] Automated visual test + screenshot capture tool
+
+**Done when:** the prototype looks like a coherent 16-bit dark fantasy game, with every gameplay test still passing.
+
+---
+
+## M3 — Tower Defense Layer
 - [ ] `TowerData` resource + base `Tower` scene
 - [ ] Build slots in the level; click to build
 - [ ] Arrow Tower (targeting "first along path", projectiles)
@@ -43,7 +57,7 @@ Tick items as they're finished.
 
 ---
 
-## M3 — Waves & Run Structure
+## M4 — Waves & Run Structure
 - [ ] `WaveData` resource (`EnemyData` already exists since M1)
 - [ ] `WaveSpawner` driven by data; 2–3 lanes
 - [ ] Build phase ↔ combat phase cycle, "Start wave" button
@@ -55,7 +69,7 @@ Tick items as they're finished.
 
 ---
 
-## M4 — Roguelite Upgrades
+## M5 — Roguelite Upgrades
 - [ ] `UpgradeData` + stat modifier system
 - [ ] Upgrade choice screen (1 of 3) after each wave
 - [ ] ~15 upgrades across Hero / Tower / Fortress / Economy
@@ -66,7 +80,7 @@ Tick items as they're finished.
 
 ---
 
-## M5 — Content & Challenge
+## M6 — Content & Challenge
 - [ ] Cultist (ranged) enemy, boss waves (5/10/15)
 - [ ] Hero ability (dash or slam)
 - [ ] 15-wave run, difficulty tuning pass
@@ -76,7 +90,7 @@ Tick items as they're finished.
 
 ---
 
-## M6 — Meta Progression & Persistence
+## M7 — Meta Progression & Persistence
 - [ ] Soul Shards, run summary screen
 - [ ] Meta hub: unlocks for towers/upgrades/hero bonuses
 - [ ] `SaveManager` (`user://` save, versioned)
@@ -86,17 +100,17 @@ Tick items as they're finished.
 
 ---
 
-## M7 — Art, Audio & Feel
-- [ ] Final art direction + sprites/animations (CC0 or self-made)
+## M8 — Audio, Feel & Presentation
+- [ ] Art for everything added since M2 (towers, new enemies, UI frames) in the M2 style
 - [ ] SFX + music
-- [ ] Juice: hit flash, screen shake, damage numbers, particles
+- [ ] Juice: screen shake, damage numbers, particles (hit flash done in M2)
 - [ ] Main menu, title, credits
 
 **Done when:** a stranger can watch a 30 s clip and understand + want the game. → **Steam page / trailer / demo.**
 
 ---
 
-## M8 — Steam Release Prep
+## M9 — Steam Release Prep
 - [ ] Windows export preset, build pipeline
 - [ ] Steam integration (achievements, cloud saves) — decide approach (GodotSteam is an external dependency → needs explicit approval)
 - [ ] Controller support
@@ -106,4 +120,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M1 feature-complete** (all items done; F5 plays `levels/prototype_arena.tscn` via `main.tscn`). Awaiting playtest feedback before M2.
+**M2 complete** (retro pixel-art visuals). Awaiting visual feedback before M3 (towers).

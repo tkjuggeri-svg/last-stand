@@ -1,10 +1,11 @@
 extends SceneTree
-## Automated check for the prototype arena's boundaries: walls, camera limits and lane placement.
+## Automated check for the prototype arena's boundaries: walls, camera limits, ground art and lane placement.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const HERO_RADIUS: float = 16.0
 const GHOUL_RADIUS: float = 14.0
 const WORLD_LAYER: int = 1
+const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 ## CharacterBody2D stops up to safe_margin (0.08 px) short of a wall.
 const TOLERANCE: float = 0.5
 
@@ -23,9 +24,17 @@ func _initialize() -> void:
 
 	# --- Dimensions agree ---
 	_check("arena is the floor rect (%s)" % arena, arena == Rect2(-900, -500, 1300, 900))
-	_check("camera limits = arena",
-		camera.limit_left == int(arena.position.x) and camera.limit_top == int(arena.position.y)
-		and camera.limit_right == int(arena.end.x) and camera.limit_bottom == int(arena.end.y))
+	# The camera may show the visible wall band around the floor, and nothing beyond it.
+	var view: Rect2 = arena.grow(Layouts.WALL_BAND)
+	_check("camera limits = arena + wall band (%s)" % view,
+		camera.limit_left == int(view.position.x) and camera.limit_top == int(view.position.y)
+		and camera.limit_right == int(view.end.x) and camera.limit_bottom == int(view.end.y))
+	var ground: Sprite2D = level.get_node("%Ground")
+	var ground_rect: Rect2 = Rect2(ground.position, ground.texture.get_size() * ground.scale)
+	_check("ground art covers exactly arena + wall band (%s)" % ground_rect, ground_rect == view and not ground.centered)
+	_check("the wall band lies on the collision walls",
+		_wall_rect(bounds, "WallTop").position.y <= view.position.y and _wall_rect(bounds, "WallLeft").position.x <= view.position.x
+		and _wall_rect(bounds, "WallBottom").end.y >= view.end.y and _wall_rect(bounds, "WallRight").end.x >= view.end.x)
 	_check("walls are on the world layer, hero collides with it",
 		bounds.collision_layer == WORLD_LAYER and hero.collision_mask & WORLD_LAYER != 0)
 	_check("top wall's inner edge = arena top", is_equal_approx(_wall_rect(bounds, "WallTop").end.y, arena.position.y))
