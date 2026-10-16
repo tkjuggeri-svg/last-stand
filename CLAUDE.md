@@ -26,6 +26,7 @@ The player controls a hero in real time, builds towers, and defends a fortress a
 - **Few autoloads.** Allowed: `Events` (global signal bus), `RunState` (current run's gold, wave, fortress HP, chosen upgrades). Later possibly `SaveManager`, `Audio`. Nothing else without asking.
   Neither exists yet: each is created (in `autoload/`) by the first feature that actually needs a cross-system signal or run-wide state. Never add empty placeholder signals or fields.
 - **No logic in UI.** UI reads state and emits intents; game systems own the rules.
+- **Run lifecycle:** `main.tscn` (`main.gd`) owns the current `Level` instance. A level emits `run_lost` once and disables itself (`PROCESS_MODE_DISABLED`, which also removes its physics shapes); Main shows `GameOverScreen` and restarts by replacing the level with a fresh instance. No global pause, no autoload.
 
 ## Folder structure
 
@@ -104,5 +105,5 @@ Planned, added by the feature that needs them: `ability_1` (Space/RMB), `build` 
 
 - Every new feature gets a sandbox scene in `tests/` (e.g. `tests/test_hero_movement.tscn`) where it can be tried by hand (F6).
 - Every new feature also gets an automated test `tests/automated/test_<feature>.gd`: a script that `extends SceneTree`, drives the real scenes (e.g. `Input.action_press`), prints `[ok]`/`[FAIL]` lines and calls `quit(<number of failures>)`. Wait a frame after `add_child` before reading state set in `_ready()`.
-- **Run everything before calling a feature done:** `tests/run_tests.sh` (Godot binary from `$GODOT`, default `~/Downloads/Godot_v4.7.2-stable_linux.x86_64`). It runs the editor import, checks every `.gd` with **all GDScript warnings treated as errors** (via a temporary, git-ignored `override.cfg`), runs every automated test with `--fixed-fps 60` (deterministic, faster than real time), and runs `main.tscn` + every scene in `entities/`, `ui/` and `tests/` for 120 frames. Must end with `ALL PASSED`.
+- **Run everything before calling a feature done:** `tests/run_tests.sh` (Godot binary from `$GODOT`, default `~/Downloads/Godot_v4.7.2-stable_linux.x86_64`). It runs the editor import, checks every `.gd` with **all GDScript warnings treated as errors** (via a temporary, git-ignored `override.cfg`), runs every automated test with `--fixed-fps 60` (deterministic, faster than real time), and runs `main.tscn` + every scene in `entities/`, `levels/`, `ui/` and `tests/` for 120 frames. Must end with `ALL PASSED`.
 - Helpers for the runner live in `tests/tools/`. The `tests/` folder must be excluded from release exports (M8).

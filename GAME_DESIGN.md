@@ -30,6 +30,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
 - Each wave has a **build phase** (untimed in prototype; optional timer later) and a **combat phase**.
 - The run ends when the **fortress HP reaches 0** (defeat) or wave 15's boss dies (victory).
+  Prototype (M1): defeat freezes the level and shows a Game Over screen ("The fortress has fallen.") with Restart, which starts a completely fresh run.
 - Hero death is **not** run-ending: the hero respawns at the fortress after a delay (e.g. 5 s, growing each death). The fortress is the true fail state, which keeps the TD identity.
 
 ## 4. Systems
