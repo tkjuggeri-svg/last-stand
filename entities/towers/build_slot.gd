@@ -8,6 +8,7 @@ signal hero_exited(slot: BuildSlot)
 
 const RANGE_COLOR: Color = Color(0.95, 0.85, 0.5, 0.55)
 const DUST_SCENE: PackedScene = preload("res://entities/effects/dust_puff.tscn")
+const DISMANTLE_SCENE: PackedScene = preload("res://entities/towers/tower_dismantle.tscn")
 
 ## The tower standing here, or null.
 var tower: Tower = null
@@ -44,6 +45,7 @@ func remove_tower() -> Tower:
 	tower = null
 	if removed != null:
 		remove_child(removed)
+		_dismantle(removed.data)
 		_puff()
 	_update_prompt()
 	return removed
@@ -67,6 +69,20 @@ func _puff() -> void:
 	var dust: Node2D = DUST_SCENE.instantiate()
 	dust.position = Vector2(0, 4)
 	add_child(dust)
+
+
+## The sold tower is gone at once; this effect shows it being taken down into rubble (display only).
+func _dismantle(tower_data: TowerData) -> void:
+	if tower_data == null:
+		return
+	var effect: Node2D = DISMANTLE_SCENE.instantiate()
+	var sprite: AnimatedSprite2D = effect.get_node("%Sprite")
+	var anim: StringName = StringName("%s_sell" % tower_data.id)
+	if not sprite.sprite_frames.has_animation(anim):
+		effect.free()
+		return
+	sprite.animation = anim
+	add_child(effect)
 
 
 func _update_prompt() -> void:

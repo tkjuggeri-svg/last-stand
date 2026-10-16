@@ -12,19 +12,31 @@ region = Rect2(20, 20, 20, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_47hwf"]
 atlas = ExtResource("1_vwjku")
-region = Rect2(0, 0, 20, 20)
+region = Rect2(40, 20, 20, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5kykr"]
 atlas = ExtResource("1_vwjku")
-region = Rect2(20, 0, 20, 20)
+region = Rect2(60, 20, 20, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_32fnm"]
 atlas = ExtResource("1_vwjku")
-region = Rect2(40, 0, 20, 20)
+region = Rect2(0, 0, 20, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_07qh4"]
 atlas = ExtResource("1_vwjku")
+region = Rect2(20, 0, 20, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jw4il"]
+atlas = ExtResource("1_vwjku")
+region = Rect2(40, 0, 20, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s0bwi"]
+atlas = ExtResource("1_vwjku")
 region = Rect2(60, 0, 20, 20)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ncs40"]
+atlas = ExtResource("1_vwjku")
+region = Rect2(80, 0, 20, 20)
 
 [resource]
 animations = [{
@@ -34,25 +46,34 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_b22qj")
-}],
-"loop": 1,
-"name": &"frost_aura",
-"speed": 4.0
 }, {
-"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_47hwf")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_5kykr")
+}],
+"loop": 1,
+"name": &"frost_aura",
+"speed": 6.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_32fnm")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_07qh4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jw4il")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s0bwi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ncs40")
 }],
 "loop": 0,
 "name": &"frost_burst",
-"speed": 14.0
+"speed": 16.0
 }]

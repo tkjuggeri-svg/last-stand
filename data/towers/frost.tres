@@ -17,5 +17,5 @@ projectile_speed = 320.0
 projectile_look = &"frost_bolt"
 splash_radius = 0.0
 slow_factor = 0.5
-muzzle_offset = Vector2(0, -60)
+muzzle_offset = Vector2(0, -62)
 slow_duration = 2.0

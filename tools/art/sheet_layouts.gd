@@ -72,18 +72,26 @@ const DUST: Dictionary = {
 	"anims": [["dust", 0, 6, 14.0, false]],
 }
 
-## The three towers (24x32 art = 48x64 world px; the base sits at the bottom of the frame).
+## The three towers (32x48 art = 64x96 world px; the base rests on art row 45, the sprite is placed so
+## that is +4 world px below the slot centre). Per tower: idle, fire, build (rising in scaffolding)
+## and sell (dismantled into rubble, played by the TowerDismantle effect).
 const TOWERS: Dictionary = {
 	"png": "res://assets/sprites/towers/towers.png",
 	"frames": "res://entities/towers/tower_frames.tres",
-	"size": Vector2i(24, 32),
+	"size": Vector2i(32, 48),
 	"anims": [
-		["archer_idle", 0, 2, 2.0, true],
-		["archer_fire", 1, 3, 12.0, false],
-		["cannon_idle", 2, 2, 2.0, true],
-		["cannon_fire", 3, 3, 10.0, false],
-		["frost_idle", 4, 2, 3.0, true],
-		["frost_fire", 5, 3, 12.0, false],
+		["archer_idle", 0, 4, 5.0, true],
+		["archer_fire", 1, 4, 12.0, false],
+		["archer_build", 2, 6, 10.0, false],
+		["archer_sell", 3, 6, 10.0, false],
+		["cannon_idle", 4, 4, 5.0, true],
+		["cannon_fire", 5, 5, 12.0, false],
+		["cannon_build", 6, 6, 10.0, false],
+		["cannon_sell", 7, 6, 10.0, false],
+		["frost_idle", 8, 4, 6.0, true],
+		["frost_fire", 9, 4, 12.0, false],
+		["frost_build", 10, 6, 10.0, false],
+		["frost_sell", 11, 6, 10.0, false],
 	],
 }
 
@@ -101,8 +109,8 @@ const PROJECTILES: Dictionary = {
 		["arrow_5", 5, 1, 1.0, false],
 		["arrow_6", 6, 1, 1.0, false],
 		["arrow_7", 7, 1, 1.0, false],
-		["cannonball", 8, 1, 1.0, false],
-		["frost_bolt", 9, 2, 8.0, true],
+		["cannonball", 8, 2, 10.0, true],
+		["frost_bolt", 9, 4, 12.0, true],
 	],
 }
 
@@ -110,14 +118,14 @@ const EXPLOSION: Dictionary = {
 	"png": "res://assets/sprites/effects/explosion.png",
 	"frames": "res://entities/effects/explosion_frames.tres",
 	"size": Vector2i(56, 56),
-	"anims": [["explosion", 0, 5, 14.0, false]],
+	"anims": [["explosion", 0, 7, 16.0, false]],
 }
 
 const FROST_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/frost.png",
 	"frames": "res://entities/effects/frost_frames.tres",
 	"size": Vector2i(20, 20),
-	"anims": [["frost_burst", 0, 4, 14.0, false], ["frost_aura", 1, 2, 4.0, true]],
+	"anims": [["frost_burst", 0, 5, 16.0, false], ["frost_aura", 1, 4, 6.0, true]],
 }
 
 ## All sheets that become SpriteFrames.

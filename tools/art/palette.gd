@@ -29,7 +29,7 @@ const SLATE: Array[Color] = [Color("16141f"), Color("221f30"), Color("302c45"), 
 const WOOD: Array[Color] = [Color("1d130e"), Color("33221a"), Color("4c3324"), Color("6a4a31"), Color("8a6542")]
 const IRON: Array[Color] = [Color("15141b"), Color("25242e"), Color("3a3946"), Color("575766"), Color("82838f")]
 const BANNER: Array[Color] = [Color("2c0d14"), Color("531721"), Color("7e232b"), Color("a83632"), Color("c95341")]
-const HOOD: Array[Color] = [Color("141d14"), Color("223321"), Color("344b30"), Color("4b6642")]
+const HOOD: Array[Color] = [Color("16200f"), Color("26381f"), Color("3a5530"), Color("557547"), Color("7a9a5c")]
 
 # --- Elements ---
 const FIRE: Array[Color] = [Color("4a120c"), Color("8e2a14"), Color("d4551f"), Color("f29a35"), Color("ffd463"), Color("fff6d0")]

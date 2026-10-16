@@ -53,8 +53,18 @@ func _test_slots_and_rules() -> void:
 	_check("...and gold is unchanged (never negative)", economy.get_gold() == gold_before and economy.get_gold() >= 0)
 
 	var archer_tower: Tower = slot.tower
+	var tower_sprite: AnimatedSprite2D = archer_tower.get_node("%Sprite")
+	_check("a new tower rises in scaffolding (%s)" % tower_sprite.animation,
+		tower_sprite.animation == &"archer_build" and archer_tower.is_building())
+	await _frames(45)
+	_check("...then stands idle (%s)" % tower_sprite.animation, tower_sprite.animation == &"archer_idle" and not archer_tower.is_building())
 	var refund: int = builder.sell(slot)
 	await _frames(1)
+	var rubble: Array[Node] = slot.get_children().filter(func(n: Node) -> bool: return n.name.begins_with("TowerDismantle"))
+	_check("a sold tower is shown coming down into rubble",
+		rubble.size() == 1 and (rubble[0].get_node("%Sprite") as AnimatedSprite2D).animation == &"archer_sell")
+	await _frames(45)
+	_check("...and the rubble clears away by itself", not is_instance_valid(rubble[0]) if rubble.size() == 1 else false)
 	_check("selling refunds exactly 50%% (%d of %d)" % [refund, ARCHER.cost], refund == ARCHER_REFUND)
 	_check("gold goes up by the refund", economy.get_gold() == gold_before + ARCHER_REFUND)
 	_check("the slot is free again and the tower is gone", slot.is_empty() and not is_instance_valid(archer_tower))

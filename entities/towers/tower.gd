@@ -4,6 +4,8 @@ extends StaticBody2D
 ## It targets the living enemy in range that is furthest along the lane (closest to the fortress),
 ## keeps that target while it stays valid and in range, and fires a Projectile every fire_interval.
 ## The base stands at the node's origin (the build slot's centre); a small body blocks the hero.
+## It appears with its "<id>_build" animation (rising in scaffolding). That is display only: the tower
+## fights from the moment it is placed, and a shot during the build doesn't cut the animation short.
 
 const PROJECTILE_SCENE: PackedScene = preload("res://entities/towers/projectile.tscn")
 
@@ -29,7 +31,8 @@ func _ready() -> void:
 	_range_area.body_entered.connect(_on_range_body_entered)
 	_range_area.body_exited.connect(_on_range_body_exited)
 	_sprite.animation_finished.connect(_on_sprite_animation_finished)
-	_sprite.play(StringName("%s_idle" % data.id))
+	var build: StringName = StringName("%s_build" % data.id)
+	_sprite.play(build if _sprite.sprite_frames.has_animation(build) else StringName("%s_idle" % data.id))
 
 
 func _physics_process(delta: float) -> void:
@@ -45,6 +48,11 @@ func get_target() -> Enemy:
 	if not _is_valid_target(_target):
 		return null
 	return _target
+
+
+## True while the construction animation is still playing (display only).
+func is_building() -> bool:
+	return String(_sprite.animation).ends_with("_build") and _sprite.is_playing()
 
 
 ## Untyped on purpose: the stored target may already be freed, and a freed object can't be passed
@@ -79,7 +87,8 @@ func _fire() -> void:
 	var shot: Projectile = PROJECTILE_SCENE.instantiate()
 	shot.launch(data, _target, global_position + data.muzzle_offset)
 	add_child(shot)
-	_sprite.play(StringName("%s_fire" % data.id))
+	if not is_building():
+		_sprite.play(StringName("%s_fire" % data.id))
 
 
 func _on_range_body_entered(body: Node2D) -> void:
