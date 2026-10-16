@@ -13,6 +13,15 @@ failures=0
 # Strips the version banner and blank lines; anything left is treated as a problem.
 clean() { grep -v -e '^Godot Engine v' -e '^[[:space:]]*$' || true; }
 
+# Runs Godot with the given arguments; sets $out (cleaned output) and $code (Godot's exit code).
+# The exit code is captured inside the substitution: a pipeline's status is lost after "$(...)".
+run_godot() {
+	local raw
+	raw="$("$GODOT" "$@" 2>&1; echo "__exit=$?")"
+	code="${raw##*__exit=}"
+	out="$(printf '%s\n' "${raw%__exit=*}" | clean)"
+}
+
 report() {  # name, output, exit code
 	if [[ -z "$2" && "$3" -eq 0 ]]; then
 		echo "  ok    $1"
@@ -32,20 +41,20 @@ version="$("$GODOT" --version 2>/dev/null | tail -n 1)"
 trap 'rm -f override.cfg' EXIT
 
 echo "== Import =="
-out="$("$GODOT" --headless --path . --import 2>&1 | grep -iE 'error|warning' || true)"
-report "editor import" "$out" 0
+run_godot --headless --path . --import
+report "editor import" "$(echo "$out" | grep -iE 'error|warning' || true)" "$code"
 
 echo "== Scripts (warnings = errors) =="
 "$GODOT" --headless --path . --script res://tests/tools/write_strict_override.gd 2>&1 | clean | sed 's/^/  /'
 while IFS= read -r script; do
-	out="$("$GODOT" --headless --path . --check-only --script "res://${script#./}" 2>&1 | clean)"
-	report "${script#./}" "$out" "${PIPESTATUS[0]}"
+	run_godot --headless --path . --check-only --script "res://${script#./}"
+	report "${script#./}" "$out" "$code"
 done < <(find . -name '*.gd' -not -path './.godot/*' | sort)
 
 echo "== Automated tests =="
 for test in tests/automated/test_*.gd; do
-	out="$("$GODOT" --headless --path . --script "res://$test" 2>&1 | clean)"
-	code="${PIPESTATUS[0]}"
+	# --fixed-fps: simulate game time as fast as possible, with a deterministic 1/60 s step.
+	run_godot --headless --fixed-fps 60 --path . --script "res://$test"
 	problems="$(echo "$out" | grep -E 'FAIL|ERROR|WARNING' || true)"
 	summary="$(echo "$out" | grep -c '^\[ok\]') checks"
 	report "$test ($summary)" "$problems" "$code"
@@ -53,8 +62,8 @@ done
 
 echo "== Scenes (120 frames each) =="
 for scene in main/main.tscn $(find entities -name '*.tscn' | sort) tests/*.tscn; do
-	out="$("$GODOT" --headless --path . "res://$scene" --quit-after 120 2>&1 | clean)"
-	report "$scene" "$out" "${PIPESTATUS[0]}"
+	run_godot --headless --path . "res://$scene" --quit-after 120
+	report "$scene" "$out" "$code"
 done
 
 echo

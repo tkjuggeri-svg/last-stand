@@ -23,8 +23,8 @@ Tick items as they're finished.
 - [x] `HealthComponent`, `Hurtbox`, `Hitbox`
 - [x] Hero melee attack (mouse-aimed arc)
 - [x] Fortress with HP
-- [ ] One lane (`Path2D`) + one enemy type (Ghoul) that walks to the fortress and damages it
-- [ ] Simple spawner: N enemies at an interval
+- [x] One lane (`Path2D`) + one enemy type (Ghoul) that walks to the fortress and damages it
+- [x] Simple spawner: N enemies at an interval
 - [ ] Minimal HUD: fortress HP, hero HP
 - [ ] Lose condition (fortress HP 0 → game over screen → restart)
 
@@ -44,7 +44,7 @@ Tick items as they're finished.
 ---
 
 ## M3 — Waves & Run Structure
-- [ ] `EnemyData` / `WaveData` resources
+- [ ] `WaveData` resource (`EnemyData` already exists since M1)
 - [ ] `WaveSpawner` driven by data; 2–3 lanes
 - [ ] Build phase ↔ combat phase cycle, "Start wave" button
 - [ ] Enemy roster: Ghoul, Hound, Brute
@@ -106,4 +106,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M1 in progress.** Hero movement + camera, health/damage components, melee attack, fortress done; awaiting approval for the next M1 feature.
+**M1 in progress.** Hero movement + camera, health/damage components, melee attack, fortress, lane + Ghoul + spawner done; awaiting approval for the next M1 feature.

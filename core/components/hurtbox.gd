@@ -21,3 +21,4 @@ func _on_area_entered(area: Area2D) -> void:
 	if hitbox == null:
 		return
 	health_component.take_damage(hitbox.damage)
+	hitbox.register_hit(self)

@@ -52,6 +52,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Spawn at map edges and follow **lanes** (`Path2D`) toward the fortress.
 - **Decision:** enemies sample the lane curve and move themselves (not parented to `PathFollow2D`). This lets them leave the path to chase the hero briefly (aggro) and return, without re-parenting.
 - Defined by `EnemyData`: max HP, speed, damage to fortress, contact damage, gold reward, sprite, aggro range.
+- Prototype (M1): `EnemyData` has max HP, speed and fortress damage only. Each frame the enemy steers toward a point 24 px further along its lane, so it rounds corners slightly (≤ ~8 px off centre) and can rejoin the lane if pushed. Enemies have no physical collision yet. The Ghoul's `Hitbox` (enemy_hitbox) damages the fortress on contact and the Ghoul is removed (`Hitbox.hit` signal).
+- Ghoul (M1 values): 30 HP (3 hero swings), 60 px/s, 10 fortress damage.
 - Starter roster:
   | Enemy        | Role                                   |
   |--------------|----------------------------------------|
@@ -123,5 +125,7 @@ Multiplayer, story/cutscenes, procedural maps, multiple biomes, localization, mo
 ## 8. Open questions
 
 - Do enemies attack towers, or only the fortress and hero?
+- When the hero gets a `Hurtbox`, a Ghoul touching the hero would also be "used up" by its fortress hitbox. Decide: separate contact-damage hitbox vs. fortress-only damage (e.g. a dedicated layer or arrival check).
+- Should the hero physically block enemies (body collision), or only fight them?
 - Build phase: timed or untimed?
 - Pixel art or HD art direction?

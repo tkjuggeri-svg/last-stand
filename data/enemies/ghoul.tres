@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Ghoul"
+max_health = 30
+move_speed = 60.0
+fortress_damage = 10

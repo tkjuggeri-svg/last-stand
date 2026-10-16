@@ -33,6 +33,8 @@ func _initialize() -> void:
 	var dummy_hp: HealthComponent = level.get_node("Dummies/DummyRight/HealthComponent")
 	var dummy_died: Array[int] = [0]
 	dummy_hp.died.connect(func() -> void: dummy_died[0] += 1)
+	var hits_reported: Array[Hurtbox] = []
+	(hero.get_node("Hitbox") as Hitbox).hit.connect(func(h: Hurtbox) -> void: hits_reported.append(h))
 	await _frames(2)
 	_check("dummy untouched at start (50)", dummy_hp.current_health == 50)
 
@@ -41,6 +43,8 @@ func _initialize() -> void:
 	await _frames(60)
 	Input.action_release("move_right")
 	_check("walking in deals 10 (got %d)" % dummy_hp.current_health, dummy_hp.current_health == 40)
+	_check("hitbox reports the hit with the hurtbox it struck",
+		hits_reported.size() == 1 and hits_reported[0] == level.get_node("Dummies/DummyRight/Hurtbox"))
 	await _frames(30)
 	_check("standing inside does not repeat damage", dummy_hp.current_health == 40)
 

@@ -14,6 +14,12 @@ func _ready() -> void:
 	current_health = max_health
 
 
+## Sets a new maximum and refills to it. Owners call this in _ready() when stats come from data.
+func setup(new_max_health: int) -> void:
+	max_health = new_max_health
+	current_health = new_max_health
+
+
 func take_damage(amount: int) -> void:
 	# Dead things can't die twice, so ignore hits after death.
 	if is_dead() or amount <= 0:
