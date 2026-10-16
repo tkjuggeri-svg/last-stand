@@ -23,6 +23,8 @@ extends Resource
 @export var splash_radius: float = 0.0
 ## Where shots leave the tower, relative to its base (the top of the bow, barrel or crystal).
 @export var muzzle_offset: Vector2 = Vector2(0, -48)
+## Colour of the light the tower gives off at its muzzle (e.g. the frost crystal). Alpha 0 = no light.
+@export var glow_color: Color = Color(0, 0, 0, 0)
 
 @export_group("Slow")
 ## Speed multiplier applied to a hit enemy (1 = no slow).

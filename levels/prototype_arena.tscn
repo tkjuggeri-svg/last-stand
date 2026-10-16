@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=32 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -15,6 +15,54 @@
 [ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
 [ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
 [ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/props.png" id="20_props"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="21_light"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/crypt.png" id="22_crypt"]
+[ext_resource type="Shader" path="res://assets/shaders/ground_fog.gdshader" id="23_fog"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/mote.png" id="24_mote"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fog"]
+frequency = 0.008
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fog"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_fog")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
+shader = ExtResource("23_fog")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_fog")
+shader_parameter/fog_color = Color(0.72, 0.76, 0.86, 1)
+shader_parameter/rect_size = Vector2(1300, 900)
+shader_parameter/pixel_size = 4.0
+shader_parameter/density = 0.32
+shader_parameter/base_density = 0.3
+shader_parameter/focus = Vector2(0.12, 0.25)
+shader_parameter/focus_radius = 0.38
+shader_parameter/drift = Vector2(0.006, 0.002)
+
+[sub_resource type="Gradient" id="Gradient_firefly"]
+offsets = PackedFloat32Array(0, 0.2, 0.5, 0.8, 1)
+colors = PackedColorArray(0.85, 1, 0.55, 0, 0.85, 1, 0.55, 0.9, 0.85, 1, 0.55, 0.3, 0.85, 1, 0.55, 0.9, 0.85, 1, 0.55, 0)
+
+[sub_resource type="Gradient" id="Gradient_soul"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.55, 1, 0.75, 0, 0.6, 1, 0.78, 0.85, 0.4, 0.85, 0.65, 0)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.62, 1)
+colors = PackedColorArray(0.04, 0.03, 0.06, 0, 0.04, 0.03, 0.06, 0.12, 0.04, 0.03, 0.06, 0.6)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 256
+height = 144
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1.05, 0.5)
 
 [sub_resource type="Curve2D" id="Curve2D_lane"]
 _data = {
@@ -61,6 +109,478 @@ position = Vector2(-932, -532)
 scale = Vector2(2, 2)
 texture = ExtResource("7_ground")
 centered = false
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.64, 0.66, 0.8, 1)
+
+[node name="Fog" type="ColorRect" parent="."]
+z_index = -1
+material = SubResource("ShaderMaterial_fog")
+offset_left = -900.0
+offset_top = -500.0
+offset_right = 400.0
+offset_bottom = 400.0
+mouse_filter = 2
+
+[node name="Crypt" type="Sprite2D" parent="."]
+position = Vector2(-770, -262)
+scale = Vector2(2, 2)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Crypt"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.65, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Crypt"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Prop1" type="Sprite2D" parent="Props"]
+position = Vector2(-850, -440)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 2
+
+[node name="Prop2" type="Sprite2D" parent="Props"]
+position = Vector2(-790, -455)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop3" type="Sprite2D" parent="Props"]
+position = Vector2(-730, -440)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop4" type="Sprite2D" parent="Props"]
+position = Vector2(-670, -455)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop5" type="Sprite2D" parent="Props"]
+position = Vector2(-610, -440)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 3
+
+[node name="Prop6" type="Sprite2D" parent="Props"]
+position = Vector2(-860, -372)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 3
+
+[node name="Prop7" type="Sprite2D" parent="Props"]
+position = Vector2(-650, -372)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop8" type="Sprite2D" parent="Props"]
+position = Vector2(-600, -388)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop9" type="Sprite2D" parent="Props"]
+position = Vector2(-560, -470)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop10" type="Sprite2D" parent="Props"]
+position = Vector2(-885, -480)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop11" type="Sprite2D" parent="Props"]
+position = Vector2(-850, -170)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop12" type="Sprite2D" parent="Props"]
+position = Vector2(-790, -148)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop13" type="Sprite2D" parent="Props"]
+position = Vector2(-720, -180)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 3
+
+[node name="Prop14" type="Sprite2D" parent="Props"]
+position = Vector2(-862, -98)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop15" type="Sprite2D" parent="Props"]
+position = Vector2(-780, -90)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 2
+
+[node name="Prop16" type="Sprite2D" parent="Props"]
+position = Vector2(-680, -118)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop17" type="Sprite2D" parent="Props"]
+position = Vector2(-640, -300)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 8
+
+[node name="Light" type="PointLight2D" parent="Props/Prop17"]
+position = Vector2(4, -22)
+scale = Vector2(0.5, 0.5)
+color = Color(1, 0.68, 0.38, 1)
+energy = 0.6
+texture = ExtResource("21_light")
+texture_scale = 2.4
+
+[node name="Prop18" type="Sprite2D" parent="Props"]
+position = Vector2(-700, -188)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 8
+
+[node name="Light" type="PointLight2D" parent="Props/Prop18"]
+position = Vector2(4, -22)
+scale = Vector2(0.5, 0.5)
+color = Color(1, 0.68, 0.38, 1)
+energy = 0.6
+texture = ExtResource("21_light")
+texture_scale = 2.4
+
+[node name="Prop19" type="Sprite2D" parent="Props"]
+position = Vector2(-620, -205)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop20" type="Sprite2D" parent="Props"]
+position = Vector2(-750, -60)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop21" type="Sprite2D" parent="Props"]
+position = Vector2(-880, -24)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop22" type="Sprite2D" parent="Props"]
+position = Vector2(-830, -300)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 11
+
+[node name="Prop23" type="Sprite2D" parent="Props"]
+position = Vector2(-720, 250)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 9
+
+[node name="Prop24" type="Sprite2D" parent="Props"]
+position = Vector2(-640, 330)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 9
+
+[node name="Prop25" type="Sprite2D" parent="Props"]
+position = Vector2(-830, 160)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop26" type="Sprite2D" parent="Props"]
+position = Vector2(-480, 320)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 6
+
+[node name="Prop27" type="Sprite2D" parent="Props"]
+position = Vector2(-862, 372)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop28" type="Sprite2D" parent="Props"]
+position = Vector2(-560, 190)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop29" type="Sprite2D" parent="Props"]
+position = Vector2(-780, 300)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Prop30" type="Sprite2D" parent="Props"]
+position = Vector2(-700, 360)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 3
+
+[node name="Prop31" type="Sprite2D" parent="Props"]
+position = Vector2(-300, 330)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 6
+
+[node name="Prop32" type="Sprite2D" parent="Props"]
+position = Vector2(-180, 350)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop33" type="Sprite2D" parent="Props"]
+position = Vector2(-250, -30)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 8
+
+[node name="Light" type="PointLight2D" parent="Props/Prop33"]
+position = Vector2(4, -22)
+scale = Vector2(0.5, 0.5)
+color = Color(1, 0.68, 0.38, 1)
+energy = 0.6
+texture = ExtResource("21_light")
+texture_scale = 2.4
+
+[node name="Prop34" type="Sprite2D" parent="Props"]
+position = Vector2(360, -440)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop35" type="Sprite2D" parent="Props"]
+position = Vector2(372, -180)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop36" type="Sprite2D" parent="Props"]
+position = Vector2(360, 330)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop37" type="Sprite2D" parent="Props"]
+position = Vector2(220, -380)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 6
+
+[node name="Prop38" type="Sprite2D" parent="Props"]
+position = Vector2(262, 262)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 6
+
+[node name="Prop39" type="Sprite2D" parent="Props"]
+position = Vector2(180, 362)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop40" type="Sprite2D" parent="Props"]
+position = Vector2(300, -50)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop41" type="Sprite2D" parent="Props"]
+position = Vector2(230, 120)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 9
+
+[node name="Prop42" type="Sprite2D" parent="Props"]
+position = Vector2(310, 190)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop43" type="Sprite2D" parent="Props"]
+position = Vector2(-120, -450)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop44" type="Sprite2D" parent="Props"]
+position = Vector2(0, -400)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop45" type="Sprite2D" parent="Props"]
+position = Vector2(100, -460)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 6
+
+[node name="Prop46" type="Sprite2D" parent="Props"]
+position = Vector2(-200, -430)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop47" type="Sprite2D" parent="Props"]
+position = Vector2(150, -300)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop48" type="Sprite2D" parent="Props"]
+position = Vector2(-30, -470)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 0
+
+[node name="Fireflies" type="CPUParticles2D" parent="."]
+z_index = 2
+position = Vector2(-250, -50)
+amount = 36
+lifetime = 7.0
+preprocess = 7.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(640, 440)
+direction = Vector2(1, -0.4)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 4.0
+initial_velocity_max = 12.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_firefly")
 
 [node name="ArenaBounds" type="StaticBody2D" parent="."]
 collision_mask = 0
@@ -146,6 +666,18 @@ position_smoothing_enabled = true
 [node name="Effects" type="Node2D" parent="."]
 unique_name_in_owner = true
 y_sort_enabled = true
+
+[node name="Vignette" type="CanvasLayer" parent="."]
+
+[node name="Shade" type="TextureRect" parent="Vignette"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
 
 [node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")

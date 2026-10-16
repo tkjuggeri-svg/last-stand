@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://entities/towers/tower.gd" id="1_tower"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/tower_frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 14.0
@@ -23,6 +24,13 @@ position = Vector2(0, -36)
 scale = Vector2(2, 2)
 sprite_frames = ExtResource("2_frames")
 animation = &"archer_idle"
+
+[node name="Glow" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+enabled = false
+energy = 0.6
+texture = ExtResource("3_light")
+texture_scale = 1.6
 
 [node name="RangeArea" type="Area2D" parent="."]
 unique_name_in_owner = true

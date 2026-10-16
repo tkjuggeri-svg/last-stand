@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://entities/fortress/fortress.gd" id="1_fortress"]
 [ext_resource type="Script" path="res://core/components/health_component.gd" id="2_health"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/fortress/fortress.png" id="4_texture"]
 [ext_resource type="SpriteFrames" path="res://entities/fortress/fortress_fx_frames.tres" id="5_fx"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/smoke_puff.png" id="6_smoke"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="7_light"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(96, 96)
@@ -71,6 +72,13 @@ autoplay = "brazier"
 frame_progress = 0.39
 metadata/until_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/BrazierW"]
+position = Vector2(0, 6)
+color = Color(1, 0.62, 0.32, 1)
+energy = 0.45
+texture = ExtResource("7_light")
+texture_scale = 1.2
+
 [node name="BrazierE" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(20, -2)
 scale = Vector2(2, 2)
@@ -79,6 +87,13 @@ animation = &"brazier"
 autoplay = "brazier"
 frame_progress = 0.65
 metadata/until_look = 3
+
+[node name="Light" type="PointLight2D" parent="LookDecor/BrazierE"]
+position = Vector2(0, 6)
+color = Color(1, 0.62, 0.32, 1)
+energy = 0.45
+texture = ExtResource("7_light")
+texture_scale = 1.2
 
 [node name="Fire1" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, -108)
@@ -89,6 +104,13 @@ autoplay = "fire"
 frame_progress = 0.00
 metadata/from_look = 1
 metadata/until_look = 3
+
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire1"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire1"]
 position = Vector2(0, -6)
@@ -117,6 +139,13 @@ frame_progress = 0.13
 metadata/from_look = 2
 metadata/until_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire2"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire2"]
 position = Vector2(0, -6)
 scale = Vector2(0.5, 0.5)
@@ -144,6 +173,13 @@ frame_progress = 0.26
 metadata/from_look = 2
 metadata/until_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire3"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire3"]
 position = Vector2(0, -6)
 scale = Vector2(0.5, 0.5)
@@ -170,6 +206,13 @@ autoplay = "fire"
 frame_progress = 0.39
 metadata/from_look = 2
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire4"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Fire5" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-8, -60)
 scale = Vector2(2, 2)
@@ -178,6 +221,13 @@ animation = &"fire"
 autoplay = "fire"
 frame_progress = 0.52
 metadata/from_look = 3
+
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire5"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire5"]
 position = Vector2(0, -6)
@@ -205,6 +255,13 @@ autoplay = "fire"
 frame_progress = 0.65
 metadata/from_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire6"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Fire7" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-44, -24)
 scale = Vector2(2, 2)
@@ -214,6 +271,13 @@ autoplay = "fire"
 frame_progress = 0.78
 metadata/from_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire7"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Fire8" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, 14)
 scale = Vector2(2, 2)
@@ -222,6 +286,13 @@ animation = &"fire"
 autoplay = "fire"
 frame_progress = 0.91
 metadata/from_look = 3
+
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire8"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire8"]
 position = Vector2(0, -6)
@@ -249,6 +320,13 @@ autoplay = "fire"
 frame_progress = 0.04
 metadata/from_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire9"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Fire10" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, -82)
 scale = Vector2(2, 2)
@@ -258,6 +336,13 @@ autoplay = "fire"
 frame_progress = 0.30
 metadata/from_look = 3
 
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire10"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
 [node name="Fire11" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-48, -82)
 scale = Vector2(2, 2)
@@ -266,6 +351,21 @@ animation = &"fire"
 autoplay = "fire"
 frame_progress = 0.70
 metadata/from_look = 3
+
+[node name="Light" type="PointLight2D" parent="LookDecor/Fire11"]
+position = Vector2(0, 6)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.5
+texture = ExtResource("7_light")
+texture_scale = 0.9
+
+[node name="WindowGlow" type="PointLight2D" parent="LookDecor"]
+position = Vector2(0, -58)
+color = Color(1, 0.7, 0.4, 1)
+energy = 0.25
+texture = ExtResource("7_light")
+texture_scale = 2.2
+metadata/until_look = 3
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true

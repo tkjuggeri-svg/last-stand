@@ -14,6 +14,7 @@ const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
+const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
 
 const DIRS_4: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 
@@ -75,12 +76,15 @@ func _initialize() -> void:
 		"fortress_fx": func() -> void: _save(_sheet(FortressArt.new().fx_rows(), Layouts.FORTRESS_FX["size"]), Layouts.FORTRESS_FX["png"]),
 		"smoke": func() -> void: _save(FortressArt.new().smoke_puff(), Layouts.SMOKE_PNG),
 		"ground": func() -> void: _save(_ground(), Layouts.GROUND_PNG),
+		"props": func() -> void: _save(_sheet([EnvironmentArt.new().prop_frames()], EnvironmentArt.PROP_SIZE), Layouts.PROPS_PNG),
+		"crypt": func() -> void: _save(EnvironmentArt.new().crypt(), Layouts.CRYPT_PNG),
+		"mote": func() -> void: _save(EnvironmentArt.new().mote(), Layouts.MOTE_PNG),
 		"coin": func() -> void: _save(_grid_image(COIN, true), Layouts.COIN_PNG),
 		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
 		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
 		"frost": func() -> void: _save(_sheet(TowerArt.new().frost_rows(), Layouts.FROST_FX["size"]), Layouts.FROST_FX["png"]),
-		"slot": func() -> void: _save(_build_slot_sheet(), Layouts.BUILD_SLOT["png"]),
+		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
 	}
 	for job_name: String in jobs:
 		if only.is_empty() or only.has(job_name):
@@ -88,202 +92,20 @@ func _initialize() -> void:
 	quit()
 
 
-## A flat stone pad with gold rune markers; the highlighted frame has a glowing gold rim.
-func _build_slot_sheet() -> Image:
-	var size: Vector2i = Layouts.BUILD_SLOT["size"]
-	var frames: Array[Image] = []
-	for highlighted: bool in [false, true]:
-		var img: Image = _blank(size)
-		var center: Vector2 = Vector2(14, 10)
-		for y: int in size.y:
-			for x: int in size.x:
-				var v: Vector2 = (Vector2(x + 0.5, y + 0.5) - center) / Vector2(13.0, 9.0)
-				var d: float = v.length()
-				if d > 1.0:
-					continue
-				var color: Color = Color("5f5b67") if d < 0.75 else Color("4a4652")
-				if d < 0.75 and (x + y * 3) % 7 == 0:
-					color = Color("6b6773")
-				if d >= 0.86 and highlighted:
-					color = _palette["Y"]
-				img.set_pixel(x, y, color)
-		for p: Vector2i in [Vector2i(14, 3), Vector2i(14, 16), Vector2i(4, 10), Vector2i(23, 10)]:
-			_px(img, p, _palette["Y"] if highlighted else _palette["y"])
-		_outline(img)
-		frames.append(img)
-	return _sheet([frames], size)
-
-
 # ---------------------------------------------------------------- arena ground
 
-## Bakes the prototype arena's floor: dark grass, the dirt lane read from the level's Path2D,
-## a clearing around the fortress, scattered details, and a stone wall band around the arena.
+## Bakes the prototype arena's ground from the level's floor, lane and fortress.
 func _ground() -> Image:
 	var level: Node = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	var floor_node: ColorRect = level.get_node("Floor")
 	var lane: Path2D = level.get_node("Lane")
-	var fortress_pos: Vector2 = (level.get_node("Fortress") as Node2D).position
-	var band: int = Layouts.WALL_BAND
-	var scale: float = float(Layouts.ART_SCALE)
-	var origin: Vector2 = floor_node.position - Vector2(band, band)
-	var size: Vector2i = Vector2i(((floor_node.size + Vector2(band, band) * 2.0) / scale).round())
-	var floor_art: Rect2i = Rect2i(Vector2i(int(band / scale), int(band / scale)), Vector2i((floor_node.size / scale).round()))
 	var lane_points: Array[Vector2] = []
 	for i: int in lane.curve.point_count:
-		lane_points.append((lane.to_global(lane.curve.get_point_position(i)) - origin) / scale)
-	var spawn: Vector2 = lane_points[0]
-	var keep: Vector2 = (fortress_pos - origin) / scale
+		lane_points.append(lane.to_global(lane.curve.get_point_position(i)))
+	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
+	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
 	level.free()
-
-	var img: Image = _blank(size)
-	var noise: FastNoiseLite = FastNoiseLite.new()
-	noise.seed = 7
-	noise.frequency = 0.13
-	var patches: FastNoiseLite = FastNoiseLite.new()
-	patches.seed = 19
-	patches.frequency = 0.018
-	var grass: Array[Color] = [Color("263820"), Color("2a3d23"), Color("2e4327"), Color("34492c")]
-	var dry: Array[Color] = [Color("3c3d25"), Color("47462b")]
-	var dirt: Array[Color] = [Color("4a3a2c"), Color("524131"), Color("5c4937")]
-	var dirt_edge: Color = Color("3f2f21")
-	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-	rng.seed = 1234
-
-	# Grass, dry patches, the lane and the clearing.
-	for y: int in size.y:
-		for x: int in size.x:
-			var p: Vector2 = Vector2(x + 0.5, y + 0.5)
-			var n: float = noise.get_noise_2d(x, y)
-			var jitter: float = noise.get_noise_2d(x * 3.0, y * 3.0) * 1.6
-			var lane_d: float = _distance_to_polyline(p, lane_points) + jitter
-			var clearing_d: float = p.distance_to(keep) - 33.0 + jitter * 2.0
-			var path_d: float = minf(lane_d - 8.0, clearing_d)
-			var color: Color
-			if path_d < -1.0:
-				color = dirt[clampi(int((n + 1.0) * 1.5), 0, 2)]
-				if rng.randf() < 0.012:
-					color = Color("7a6a58")  # pebble
-			elif path_d < 0.5:
-				color = dirt_edge
-			elif patches.get_noise_2d(x, y) > 0.35:
-				color = dry[1 if n > 0.1 else 0]
-			else:
-				var shade: int = clampi(int((n + 0.7) * 2.2), 0, 3)
-				if (x + y) % 2 == 0 and shade < 3 and noise.get_noise_2d(y, x) > 0.45:
-					shade += 1  # sparse dither keeps the grass lively but low-contrast
-				color = grass[shade]
-			img.set_pixel(x, y, color)
-
-	# Details on grass only, never on the lane, the clearing or right at the walls.
-	var keep_out: Callable = func(p: Vector2) -> bool:
-		return (_distance_to_polyline(p, lane_points) < 12.0 or p.distance_to(keep) < 40.0
-			or not Rect2(floor_art).grow(-4).has_point(p))
-	for i: int in 2200:
-		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
-		if keep_out.call(p):
-			continue
-		var is_dry: bool = patches.get_noise_2d(p.x, p.y) > 0.3
-		var blade: Color = (Color("6f6941") if is_dry else Color("44633b")) if rng.randf() < 0.65 else Color("1d2b18")
-		var tip: Vector2i = Vector2i(p)
-		_px(img, tip, blade)
-		_px(img, tip + Vector2i(-1, 1), blade)
-		_px(img, tip + Vector2i(1, 1), blade)
-	for i: int in 55:
-		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
-		if not keep_out.call(p):
-			_stone(img, Vector2i(p), rng.randi_range(1, 2))
-	for i: int in 26:
-		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
-		if keep_out.call(p):
-			continue
-		var dir: Vector2i = [Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, -1)][rng.randi_range(0, 2)]
-		for step: int in rng.randi_range(3, 5):
-			_px(img, Vector2i(p) + dir * step, Color("4e3a28"))
-	for i: int in 12:
-		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
-		if keep_out.call(p):
-			continue
-		var bone: Color = Color("cfc7ae")
-		_px(img, Vector2i(p), bone)
-		_px(img, Vector2i(p) + Vector2i(1, 0), bone)
-		_px(img, Vector2i(p) + Vector2i(2, 0), bone)
-		_px(img, Vector2i(p) + Vector2i(-1, -1), bone)
-		_px(img, Vector2i(p) + Vector2i(3, 1), bone)
-
-	# A small graveyard where the dead rise (the lane start).
-	for offset: Vector2i in [Vector2i(-14, -14), Vector2i(-4, -17), Vector2i(10, -15), Vector2i(-16, 11), Vector2i(8, 13)]:
-		_tombstone(img, Vector2i(spawn) + offset)
-
-	_wall_band(img, floor_art)
-	return img
-
-
-## A small, flat, muted stone: dark base, mid face, one lit pixel. Never brighter than the characters.
-func _stone(img: Image, at: Vector2i, radius: int) -> void:
-	_fill_rect(img, Rect2i(at + Vector2i(-radius, 0), Vector2i(radius * 2 + 1, radius + 1)), Color("1f2a1a"))
-	_fill_rect(img, Rect2i(at + Vector2i(-radius, -1), Vector2i(radius * 2 + 1, radius + 1)), Color("4c4a52"))
-	_fill_rect(img, Rect2i(at + Vector2i(-radius + 1, -1), Vector2i(radius * 2 - 1, 1)), Color("5f5c66"))
-	_px(img, at + Vector2i(-radius + 1, -1), Color("75727c"))
-
-
-func _tombstone(img: Image, at: Vector2i) -> void:
-	_fill_rect(img, Rect2i(at + Vector2i(1, 1), Vector2i(6, 8)), Color("1b2216"))
-	_fill_rect(img, Rect2i(at, Vector2i(6, 8)), Color("6a6672"))
-	_fill_rect(img, Rect2i(at + Vector2i(1, 0), Vector2i(4, 1)), Color("8a8692"))
-	_px(img, at, Color(0, 0, 0, 0))
-	_px(img, at + Vector2i(5, 0), Color(0, 0, 0, 0))
-	_fill_rect(img, Rect2i(at + Vector2i(2, 2), Vector2i(2, 4)), Color("45414d"))
-	_fill_rect(img, Rect2i(at + Vector2i(1, 3), Vector2i(4, 1)), Color("45414d"))
-	_fill_rect(img, Rect2i(at + Vector2i(0, 7), Vector2i(6, 1)), Color("4d4955"))
-
-
-## Stone blocks around the playable floor, battlements along the inner edge, and a soft
-## shadow on the grass just inside, so the boundary reads clearly.
-func _wall_band(img: Image, floor_art: Rect2i) -> void:
-	var size: Vector2i = img.get_size()
-	var block: Array[Color] = [Color("5a5662"), Color("64606c"), Color("6e6a76")]
-	var mortar: Color = Color("37333f")
-	for y: int in size.y:
-		for x: int in size.x:
-			var p: Vector2i = Vector2i(x, y)
-			if floor_art.has_point(p):
-				var edge: int = mini(mini(x - floor_art.position.x, floor_art.end.x - 1 - x),
-					mini(y - floor_art.position.y, floor_art.end.y - 1 - y))
-				if edge < 3:
-					img.set_pixel(x, y, img.get_pixel(x, y).darkened(0.45 - edge * 0.12))
-				continue
-			var row: int = floori(y / 5.0)
-			var col: int = floori((x + (row % 2) * 4) / 8.0)
-			var is_mortar: bool = y % 5 == 4 or (x + (row % 2) * 4) % 8 == 7
-			var color: Color = mortar if is_mortar else block[(row * 7 + col * 3) % 3]
-			# Merlons on the band's inner rim.
-			# Distance to the floor, measured only across this side of the band (so corners stay clean).
-			var rim: int
-			var along: int
-			if y < floor_art.position.y:
-				rim = floor_art.position.y - 1 - y
-				along = x
-			elif y >= floor_art.end.y:
-				rim = y - floor_art.end.y
-				along = x
-			elif x < floor_art.position.x:
-				rim = floor_art.position.x - 1 - x
-				along = y
-			else:
-				rim = x - floor_art.end.x
-				along = y
-			if rim <= 2:
-				color = Color("8a8692") if floori(along / 3.0) % 2 == 0 else Color("4a4652")
-			img.set_pixel(x, y, color)
-
-
-func _distance_to_polyline(p: Vector2, points: Array[Vector2]) -> float:
-	var best: float = INF
-	for i: int in points.size() - 1:
-		var closest: Vector2 = Geometry2D.get_closest_point_to_segment(p, points[i], points[i + 1])
-		best = minf(best, p.distance_to(closest))
-	return best
-
+	return EnvironmentArt.new().ground(floor_rect, lane_points, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
 
 # ---------------------------------------------------------------- image helpers
 

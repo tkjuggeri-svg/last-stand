@@ -18,4 +18,5 @@ projectile_look = &"frost_bolt"
 splash_radius = 0.0
 slow_factor = 0.5
 muzzle_offset = Vector2(0, -62)
+glow_color = Color(0.45, 0.75, 1, 1)
 slow_duration = 2.0

@@ -18,6 +18,7 @@ var _in_range: Array[Node2D] = []
 
 @onready var _sprite: AnimatedSprite2D = %Sprite
 @onready var _range_area: Area2D = %RangeArea
+@onready var _glow: PointLight2D = %Glow
 @onready var _range_shape: CollisionShape2D = %RangeShape
 
 
@@ -28,6 +29,9 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 	(_range_shape.shape as CircleShape2D).radius = data.attack_range
+	_glow.enabled = data.glow_color.a > 0.0
+	_glow.color = data.glow_color
+	_glow.position = data.muzzle_offset
 	_range_area.body_entered.connect(_on_range_body_entered)
 	_range_area.body_exited.connect(_on_range_body_exited)
 	_sprite.animation_finished.connect(_on_sprite_animation_finished)

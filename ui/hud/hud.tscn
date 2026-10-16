@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/coin.png" id="5_coin"]
 
 [node name="HUD" type="CanvasLayer"]
+layer = 2
 script = ExtResource("1_hud")
 
 [node name="Margin" type="MarginContainer" parent="."]

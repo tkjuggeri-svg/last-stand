@@ -159,6 +159,15 @@ const FORTRESS_FX: Dictionary = {
 	],
 }
 
+## Environment props (Sprite2D, hframes 12; see EnvironmentArt.PROPS for the order). 32x48 frames
+## standing on art row 44: the level places them with offset (0, -20) so the node sits on the base.
+const PROPS_PNG: String = "res://assets/sprites/environment/props.png"
+const PROPS_COUNT: int = 12
+## The graveyard crypt (64x64, standing on art row 60).
+const CRYPT_PNG: String = "res://assets/sprites/environment/crypt.png"
+## Ambient particle mote (fireflies, drifting ash).
+const MOTE_PNG: String = "res://assets/sprites/effects/mote.png"
+
 ## Particle texture for smoke (fortress fires).
 const SMOKE_PNG: String = "res://assets/sprites/effects/smoke_puff.png"
 

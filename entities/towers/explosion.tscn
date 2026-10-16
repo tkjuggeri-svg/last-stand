@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://entities/towers/explosion.gd" id="1_explosion"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/explosion_frames.tres" id="2_frames"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="3_hitbox"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="4_light"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_blast"]
 resource_local_to_scene = true
@@ -17,6 +18,12 @@ unique_name_in_owner = true
 scale = Vector2(2, 2)
 sprite_frames = ExtResource("2_frames")
 animation = &"explosion"
+
+[node name="Flash" type="PointLight2D" parent="."]
+color = Color(1, 0.62, 0.3, 1)
+energy = 0.9
+texture = ExtResource("4_light")
+texture_scale = 2.4
 
 [node name="Hitbox" type="Area2D" parent="."]
 unique_name_in_owner = true

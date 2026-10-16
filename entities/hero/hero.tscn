@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -10,6 +10,7 @@
 [ext_resource type="Shader" path="res://assets/shaders/hit_flash.gdshader" id="8_flash"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/hit_spark_frames.tres" id="9_spark"]
 [ext_resource type="Script" path="res://core/components/attacker_limit.gd" id="10_limit"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="11_light"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -42,6 +43,13 @@ sprite_frames = ExtResource("5_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
 script = ExtResource("4_sprite")
+
+[node name="Lantern" type="PointLight2D" parent="."]
+position = Vector2(0, -12)
+color = Color(1, 0.86, 0.66, 1)
+energy = 0.22
+texture = ExtResource("11_light")
+texture_scale = 2.4
 
 [node name="AttackPivot" type="Node2D" parent="."]
 unique_name_in_owner = true
