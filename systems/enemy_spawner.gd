@@ -4,6 +4,10 @@ extends Node2D
 ## Spawned enemies become children of this node.
 
 signal enemy_spawned(enemy: Enemy)
+## A spawned enemy was killed (not when it is used up at the fortress).
+signal enemy_killed(enemy: Enemy)
+## The number of living enemies or the total spawned changed.
+signal enemy_counts_changed(living_count: int, spawned_count: int)
 
 @export var enemy_scene: PackedScene
 @export var lane: Path2D
@@ -13,6 +17,7 @@ signal enemy_spawned(enemy: Enemy)
 @export var autostart: bool = true
 
 var _spawned_count: int = 0
+var _living_count: int = 0
 var _time_until_next_spawn: float = 0.0
 var _running: bool = false
 
@@ -37,6 +42,14 @@ func _physics_process(delta: float) -> void:
 		_running = false
 
 
+func get_spawned_count() -> int:
+	return _spawned_count
+
+
+func get_living_count() -> int:
+	return _living_count
+
+
 ## Starts (or restarts) spawning from the first enemy.
 func start() -> void:
 	_spawned_count = 0
@@ -47,7 +60,22 @@ func start() -> void:
 func _spawn_enemy() -> void:
 	var enemy: Enemy = enemy_scene.instantiate()
 	enemy.lane = lane
+	enemy.died.connect(_on_enemy_died)
+	enemy.reached_fortress.connect(_on_enemy_reached_fortress)
 	add_child(enemy)
 	enemy.global_position = lane.to_global(lane.curve.sample_baked(0.0))
 	_spawned_count += 1
+	_living_count += 1
 	enemy_spawned.emit(enemy)
+	enemy_counts_changed.emit(_living_count, _spawned_count)
+
+
+func _on_enemy_died(enemy: Enemy) -> void:
+	_living_count -= 1
+	enemy_killed.emit(enemy)
+	enemy_counts_changed.emit(_living_count, _spawned_count)
+
+
+func _on_enemy_reached_fortress(_enemy: Enemy) -> void:
+	_living_count -= 1
+	enemy_counts_changed.emit(_living_count, _spawned_count)

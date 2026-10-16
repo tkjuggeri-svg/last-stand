@@ -14,9 +14,10 @@ point_count = 4
 
 [node name="TestHud" type="Node2D"]
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero") instance=ExtResource("1_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner") instance=ExtResource("1_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
+spawner = NodePath("../EnemySpawner")
 
 [node name="Floor" type="ColorRect" parent="."]
 offset_left = -900.0

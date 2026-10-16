@@ -56,6 +56,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Defined by `EnemyData`: max HP, speed, damage to fortress, contact damage, gold reward, sprite, aggro range.
 - Prototype (M1): `EnemyData` has max HP, speed and fortress damage only. Each frame the enemy steers toward a point 24 px further along its lane, so it rounds corners slightly (≤ ~8 px off centre) and can rejoin the lane if pushed. Enemies have no physical collision yet. The Ghoul's `Hitbox` (enemy_hitbox) damages the fortress on contact and the Ghoul is removed (`Hitbox.hit` signal).
 - Ghoul (M1 values): 30 HP (3 hero swings), 60 px/s, 10 fortress damage.
+- Every enemy leaves exactly one way: `died` (killed) or `reached_fortress` (used up). `EnemySpawner` turns these into `enemy_killed` and `enemy_counts_changed(living, spawned)` for the HUD.
 - Starter roster:
   | Enemy        | Role                                   |
   |--------------|----------------------------------------|
@@ -117,6 +118,7 @@ Controller support is a post-prototype goal (Steam Deck verified is a nice-to-ha
 
 - Dark fantasy palette: desaturated stone, deep blues/purples, warm torch/fire accents for readability.
 - Readability first: enemies, projectiles, and the hero must be instantly distinguishable at a glance.
+- HUD (prototype): top-left shows fortress/hero HP bars and "Enemies alive / Spawned"; top-right shows a short fading feed ("Ghoul incoming!", "Ghoul slain!", max 4 lines, ~2.5 s each). Nothing is drawn in the middle of the screen.
 - Camera: follows hero with smoothing, clamped to map bounds. Map should fit roughly 1.5–2 screens.
   Prototype arena: 1300×900 floor (x −900…400, y −500…400), enclosed by `ArenaBounds` walls on the `world` layer; Camera2D limits equal the floor. Enemies don't collide with walls; lanes must stay inside the arena.
 - Base resolution: **1280×720 for prototyping** (scales to any window). Final value is decided with the art style (pixel art → 640×360; HD → 1920×1080).

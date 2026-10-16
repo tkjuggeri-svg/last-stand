@@ -85,6 +85,7 @@ limit_right = 400
 limit_bottom = 400
 position_smoothing_enabled = true
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero") instance=ExtResource("6_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
+spawner = NodePath("../EnemySpawner")
