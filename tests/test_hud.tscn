@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="1_hud"]
+[ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
+[ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
+[ext_resource type="Script" path="res://systems/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
+
+[sub_resource type="Curve2D" id="Curve2D_lane"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -700, -250, 0, 0, 0, 0, -300, -250, 0, 0, 0, 0, -300, 0, 0, 0, 0, 0, -48, 0)
+}
+point_count = 4
+
+[node name="TestHud" type="Node2D"]
+
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero") instance=ExtResource("1_hud")]
+fortress = NodePath("../Fortress")
+hero = NodePath("../Hero")
+
+[node name="Floor" type="ColorRect" parent="."]
+offset_left = -900.0
+offset_top = -500.0
+offset_right = 400.0
+offset_bottom = 400.0
+mouse_filter = 2
+color = Color(0.14, 0.13, 0.16, 1)
+
+[node name="Lane" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane")
+
+[node name="LaneVisual" type="Line2D" parent="Lane"]
+points = PackedVector2Array(-700, -250, -300, -250, -300, 0, -48, 0)
+width = 32.0
+default_color = Color(0.24, 0.2, 0.17, 1)
+joint_mode = 2
+
+[node name="Fortress" parent="." instance=ExtResource("2_fortress")]
+
+[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_ghoul")
+lane = NodePath("../Lane")
+
+[node name="Hero" parent="." instance=ExtResource("3_hero")]
+position = Vector2(-200, 80)
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+position_smoothing_enabled = true

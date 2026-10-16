@@ -41,6 +41,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   Prototype values: ~100° arc, 52 px reach from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
 - **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
 - Can **repair/build** only during build phase (or near the fortress, TBD).
+- Hero HP: 100 (prototype). The hero has a `HealthComponent` (shown in the HUD) but no `Hurtbox` yet, so nothing can damage it until enemy attacks on the hero are designed (see open questions).
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
 
 ### 4.2 Fortress

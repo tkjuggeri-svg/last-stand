@@ -25,7 +25,7 @@ Tick items as they're finished.
 - [x] Fortress with HP
 - [x] One lane (`Path2D`) + one enemy type (Ghoul) that walks to the fortress and damages it
 - [x] Simple spawner: N enemies at an interval
-- [ ] Minimal HUD: fortress HP, hero HP
+- [x] Minimal HUD: fortress HP, hero HP
 - [ ] Lose condition (fortress HP 0 → game over screen → restart)
 
 **Done when:** you can fight a stream of enemies and lose if they reach the fortress too often.
@@ -106,4 +106,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M1 in progress.** Hero movement + camera, health/damage components, melee attack, fortress, lane + Ghoul + spawner done; awaiting approval for the next M1 feature.
+**M1 in progress.** Hero movement + camera, health/damage components, melee attack, fortress, lane + Ghoul + spawner, HUD done; awaiting approval for the next M1 feature.

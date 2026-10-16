@@ -11,6 +11,8 @@ extends CharacterBody2D
 var _attack_time_left: float = 0.0
 var _cooldown_left: float = 0.0
 
+## Public so other systems (HUD) can read HP. Nothing damages the hero yet: no Hurtbox until enemies attack it.
+@onready var health: HealthComponent = %HealthComponent
 @onready var _attack_pivot: Node2D = %AttackPivot
 @onready var _attack_shape: CollisionPolygon2D = %AttackShape
 @onready var _attack_visual: Polygon2D = %AttackVisual
