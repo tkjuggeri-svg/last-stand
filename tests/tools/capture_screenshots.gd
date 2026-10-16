@@ -108,11 +108,11 @@ func _build(level: Level) -> void:
 	Input.parse_input_event(press)
 	await _frames(20)
 	await _shot("build_01_menu")
-	hero.position = Vector2(-200, 160)
-	await _frames(240)
-	await _shot("build_02_towers_fighting")
-	await _frames(30)
-	await _shot("build_03_towers_fighting_later")
+	hero.position = Vector2(-470, 40)  # off the lane, close enough for the camera to frame the fight
+	await _frames(300)
+	for i: int in 6:
+		await _shot("build_%02d_towers_fighting" % (i + 2))
+		await _frames(9)
 
 
 func _shot(shot_name: String) -> void:

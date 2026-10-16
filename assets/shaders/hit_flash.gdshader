@@ -5,6 +5,6 @@ uniform float flash : hint_range(0.0, 1.0) = 0.0;
 uniform vec4 flash_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 
 void fragment() {
-	vec4 base = texture(TEXTURE, UV);
-	COLOR = vec4(mix(base.rgb, flash_color.rgb, flash), base.a) * vec4(1.0, 1.0, 1.0, COLOR.a);
+	// COLOR already holds the texture times the node's modulate, so tints (e.g. frost) still apply.
+	COLOR = vec4(mix(COLOR.rgb, flash_color.rgb, flash), COLOR.a);
 }

@@ -29,7 +29,7 @@ func is_empty() -> bool:
 
 
 func place(new_tower: Tower) -> void:
-	assert(is_empty(), "BuildSlot already has a tower: %s" % get_path())
+	assert(is_empty(), "BuildSlot already has a tower: %s" % name)
 	tower = new_tower
 	add_child(new_tower)
 	_update_prompt()

@@ -21,6 +21,8 @@ extends Resource
 @export var projectile_look: StringName = &"arrow"
 ## Above 0: the projectile explodes on impact and damages every enemy within this radius.
 @export var splash_radius: float = 0.0
+## Where shots leave the tower, relative to its base (the top of the bow, barrel or crystal).
+@export var muzzle_offset: Vector2 = Vector2(0, -48)
 
 @export_group("Slow")
 ## Speed multiplier applied to a hit enemy (1 = no slow).

@@ -32,12 +32,18 @@ func is_invulnerable() -> bool:
 	return _invulnerable_left > 0.0
 
 
-func _on_area_entered(area: Area2D) -> void:
-	var hitbox: Hitbox = area as Hitbox
+## Applies a hitbox's damage (respecting invulnerability). Overlapping hitboxes arrive here through
+## area_entered; projectiles that already know their target call it directly. Returns true on a hit.
+func receive_hit(hitbox: Hitbox) -> bool:
 	if hitbox == null or is_invulnerable():
-		return
+		return false
 	health_component.take_damage(hitbox.damage)
 	if invulnerability_time > 0.0:
 		_invulnerable_left = invulnerability_time
 		set_physics_process(true)
 	hitbox.register_hit(self)
+	return true
+
+
+func _on_area_entered(area: Area2D) -> void:
+	receive_hit(area as Hitbox)

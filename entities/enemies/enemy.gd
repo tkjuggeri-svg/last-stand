@@ -3,6 +3,7 @@ extends CharacterBody2D
 ## Base enemy: walks along its lane toward the fortress. When the hero comes within attack range it
 ## stops and attacks (wind-up, strike, cooldown), then resumes the lane once the hero is gone.
 ## If the target has an AttackerLimit, the enemy must claim a slot first; otherwise it waits its turn.
+## Towers can slow it (apply_slow): the strongest slow wins and it always wears off.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
 ## Stats come from an EnemyData resource. Visuals only follow the gameplay state.
 
@@ -18,6 +19,8 @@ signal attack_started(enemy: Enemy)
 const LANE_LOOKAHEAD: float = 24.0
 ## How long the attack hitbox stays active once the strike lands, in seconds.
 const STRIKE_DURATION: float = 0.1
+## Tint while slowed by frost.
+const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
 
 @export var data: EnemyData
 
@@ -33,6 +36,9 @@ var _windup_left: float = -1.0
 var _strike_left: float = 0.0
 ## The target's AttackerLimit while this enemy holds one of its slots.
 var _claimed_limit: AttackerLimit = null
+## Current speed multiplier from slows (1 = normal) and how long it still lasts.
+var _slow_factor: float = 1.0
+var _slow_left: float = 0.0
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -42,6 +48,8 @@ var _claimed_limit: AttackerLimit = null
 @onready var _attack_shape: CollisionShape2D = %AttackShape
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hit_spark: AnimatedSprite2D = %HitSpark
+@onready var _hurtbox: Hurtbox = %Hurtbox
+@onready var _frost_aura: AnimatedSprite2D = %FrostAura
 
 
 func _ready() -> void:
@@ -61,11 +69,12 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
+	_update_slow(delta)
 	_update_attack(delta)
 	if is_attacking() or has_target():
 		velocity = Vector2.ZERO  # stand and fight
 	elif lane != null:
-		velocity = _direction_along_lane() * data.move_speed
+		velocity = _direction_along_lane() * get_move_speed()
 		move_and_slide()
 	else:
 		velocity = Vector2.ZERO
@@ -79,6 +88,54 @@ func is_attacking() -> bool:
 
 func has_target() -> bool:
 	return _target != null and is_instance_valid(_target)
+
+
+## Still in play: not killed, not used up at the fortress. Towers only target living enemies.
+func is_alive() -> bool:
+	return not _is_finished and not is_queued_for_deletion()
+
+
+## How far along its lane it is, in pixels (more = closer to the fortress). Towers prefer the leader.
+func get_lane_progress() -> float:
+	if lane == null:
+		return 0.0
+	return lane.curve.get_closest_offset(lane.to_local(global_position))
+
+
+func get_move_speed() -> float:
+	return data.move_speed * _slow_factor
+
+
+func is_slowed() -> bool:
+	return _slow_left > 0.0
+
+
+## Takes a hit from a projectile that already knows its target (same path as an overlapping hitbox).
+func receive_hit(hitbox: Hitbox) -> bool:
+	return is_alive() and _hurtbox.receive_hit(hitbox)
+
+
+## Slows movement to `factor` of normal speed for `duration` seconds. Slows never stack: the strongest
+## factor applies and the longest remaining time is kept; when it runs out, speed is normal again.
+func apply_slow(factor: float, duration: float) -> void:
+	if duration <= 0.0 or factor >= 1.0:
+		return
+	_slow_factor = minf(_slow_factor, factor) if is_slowed() else factor
+	_slow_left = maxf(_slow_left, duration)
+	_sprite.self_modulate = SLOWED_TINT
+	_frost_aura.show()
+	_frost_aura.play(&"frost_aura")
+
+
+func _update_slow(delta: float) -> void:
+	if _slow_left <= 0.0:
+		return
+	_slow_left -= delta
+	if _slow_left <= 0.0:
+		_slow_left = 0.0
+		_slow_factor = 1.0
+		_sprite.self_modulate = Color.WHITE
+		_frost_aura.hide()
 
 
 ## True when it could start an attack right now if the target's AttackerLimit gave it a slot.
@@ -182,7 +239,7 @@ func _on_health_died() -> void:
 	_finish(died)
 
 
-func _on_fortress_hitbox_hit(_hurtbox: Hurtbox) -> void:
+func _on_fortress_hitbox_hit(_fortress_hurtbox: Hurtbox) -> void:
 	# Reaching the fortress spends the enemy.
 	_finish(reached_fortress)
 
