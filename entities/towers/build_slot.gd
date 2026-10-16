@@ -7,6 +7,7 @@ signal hero_entered(slot: BuildSlot)
 signal hero_exited(slot: BuildSlot)
 
 const RANGE_COLOR: Color = Color(0.95, 0.85, 0.5, 0.55)
+const DUST_SCENE: PackedScene = preload("res://entities/effects/dust_puff.tscn")
 
 ## The tower standing here, or null.
 var tower: Tower = null
@@ -33,6 +34,7 @@ func place(new_tower: Tower) -> void:
 	tower = new_tower
 	add_child(new_tower)
 	_update_prompt()
+	_puff()
 
 
 ## Takes the tower off the slot and returns it (the caller frees it). Returns null if empty, so a
@@ -42,6 +44,7 @@ func remove_tower() -> Tower:
 	tower = null
 	if removed != null:
 		remove_child(removed)
+		_puff()
 	_update_prompt()
 	return removed
 
@@ -57,6 +60,13 @@ func set_highlighted(highlighted: bool) -> void:
 func show_range(radius: float) -> void:
 	_range_radius = radius
 	queue_redraw()
+
+
+## A dust cloud when a tower goes up or comes down (display only).
+func _puff() -> void:
+	var dust: Node2D = DUST_SCENE.instantiate()
+	dust.position = Vector2(0, 4)
+	add_child(dust)
 
 
 func _update_prompt() -> void:

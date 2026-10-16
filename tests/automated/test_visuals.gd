@@ -133,10 +133,15 @@ func _test_ghoul_and_effects() -> void:
 	hero.position = ghoul.global_position + Vector2(40, 0)
 	(ghoul.get_node("%HealthComponent") as HealthComponent).take_damage(100)
 	await _frames(1)
+	var death_effects: Array[Node] = effects.get_children().filter(func(n: Node) -> bool: return n is OneShotEffect)
+	var gold_texts: Array[Node] = effects.get_children().filter(func(n: Node) -> bool: return n is DamageNumber)
 	_check("death effect spawned at the ghoul's position",
-		effects.get_child_count() == 1 and (effects.get_child(0) as Node2D).global_position.distance_to(death_spot) < 2.0)
+		death_effects.size() == 1 and (death_effects[0] as Node2D).global_position.distance_to(death_spot) < 2.0)
+	_check("a gold '+10' rises where the ghoul died",
+		gold_texts.size() == 1 and (gold_texts[0].get_node("%Label") as Label).text == "+10"
+		and (gold_texts[0] as Node2D).global_position.distance_to(death_spot) < 40.0)
 	await _frames(70)
-	_check("death effect removes itself (within ~1 s)", effects.get_child_count() == 0)
+	_check("death effect and gold text remove themselves (within ~1 s)", effects.get_child_count() == 0)
 	level.queue_free()
 	await _frames(2)
 

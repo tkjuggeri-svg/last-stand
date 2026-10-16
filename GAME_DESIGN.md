@@ -41,7 +41,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **Basic attack** (LMB): short-range **melee arc** aimed at the mouse (decided). Melee makes positioning matter and contrasts with ranged towers. One hero only at first.
   Prototype values: ~100° arc, 68 px reach (was 52, raised after the first playtest) from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
 - **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
-- Can **repair/build** only during build phase (or near the fortress, TBD).
+- Builds towers at slots **at any time**, before or during a wave (decided in M3): walk to a slot, press **E**.
 - Hero HP: 100 (prototype). Enemy melee hits it through a `Hurtbox`; after each hit the hero is invulnerable for 0.5 s, so a crowd can't shred it in an instant. Feedback: red-white flash, hit spark, floating damage number, HUD bar. At 0 HP the knight falls (death animation) and the run is lost ("The hero has fallen."). Respawning instead of losing the run is still the long-term plan (see 3. Run structure) and arrives with the run-structure milestone.
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
 
@@ -72,19 +72,22 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ### 4.4 Towers
 - Built on **predefined build slots** placed in the level.
   - **Decision:** slots instead of free placement. Avoids grid/collision/pathing edge cases, makes map design deliberate, and is far cheaper to prototype. Free placement can be revisited later.
-- Defined by `TowerData`: cost, damage, fire rate, range, projectile scene, targeting mode, upgrade path.
-- Targeting: "first along path" by default (most TD-correct), later options: nearest, strongest.
-- Starter towers:
-  | Tower         | Behaviour                               |
-  |---------------|-----------------------------------------|
-  | Arrow Tower   | Single target, fast, cheap              |
-  | Brazier       | Short-range AoE fire, burns             |
-  | Frost Obelisk | Slows enemies in range                  |
-  | Bone Ballista | Long-range, piercing, slow              |
-- Each tower can be **upgraded 2 times** in a run, and **sold** for 50–75% refund.
+- Defined by `TowerData` (`data/towers/*.tres`): name, description, cost, range, damage, fire interval, projectile speed and look, splash radius, slow factor/duration, muzzle position.
+- **Building is allowed before and during waves**; the game never pauses for it. Prototype arena: 6 slots beside the lane (each ≥ 80 px from its centre line, so towers never block enemies). Walk to a slot and press **E**: a compact panel lists each tower's icon, name, price (red if unaffordable) and description; an occupied slot shows the tower's stats and **Sell (+50% of the build price)**. Esc/E or walking away closes it.
+- Targeting: "first along path" (the living enemy furthest along the lane, kept while valid and in range). Later options: nearest, strongest.
+- Damage goes through the same `Hurtbox`/`HealthComponent` path as melee. Towers never hurt the hero or the fortress (cannon blasts are on `hero_hitbox`, which only enemies listen to).
+- M3 towers (values tuned with `tests/tools/balance_report.gd`; one tower already makes a difference, two hold a 10-Ghoul wave):
+  | Tower  | Cost | Role | Damage / interval | Range | Special |
+  |--------|------|------|-------------------|-------|---------|
+  | Archer | 50   | Reliable single target | 10 / 0.9 s | 210 | Arrows home in on one enemy |
+  | Frost  | 70   | Crowd control | 4 / 1.1 s | 180 | Slows to 50% for 2 s; strongest slow wins, never stacks, always expires |
+  | Cannon | 100  | Slow, heavy area damage | 30 / 2.0 s | 190 | Explodes: every enemy within 56 px |
+- Future ideas: Brazier (burning AoE), Bone Ballista (piercing).
+- Tower **upgrades** (2 tiers per tower) arrive with the roguelite layer; selling always refunds 50% of the original build price, not upgrades.
 
 ### 4.5 Economy
-- **Gold** (in-run): earned per kill + wave-clear bonus. Spent on towers and tower upgrades. Resets every run.
+- **Gold** (in-run): starts at 100. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul: 10); an enemy that reaches the fortress pays nothing. Spent on towers (later: upgrades). Never negative. Resets every run.
+- **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. Until M4 a "wave" is one spawner run (`WaveRewards.begin_wave()/end_wave()` are the hook for the wave system).
 - **Soul Shards** (meta): earned at run end based on waves survived. Spent in the meta hub on permanent unlocks.
 - Keep it to these two currencies. More resources only if a system clearly needs them.
 
@@ -139,4 +142,3 @@ Multiplayer, story/cutscenes, procedural maps, multiple biomes, localization, mo
 
 - Do enemies attack towers, or only the fortress and hero?
 - Should the hero physically block enemies (body collision), or only fight them?
-- Build phase: timed or untimed?

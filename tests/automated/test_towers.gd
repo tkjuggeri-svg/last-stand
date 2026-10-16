@@ -82,15 +82,16 @@ func _test_cannon_splash() -> void:
 	var ghouls: Array[Enemy] = []
 	for offset: Vector2 in [Vector2(0, 0), Vector2(22, 10), Vector2(-18, 14)]:
 		ghouls.append(_stationary_ghoul(level, Vector2(-200, 60) + offset))
-	var hp: Array[HealthComponent] = []
-	for g: Enemy in ghouls:
-		hp.append(g.get_node("%HealthComponent"))
-	await _until(func() -> bool: return hp.any(func(h: HealthComponent) -> bool: return h.current_health < 30), 400)
+	var max_hp: int = ghouls[0].data.max_health  # read now: a one-shot frees them
+	var damage_taken: Array[int] = [0, 0, 0]
+	for i: int in ghouls.size():
+		var hp: HealthComponent = ghouls[i].get_node("%HealthComponent")
+		hp.health_changed.connect(func(current: int, maximum: int) -> void: damage_taken[i] = maximum - current)
+	await _until(func() -> bool: return damage_taken.any(func(d: int) -> bool: return d > 0), 400)
 	await _frames(3)
-	var values: Array[int] = []
-	for h: HealthComponent in hp:
-		values.append(h.current_health)
-	_check("one cannon shot damages all 3 ghouls in the blast (HP %s)" % [values], values == [10, 10, 10])
+	var expected: int = mini(CANNON.damage, max_hp)
+	_check("one cannon shot hits all 3 ghouls in the blast for %d each (%s)" % [expected, damage_taken],
+		damage_taken == [expected, expected, expected])
 	await _free(level)
 
 
@@ -108,7 +109,7 @@ func _test_blast_spares_hero_and_fortress() -> void:
 	blast.position = Vector2(-70, 0)  # the fortress wall (x = -48) is inside the 56 px blast
 	level.add_child(blast)
 	await _frames(4)
-	_check("the blast hurts the ghoul", (ghoul.get_node("%HealthComponent") as HealthComponent).current_health == 10)
+	_check("the blast hurts the ghoul", not is_instance_valid(ghoul) or (ghoul.get_node("%HealthComponent") as HealthComponent).current_health < 30)
 	_check("...but never the hero", hero.health.current_health == 100)
 	_check("...and never the fortress", fortress.health.current_health == 100)
 	await _free(level)

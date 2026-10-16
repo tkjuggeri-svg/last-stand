@@ -109,10 +109,24 @@ func _build(level: Level) -> void:
 	await _frames(20)
 	await _shot("build_01_menu")
 	hero.position = Vector2(-470, 40)  # off the lane, close enough for the camera to frame the fight
-	await _frames(300)
-	for i: int in 6:
-		await _shot("build_%02d_towers_fighting" % (i + 2))
-		await _frames(9)
+	await _frames(240)
+	await _shot("build_02_towers_fighting")
+	# Wait for the moments worth seeing: a cannon blast, a frozen ghoul, a gold popup.
+	var wanted: Dictionary = {"build_03_explosion": "Explosion", "build_04_frost_slow": "slowed", "build_05_gold_popup": "DamageNumber"}
+	for _i: int in 1800:
+		await _frames(1)
+		for shot_name: String in wanted.keys():
+			if _level_shows(level, wanted[shot_name]):
+				await _shot(shot_name)
+				wanted.erase(shot_name)
+		if wanted.is_empty():
+			break
+
+
+func _level_shows(level: Level, what: String) -> bool:
+	if what == "slowed":
+		return (level.get_node("EnemySpawner") as Node).get_children().any(func(e: Node) -> bool: return (e as Enemy).is_slowed())
+	return not level.find_children("*", what, true, false).is_empty()
 
 
 func _shot(shot_name: String) -> void:

@@ -2,11 +2,15 @@ class_name Level
 extends Node2D
 ## Root of a playable level. The run is lost when the fortress is destroyed or the hero dies:
 ## everything in the level stops, and run_lost (once) tells the owner (Main) to show Game Over.
-## It also places one-shot visuals (e.g. an enemy's death effect) in its Effects layer.
+## It also places one-shot visuals (an enemy's death effect and the "+gold" it was worth) in its
+## Effects layer.
 
 signal run_lost(reason: LossReason)
 
 enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
+
+const FLOATING_TEXT_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
+const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 
 @export var fortress: Fortress
 @export var hero: Hero
@@ -50,8 +54,13 @@ func _end_run(reason: LossReason) -> void:
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:
-	if enemy.data.death_effect == null:
-		return
-	var effect: Node2D = enemy.data.death_effect.instantiate()
-	effect.position = _effects.to_local(enemy.global_position)
-	_effects.add_child(effect)
+	var at: Vector2 = _effects.to_local(enemy.global_position)
+	if enemy.data.death_effect != null:
+		var effect: Node2D = enemy.data.death_effect.instantiate()
+		effect.position = at
+		_effects.add_child(effect)
+	if enemy.data.gold_reward > 0:
+		var gold_text: DamageNumber = FLOATING_TEXT_SCENE.instantiate()
+		gold_text.set_text("+%d" % enemy.data.gold_reward, GOLD_TEXT_COLOR)
+		gold_text.position = at + Vector2(0, -30)
+		_effects.add_child(gold_text)

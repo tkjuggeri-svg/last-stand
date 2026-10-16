@@ -9,14 +9,14 @@ script = ExtResource("1_bar")
 
 [node name="TitleLabel" type="Label" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 0)
+custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 text = "HP"
 
 [node name="Bar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
 mouse_filter = 2
-custom_minimum_size = Vector2(220, 20)
+custom_minimum_size = Vector2(130, 16)
 layout_mode = 2
 size_flags_vertical = 4
 value = 100.0
@@ -24,6 +24,6 @@ show_percentage = false
 
 [node name="ValueLabel" type="Label" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(90, 0)
+custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 text = "100 / 100"

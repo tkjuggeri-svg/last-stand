@@ -701,7 +701,12 @@ func _tower_frame(kind: String, state: String, frame: int) -> Image:
 					_px(img, Vector2i(x, y), mortar if brick else stone)
 			_fill_rect(img, Rect2i(3, 14, 1, 16), stone_light)
 			_fill_rect(img, Rect2i(20, 14, 1, 16), stone_dark)
+			# Round the body: trim the corners so it reads as a drum tower, not a box.
+			for corner: Vector2i in [Vector2i(3, 28), Vector2i(3, 29), Vector2i(4, 29), Vector2i(20, 28), Vector2i(20, 29), Vector2i(19, 29)]:
+				_px(img, corner, Color(0, 0, 0, 0))
 			_fill_rect(img, Rect2i(2, 10, 20, 5), stone)
+			for corner: Vector2i in [Vector2i(2, 10), Vector2i(21, 10), Vector2i(2, 14), Vector2i(21, 14)]:
+				_px(img, corner, Color(0, 0, 0, 0))
 			for x: int in range(2, 22):
 				_px(img, Vector2i(x, 10), stone_light if floori(x / 3.0) % 2 == 0 else mortar)
 			_fill_rect(img, Rect2i(5, 11, 14, 3), Color("2e2a36"))

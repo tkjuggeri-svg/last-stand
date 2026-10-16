@@ -2,8 +2,6 @@ extends SceneTree
 ## Automated check for the enemy information HUD: counts, notifications and their wiring.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
-const VIEWPORT_SIZE: Vector2 = Vector2(1280, 720)
-
 var _failures: int = 0
 
 
@@ -90,12 +88,14 @@ func _test_in_level() -> void:
 	_check("double exit counted once", spawner.get_living_count() == living_before - 1 and events["killed"] == 2)
 
 	# --- Placement: outside the middle of the screen ---
+	var viewport: Vector2 = root.get_visible_rect().size  # headless runs don't use the 1280x720 window
 	var feed_rect: Rect2 = feed.get_global_rect()
 	var stats_rect: Rect2 = stats.get_global_rect()
 	_check("feed sits in the top-right corner (%s)" % feed_rect,
-		feed_rect.position.x >= VIEWPORT_SIZE.x * 0.7 and feed_rect.end.x <= VIEWPORT_SIZE.x and feed_rect.end.y <= 160.0)
-	_check("stats sit in the top-left corner (%s)" % stats_rect,
-		stats_rect.end.x <= VIEWPORT_SIZE.x * 0.4 and stats_rect.end.y <= 160.0)
+		feed_rect.position.x >= viewport.x * 0.7 and feed_rect.end.x <= viewport.x and feed_rect.end.y <= 160.0)
+	# Bottom-left: away from the spawn and the lane (top-left) and left of the build panel (bottom centre).
+	_check("stats sit in the bottom-left corner (%s)" % stats_rect,
+		stats_rect.end.x <= 320.0 and stats_rect.position.y >= viewport.y * 0.7 and stats_rect.end.y <= viewport.y)
 	level.queue_free()
 	await _frames(2)
 

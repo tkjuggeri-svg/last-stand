@@ -27,6 +27,8 @@ The player controls a hero in real time, builds towers, and defends a fortress a
   Neither exists yet: each is created (in `autoload/`) by the first feature that actually needs a cross-system signal or run-wide state. Never add empty placeholder signals or fields.
 - **No logic in UI.** UI reads state and emits intents; game systems own the rules.
 - **Level layout rule:** every level has a `%Floor` rect that *is* the playable arena, an `ArenaBounds` `StaticBody2D` (world layer) whose wall shapes' inner edges sit exactly on the floor edges, a `%Ground` sprite covering the floor plus the visible 32 px wall band (`WALL_BAND`), and Camera2D limits equal to that same floor + band rect. Keep them in sync (`test_arena_bounds` checks it). The level root, the spawner and `%Effects` are y-sorted; ground layers use negative `z_index`.
+- **Per-level systems:** `Economy`, `WaveRewards` and `TowerBuilder` are plain nodes under the level's `Systems` node, wired to each other and to the spawner, slots, HUD and build menu with exported node references (no autoloads). Gold only changes through `Economy.earn()` / `try_spend()`; building and selling only through `TowerBuilder`; UI only displays and sends requests.
+- **Freed objects:** never pass an object that may already be freed (an enemy, a target) into a typed parameter or lambda: check `is_instance_valid()` first (see `Tower._is_valid_target`). Assert messages are evaluated even when the assert passes, so don't call `get_path()` in one that can run outside the tree.
 - **Run lifecycle:** `main.tscn` (`main.gd`) owns the current `Level` instance. A level emits `run_lost` once and disables itself (`PROCESS_MODE_DISABLED`, which also removes its physics shapes); Main shows `GameOverScreen` and restarts by replacing the level with a fresh instance. No global pause, no autoload.
 
 ## Folder structure
@@ -49,7 +51,7 @@ res://
 │   ├── projectiles/
 │   └── fortress/
 ├── resources/           # Custom Resource class scripts (enemy_data.gd, tower_data.gd, ...)
-├── systems/             # Non-visual game logic nodes: wave_spawner, economy, upgrade_picker
+├── systems/             # Non-visual game logic nodes: enemy_spawner, economy, wave_rewards, tower_builder
 ├── levels/              # Maps: arena layout, lanes (Path2D), build slots
 ├── ui/                  # hud/, menus/, upgrade_screen/, shared widgets/
 ├── main/                # main.tscn — boot, scene switching
@@ -77,7 +79,8 @@ Commit the `*.gd.uid` files Godot generates next to scripts; they keep reference
 - **Art pipeline:** all art is original and drawn in code. To change art, edit `tools/art/generate_art.gd` (pixel grids / drawing code) and `sheet_layouts.gd` (sheet layout, animation names, fps), then run:
   `godot --headless --path . --script res://tools/art/generate_art.gd` → `godot --headless --path . --import` → `godot --headless --path . --script res://tools/art/build_sprite_frames.gd`.
   Never hand-edit the generated PNGs or `*_frames.tres`. The arena ground is baked from the level's `Floor`, `Lane` and `Fortress`, so regenerate it after changing those.
-- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir>` plays a scripted scene in a real window and saves screenshots.
+- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir> [--scenario=tour|combat|build]` plays a scripted scene in a real window and saves screenshots.
+- Balance check: `godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd` plays a full wave per tower setup and prints kills, leaks, fortress HP and gold.
 
 ## GDScript conventions
 
@@ -114,7 +117,7 @@ Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16), `enemy_hitbo
 
 ## Input actions
 
-Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E).
+Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E: build menu at a slot). Menus also use Godot's built-in `ui_*` actions (Esc closes, Enter confirms). The hero ignores `attack` while the mouse is over UI.
 
 Planned, added by the feature that needs them: `ability_1` (Space/RMB), `build` (B), `pause` (Esc). Never check raw keycodes in code.
 

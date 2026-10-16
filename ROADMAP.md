@@ -48,11 +48,14 @@ Tick items as they're finished.
 ---
 
 ## M3 — Tower Defense Layer
-- [ ] `TowerData` resource + base `Tower` scene
-- [ ] Build slots in the level; click to build
-- [ ] Arrow Tower (targeting "first along path", projectiles)
-- [ ] Gold: earned on kill, spent on towers; HUD gold counter
-- [ ] Sell tower
+- [x] Gold economy: `Economy` (never negative), kill gold from `EnemyData`, HUD gold counter
+- [x] Perfect-defense bonus (+10% of a wave's kill gold if nothing reached the fortress), via `WaveRewards`
+- [x] `TowerData` resource + one shared `Tower` scene
+- [x] 6 fixed build slots; E at a slot opens the build menu (build any time, game never pauses)
+- [x] Archer (single target), Cannon (splash), Frost (slow) towers: "first along path" targeting, homing projectiles
+- [x] Sell tower for 50% of its build price (no double refunds)
+- [x] HUD: gold, free slots, build menu with prices/descriptions, insufficient-gold and refund feedback
+- [x] Tests: economy, construction, tower combat; balance report tool
 
 **Done when:** the hero + towers together are needed to hold a lane.
 
@@ -121,4 +124,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M2 complete**, plus the enemy-to-hero combat playtest fix. Awaiting hands-on feedback before M3 (towers).
+**M3 complete** (tower defense layer). Awaiting hands-on playtest feedback before M4 (waves). M4 should drive `WaveRewards.begin_wave()/end_wave()` and the spawner per wave.
