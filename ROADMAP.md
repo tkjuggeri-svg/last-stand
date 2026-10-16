@@ -61,6 +61,20 @@ Tick items as they're finished.
 
 ---
 
+## M3.5 — Complete Visual Overhaul
+- [x] `ART_DIRECTION.md`: resolution, palette ramps, light, outlines, materials, proportions, animation timing, review checklist
+- [x] Art toolkit: `canvas.gd` (lit primitives, contours, outline), `palette.gd`, one generator file per asset family, preview + gallery tools
+- [x] Hero and Ghoul redrawn at higher detail; idle/walk/attack/death animations; new swing, hit spark, dust
+- [x] 3/4-view fortress with 4 damage states, fires, smoke, banners, braziers, hit shake
+- [x] Archer, Cannon and Frost towers redesigned with idle and attack animations; new projectiles, explosion, frost effects
+- [x] Construction (scaffolding) and dismantling (rubble) animations
+- [x] Environment: richer ground, graveyard props and crypt, 3/4 arena wall; dusk lighting, fog, fireflies, vignette
+- [x] HUD and build menu: original pixel font, pixel frames, icons
+
+**Done when:** the game looks like a cohesive commercial pixel-art game at 1280×720, with every test passing and gameplay unchanged.
+
+---
+
 ## M4 — Waves & Run Structure
 - [ ] `WaveData` resource (`EnemyData` already exists since M1)
 - [ ] `WaveSpawner` driven by data; 2–3 lanes
@@ -124,4 +138,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M3 complete** (tower defense layer). Awaiting hands-on playtest feedback before M4 (waves). M4 should drive `WaveRewards.begin_wave()/end_wave()` and the spawner per wave.
+**M3.5 complete** (visual overhaul). Awaiting hands-on playtest feedback before M4 (waves). M4 should drive `WaveRewards.begin_wave()/end_wave()` and the spawner per wave.

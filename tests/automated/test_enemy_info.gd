@@ -93,9 +93,10 @@ func _test_in_level() -> void:
 	var stats_rect: Rect2 = stats.get_global_rect()
 	_check("feed sits in the top-right corner (%s)" % feed_rect,
 		feed_rect.position.x >= viewport.x * 0.7 and feed_rect.end.x <= viewport.x and feed_rect.end.y <= 160.0)
-	# Bottom-left: away from the spawn and the lane (top-left) and left of the build panel (bottom centre).
+	# Bottom-left: away from the spawn and the lane (top-left) and left of the build panel (bottom right,
+	# 790 px wide).
 	_check("stats sit in the bottom-left corner (%s)" % stats_rect,
-		stats_rect.end.x <= 320.0 and stats_rect.position.y >= viewport.y * 0.7 and stats_rect.end.y <= viewport.y)
+		stats_rect.end.x <= viewport.x - 800.0 and stats_rect.position.y >= viewport.y * 0.7 and stats_rect.end.y <= viewport.y)
 	level.queue_free()
 	await _frames(2)
 

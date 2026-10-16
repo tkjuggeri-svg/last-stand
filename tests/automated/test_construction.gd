@@ -121,9 +121,14 @@ func _test_menu_flow() -> void:
 		costs.append(_labels_in(card)[1])
 	_check("menu lists name and price of all 3 towers (%s %s)" % [names, costs],
 		names == ["Archer Tower", "Frost Tower", "Cannon Tower"] and costs == ["50", "70", "100"])
-	_check("each tower has a description", cards.all(func(c: Node) -> bool: return _labels_in(c)[2].length() > 20))
+	var details: Label = menu.get_node("%Details")
+	var described: bool = true
+	for i: int in cards.size():
+		(cards[i].find_child("Build", true, false) as Button).mouse_entered.emit()
+		described = described and details.text.begins_with((builder.catalog[i] as TowerData).description) and details.text.length() > 20
+	_check("pointing at a tower shows its description and stats", described)
 
-	(cards[2].get_node("Build") as Button).pressed.emit()  # Cannon: exactly the 100 we start with
+	(cards[2].find_child("Build", true, false) as Button).pressed.emit()  # Cannon: exactly the 100 we start with
 	await _frames(1)
 	_check("buying the cannon with exactly 100 works", slot.tower != null and economy.get_gold() == 0)
 	_check("the menu now shows the tower and its refund",
@@ -134,7 +139,7 @@ func _test_menu_flow() -> void:
 	_check("selling from the menu refunds 50 once (gold %d)" % economy.get_gold(), economy.get_gold() == 50 and slot.is_empty())
 	_check("the menu confirms the refund", message.text == "Sold for 50 gold.")
 	cards = (menu.get_node("%Options") as Node).get_children().filter(func(n: Node) -> bool: return not n.is_queued_for_deletion())
-	(cards[1].get_node("Build") as Button).pressed.emit()  # Frost: 70 > 50
+	(cards[1].find_child("Build", true, false) as Button).pressed.emit()  # Frost: 70 > 50
 	await _frames(1)
 	_check("not enough gold: clear message, nothing built", slot.is_empty() and message.text == "Not enough gold! Frost Tower costs 70.")
 	var cost_label: Label = _cost_label(cards[1])

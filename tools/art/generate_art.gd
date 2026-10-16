@@ -1,7 +1,8 @@
 extends SceneTree
-## Draws all LAST STAND pixel art (original, made entirely in code) and saves it as PNG sheets.
-## Characters are hand-written pixel grids (one character = one palette colour) composed per frame;
-## effects, the fortress and the arena ground are drawn procedurally with fixed seeds.
+## Draws all LAST STAND art (original, made entirely in code) and saves it as PNG sheets, plus the
+## pixel font. The drawing lives in one file per asset family (hero_art.gd, ghoul_art.gd, ...) built on
+## canvas.gd (lit primitives, contours, outline) and palette.gd; this script only runs the jobs.
+## See ART_DIRECTION.md for the rules.
 ##
 ## Regenerate everything (from the project folder):
 ##   godot --headless --path . --script res://tools/art/generate_art.gd
@@ -15,49 +16,8 @@ const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
-
-const DIRS_4: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
-
-const COIN: Array[String] = [
-	"..yyyy..",
-	".yYYYYy.",
-	"yYYyyYYy",
-	"yYyYYyYy",
-	"yYyYYyYy",
-	"yYYyyYYy",
-	".yYYYYy.",
-	"..yyyy..",
-]
-
-var _palette: Dictionary = {
-	"o": Color("1a141f"),  # outline / deepest shadow
-	"S": Color("d3d7df"),  # steel highlight
-	"s": Color("8f96a6"),  # steel
-	"d": Color("565c6c"),  # steel shadow
-	"R": Color("9b3131"),  # red tabard and plume (the accent colour)
-	"r": Color("5f1e23"),  # red shadow
-	"k": Color("d2a283"),  # skin
-	"b": Color("6f4d34"),  # leather
-	"B": Color("45301f"),  # dark leather / boots
-	"y": Color("c9a24f"),  # gold trim
-	"Y": Color("f0d27a"),  # bright gold (coins, highlights)
-	"G": Color("a5b090"),  # ghoul skin
-	"g": Color("6d7a61"),  # ghoul skin shadow
-	"q": Color("434c3d"),  # ghoul deep shadow
-	"E": Color("e2462f"),  # ghoul eyes
-	"m": Color("2b1b1d"),  # ghoul mouth
-	"C": Color("51473b"),  # rags
-	"c": Color("342c26"),  # rags shadow
-	"n": Color("d9d1ba"),  # bone and claws
-	"h": Color("3f5a3a"),  # archer's hood
-	"H": Color("2b3f28"),  # hood shadow
-	"z": Color("34343e"),  # iron
-	"Z": Color("5c5f6c"),  # iron highlight
-	"i": Color("8fcdf2"),  # ice
-	"I": Color("e4f6ff"),  # ice highlight
-	"j": Color("3f7fb6"),  # deep ice
-}
-var _outline_color: Color = Color("1a141f")
+const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
+const P: GDScript = preload("res://tools/art/palette.gd")
 
 
 func _initialize() -> void:
@@ -79,7 +39,8 @@ func _initialize() -> void:
 		"props": func() -> void: _save(_sheet([EnvironmentArt.new().prop_frames()], EnvironmentArt.PROP_SIZE), Layouts.PROPS_PNG),
 		"crypt": func() -> void: _save(EnvironmentArt.new().crypt(), Layouts.CRYPT_PNG),
 		"mote": func() -> void: _save(EnvironmentArt.new().mote(), Layouts.MOTE_PNG),
-		"coin": func() -> void: _save(_grid_image(COIN, true), Layouts.COIN_PNG),
+		"coin": func() -> void: _save(UiArt.new().icon("coin"), Layouts.COIN_PNG),
+		"ui": _ui,
 		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
 		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
@@ -90,6 +51,27 @@ func _initialize() -> void:
 		if only.is_empty() or only.has(job_name):
 			(jobs[job_name] as Callable).call()
 	quit()
+
+
+# ---------------------------------------------------------------- UI
+
+func _ui() -> void:
+	var ui: RefCounted = UiArt.new()
+	var font: FontFile = ui.build_font(Layouts.FONT_ATLAS_PNG)
+	var err: Error = ResourceSaver.save(font, Layouts.FONT)
+	print("%s %s" % ["saved" if err == OK else "FAILED", Layouts.FONT])
+	var dark: Color = Color("16121b")
+	_save(ui.panel(P.GOLD, dark, true), Layouts.UI_DIR + "panel.png")
+	_save(ui.panel(P.STONE.slice(1, 6), Color("1e1a24"), false), Layouts.UI_DIR + "card.png")
+	_save(ui.panel(P.STONE.slice(1, 6), Color("2e2a38"), false), Layouts.UI_DIR + "button.png")
+	_save(ui.panel(P.GOLD, Color("3a3446"), false), Layouts.UI_DIR + "button_hover.png")
+	_save(ui.panel(P.GOLD, Color("1c1822"), false), Layouts.UI_DIR + "button_pressed.png")
+	_save(ui.panel(P.STONE.slice(0, 5), Color("1c1a22"), false), Layouts.UI_DIR + "button_disabled.png")
+	_save(ui.bar_frame(), Layouts.UI_DIR + "bar_frame.png")
+	_save(ui.bar_fill([Color("1d2a4a"), Color("2f4a7a"), Color("4a6fa8"), Color("86aedb")]), Layouts.UI_DIR + "bar_fortress.png")
+	_save(ui.bar_fill([Color("2c0f17"), Color("85282e"), Color("c0453a"), Color("ec7a5c")]), Layouts.UI_DIR + "bar_hero.png")
+	for kind: String in ["keep", "helm", "skull", "slot"]:
+		_save(ui.icon(kind), Layouts.UI_DIR + "icon_%s.png" % kind)
 
 
 # ---------------------------------------------------------------- arena ground
@@ -109,66 +91,8 @@ func _ground() -> Image:
 
 # ---------------------------------------------------------------- image helpers
 
-## A single grid as an image, optionally with the standard outline (1 px border added for it).
-func _grid_image(grid: Array[String], outlined: bool) -> Image:
-	var pad: int = 1 if outlined else 0
-	var img: Image = _blank(Vector2i(grid[0].length() + pad * 2, grid.size() + pad * 2))
-	_paste(img, grid, Vector2i(pad, pad))
-	if outlined:
-		_outline(img)
-	return img
-
-
 func _blank(size: Vector2i) -> Image:
 	return Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
-
-
-func _px(img: Image, p: Vector2i, color: Color) -> void:
-	if p.x >= 0 and p.y >= 0 and p.x < img.get_width() and p.y < img.get_height():
-		img.set_pixelv(p, color)
-
-
-func _paste(img: Image, grid: Array, at: Vector2i) -> void:
-	for y: int in grid.size():
-		var row: String = grid[y]
-		for x: int in row.length():
-			var key: String = row[x]
-			if key != ".":
-				_px(img, at + Vector2i(x, y), _palette[key])
-
-
-func _fill_rect(img: Image, rect: Rect2i, color: Color) -> void:
-	for y: int in range(rect.position.y, rect.end.y):
-		for x: int in range(rect.position.x, rect.end.x):
-			_px(img, Vector2i(x, y), color)
-
-
-func _fill_circle(img: Image, center: Vector2i, radius: float, color: Color) -> void:
-	var r: int = ceili(radius)
-	for y: int in range(-r, r + 1):
-		for x: int in range(-r, r + 1):
-			if Vector2(x, y).length() <= radius:
-				_px(img, center + Vector2i(x, y), color)
-
-
-## Adds a 1 px dark outline around every opaque shape (4-neighbour), giving strong silhouettes.
-func _outline(img: Image) -> void:
-	var src: Image = img.duplicate() as Image
-	for y: int in img.get_height():
-		for x: int in img.get_width():
-			if src.get_pixel(x, y).a > 0.0:
-				continue
-			for d: Vector2i in DIRS_4:
-				var q: Vector2i = Vector2i(x, y) + d
-				if q.x >= 0 and q.y >= 0 and q.x < img.get_width() and q.y < img.get_height() and src.get_pixelv(q).a > 0.5:
-					img.set_pixel(x, y, _outline_color)
-					break
-
-
-## 4x4 ordered-dither threshold in [0, 1): the classic retro way to fade pixel art without blur.
-func _bayer(x: int, y: int) -> float:
-	const MATRIX: Array[int] = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
-	return MATRIX[(y % 4) * 4 + x % 4] / 16.0
 
 
 ## Lays out rows of equally sized frames into one sheet.

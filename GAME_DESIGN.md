@@ -122,14 +122,18 @@ Controller support is a post-prototype goal (Steam Deck verified is a nice-to-ha
 
 ## 6. Presentation
 
-- **Art direction (decided in M2): retro 16-bit pixel art**, top-down 3/4 view, in the spirit of classic action RPGs but entirely original. Chunky sprites with 1 px dark outlines and strong silhouettes, crisp pixels (nearest filtering, 1 art px = 2 world px), muted dark fantasy palette: dark green grass, earthy brown dirt, grey stone, restrained red accents (the knight's tabard and plume, the fortress banner, ghoul eyes).
-- Readability first: enemies, projectiles, and the hero must be instantly distinguishable at a glance. The ground is deliberately low-contrast; characters are brighter and outlined.
-- Hero: a knight in steel plate with a red tabard and plume; sword always visible. Idle, walk and attack in 4 directions.
-- Ghoul: pale grey-green, hunched, ragged, bone claws, glowing red eyes. Idle and shambling walk in 4 directions; white hit flash + spark when struck; collapses into a heap of rags and bones with a dust puff when killed.
-- Fortress: walled keep with four corner towers, a gate facing the lane and a red banner; shows cracks (≤ 2/3 HP), a broken tower and fire (≤ 1/3 HP), and ruins (destroyed).
-- Arena: dark grass with dry patches, stones, bones and twigs; a dirt lane from a small graveyard (where the dead rise) to a clearing around the fortress; a battlemented stone wall around the edge.
-- Effects stay small: an 8-direction crescent sword trail matching the 68 px reach, a short hit spark, a death collapse with dust.
-- HUD (prototype): top-left shows fortress/hero HP bars and "Enemies alive / Spawned"; top-right shows a short fading feed ("Ghoul incoming!", "Ghoul slain!", max 4 lines, ~2.5 s each). Nothing is drawn in the middle of the screen.
+Full visual rules: **`ART_DIRECTION.md`** (overhauled in M3.5).
+
+- **Art direction: HD retro pixel art** (1 art px = 2 world px, an effective 640×360 art canvas), 3/4 top-down view, entirely original and drawn in code. Lit from the top-left with banded shading, 1 px dark outlines plus interior contours, muted cold world with warm fire/gold and the hero's red as accents.
+- Readability first: hero > enemies > buildings > ground in contrast. Enemies, projectiles and the hero must be instantly distinguishable at a glance.
+- Hero: a knight in steel plate — great helm with a red plume, red tabard with the order's gold tower, dark red cape, heater shield, longsword. Idle, walk and a 4-frame attack in 4 directions; a 6-frame death.
+- Ghoul: ashen, hunched corpse with ribs, rags, long bone claws and burning red eyes. Shambling walk, a lunge attack whose strike frame lands with the 0.35 s wind-up, white hit flash + spark, and a death where it collapses, crumbles and releases a green soul.
+- Fortress: a 3/4-view stronghold — curtain walls with battlements, four round towers with slate cones, a gate where the lane arrives, a keep with lit windows and banners. Damage states break and lower the masonry, burn roofs, add cracks, scorch and rubble; fires with smoke appear, banners tear, the walls shake and throw dust when hit.
+- Towers: Archer (stone keep, timber platform, a hooded archer drawing a longbow), Cannon (drum tower, recoiling cannon with a muzzle blast), Frost (rune obelisk with a turning ice crystal and a cold glow). Each has idle and attack loops, rises in scaffolding when built and is dismantled into rubble when sold.
+- Arena: dark grass with moss/dry patches and tufts, a rutted dirt lane from a crypt in a graveyard (where the dead rise) to a cobbled clearing at the gate, graves, dead trees, lanterns, ruins; a 3/4 stone wall around the edge.
+- Atmosphere: dusk lighting (CanvasModulate) with warm lantern/fire light, a cold frost glow, a green-lit crypt, drifting pixel fog, fireflies and a vignette. Nothing may reduce gameplay readability.
+- Effects stay short: an 8-direction crescent sword trail matching the 68 px reach, a star hit spark, dust, explosion, frost burst.
+- HUD: bottom-left framed panel with fortress/hero bars (icons), gold, free slots and enemy counts; top-right fading feed; the build panel opens bottom-right. All UI uses the project's outlined pixel font and pixel frames at 2×.
 - Camera: follows hero with smoothing, clamped to map bounds. Map should fit roughly 1.5–2 screens.
   Prototype arena: 1300×900 floor (x −900…400, y −500…400), enclosed by `ArenaBounds` walls on the `world` layer; Camera2D limits equal the floor. Enemies don't collide with walls; lanes must stay inside the arena.
 - Base resolution: **1280×720** (canvas_items stretch). With 1 art px = 2 world px, pixels stay even at 720p, 1080p, 1440p and 4K.

@@ -7,23 +7,31 @@ mouse_filter = 2
 theme_override_constants/separation = 8
 script = ExtResource("1_bar")
 
+[node name="Icon" type="TextureRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+stretch_mode = 5
+
 [node name="TitleLabel" type="Label" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(72, 0)
+custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 text = "HP"
 
 [node name="Bar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
-mouse_filter = 2
-custom_minimum_size = Vector2(130, 16)
+custom_minimum_size = Vector2(132, 16)
 layout_mode = 2
 size_flags_vertical = 4
+mouse_filter = 2
 value = 100.0
 show_percentage = false
 
 [node name="ValueLabel" type="Label" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(76, 0)
+custom_minimum_size = Vector2(84, 0)
 layout_mode = 2
 text = "100 / 100"

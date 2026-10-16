@@ -1,10 +1,16 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://ui/widgets/health_bar.tscn" id="2_bar"]
 [ext_resource type="PackedScene" path="res://ui/widgets/notification_feed.tscn" id="3_feed"]
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="4_theme"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/coin.png" id="5_coin"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_keep.png" id="6_keep"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_helm.png" id="7_helm"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_skull.png" id="8_skull"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_slot.png" id="9_slot"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_fortress.png" id="10_fill_f"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_hero.png" id="11_fill_h"]
 
 [node name="HUD" type="CanvasLayer"]
 layer = 2
@@ -14,60 +20,98 @@ script = ExtResource("1_hud")
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -170.0
-offset_right = 316.0
+offset_top = -200.0
+offset_right = 420.0
 grow_vertical = 0
 mouse_filter = 2
 theme = ExtResource("4_theme")
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_bottom = 14
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_bottom = 12
 
-[node name="Bars" type="VBoxContainer" parent="Margin"]
+[node name="Panel" type="PanelContainer" parent="Margin"]
 layout_mode = 2
+size_flags_vertical = 8
 mouse_filter = 2
 
-[node name="FortressBar" parent="Margin/Bars" instance=ExtResource("2_bar")]
+[node name="Bars" type="VBoxContainer" parent="Margin/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="FortressBar" parent="Margin/Panel/Bars" instance=ExtResource("2_bar")]
 unique_name_in_owner = true
 layout_mode = 2
 title = "Fortress"
 fill_color = Color(0.45, 0.55, 0.8, 1)
+fill_texture = ExtResource("10_fill_f")
+icon = ExtResource("6_keep")
 
-[node name="HeroBar" parent="Margin/Bars" instance=ExtResource("2_bar")]
+[node name="HeroBar" parent="Margin/Panel/Bars" instance=ExtResource("2_bar")]
 unique_name_in_owner = true
 layout_mode = 2
 title = "Hero"
-fill_color = Color(0.85, 0.72, 0.4, 1)
+fill_color = Color(0.75, 0.27, 0.23, 1)
+fill_texture = ExtResource("11_fill_h")
+icon = ExtResource("7_helm")
 
-[node name="GoldRow" type="HBoxContainer" parent="Margin/Bars"]
+[node name="GoldRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
-[node name="Coin" type="TextureRect" parent="Margin/Bars/GoldRow"]
+[node name="Coin" type="TextureRect" parent="Margin/Panel/Bars/GoldRow"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-mouse_filter = 2
 size_flags_vertical = 4
+mouse_filter = 2
 texture = ExtResource("5_coin")
-expand_mode = 1
 stretch_mode = 5
 
-[node name="GoldLabel" type="Label" parent="Margin/Bars/GoldRow"]
+[node name="GoldLabel" type="Label" parent="Margin/Panel/Bars/GoldRow"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.82, 0.45, 1)
+theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
 text = "0"
 
-[node name="SlotsLabel" type="Label" parent="Margin/Bars"]
+[node name="SlotsRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="SlotIcon" type="TextureRect" parent="Margin/Panel/Bars/SlotsRow"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("9_slot")
+stretch_mode = 5
+
+[node name="SlotsLabel" type="Label" parent="Margin/Panel/Bars/SlotsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.76, 0.82, 1)
 text = "Tower slots free: 0 / 0"
 
-[node name="EnemyStatsLabel" type="Label" parent="Margin/Bars"]
+[node name="EnemyRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="SkullIcon" type="TextureRect" parent="Margin/Panel/Bars/EnemyRow"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("8_skull")
+stretch_mode = 5
+
+[node name="EnemyStatsLabel" type="Label" parent="Margin/Panel/Bars/EnemyRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.76, 0.82, 1)
 text = "Enemies alive: 0    Spawned: 0"
 
 [node name="NotificationFeed" parent="." instance=ExtResource("3_feed")]

@@ -171,8 +171,12 @@ const MOTE_PNG: String = "res://assets/sprites/effects/mote.png"
 ## Particle texture for smoke (fortress fires).
 const SMOKE_PNG: String = "res://assets/sprites/effects/smoke_puff.png"
 
-## Small UI icons (single images, drawn at the same 2x scale as everything else).
+## UI textures are saved pre-scaled to 2x (StyleBoxTexture/TextureRect draw texels 1:1).
 const COIN_PNG: String = "res://assets/sprites/ui/coin.png"
+const UI_DIR: String = "res://assets/sprites/ui/"
+## The pixel font (bitmap FontFile, 12 px cell incl. outline; the theme draws it at 24 = 2x).
+const FONT: String = "res://assets/fonts/pixel_font.res"
+const FONT_ATLAS_PNG: String = "res://assets/fonts/pixel_font_atlas.png"
 
 const GROUND_PNG: String = "res://assets/sprites/environment/prototype_arena_ground.png"
 ## Width of the visible stone wall band drawn outside the playable floor, in world pixels.

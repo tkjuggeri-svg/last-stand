@@ -21,12 +21,15 @@ const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 @onready var _gold_row: Control = %GoldRow
 @onready var _gold_label: Label = %GoldLabel
 @onready var _slots_label: Label = %SlotsLabel
+@onready var _slots_row: Control = %SlotsRow
+@onready var _enemy_row: Control = %EnemyRow
 
 
 func _ready() -> void:
 	_fortress_bar.visible = fortress != null
 	_hero_bar.visible = hero != null
 	_enemy_stats_label.visible = spawner != null
+	_enemy_row.visible = spawner != null
 	_gold_row.visible = economy != null
 	if economy != null:
 		if not economy.is_node_ready():
@@ -36,6 +39,7 @@ func _ready() -> void:
 	if rewards != null:
 		rewards.perfect_defense_awarded.connect(_on_perfect_defense_awarded)
 	_slots_label.visible = builder != null
+	_slots_row.visible = builder != null
 	if builder != null:
 		builder.tower_built.connect(func(_s: BuildSlot, _t: Tower) -> void: _update_slots())
 		builder.tower_sold.connect(_on_tower_sold)

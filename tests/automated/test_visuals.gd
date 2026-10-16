@@ -164,7 +164,11 @@ func _test_art_matches_collision() -> void:
 		and bottom >= 48.0 and bottom <= 60.0 and fortress_rect.size.y > 120.0)
 	fortress_sprite.get_parent().free()
 	var theme: Theme = load("res://ui/theme/game_theme.tres")
-	_check("HUD text has a dark outline for readability", theme.get_constant(&"outline_size", &"Label") >= 4)
+	# The pixel font has its dark outline baked into every glyph (tools/art/ui_art.gd), drawn at 2x.
+	var font: FontFile = theme.default_font as FontFile
+	_check("UI text uses the outlined pixel font at an exact 2x size, project-wide",
+		font != null and font.fixed_size > 0 and theme.default_font_size == font.fixed_size * 2
+		and ProjectSettings.get_setting("gui/theme/custom") == "res://ui/theme/game_theme.tres")
 
 
 ## Bounding box of a frame's solid pixels (alpha > 0.5, so soft shadows are ignored), in world px

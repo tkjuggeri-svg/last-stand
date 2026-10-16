@@ -55,8 +55,10 @@ thing on screen; enemies read second; buildings are big but darker and calmer.
 - **Contrast curve:** the brightest ramp colour only appears as small highlights facing the light.
 - **Ground shadows:** soft oval, black at 34 % alpha, under every character and building, offset
   a little to the lower-right for buildings.
-- **Scene light (in game):** a cool dusk `CanvasModulate`, with warm `PointLight2D`s on fire
-  (braziers, torches, the fortress), cold blue on frost magic and a sickly green glow at the graves.
+- **Scene light (in game):** a cool dusk `CanvasModulate` (0.64, 0.66, 0.80), with banded
+  `PointLight2D`s (`light_soft.tres`): warm on lanterns, braziers, windows and fires, cold blue on
+  the frost crystal (`TowerData.glow_color`), sickly green at the crypt, a faint warm lantern on the
+  hero. Keep energies low (0.2–0.7): light should tint, never wash sprites out.
 
 ## 5. Colour
 
@@ -130,10 +132,17 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 
 ## 12. UI
 
-- Dark panels (`#1a141f` → `#2a2433`) with a 1 px gold-brown bevelled frame, pixel font sizes that
-  stay readable at 720p (≥ 14 px), outlined text over the world.
-- Bars: framed, two-tone fill (red for the fortress, gold for the hero), drawn at the same 2× scale.
+- **Pixel font:** original proportional 5×7 glyphs with a 1 px dark outline baked into every glyph
+  (`ui_art.gd`), a 12 px bitmap cell drawn at exactly **24 px (2×)**; titles at 48/72 (4×/6×). Never
+  use other sizes (the font only scales by whole multiples). The theme is project-wide
+  (`gui/theme/custom`), so world labels use it too.
+- **Frames:** dark panels with a bevelled gold-bronze rim and rivets (`panel.png`), stone-rimmed
+  cards (`CardPanel` variation) and buttons (gold rim on hover/focus). UI textures are saved
+  pre-scaled to 2× because StyleBoxTexture/TextureRect draw texels 1:1.
+- **Bars:** bronze-rimmed trough; fortress = steel blue, hero = red (life). Icons (keep, helm, coin,
+  foundation, skull) lead every HUD row.
 - Gold always uses the coin icon and the gold colour `#efd07a`.
+- Layout: HUD bottom-left, notifications top-right, build panel bottom-right; nothing in the middle.
 
 ## 13. Pipeline
 
