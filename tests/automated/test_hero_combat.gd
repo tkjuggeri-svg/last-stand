@@ -17,6 +17,7 @@ func _initialize() -> void:
 	await _test_single_ghoul()
 	await _test_dodge()
 	await _test_crowd()
+	await _test_attacker_limit()
 	await _test_death_and_restart()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -113,7 +114,17 @@ func _test_crowd() -> void:
 	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
 		attacks[e] = [] as Array[int]
 		e.attack_started.connect(func(who: Enemy) -> void: (attacks[who] as Array[int]).append(Engine.get_physics_frames())))
-	await _frames(300)  # 5 s
+	# Every frame: no more than 2 ghouls winding up/striking, and the hero's limit agrees.
+	var limit: AttackerLimit = AttackerLimit.find_on(hero)
+	var most_at_once: int = 0
+	var limit_agrees: bool = true
+	for _i: int in 300:  # 5 s
+		await physics_frame
+		var attacking: int = spawner.get_children().filter(func(e: Node) -> bool: return (e as Enemy).is_attacking()).size()
+		most_at_once = maxi(most_at_once, attacking)
+		limit_agrees = limit_agrees and limit.get_attacker_count() == attacking
+	_check("hero allows at most 2 attackers at once (peak %d)" % most_at_once, most_at_once == 2)
+	_check("the hero's attacker slots always match the attacking ghouls", limit_agrees)
 	var per_ghoul_ok: bool = attacks.size() == 3
 	var first_attacks: Array[int] = []
 	for ghoul: Enemy in attacks:
@@ -131,6 +142,68 @@ func _test_crowd() -> void:
 		min_gap = mini(min_gap, hits[i] - hits[i - 1])
 	_check("hits are never closer than the 0.5 s invulnerability (%d hits, min gap %d frames)" % [hits.size(), min_gap],
 		hits.size() >= 3 and min_gap >= 30)
+	level.queue_free()
+	await _frames(2)
+
+
+## Three ghouls arriving together (spawned a frame apart, all ready to attack): only two may attack,
+## the third waits its turn until a slot frees up, and a killed attacker frees its slot at once.
+func _test_attacker_limit() -> void:
+	var level: Level = _make_level(3, 0.01)
+	var hero: Hero = level.get_node("Hero")
+	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	hero.position = ON_LANE
+	hero.health.setup(1000)  # survive the whole test
+	var limit: AttackerLimit = AttackerLimit.find_on(hero)
+	var first_attack: Dictionary = {}
+	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
+		e.attack_started.connect(func(who: Enemy) -> void:
+			if not first_attack.has(who):
+				first_attack[who] = Engine.get_physics_frames()))
+	var most_at_once: int = 0
+	var all_engaged_frame: int = -1
+	for _i: int in 240:
+		await physics_frame
+		var ghouls: Array[Node] = spawner.get_children()
+		var attacking: int = ghouls.filter(func(e: Node) -> bool: return (e as Enemy).is_attacking()).size()
+		most_at_once = maxi(most_at_once, attacking)
+		if all_engaged_frame < 0 and ghouls.size() == 3 and ghouls.all(func(e: Node) -> bool: return (e as Enemy).has_target()):
+			all_engaged_frame = Engine.get_physics_frames()
+	var starts: Array = first_attack.values()
+	starts.sort()
+	_check("three ready ghouls reach the hero together", all_engaged_frame > 0 and starts.size() == 3)
+	_check("only 2 attack at once (peak %d)" % most_at_once, most_at_once == 2)
+	_check("the third waits until a strike ends (first attacks at %s)" % [starts],
+		starts.size() == 3 and starts[1] - starts[0] <= 3 and starts[2] - starts[0] >= WINDUP_FRAMES)
+
+	level.queue_free()
+	await _frames(2)
+
+	# Fresh run: kill one of the two attackers at the moment the third is ready but held back.
+	level = _make_level(3, 0.01)
+	hero = level.get_node("Hero")
+	spawner = level.get_node("EnemySpawner")
+	hero.position = ON_LANE
+	hero.health.setup(1000)
+	limit = AttackerLimit.find_on(hero)
+	var waiting: Enemy = null
+	var attacker: Enemy = null
+	for _i: int in 240:
+		await physics_frame
+		var ghouls: Array[Node] = spawner.get_children()
+		var busy: Array[Node] = ghouls.filter(func(e: Node) -> bool: return (e as Enemy).is_attacking())
+		var idle_ready: Array[Node] = ghouls.filter(func(e: Node) -> bool: return not (e as Enemy).is_attacking() and (e as Enemy).is_ready_to_attack())
+		if busy.size() == 2 and idle_ready.size() == 1:
+			attacker = busy[0]
+			waiting = idle_ready[0]
+			break
+	_check("a ready ghoul is held back while two attack", waiting != null and attacker != null)
+	if waiting != null and attacker != null:
+		var waiting_ref: WeakRef = weakref(waiting)
+		(attacker.get_node("%HealthComponent") as HealthComponent).take_damage(100)
+		await _frames(2)
+		_check("killing an attacker lets the waiting ghoul attack at once", (waiting_ref.get_ref() as Enemy).is_attacking())
+		_check("still never more than 2 attackers", limit.get_attacker_count() <= 2)
 	level.queue_free()
 	await _frames(2)
 

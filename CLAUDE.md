@@ -110,7 +110,7 @@ Follow the official Godot GDScript style guide, plus:
 
 These names are configured in Project Settings → Layer Names → 2D Physics.
 
-Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16), `enemy_hitbox` (32) or `fortress_hitbox` (128) with mask 0. A `Hurtbox` has layer 0 and **masks** the hitbox layer that may hurt it: enemies mask `hero_hitbox`, the hero masks `enemy_hitbox` (enemy melee), the fortress masks `fortress_hitbox` (enemies reaching it). Hurtboxes do the detecting; damage is applied once per overlap entry, so attacks enable their hitbox shape briefly per strike. A Hurtbox can add `invulnerability_time` (the hero uses 0.5 s) so several attackers can't stack hits.
+Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16), `enemy_hitbox` (32) or `fortress_hitbox` (128) with mask 0. A `Hurtbox` has layer 0 and **masks** the hitbox layer that may hurt it: enemies mask `hero_hitbox`, the hero masks `enemy_hitbox` (enemy melee), the fortress masks `fortress_hitbox` (enemies reaching it). Hurtboxes do the detecting; damage is applied once per overlap entry, so attacks enable their hitbox shape briefly per strike. A Hurtbox can add `invulnerability_time` (the hero uses 0.5 s) so several attackers can't stack hits. Anything enemies attack can also have an `AttackerLimit` child (the hero allows 2 attackers at a time); enemies claim a slot before attacking.
 
 ## Input actions
 

@@ -2,6 +2,7 @@ class_name Enemy
 extends CharacterBody2D
 ## Base enemy: walks along its lane toward the fortress. When the hero comes within attack range it
 ## stops and attacks (wind-up, strike, cooldown), then resumes the lane once the hero is gone.
+## If the target has an AttackerLimit, the enemy must claim a slot first; otherwise it waits its turn.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
 ## Stats come from an EnemyData resource. Visuals only follow the gameplay state.
 
@@ -30,6 +31,8 @@ var _cooldown_left: float = 0.0
 ## Seconds until the current wind-up strikes; negative when not winding up.
 var _windup_left: float = -1.0
 var _strike_left: float = 0.0
+## The target's AttackerLimit while this enemy holds one of its slots.
+var _claimed_limit: AttackerLimit = null
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -78,17 +81,44 @@ func has_target() -> bool:
 	return _target != null and is_instance_valid(_target)
 
 
+## True when it could start an attack right now if the target's AttackerLimit gave it a slot.
+func is_ready_to_attack() -> bool:
+	return has_target() and not is_attacking() and _cooldown_left <= 0.0
+
+
 func _update_attack(delta: float) -> void:
 	if _strike_left > 0.0:
 		_strike_left -= delta
 		if _strike_left <= 0.0:
 			_attack_shape.set_deferred("disabled", true)
+			_release_slot()
 	if _windup_left >= 0.0:
 		_windup_left -= delta
 		if _windup_left < 0.0:
 			_strike()
-	elif has_target() and _cooldown_left <= 0.0 and _strike_left <= 0.0:
+	elif has_target() and _cooldown_left <= 0.0 and _strike_left <= 0.0 and _claim_slot():
 		_begin_attack()
+
+
+## True if the target allows another attacker right now (or has no limit).
+func _claim_slot() -> bool:
+	var limit: AttackerLimit = AttackerLimit.find_on(_target)
+	if limit == null:
+		return true
+	if not limit.try_claim(self):
+		return false
+	_claimed_limit = limit
+	return true
+
+
+func _release_slot() -> void:
+	if _claimed_limit != null and is_instance_valid(_claimed_limit):
+		_claimed_limit.release(self)
+	_claimed_limit = null
+
+
+func _exit_tree() -> void:
+	_release_slot()  # dying mid-attack frees the slot for the next enemy
 
 
 func _begin_attack() -> void:

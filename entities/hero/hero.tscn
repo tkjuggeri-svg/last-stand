@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://core/components/hurtbox.gd" id="7_hurtbox"]
 [ext_resource type="Shader" path="res://assets/shaders/hit_flash.gdshader" id="8_flash"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/hit_spark_frames.tres" id="9_spark"]
+[ext_resource type="Script" path="res://core/components/attacker_limit.gd" id="10_limit"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -84,3 +85,7 @@ position = Vector2(0, -6)
 scale = Vector2(2, 2)
 sprite_frames = ExtResource("9_spark")
 animation = &"spark"
+
+[node name="AttackerLimit" type="Node" parent="."]
+script = ExtResource("10_limit")
+max_attackers = 2
