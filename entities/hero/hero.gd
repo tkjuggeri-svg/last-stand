@@ -43,8 +43,9 @@ func _physics_process(delta: float) -> void:
 		return
 	_move()
 	_update_attack_timers(delta)
-	# Holding the button keeps swinging, limited by the cooldown.
-	if Input.is_action_pressed("attack"):
+	# Holding the button keeps swinging, limited by the cooldown. Clicks on UI (e.g. the build menu)
+	# are not swings.
+	if Input.is_action_pressed("attack") and get_viewport().gui_get_hovered_control() == null:
 		attack(get_global_mouse_position())
 	_update_animation()
 

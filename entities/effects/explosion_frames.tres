@@ -1,0 +1,46 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/explosion.png" id="1_rmd0s"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sgmlc"]
+atlas = ExtResource("1_rmd0s")
+region = Rect2(0, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5nnn"]
+atlas = ExtResource("1_rmd0s")
+region = Rect2(56, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n4nde"]
+atlas = ExtResource("1_rmd0s")
+region = Rect2(112, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lau4j"]
+atlas = ExtResource("1_rmd0s")
+region = Rect2(168, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_87xdc"]
+atlas = ExtResource("1_rmd0s")
+region = Rect2(224, 0, 56, 56)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sgmlc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y5nnn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n4nde")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lau4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_87xdc")
+}],
+"loop": 0,
+"name": &"explosion",
+"speed": 14.0
+}]

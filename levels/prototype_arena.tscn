@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -9,6 +9,12 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/prototype_arena_ground.png" id="7_ground"]
 [ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
 [ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
+[ext_resource type="Script" path="res://systems/tower_builder.gd" id="10_builder"]
+[ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
+[ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
+[ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
+[ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
+[ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
 
 [sub_resource type="Curve2D" id="Curve2D_lane"]
 _data = {
@@ -93,6 +99,34 @@ script = ExtResource("9_rewards")
 economy = NodePath("../Economy")
 spawner = NodePath("../../EnemySpawner")
 
+[node name="TowerBuilder" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "slots_root")]
+unique_name_in_owner = true
+script = ExtResource("10_builder")
+economy = NodePath("../Economy")
+slots_root = NodePath("../../BuildSlots")
+catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon")])
+
+[node name="BuildSlots" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Slot1" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-560, -170)
+
+[node name="Slot2" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-420, -330)
+
+[node name="Slot3" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-220, -160)
+
+[node name="Slot4" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-380, -90)
+
+[node name="Slot5" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-140, -80)
+
+[node name="Slot6" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-110, 90)
+
 [node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
@@ -113,9 +147,14 @@ position_smoothing_enabled = true
 unique_name_in_owner = true
 y_sort_enabled = true
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards") instance=ExtResource("6_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
 spawner = NodePath("../EnemySpawner")
 economy = NodePath("../Systems/Economy")
 rewards = NodePath("../Systems/WaveRewards")
+builder = NodePath("../Systems/TowerBuilder")
+
+[node name="BuildMenu" parent="." node_paths=PackedStringArray("builder", "economy") instance=ExtResource("15_menu")]
+builder = NodePath("../Systems/TowerBuilder")
+economy = NodePath("../Systems/Economy")

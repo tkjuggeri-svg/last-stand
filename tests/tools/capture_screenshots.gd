@@ -2,7 +2,8 @@ extends SceneTree
 ## Plays a short scripted scene in the real game window and saves screenshots, for visual review.
 ## Needs a display (not --headless):
 ##   godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=/some/dir [--scenario=combat]
-## Scenarios: "tour" (default: walk, swing, kill, damaged fortress, Game Over) and "combat" (a ghoul fights the hero to death).
+## Scenarios: "tour" (default: walk, swing, kill, damaged fortress, Game Over), "combat" (a ghoul fights
+## the hero to death) and "build" (towers on slots, the build menu, towers fighting a wave).
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -24,6 +25,10 @@ func _initialize() -> void:
 			level = child
 	if _scenario == "combat":
 		await _combat(level)
+		quit()
+		return
+	if _scenario == "build":
+		await _build(level)
 		quit()
 		return
 	await _shot("01_start")
@@ -83,6 +88,31 @@ func _combat(level: Level) -> void:
 	await _shot("combat_03_hero_falls")
 	await _frames(40)
 	await _shot("combat_04_game_over")
+
+
+## Builds one tower of each kind, opens the menu at an empty slot, then lets the towers fight.
+func _build(level: Level) -> void:
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var economy: Economy = level.get_node("%Economy")
+	var hero: Hero = level.get_node("Hero")
+	var slots: Array[BuildSlot] = builder.get_slots()
+	economy.earn(300, Economy.Source.KILL)
+	builder.build(slots[0], builder.catalog[0])
+	builder.build(slots[3], builder.catalog[1])
+	builder.build(slots[2], builder.catalog[2])
+	hero.position = slots[1].position + Vector2(0, 44)
+	await _frames(30)
+	var press: InputEventAction = InputEventAction.new()
+	press.action = "interact"
+	press.pressed = true
+	Input.parse_input_event(press)
+	await _frames(20)
+	await _shot("build_01_menu")
+	hero.position = Vector2(-200, 160)
+	await _frames(240)
+	await _shot("build_02_towers_fighting")
+	await _frames(30)
+	await _shot("build_03_towers_fighting_later")
 
 
 func _shot(shot_name: String) -> void:

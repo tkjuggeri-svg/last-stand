@@ -1,0 +1,90 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/build_menu/build_menu.gd" id="1_menu"]
+[ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
+
+[node name="BuildMenu" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_menu")
+
+[node name="Panel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -190.0
+offset_right = 320.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("2_theme")
+
+[node name="Content" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="Panel/Content"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Panel/Content/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.82, 0.45, 1)
+text = "Build a tower"
+
+[node name="Message" type="Label" parent="Panel/Content/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="Panel/Content/Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.58, 0.64, 1)
+theme_override_font_sizes/font_size = 12
+text = "E / Esc: close"
+
+[node name="Options" type="HBoxContainer" parent="Panel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TowerInfo" type="HBoxContainer" parent="Panel/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="InfoIcon" type="TextureRect" parent="Panel/Content/TowerInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoText" type="VBoxContainer" parent="Panel/Content/TowerInfo"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="InfoName" type="Label" parent="Panel/Content/TowerInfo/InfoText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+autowrap_mode = 3
+
+[node name="InfoStats" type="Label" parent="Panel/Content/TowerInfo/InfoText"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.73, 0.8, 1)
+theme_override_font_sizes/font_size = 13
+
+[node name="SellButton" type="Button" parent="Panel/Content/TowerInfo"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 40)
+layout_mode = 2
+size_flags_vertical = 4
+text = "Sell   +25 gold"
