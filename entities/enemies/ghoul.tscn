@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_data"]
@@ -22,8 +22,15 @@ radius = 12.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
 radius = 14.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_fortress_hit"]
 radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_range"]
+resource_local_to_scene = true
+radius = 36.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
+radius = 16.0
 
 [node name="Ghoul" type="CharacterBody2D"]
 collision_layer = 4
@@ -32,7 +39,8 @@ motion_mode = 1
 script = ExtResource("1_enemy")
 data = ExtResource("2_data")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
 shape = SubResource("CircleShape2D_body")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
@@ -65,11 +73,36 @@ health_component = NodePath("../HealthComponent")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CircleShape2D_hurt")
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="FortressHitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 128
+collision_mask = 0
+script = ExtResource("5_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FortressHitbox"]
+shape = SubResource("CircleShape2D_fortress_hit")
+
+[node name="AttackRange" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="RangeShape" type="CollisionShape2D" parent="AttackRange"]
+unique_name_in_owner = true
+shape = SubResource("CircleShape2D_range")
+
+[node name="AttackPivot" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="AttackHitbox" type="Area2D" parent="AttackPivot"]
 unique_name_in_owner = true
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("5_hitbox")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-shape = SubResource("CircleShape2D_hit")
+[node name="AttackShape" type="CollisionShape2D" parent="AttackPivot/AttackHitbox"]
+unique_name_in_owner = true
+position = Vector2(22, 0)
+shape = SubResource("CircleShape2D_attack")
+disabled = true

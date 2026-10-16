@@ -19,6 +19,7 @@ const HERO: Dictionary = {
 		["attack_down", 6, 3, 15.0, false],
 		["attack_up", 7, 3, 15.0, false],
 		["attack_side", 8, 3, 15.0, false],
+		["death", 9, 4, 6.0, false],
 	],
 }
 
@@ -51,6 +52,9 @@ const GHOUL: Dictionary = {
 		["walk_up", 4, 4, 6.0, true],
 		["walk_side", 5, 4, 6.0, true],
 		["death", 6, 5, 10.0, false],
+		["attack_down", 7, 3, 6.0, false],
+		["attack_up", 8, 3, 6.0, false],
+		["attack_side", 9, 3, 6.0, false],
 	],
 }
 

@@ -36,6 +36,7 @@ text = "GAME OVER"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "The fortress has fallen."
 horizontal_alignment = 1

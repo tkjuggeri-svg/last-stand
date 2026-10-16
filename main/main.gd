@@ -1,6 +1,11 @@
 extends Node
 ## Boots the game: runs the level, shows Game Over when the run is lost, and starts a fresh run on Restart.
 
+const LOSS_TEXT: Dictionary = {
+	Level.LossReason.FORTRESS_DESTROYED: "The fortress has fallen.",
+	Level.LossReason.HERO_KILLED: "The hero has fallen.",
+}
+
 @export var level_scene: PackedScene
 
 var _level: Level
@@ -26,5 +31,5 @@ func start_run() -> void:
 	add_child(_level)
 
 
-func _on_level_run_lost() -> void:
-	_game_over_screen.open()
+func _on_level_run_lost(reason: Level.LossReason) -> void:
+	_game_over_screen.open(LOSS_TEXT[reason])

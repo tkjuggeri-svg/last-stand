@@ -64,6 +64,7 @@ func _test_in_level() -> void:
 	_check("message gone 2.75 s after the kill", not is_instance_valid(slain_label))
 
 	# --- Long run: counts always match reality; reaching the fortress is not a kill ---
+	hero.position = Vector2(-200, 200)  # off the lane, so ghouls walk past instead of stopping to fight
 	var counts_ok: bool = true
 	var frames: int = 0
 	while fortress.health.current_health == 100 and frames < 1200:
@@ -84,7 +85,7 @@ func _test_in_level() -> void:
 	ghoul = _alive_children(spawner)[0]
 	var living_before: int = spawner.get_living_count()
 	(ghoul.get_node("%HealthComponent") as HealthComponent).take_damage(100)
-	(ghoul.get_node("%Hitbox") as Hitbox).register_hit(fortress.get_node("Hurtbox") as Hurtbox)
+	(ghoul.get_node("%FortressHitbox") as Hitbox).register_hit(fortress.get_node("Hurtbox") as Hurtbox)
 	await _frames(1)
 	_check("double exit counted once", spawner.get_living_count() == living_before - 1 and events["killed"] == 2)
 

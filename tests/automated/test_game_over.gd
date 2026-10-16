@@ -18,7 +18,7 @@ func _initialize() -> void:
 	_check("game over hidden at start", not screen.visible)
 	_check("level is running", level.can_process() and not level.is_run_over())
 	var lost_count: Array[int] = [0]
-	level.run_lost.connect(func() -> void: lost_count[0] += 1)
+	level.run_lost.connect(func(_reason: Level.LossReason) -> void: lost_count[0] += 1)
 
 	# --- Trigger through a real enemy hit (a physics callback) ---
 	var fortress: Fortress = level.get_node("Fortress")
@@ -84,7 +84,7 @@ func _initialize() -> void:
 
 	# --- A second Game Over works in the new run ---
 	var second_lost: Array[int] = [0]
-	level.run_lost.connect(func() -> void: second_lost[0] += 1)
+	level.run_lost.connect(func(_reason: Level.LossReason) -> void: second_lost[0] += 1)
 	new_fortress.health.take_damage(100)
 	await _frames(2)
 	_check("second run can also be lost", screen.visible and second_lost[0] == 1)

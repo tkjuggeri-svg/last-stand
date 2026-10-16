@@ -1,25 +1,33 @@
 extends SceneTree
 ## Plays a short scripted scene in the real game window and saves screenshots, for visual review.
 ## Needs a display (not --headless):
-##   godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=/some/dir
+##   godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=/some/dir [--scenario=combat]
+## Scenarios: "tour" (default: walk, swing, kill, damaged fortress, Game Over) and "combat" (a ghoul fights the hero to death).
 
 var _out_dir: String = "user://screenshots"
+var _scenario: String = "tour"
 
 
 func _initialize() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			_out_dir = arg.trim_prefix("--out=")
+		elif arg.begins_with("--scenario="):
+			_scenario = arg.trim_prefix("--scenario=")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out_dir))
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(60)
-	await _shot("01_start")
-
 	var level: Level = null
 	for child: Node in main.get_children():
 		if child is Level:
 			level = child
+	if _scenario == "combat":
+		await _combat(level)
+		quit()
+		return
+	await _shot("01_start")
+
 	var hero: Hero = level.get_node("Hero")
 	var spawner: EnemySpawner = level.get_node("EnemySpawner")
 	var fortress: Fortress = level.get_node("Fortress")
@@ -53,6 +61,28 @@ func _initialize() -> void:
 	await _frames(20)
 	await _shot("06_game_over")
 	quit()
+
+
+## The hero stands on the lane; the first ghoul stops, winds up and strikes until the hero falls.
+func _combat(level: Level) -> void:
+	var hero: Hero = level.get_node("Hero")
+	var ghoul: Enemy = (level.get_node("EnemySpawner") as EnemySpawner).get_child(0)
+	hero.position = Vector2(-560, -250)
+	hero.health.take_damage(60)  # start low so the whole fight fits in a few seconds
+	var started: Array[bool] = [false]
+	ghoul.attack_started.connect(func(_e: Enemy) -> void: started[0] = true)
+	while not started[0]:
+		await _frames(1)
+	await _frames(12)
+	await _shot("combat_01_windup")
+	await _frames(12)
+	await _shot("combat_02_hit")
+	while not hero.health.is_dead():
+		await _frames(1)
+	await _frames(2)
+	await _shot("combat_03_hero_falls")
+	await _frames(40)
+	await _shot("combat_04_game_over")
 
 
 func _shot(shot_name: String) -> void:

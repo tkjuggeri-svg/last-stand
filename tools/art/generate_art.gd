@@ -139,6 +139,43 @@ const GHOUL_LEGS_SIDE: Array[Array] = [
 	["..gg.gg...", ".qg...gq..", ".qq....qq."],
 	["...ggg....", "..qg.gq...", "..qq.qq..."],
 ]
+# Ghoul attack: claws raised beside the head (wind-up), then thrust forward (strike).
+const GHOUL_TORSO_RAISE: Array[String] = [
+	"n..........n",
+	"Gn........nG",
+	"gG........Gg",
+	"gGgcCCCCcgGg",
+	".gGcCCCCcGg.",
+	"..gcCcCCcg..",
+	"...ccCCcc...",
+	"....cCCc....",
+	"....cccc....",
+]
+const GHOUL_TORSO_STRIKE_DOWN: Array[String] = [
+	".gGcCCCCcGg.",
+	"gGgcCCCCcgGg",
+	".gGcCcCCcGg.",
+	"..gGcCCcGg..",
+	"...gGccGg...",
+	"...nn..nn...",
+]
+## Side wind-up: the arm swung up in front of the head, claws high, drawn over the head so it reads.
+const GHOUL_ARM_SIDE_RAISE: Array[String] = [
+	"...nn",
+	"..nGn",
+	"..gG.",
+	".gG..",
+	"gG...",
+	"g....",
+]
+const GHOUL_TORSO_SIDE_STRIKE: Array[String] = [
+	"..cCCC....",
+	".cCCCCg...",
+	".cCCcGGGGg",
+	"..cCc...nn",
+	"..ccc.....",
+	"..cc......",
+]
 const GHOUL_PILE: Array[String] = [
 	"....nn......",
 	"..cCCCnc....",
@@ -197,7 +234,32 @@ func _hero_sheet() -> Image:
 		rows.append(walk)
 	for facing: String in ["down", "up", "side"]:
 		rows.append([_hero_frame(facing, 0, 0, 0, 0), _hero_frame(facing, 2, 0, 1, 1), _hero_frame(facing, 0, 0, 0, 2)])
+	rows.append(_hero_death())
 	return _sheet(rows, size)
+
+
+## Hit (pale flash), buckling, then lying on the ground (the side pose turned 90 degrees, which
+## keeps the pixel grid intact), then a darker held final frame.
+func _hero_death() -> Array[Image]:
+	var size: Vector2i = Layouts.HERO["size"]
+	var hit: Image = _hero_frame("down", 0, 0, 0, -1)
+	_tint(hit, Color(1.0, 0.85, 0.8), 0.5)
+	var buckled: Image = _blank(size)
+	var body: Image = _hero_frame("down", 0, 0, 0, -1).get_region(Rect2i(0, 1, size.x, 20))
+	body.resize(size.x, 15, Image.INTERPOLATE_NEAREST)
+	buckled.blend_rect(body, Rect2i(Vector2i.ZERO, body.get_size()), Vector2i(0, 21 - 15))
+	var lying: Image = _hero_frame("side", 0, 0, 0, -1)
+	_clear_translucent(lying)  # drop the standing shadow before turning the figure
+	lying.rotate_90(CLOCKWISE)
+	var used: Rect2i = lying.get_used_rect()
+	var fallen: Image = _blank(size)
+	# Rest the body on the ground line; the angled sword may reach the frame's bottom edge.
+	var at: Vector2i = Vector2i(floori((size.x - used.size.x) / 2.0), size.y - used.size.y)
+	fallen.blend_rect(lying, used, at)
+	_finish_character(fallen, Vector2i(12, 21))
+	var still: Image = fallen.duplicate() as Image
+	_tint(still, Color("1a141f"), 0.25)
+	return [hit, buckled, fallen, still]
 
 
 ## legs: leg pose index; bob: vertical offset; lean: offset toward the facing; attack: -1 = carry sword, 0-2 = swing pose.
@@ -272,7 +334,34 @@ func _ghoul_sheet() -> Image:
 			walk.append(_ghoul_frame(facing, [0, 1, 0, 2][step], [0, 1, 0, 1][step], [0, 1, 0, -1][step]))
 		rows.append(walk)
 	rows.append(_ghoul_death())
+	for facing: String in ["down", "up", "side"]:
+		rows.append([_ghoul_attack(facing, 0), _ghoul_attack(facing, 1), _ghoul_attack(facing, 2)])
 	return _sheet(rows, Layouts.GHOUL["size"])
+
+
+## 0-1: wind-up (leaning back, claws raised; the second frame twitches), 2: strike (lunge, claws out).
+func _ghoul_attack(facing: String, frame: int) -> Image:
+	var img: Image = _blank(Layouts.GHOUL["size"])
+	var twitch: int = 1 if frame == 1 else 0
+	match facing:
+		"down", "up":
+			var lunge: Vector2i = Vector2i(0, 2 if facing == "down" else -2) if frame == 2 else Vector2i(0, -1 if facing == "down" else 1)
+			_paste(img, GHOUL_LEGS_FRONT[0], Vector2i(4, 14))
+			if frame == 2 and facing == "down":
+				_paste(img, GHOUL_TORSO_STRIKE_DOWN, Vector2i(4, 8) + lunge)
+			else:
+				_paste(img, GHOUL_TORSO_RAISE, Vector2i(4, 5) + lunge)
+			_paste(img, GHOUL_HEAD_DOWN if facing == "down" else GHOUL_HEAD_UP, Vector2i(6, 2 + twitch) + lunge)
+		"side":
+			_paste(img, GHOUL_LEGS_SIDE[1 if frame == 2 else 0], Vector2i(4, 14))
+			if frame == 2:
+				_paste(img, GHOUL_TORSO_SIDE_STRIKE, Vector2i(5, 8))
+				_paste(img, GHOUL_HEAD_SIDE, Vector2i(11, 5))
+			else:
+				_paste(img, GHOUL_TORSO_SIDE, Vector2i(2, 8))
+				_paste(img, GHOUL_HEAD_SIDE, Vector2i(8, 5 + twitch))
+				_paste(img, GHOUL_ARM_SIDE_RAISE, Vector2i(11, 0 + twitch))
+	return _finish_character(img, Vector2i(10, 17))
 
 
 ## twitch: head drops 1 px; sway: the whole upper body shifts sideways (a shambling gait).
@@ -775,6 +864,13 @@ func _tint(img: Image, color: Color, amount: float) -> void:
 func _bayer(x: int, y: int) -> float:
 	const MATRIX: Array[int] = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 	return MATRIX[(y % 4) * 4 + x % 4] / 16.0
+
+
+func _clear_translucent(img: Image) -> void:
+	for y: int in img.get_height():
+		for x: int in img.get_width():
+			if img.get_pixel(x, y).a < 0.5:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
 
 
 func _dither_out(img: Image, phase: int) -> void:

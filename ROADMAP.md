@@ -27,6 +27,7 @@ Tick items as they're finished.
 - [x] Simple spawner: N enemies at an interval
 - [x] Minimal HUD: fortress HP, hero HP
 - [x] Lose condition (fortress HP 0 → game over screen → restart)
+- [x] Playtest fix (after M2): Ghouls attack the hero (wind-up, cooldown, hero invulnerability window); hero death → Game Over
 
 **Done when:** you can fight a stream of enemies and lose if they reach the fortress too often.
 
@@ -120,4 +121,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M2 complete** (retro pixel-art visuals). Awaiting visual feedback before M3 (towers).
+**M2 complete**, plus the enemy-to-hero combat playtest fix. Awaiting hands-on feedback before M3 (towers).

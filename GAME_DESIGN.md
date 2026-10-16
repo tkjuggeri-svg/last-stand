@@ -29,7 +29,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
 - Each wave has a **build phase** (untimed in prototype; optional timer later) and a **combat phase**.
-- The run ends when the **fortress HP reaches 0** (defeat) or wave 15's boss dies (victory).
+- The run ends when the **fortress HP reaches 0** (defeat) or wave 15's boss dies (victory). In the prototype the hero's death also ends the run (until respawning exists).
   Prototype (M1): defeat freezes the level and shows a Game Over screen ("The fortress has fallen.") with Restart, which starts a completely fresh run.
 - Hero death is **not** run-ending: the hero respawns at the fortress after a delay (e.g. 5 s, growing each death). The fortress is the true fail state, which keeps the TD identity.
 
@@ -42,7 +42,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   Prototype values: ~100° arc, 68 px reach (was 52, raised after the first playtest) from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
 - **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
 - Can **repair/build** only during build phase (or near the fortress, TBD).
-- Hero HP: 100 (prototype). The hero has a `HealthComponent` (shown in the HUD) but no `Hurtbox` yet, so nothing can damage it until enemy attacks on the hero are designed (see open questions).
+- Hero HP: 100 (prototype). Enemy melee hits it through a `Hurtbox`; after each hit the hero is invulnerable for 0.5 s, so a crowd can't shred it in an instant. Feedback: red-white flash, hit spark, floating damage number, HUD bar. At 0 HP the knight falls (death animation) and the run is lost ("The hero has fallen."). Respawning instead of losing the run is still the long-term plan (see 3. Run structure) and arrives with the run-structure milestone.
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
 
 ### 4.2 Fortress
@@ -56,6 +56,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Defined by `EnemyData`: max HP, speed, damage to fortress, contact damage, gold reward, sprite, aggro range.
 - Prototype (M1): `EnemyData` has max HP, speed and fortress damage only. Each frame the enemy steers toward a point 24 px further along its lane, so it rounds corners slightly (≤ ~8 px off centre) and can rejoin the lane if pushed. Enemies have no physical collision yet. The Ghoul's `Hitbox` (enemy_hitbox) damages the fortress on contact and the Ghoul is removed (`Hitbox.hit` signal).
 - Ghoul (M1 values): 30 HP (3 hero swings), 60 px/s, 10 fortress damage.
+- Enemies attack the hero: when the hero's body comes within `attack_range` (Ghoul: 24 px) the enemy stops on its lane, winds up (Ghoul: 0.35 s, a visible claw raise, so it can be dodged by stepping away), strikes (Ghoul: 10 damage), and waits out its own cooldown (Ghoul: 1.2 s). When the hero leaves, it rejoins the lane. All values live in `EnemyData`.
+- Two separate enemy hitboxes: the melee attack (`enemy_hitbox`, hurts the hero) and the fortress contact (`fortress_hitbox`, hurts only the fortress and uses the enemy up). Touching or fighting the hero never uses an enemy up.
 - Every enemy leaves exactly one way: `died` (killed) or `reached_fortress` (used up). `EnemySpawner` turns these into `enemy_killed` and `enemy_counts_changed(living, spawned)` for the HUD.
 - Starter roster:
   | Enemy        | Role                                   |
@@ -135,6 +137,5 @@ Multiplayer, story/cutscenes, procedural maps, multiple biomes, localization, mo
 ## 8. Open questions
 
 - Do enemies attack towers, or only the fortress and hero?
-- When the hero gets a `Hurtbox`, a Ghoul touching the hero would also be "used up" by its fortress hitbox. Decide: separate contact-damage hitbox vs. fortress-only damage (e.g. a dedicated layer or arrival check).
 - Should the hero physically block enemies (body collision), or only fight them?
 - Build phase: timed or untimed?

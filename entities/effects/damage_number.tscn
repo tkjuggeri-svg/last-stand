@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://entities/effects/damage_number.gd" id="1_number"]
+
+[node name="DamageNumber" type="Node2D"]
+process_mode = 3
+z_index = 5
+script = ExtResource("1_number")
+
+[node name="Label" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -24.0
+offset_top = -12.0
+offset_right = 24.0
+offset_bottom = 12.0
+theme_override_colors/font_color = Color(1, 0.42, 0.36, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.03, 0.05, 1)
+theme_override_constants/outline_size = 5
+theme_override_font_sizes/font_size = 18
+text = "-10"
+horizontal_alignment = 1
+vertical_alignment = 1
