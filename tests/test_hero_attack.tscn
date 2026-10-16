@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="1_hero"]
+[ext_resource type="PackedScene" path="res://tests/training_dummy.tscn" id="2_dummy"]
+
+[node name="TestHeroAttack" type="Node2D"]
+
+[node name="Floor" type="ColorRect" parent="."]
+offset_left = -600.0
+offset_top = -400.0
+offset_right = 600.0
+offset_bottom = 400.0
+mouse_filter = 2
+color = Color(0.14, 0.13, 0.16, 1)
+
+[node name="Dummies" type="Node2D" parent="."]
+
+[node name="DummyRight" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(70, 0)
+
+[node name="DummyLeft" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(-70, 0)
+
+[node name="DummyDown" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(0, 70)
+
+[node name="DummyFar" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(300, -200)
+
+[node name="Hero" parent="." instance=ExtResource("1_hero")]
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+position_smoothing_enabled = true
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 616.0
+offset_bottom = 64.0
+text = "Left-click to swing toward the mouse (hold to keep swinging). 10 damage per swing, 0.4 s cooldown.
+Each swing hits every dummy in the arc once. Dummies have 50 HP."

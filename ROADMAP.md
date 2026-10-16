@@ -19,9 +19,9 @@ Tick items as they're finished.
 ---
 
 ## M1 — Core Combat Prototype *(first playable)*
-- [ ] Hero: movement (WASD), camera follow
-- [ ] `HealthComponent`, `Hurtbox`, `Hitbox`
-- [ ] Hero melee attack (mouse-aimed arc)
+- [x] Hero: movement (WASD), camera follow
+- [x] `HealthComponent`, `Hurtbox`, `Hitbox`
+- [x] Hero melee attack (mouse-aimed arc)
 - [ ] Fortress with HP
 - [ ] One lane (`Path2D`) + one enemy type (Ghoul) that walks to the fortress and damages it
 - [ ] Simple spawner: N enemies at an interval
@@ -106,4 +106,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M0 done (pending first commit).** Awaiting approval before starting M1.
+**M1 in progress.** Hero movement + camera, health/damage components, melee attack done; awaiting approval for the next M1 feature.

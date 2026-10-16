@@ -60,6 +60,7 @@ res://
 Rule of thumb: a scene and its script live **next to each other** in the folder of the feature they belong to.
 
 Empty folders hold a `.gitkeep` so Git tracks them; delete it once the folder has real files.
+Commit the `*.gd.uid` files Godot generates next to scripts; they keep references stable when files move.
 
 ## GDScript conventions
 
@@ -91,6 +92,8 @@ Follow the official Godot GDScript style guide, plus:
 
 These names are configured in Project Settings → Layer Names → 2D Physics.
 
+Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16) or `enemy_hitbox` (32) with mask 0. A `Hurtbox` has layer 0 and **masks** the opposite side's hitbox layer (enemies mask `hero_hitbox`, the hero masks `enemy_hitbox`). Hurtboxes do the detecting; damage is applied once per overlap entry.
+
 ## Input actions
 
 Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E).
@@ -99,6 +102,7 @@ Planned, added by the feature that needs them: `ability_1` (Space/RMB), `build` 
 
 ## Testing a feature
 
-- Every new feature gets a sandbox scene in `tests/` (e.g. `tests/test_hero_movement.tscn`) where it can be tried in isolation.
-- Check the Godot debugger for errors **and warnings** before calling something done; treat GDScript warnings as errors. The `untyped_declaration` warning is enabled to enforce static typing.
-- Headless sanity check: `~/Downloads/Godot_v4.7.2-stable_linux.x86_64 --headless --path . --quit-after 120` (runs the main scene for 120 frames; must print no errors/warnings).
+- Every new feature gets a sandbox scene in `tests/` (e.g. `tests/test_hero_movement.tscn`) where it can be tried by hand (F6).
+- Every new feature also gets an automated test `tests/automated/test_<feature>.gd`: a script that `extends SceneTree`, drives the real scenes (e.g. `Input.action_press`), prints `[ok]`/`[FAIL]` lines and calls `quit(<number of failures>)`. Wait a frame after `add_child` before reading state set in `_ready()`.
+- **Run everything before calling a feature done:** `tests/run_tests.sh` (Godot binary from `$GODOT`, default `~/Downloads/Godot_v4.7.2-stable_linux.x86_64`). It runs the editor import, checks every `.gd` with **all GDScript warnings treated as errors** (via a temporary, git-ignored `override.cfg`), runs every automated test, and runs `main.tscn` + every `tests/*.tscn` for 120 frames. Must end with `ALL PASSED`.
+- Helpers for the runner live in `tests/tools/`. The `tests/` folder must be excluded from release exports (M8).

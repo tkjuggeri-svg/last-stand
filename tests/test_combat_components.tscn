@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="1_hero"]
+[ext_resource type="PackedScene" path="res://tests/training_dummy.tscn" id="2_dummy"]
+[ext_resource type="Script" path="res://core/components/hitbox.gd" id="3_hitbox"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 20.0
+
+[node name="TestCombatComponents" type="Node2D"]
+
+[node name="Floor" type="ColorRect" parent="."]
+offset_left = -600.0
+offset_top = -400.0
+offset_right = 600.0
+offset_bottom = 400.0
+mouse_filter = 2
+color = Color(0.14, 0.13, 0.16, 1)
+
+[node name="Dummies" type="Node2D" parent="."]
+
+[node name="DummyRight" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(200, 0)
+
+[node name="DummyLeft" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(-200, 0)
+
+[node name="DummyDown" parent="Dummies" instance=ExtResource("2_dummy")]
+position = Vector2(0, 200)
+
+[node name="Hero" parent="." instance=ExtResource("1_hero")]
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+position_smoothing_enabled = true
+
+[node name="Hitbox" type="Area2D" parent="Hero"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("3_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hero/Hitbox"]
+shape = SubResource("CircleShape2D_hit")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Instructions" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 616.0
+offset_bottom = 64.0
+text = "Walk into a dummy: -10 HP each time you touch it. 5 touches = dead.
+(The hero carries an extra always-on test Hitbox here. For the real swing, use test_hero_attack.tscn.)"

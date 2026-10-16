@@ -38,6 +38,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - WASD movement, mouse-aimed attacks.
 - Stats: max HP, move speed, attack damage, attack speed, attack range.
 - **Basic attack** (LMB): short-range **melee arc** aimed at the mouse (decided). Melee makes positioning matter and contrasts with ranged towers. One hero only at first.
+  Prototype values: ~100° arc, 52 px reach from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
 - **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
 - Can **repair/build** only during build phase (or near the fortress, TBD).
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
