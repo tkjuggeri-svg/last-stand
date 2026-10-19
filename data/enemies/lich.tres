@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/lich_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/lich_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/ward_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "The Lich Warden"
+max_health = 2600
+move_speed = 28.0
+gold_reward = 250
+fortress_damage = 60
+hero_damage = 18
+attack_range = 30.0
+attack_windup = 0.6
+attack_cooldown = 2.4
+death_effect = ExtResource("2_death")
+is_boss = true
+ability = ExtResource("4_ability")
+body_radius = 22.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -30)
+health_bar_y = -110.0

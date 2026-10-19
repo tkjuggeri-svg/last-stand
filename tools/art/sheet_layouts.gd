@@ -167,6 +167,80 @@ const CULTIST_FX: Dictionary = {
 	"anims": [["bolt", 0, 2, 10.0, true], ["burst", 1, 4, 18.0, false]],
 }
 
+## Bosses: 64x64 frames (feet on art row 58, boss_art_kit.gd). Attack: 6 wind-up frames at 10 fps =
+## the data's 0.6 s, then the blow. Abilities: "cast" is 6 frames at 5 fps = the 1.2 s telegraph.
+## The Gravelord (wave 5): raises the dead.
+const GRAVELORD: Dictionary = {
+	"png": "res://assets/sprites/enemies/gravelord.png",
+	"frames": "res://entities/enemies/bosses/gravelord_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["idle_down", 0, 4, 4.0, true],
+		["idle_up", 1, 4, 4.0, true],
+		["idle_side", 2, 4, 4.0, true],
+		["walk_down", 3, 6, 6.0, true],
+		["walk_up", 4, 6, 6.0, true],
+		["walk_side", 5, 6, 6.0, true],
+		["death", 6, 8, 10.0, false],
+		["attack_down", 7, 8, 10.0, false],
+		["attack_up", 8, 8, 10.0, false],
+		["attack_side", 9, 8, 10.0, false],
+		["cast_down", 10, 6, 5.0, false],
+		["cast_up", 11, 6, 5.0, false],
+		["cast_side", 12, 6, 5.0, false],
+	],
+}
+
+## The Bone Colossus (wave 10): braces (looped through the 1.0 s telegraph), charges, is stunned.
+const COLOSSUS: Dictionary = {
+	"png": "res://assets/sprites/enemies/colossus.png",
+	"frames": "res://entities/enemies/bosses/colossus_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["idle_down", 0, 4, 4.0, true],
+		["idle_up", 1, 4, 4.0, true],
+		["idle_side", 2, 4, 4.0, true],
+		["walk_down", 3, 6, 6.0, true],
+		["walk_up", 4, 6, 6.0, true],
+		["walk_side", 5, 6, 6.0, true],
+		["death", 6, 8, 10.0, false],
+		["attack_down", 7, 8, 10.0, false],
+		["attack_up", 8, 8, 10.0, false],
+		["attack_side", 9, 8, 10.0, false],
+		["brace_down", 10, 4, 8.0, true],
+		["brace_up", 11, 4, 8.0, true],
+		["brace_side", 12, 4, 8.0, true],
+		["charge_down", 13, 4, 12.0, true],
+		["charge_up", 14, 4, 12.0, true],
+		["charge_side", 15, 4, 12.0, true],
+		["stun_down", 16, 4, 6.0, true],
+		["stun_up", 17, 4, 6.0, true],
+		["stun_side", 18, 4, 6.0, true],
+	],
+}
+
+## The Lich Warden (wave 15): wards the enemies around it.
+const LICH: Dictionary = {
+	"png": "res://assets/sprites/enemies/lich.png",
+	"frames": "res://entities/enemies/bosses/lich_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["idle_down", 0, 4, 4.0, true],
+		["idle_up", 1, 4, 4.0, true],
+		["idle_side", 2, 4, 4.0, true],
+		["walk_down", 3, 6, 6.0, true],
+		["walk_up", 4, 6, 6.0, true],
+		["walk_side", 5, 6, 6.0, true],
+		["death", 6, 8, 10.0, false],
+		["attack_down", 7, 8, 10.0, false],
+		["attack_up", 8, 8, 10.0, false],
+		["attack_side", 9, 8, 10.0, false],
+		["cast_down", 10, 6, 5.0, false],
+		["cast_up", 11, 6, 5.0, false],
+		["cast_side", 12, 6, 5.0, false],
+	],
+}
+
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
@@ -303,7 +377,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

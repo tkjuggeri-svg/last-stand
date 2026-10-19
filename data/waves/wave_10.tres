@@ -4,6 +4,7 @@
 [ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_w4lrs"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_2gpjg"]
 [ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_1fx3x"]
+[ext_resource type="Resource" path="res://data/enemies/colossus.tres" id="9_boss"]
 [ext_resource type="Script" path="res://resources/wave_data.gd" id="5_0nvuj"]
 
 [sub_resource type="Resource" id="Resource_8u8is"]
@@ -66,7 +67,15 @@ count = 20
 interval = 0.2
 delay = 40.0
 
+[sub_resource type="Resource" id="Resource_boss"]
+script = ExtResource("1_5y8qc")
+enemy = ExtResource("9_boss")
+count = 1
+interval = 1.0
+lane = 0
+delay = 10.0
+
 [resource]
 script = ExtResource("5_0nvuj")
 health_multiplier = 2.1
-groups = Array[ExtResource("1_5y8qc")]([SubResource("Resource_8u8is"), SubResource("Resource_wg1uf"), SubResource("Resource_swcq7"), SubResource("Resource_d5qdp"), SubResource("Resource_6a7o5"), SubResource("Resource_jdaoc"), SubResource("Resource_vrunj"), SubResource("Resource_ogm8k")])
+groups = Array[ExtResource("1_5y8qc")]([SubResource("Resource_8u8is"), SubResource("Resource_wg1uf"), SubResource("Resource_swcq7"), SubResource("Resource_d5qdp"), SubResource("Resource_6a7o5"), SubResource("Resource_jdaoc"), SubResource("Resource_vrunj"), SubResource("Resource_ogm8k"), SubResource("Resource_boss")])

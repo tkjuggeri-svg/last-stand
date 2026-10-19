@@ -30,6 +30,7 @@ Reference feel (mood only — never copy art): late SNES / modern "HD-pixel" act
 | Hound | 32×32 | low quadruped ≈ 22 px long, 14 tall; paws on the same line as the Ghoul's feet |
 | Brute | 48×48 | figure ≈ 36 px tall; feet on art row 44 (sprite offset (0, −20)) |
 | Cultist | 32×32 | figure ≈ 23 px tall with the pointed hood; hem on the Ghoul's foot line |
+| Bosses | 64×64 | figures ≈ 48–54 px tall; feet on art row 58 (`boss_art_kit.gd`); the Lich floats 6 px above it |
 | Towers | 32×48 | base footprint ≈ 26×12 at the bottom of the frame |
 | Fortress | 96×96 | the 48×48 footprint (= 96×96 world collision box) sits at the bottom |
 | Swing trail | 72×72 | radius 34 = the hitbox's 68 px reach |
@@ -37,7 +38,7 @@ Reference feel (mood only — never copy art): late SNES / modern "HD-pixel" act
 | Small effects | 16–24 | sparks, dust, frost |
 | Explosion | 56×56 | = the 112 px blast area |
 
-**Hierarchy by size:** fortress ≫ towers > brute > hero > ghoul > hound. The hero must always be the most readable
+**Hierarchy by size:** fortress ≫ bosses ≈ towers > brute > hero > ghoul > hound. The hero must always be the most readable
 thing on screen; enemies read second; buildings are big but darker and calmer.
 
 ## 3. Camera and perspective
@@ -159,7 +160,7 @@ godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 
 - `canvas.gd` — shaded primitives (ellipse, capsule, cylinder, block, polygon), contours, outline.
 - `palette.gd` — the ramps above.
-- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `cultist_art.gd`, `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
+- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `cultist_art.gd`, `gravelord_art.gd` / `colossus_art.gd` / `lich_art.gd` (on `boss_art_kit.gd`), `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
 - Review: `tools/art/preview_art.gd` (enlarged contact sheet) and the `gallery` scenario of
   `tests/tools/capture_screenshots.gd` (every animation at real game scale over the real level).
 

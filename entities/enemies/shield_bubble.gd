@@ -5,8 +5,8 @@ extends Node2D
 ## size (set by EnemyLook); visible only while the shield holds.
 
 const ART_PX: float = 2.0
-const RIM: Color = Color(0.72, 0.9, 1.0, 0.85)
-const FILL: Color = Color(0.45, 0.7, 1.0, 0.16)
+const RIM: Color = Color(0.75, 0.92, 1.0, 1.0)
+const FILL: Color = Color(0.45, 0.7, 1.0, 0.24)
 const SHIMMER: Color = Color(1, 1, 1, 0.95)
 const RADIUS: Vector2 = Vector2(16, 18)
 const SEGMENTS: int = 28

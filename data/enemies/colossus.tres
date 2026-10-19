@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/colossus_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/colossus_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/charge_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "The Bone Colossus"
+max_health = 2000
+move_speed = 30.0
+gold_reward = 200
+fortress_damage = 50
+hero_damage = 25
+attack_range = 30.0
+attack_windup = 0.6
+attack_cooldown = 2.4
+death_effect = ExtResource("2_death")
+is_boss = true
+ability = ExtResource("4_ability")
+body_radius = 28.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -24)
+health_bar_y = -110.0

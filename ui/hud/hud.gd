@@ -1,5 +1,6 @@
 extends CanvasLayer
-## In-game overlay: fortress and hero HP, the dash cooldown, gold, enemy counts, the wave and phase (with the "Start
+## In-game overlay: fortress and hero HP, the dash cooldown, a boss's big HP bar (top centre) and
+## banners when a boss arrives or falls, gold, enemy counts, the wave and phase (with the "Start
 ## wave" button and key during the build phase), and short event notifications.
 ## Assign its targets in the level scene. Parts whose target is not assigned are hidden, so the HUD
 ## also runs on its own. It only displays and sends the start-wave intent; RunCycle decides.
@@ -9,6 +10,9 @@ const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 ## The dash row while the dash recharges (it is bright again when ready).
 const DASH_COOLING_TINT: Color = Color(0.55, 0.55, 0.62, 1)
+const BOSS_ARRIVES_COLOR: Color = Color(0.86, 0.6, 0.95, 1)
+## Banner timing: fade in, stay, fade out (seconds).
+const BANNER_TIMES: Vector3 = Vector3(0.3, 1.8, 0.7)
 const LIFE_ICON: Texture2D = preload("res://assets/sprites/ui/icon_helm.png")
 ## A spent life: the helm icon, dark.
 const LIFE_SPENT_TINT: Color = Color(0.25, 0.22, 0.28, 1)
@@ -55,6 +59,14 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _dash_row: Control = %DashRow
 @onready var _dash_bar: ProgressBar = %DashBar
 @onready var _dash_label: Label = %DashLabel
+@onready var _boss_margin: Control = %BossMargin
+@onready var _boss_name: Label = %BossName
+@onready var _boss_bar: ProgressBar = %BossBar
+@onready var _banner: Label = %Banner
+
+## The boss whose HP the top bar shows (null when none is alive).
+var _boss: Enemy
+var _banner_tween: Tween
 
 
 func _ready() -> void:
@@ -205,10 +217,53 @@ func _on_wave_cleared(wave_number: int) -> void:
 
 func _on_enemy_spawned(enemy: Enemy) -> void:
 	_feed.push("%s incoming!" % enemy.data.display_name, INCOMING_COLOR)
+	if enemy.data.is_boss:
+		_show_boss(enemy)
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:
 	_feed.push("%s slain!" % enemy.data.display_name, SLAIN_COLOR)
+	if enemy.data.is_boss:
+		show_banner("%s is slain!" % enemy.data.display_name, GOLD_COLOR)
+
+
+## The boss's name and HP across the top while it lives, and a banner as it arrives.
+func _show_boss(enemy: Enemy) -> void:
+	_boss = enemy
+	_boss_name.text = enemy.data.display_name
+	var health: HealthComponent = enemy.get_health()
+	health.health_changed.connect(_on_boss_health_changed)
+	_on_boss_health_changed(health.current_health, health.max_health)
+	enemy.tree_exiting.connect(_on_boss_gone.bind(enemy))
+	_boss_margin.show()
+	show_banner("%s approaches!" % enemy.data.display_name, BOSS_ARRIVES_COLOR)
+
+
+func _on_boss_health_changed(current: int, maximum: int) -> void:
+	_boss_bar.max_value = maximum
+	_boss_bar.value = current
+
+
+## Untyped: the boss is being freed when this runs.
+func _on_boss_gone(enemy: Variant) -> void:
+	if enemy == _boss:
+		_boss = null
+		_boss_margin.hide()
+
+
+## Big text in the middle of the upper screen that fades in and out (a boss arriving or falling).
+func show_banner(text: String, color: Color) -> void:
+	_banner.text = text
+	_banner.add_theme_color_override(&"font_color", color)
+	_banner.modulate.a = 0.0
+	_banner.show()
+	if _banner_tween != null:
+		_banner_tween.kill()
+	_banner_tween = create_tween()
+	_banner_tween.tween_property(_banner, "modulate:a", 1.0, BANNER_TIMES.x)
+	_banner_tween.tween_interval(BANNER_TIMES.y)
+	_banner_tween.tween_property(_banner, "modulate:a", 0.0, BANNER_TIMES.z)
+	_banner_tween.tween_callback(_banner.hide)
 
 
 func _on_enemy_counts_changed(_living_count: int, _spawned_count: int) -> void:

@@ -21,6 +21,10 @@ extends Resource
 @export var attack_cooldown: float = 1.2
 ## Visual played where the enemy is killed (a one-shot scene). Optional.
 @export var death_effect: PackedScene
+## A boss: its HP shows in a big bar at the top of the screen and its death is a big moment.
+@export var is_boss: bool = false
+## Its special mechanic: a scene whose root is an EnemyAbility (summon, charge, ward). Optional.
+@export var ability: PackedScene
 
 @export_group("Body and look")
 ## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.

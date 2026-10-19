@@ -14,6 +14,8 @@ const SPARK_DROP: float = 2.0
 
 var _sprite_rest: Vector2 = Vector2.ZERO
 var _jolt: Tween
+## Bosses show their HP in the HUD's big bar instead of the small one above the head.
+var _small_bar: bool = true
 
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hit_spark: AnimatedSprite2D = %HitSpark
@@ -35,6 +37,7 @@ func setup(data: EnemyData) -> void:
 	_sprite_rest = _sprite.position
 	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
 	_health_bar.setup(data.body_radius, data.health_bar_y)
+	_small_bar = not data.is_boss
 	_glow.enabled = data.glow_color.a > 0.0
 	_glow.color = data.glow_color
 	_glow.position = data.sprite_offset
@@ -44,7 +47,8 @@ func setup(data: EnemyData) -> void:
 
 ## Damage feedback: a short white flash, a jolt, a spark and the health bar.
 func show_hit(current_health: int, max_health: int) -> void:
-	_health_bar.show_health(current_health, max_health)
+	if _small_bar:
+		_health_bar.show_health(current_health, max_health)
 	var flash_material: ShaderMaterial = _sprite.material
 	flash_material.set_shader_parameter("flash", 1.0)  # visible in the same frame as the hit
 	var flash: Tween = create_tween()

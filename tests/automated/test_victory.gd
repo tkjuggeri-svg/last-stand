@@ -29,13 +29,14 @@ func _test_wave_curve() -> void:
 	for i: int in waves.size():
 		var hp: int = 0
 		for group: SpawnGroup in waves[i].groups:
-			hp += group.count * group.enemy.max_health
+			if not group.enemy.is_boss:  # a boss is a spike on top of the curve
+				hp += group.count * group.enemy.max_health
 			lanes[group.lane] = true
 			if not first_seen.has(group.enemy.display_name):
 				first_seen[group.enemy.display_name] = i + 1
 		rising = rising and hp > previous
 		previous = hp
-	_check("every wave brings more enemy HP than the one before", rising)
+	_check("every wave brings more enemy HP than the one before (bosses on top)", rising)
 	_check("Ghouls from wave 1, Hounds from wave 3, Brutes from wave 5 (%s)" % [first_seen],
 		first_seen.get("Ghoul") == 1 and first_seen.get("Hound") == 3 and first_seen.get("Brute") == 5)
 	_check("the waves use all 3 lanes", lanes.size() == 3)

@@ -30,6 +30,11 @@ const BRUTE_SKIN: Array[Color] = [Color("2a2236"), Color("463a5a"), Color("66597
 ## grass) with a near-black hood opening, lit by witchfire.
 const CULT_ROBE: Array[Color] = [Color("2a2630"), Color("4a4450"), Color("716a72"), Color("9a9294"), Color("c2b9b2"), Color("e2dace")]
 const CULT_DARK: Array[Color] = [Color("0d0a12"), Color("1b1424"), Color("2c2038")]
+# --- Bosses ---
+## The Gravelord's grave-moss shroud (grey-green, lighter than the grass it walks on).
+const GRAVE_SHROUD: Array[Color] = [Color("1a201b"), Color("2d372f"), Color("465448"), Color("637465"), Color("849684"), Color("a8b8a4")]
+## The Lich Warden's regal robe: deep violet-blue with cold highlights.
+const LICH_ROBE: Array[Color] = [Color("120f24"), Color("221c42"), Color("362d66"), Color("4f4590"), Color("6e66b4"), Color("9a94d6")]
 ## Witchfire: the Cultist's sickly, bright green magic (its eyes, the orb it casts, its shots).
 const WITCHFIRE: Array[Color] = [Color("1f4a1c"), Color("3f8f2a"), Color("7fd13b"), Color("c8f57a"), Color("f2ffd0")]
 

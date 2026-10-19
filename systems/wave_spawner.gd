@@ -4,6 +4,7 @@ extends Node2D
 ## children of this node and take their EnemyData from the group. A wave runs from start_wave() until
 ## every enemy it sends has been spawned and is gone again (killed or used up at the fortress):
 ## wave_started .. wave_cleared. Starting waves is up to the owner (or autostart for the first one).
+## Enemies a boss summons join the current wave (they count in its totals) on the summoner's lane.
 
 signal wave_started(wave_number: int)
 ## Every enemy of the wave has been spawned and is gone again.
@@ -35,6 +36,8 @@ var _group_spawned: PackedInt32Array = PackedInt32Array()
 var _spawned_count: int = 0
 var _living_count: int = 0
 var _finished_count: int = 0
+## Enemies summoned during the current wave (on top of the wave's own).
+var _summoned_count: int = 0
 
 
 func _ready() -> void:
@@ -84,9 +87,9 @@ func get_living_count() -> int:
 	return _living_count
 
 
-## Enemies the current wave sends in total (0 before the first wave).
+## Enemies the current wave sends in total, summoned ones included (0 before the first wave).
 func get_wave_enemy_total() -> int:
-	return waves[_wave_index].get_enemy_total() if _wave_index >= 0 else 0
+	return waves[_wave_index].get_enemy_total() + _summoned_count if _wave_index >= 0 else 0
 
 
 ## Enemies the next wave will send (0 after the last wave).
@@ -109,6 +112,7 @@ func start_next_wave() -> bool:
 	_group_spawned.resize(waves[_wave_index].groups.size())
 	_spawned_count = 0
 	_finished_count = 0
+	_summoned_count = 0
 	_wave_open = true
 	wave_started.emit(get_wave_number())
 	enemy_counts_changed.emit(_living_count, _spawned_count)
@@ -125,18 +129,32 @@ func _is_spawning() -> bool:
 func _spawn_enemy(group: SpawnGroup) -> void:
 	assert(group.enemy != null, "SpawnGroup without an enemy in wave %d" % get_wave_number())
 	var lane: Path2D = lanes[clampi(group.lane, 0, lanes.size() - 1)]
+	_add_enemy(group.enemy, lane, lane.to_global(lane.curve.sample_baked(0.0)))
+
+
+## A boss calls up a minion: it joins this wave at `at`, on the boss's lane.
+func _on_summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2) -> void:
+	if not _wave_open:
+		return
+	_summoned_count += 1
+	summoner.adopt_minion(_add_enemy(minion, summoner.lane, at))
+
+
+func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2) -> Enemy:
 	var enemy: Enemy = enemy_scene.instantiate()
-	enemy.data = group.enemy
+	enemy.data = data
 	enemy.lane = lane
 	enemy.health_multiplier = waves[_wave_index].health_multiplier
 	enemy.died.connect(_on_enemy_died)
 	enemy.reached_fortress.connect(_on_enemy_reached_fortress)
+	enemy.summon_requested.connect(_on_summon_requested)
 	add_child(enemy)
-	enemy.global_position = lane.to_global(lane.curve.sample_baked(0.0))
+	enemy.global_position = at
 	_spawned_count += 1
 	_living_count += 1
 	enemy_spawned.emit(enemy)
 	enemy_counts_changed.emit(_living_count, _spawned_count)
+	return enemy
 
 
 func _on_enemy_died(enemy: Enemy) -> void:

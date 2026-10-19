@@ -15,6 +15,9 @@ const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const HoundArt: GDScript = preload("res://tools/art/hound_art.gd")
 const BruteArt: GDScript = preload("res://tools/art/brute_art.gd")
 const CultistArt: GDScript = preload("res://tools/art/cultist_art.gd")
+const GravelordArt: GDScript = preload("res://tools/art/gravelord_art.gd")
+const ColossusArt: GDScript = preload("res://tools/art/colossus_art.gd")
+const LichArt: GDScript = preload("res://tools/art/lich_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
@@ -39,6 +42,9 @@ func _initialize() -> void:
 		"brute": func() -> void: _save(_sheet(BruteArt.new().sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),
 		"cultist": func() -> void: _save(_sheet(CultistArt.new().sheet_rows(), Layouts.CULTIST["size"]), Layouts.CULTIST["png"]),
 		"cultist_fx": func() -> void: _save(_sheet(CultistArt.new().fx_rows(), Layouts.CULTIST_FX["size"]), Layouts.CULTIST_FX["png"]),
+		"gravelord": func() -> void: _save(_sheet(GravelordArt.new().sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
+		"colossus": func() -> void: _save(_sheet(ColossusArt.new().sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
+		"lich": func() -> void: _save(_sheet(LichArt.new().sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),
 		"fortress": func() -> void: _save(_sheet([FortressArt.new().sheet_frames()], Layouts.FORTRESS["size"]), Layouts.FORTRESS["png"]),
@@ -84,6 +90,7 @@ func _ui() -> void:
 	_save(ui.bar_fill([Color("1d2a4a"), Color("2f4a7a"), Color("4a6fa8"), Color("86aedb")]), Layouts.UI_DIR + "bar_fortress.png")
 	_save(ui.bar_fill([Color("2c0f17"), Color("85282e"), Color("c0453a"), Color("ec7a5c")]), Layouts.UI_DIR + "bar_hero.png")
 	_save(ui.bar_fill([Color("102438"), Color("2f6596"), Color("5aa0c8"), Color("b8e4f0")]), Layouts.UI_DIR + "bar_dash.png")
+	_save(ui.bar_fill([Color("1f0d2a"), Color("4a1f5e"), Color("7d3a8f"), Color("c27ad0")]), Layouts.UI_DIR + "bar_boss.png")
 	for kind: String in ["keep", "helm", "skull", "slot", "dash"]:
 		_save(ui.icon(kind), Layouts.UI_DIR + "icon_%s.png" % kind)
 

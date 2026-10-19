@@ -4,7 +4,7 @@ extends Node2D
 ## life (HeroLives), and won when RunCycle reports the last wave cleared: either way everything in the
 ## level stops, and run_lost / run_won (once, never both) tells the owner (Main) which screen to show.
 ## It also places one-shot visuals (an enemy's death effect and the "+gold" it was worth) in its
-## Effects layer.
+## Effects layer. A boss's death is a big moment: a brief slow-motion hit-stop and a camera shake.
 
 signal run_lost(reason: LossReason)
 signal run_won
@@ -13,6 +13,11 @@ enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
 
 const FLOATING_TEXT_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+## A boss's death: the game runs at this speed for this many real seconds, and the camera shakes.
+const BOSS_HIT_STOP_SCALE: float = 0.25
+const BOSS_HIT_STOP_TIME: float = 0.5
+const BOSS_SHAKE: float = 8.0
+const BOSS_SHAKE_TIME: float = 0.6
 
 @export var fortress: Fortress
 @export var spawner: WaveSpawner
@@ -36,6 +41,10 @@ func _ready() -> void:
 		modifiers.upgrade_added.connect(_on_upgrade_added)
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
+
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0  # a restart during a hit-stop must not leave the game slowed
 
 
 func is_run_over() -> bool:
@@ -86,3 +95,19 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 		gold_text.set_text("+%d" % enemy.data.gold_reward, GOLD_TEXT_COLOR)
 		gold_text.position = at + Vector2(0, -30)
 		_effects.add_child(gold_text)
+	if enemy.data.is_boss:
+		_boss_moment()
+
+
+func _boss_moment() -> void:
+	Engine.time_scale = BOSS_HIT_STOP_SCALE
+	get_tree().create_timer(BOSS_HIT_STOP_TIME, true, false, true).timeout.connect(func() -> void: Engine.time_scale = 1.0)
+	var camera: Camera2D = get_viewport().get_camera_2d()
+	if camera == null:
+		return
+	var shake: Tween = camera.create_tween()
+	shake.set_ignore_time_scale(true)
+	for i: int in 6:
+		var strength: float = BOSS_SHAKE * (1.0 - i / 6.0)
+		shake.tween_property(camera, "offset", Vector2(strength if i % 2 == 0 else -strength, strength * 0.5).round(), BOSS_SHAKE_TIME / 7.0)
+	shake.tween_property(camera, "offset", Vector2.ZERO, BOSS_SHAKE_TIME / 7.0)

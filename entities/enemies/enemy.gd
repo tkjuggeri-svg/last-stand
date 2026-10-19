@@ -5,7 +5,8 @@ extends CharacterBody2D
 ## If the target has an AttackerLimit, the enemy must claim a slot first; otherwise it waits its turn.
 ## A ranged enemy (EnemyData.bolt_speed > 0, the Cultist) shoots instead of striking (no slot
 ## needed), and stops data.siege_distance before its lane's end to shoot the fortress, unless the
-## hero is in range: then the hero is its target.
+## hero is in range: then the hero is its target. A boss has an EnemyAbility (EnemyData.ability)
+## that runs beside this and may take the enemy over for a while (is_busy).
 ## Towers can slow it (apply_slow): the strongest slow wins and it always wears off.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
 ## Stats, body size and animations come from an EnemyData resource (one scene for every enemy type).
@@ -17,6 +18,8 @@ signal died(enemy: Enemy)
 signal reached_fortress(enemy: Enemy)
 ## An attack on a target began (the wind-up started).
 signal attack_started(enemy: Enemy)
+## Its ability calls up `data` at `at` (the WaveSpawner adds it to the wave, on this enemy's lane).
+signal summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2)
 
 ## How far ahead on the lane the enemy aims, in pixels. Aiming ahead (instead of following
 ## a fixed position) lets it find its way back to the lane if something pushes it off.
@@ -54,6 +57,7 @@ var _slow_left: float = 0.0
 ## closest point on the curve is the costliest thing an enemy does, and towers ask for it too.
 var _lane_offset: float = 0.0
 var _lane_offset_frame: int = -1
+var _ability: EnemyAbility
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -73,6 +77,11 @@ func _ready() -> void:
 	_attack_hitbox.damage = data.hero_damage
 	_apply_body(data.body_radius)
 	_look.setup(data)
+	_health.shield_changed.connect(_look.show_shield)
+	if data.ability != null:
+		_ability = data.ability.instantiate()
+		_ability.setup(self)
+		add_child(_ability)
 	_health.died.connect(_on_health_died)
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
@@ -83,6 +92,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	_update_slow(delta)
+	if is_busy():
+		return  # the ability moves and animates it
 	_update_attack(delta)
 	if is_attacking() or has_target() or is_sieging():
 		velocity = Vector2.ZERO  # stand and fight
@@ -101,6 +112,36 @@ func _apply_body(body_radius: float) -> void:
 	((%FortressShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius
 	((%RangeShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius + data.attack_range
 	_attack_shape.position = Vector2(body_radius + STRIKE_REACH, 0)
+
+
+## True while its ability has taken over (telegraphing, charging, stunned): no walking, no attacks.
+func is_busy() -> bool:
+	return _ability != null and _ability.is_busy()
+
+
+func get_health() -> HealthComponent:
+	return _health
+
+
+func get_sprite() -> DirectionalSprite:
+	return _sprite
+
+
+## A ward from a boss: absorbs `amount` damage for `seconds` (see HealthComponent.add_shield).
+func add_shield(amount: int, seconds: float) -> void:
+	if is_alive():
+		_health.add_shield(amount, seconds)
+
+
+func request_summon(minion: EnemyData, at: Vector2) -> void:
+	summon_requested.emit(self, minion, at)
+
+
+## The spawner reports the enemy a summon produced (a summoner keeps count of its own).
+func adopt_minion(minion: Enemy) -> void:
+	var summoner: SummonAbility = _ability as SummonAbility
+	if summoner != null:
+		summoner.track_minion(minion)
 
 
 ## True while winding up or striking.

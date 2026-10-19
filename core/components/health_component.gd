@@ -1,17 +1,29 @@
 class_name HealthComponent
 extends Node
 ## Tracks hit points for any entity. The owner listens to the signals to react (update UI, die).
+## A shield (a boss's ward) absorbs damage before HP does, for a limited time.
 
 signal health_changed(current_health: int, max_health: int)
 signal died
+## The shield went up, absorbed damage or ran out (0 = none).
+signal shield_changed(amount: int)
 
 @export var max_health: int = 100
 
 var current_health: int
+var _shield: int = 0
+var _shield_left: float = 0.0
 
 
 func _ready() -> void:
 	current_health = max_health
+	set_physics_process(false)
+
+
+func _physics_process(delta: float) -> void:
+	_shield_left -= delta
+	if _shield_left <= 0.0:
+		_set_shield(0)
 
 
 ## Sets a new maximum and refills to it. Owners call this in _ready() when stats come from data.
@@ -24,6 +36,12 @@ func take_damage(amount: int) -> void:
 	# Dead things can't die twice, so ignore hits after death.
 	if is_dead() or amount <= 0:
 		return
+	if _shield > 0:
+		var absorbed: int = mini(_shield, amount)
+		_set_shield(_shield - absorbed)
+		amount -= absorbed
+		if amount <= 0:
+			return
 	current_health = maxi(current_health - amount, 0)
 	health_changed.emit(current_health, max_health)
 	if current_health == 0:
@@ -58,3 +76,26 @@ func revive() -> void:
 
 func is_dead() -> bool:
 	return current_health <= 0
+
+
+## Raises a shield that absorbs `amount` damage for `seconds` (a stronger or longer one already up
+## is kept: shields never stack).
+func add_shield(amount: int, seconds: float) -> void:
+	if is_dead() or amount <= 0 or seconds <= 0.0:
+		return
+	_shield_left = maxf(_shield_left, seconds)
+	_set_shield(maxi(_shield, amount))
+
+
+func get_shield() -> int:
+	return _shield
+
+
+func _set_shield(amount: int) -> void:
+	set_physics_process(amount > 0)
+	if amount == _shield:
+		return
+	_shield = amount
+	if amount == 0:
+		_shield_left = 0.0
+	shield_changed.emit(amount)
