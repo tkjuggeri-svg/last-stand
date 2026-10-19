@@ -79,7 +79,7 @@ Tick items as they're finished.
 - [x] `WaveData` + `SpawnGroup` resources; `WaveSpawner` driven by data (replaces the continuous spawner), wired to `WaveRewards`
 - [ ] 2–3 lanes; waves pick a lane per spawn group
 - [x] Build phase ↔ combat phase cycle (`RunCycle`), "Start wave" button + Enter, HUD wave/phase/enemies left
-- [ ] Enemy roster: Ghoul, Hound, Brute
+- [x] Enemy roster: Ghoul, Hound (fast, fragile), Brute (slow, tanky) with full art and animations; one data-driven enemy scene
 - [x] Hero death + respawn: 3 lives per run, 4 s respawn at the fortress with countdown, 2 s blinking invulnerability; the last life lost (or the fortress) ends the run
 - [ ] Victory after final wave; 10 hand-authored waves
 

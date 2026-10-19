@@ -62,14 +62,15 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **At most 2 enemies attack the hero at once** (`AttackerLimit` on the hero, `max_attackers`). An enemy claims a slot before its wind-up and frees it when the strike ends or it dies; the others wait in range (idle) and take turns. Keeps crowds dangerous but readable and fair.
 - Two separate enemy hitboxes: the melee attack (`enemy_hitbox`, hurts the hero) and the fortress contact (`fortress_hitbox`, hurts only the fortress and uses the enemy up). Touching or fighting the hero never uses an enemy up.
 - Every enemy leaves exactly one way: `died` (killed) or `reached_fortress` (used up). `EnemySpawner` turns these into `enemy_killed` and `enemy_counts_changed(living, spawned)` for the HUD.
-- Starter roster:
-  | Enemy        | Role                                   |
-  |--------------|----------------------------------------|
-  | Ghoul        | Basic, medium speed, weak               |
-  | Hound        | Fast, fragile, comes in packs          |
-  | Brute        | Slow, tanky, hits the fortress hard    |
-  | Cultist      | Ranged, targets hero or towers         |
-  | Boss (Wave 5)| Big HP, special attack, summons adds   |
+- All enemy types share one scene (`entities/enemies/enemy.tscn`); `EnemyData` also holds the body radius (hurtbox, fortress contact and reach scale with it), the SpriteFrames and the sprite offset, like towers and `TowerData`.
+- Starter roster (M4 values, all in `data/enemies/*.tres`):
+  | Enemy  | Role | HP | Speed | Fortress dmg | Hero dmg | Wind-up / cooldown | Gold | Body |
+  |--------|------|----|-------|--------------|----------|--------------------|------|------|
+  | Ghoul  | Basic, medium speed, weak | 30 | 60 | 10 | 10 | 0.35 / 1.2 s | 10 | r 12 |
+  | Hound  | Fast, fragile, comes in packs; light on the fortress | 15 | 115 | 5 | 6 | 0.25 / 0.9 s | 6 | r 10 |
+  | Brute  | Slow, tanky, hits the fortress hard | 150 | 32 | 30 | 22 | 0.6 / 2.2 s | 30 | r 18 |
+  | Cultist (later) | Ranged, targets hero or towers | | | | | | | |
+  | Boss (later)    | Big HP, special attack, summons adds | | | | | | | |
 
 ### 4.4 Towers
 - Built on **predefined build slots** placed in the level.
@@ -131,6 +132,8 @@ Full visual rules: **`ART_DIRECTION.md`** (overhauled in M3.5).
 - Readability first: hero > enemies > buildings > ground in contrast. Enemies, projectiles and the hero must be instantly distinguishable at a glance.
 - Hero: a knight in steel plate — great helm with a red plume, red tabard with the order's gold tower, dark red cape, heater shield, longsword. Idle, walk and a 4-frame attack in 4 directions; a 6-frame death.
 - Ghoul: ashen, hunched corpse with ribs, rags, long bone claws and burning red eyes. Shambling walk, a lunge attack whose strike frame lands with the 0.35 s wind-up, white hit flash + spark, and a death where it collapses, crumbles and releases a green soul.
+- Hound: a starved grave hound, low and long, with a bare skull for a head, exposed ribs and spine and a flayed red-brown hide. A gallop, a bite lunge striking at the 0.25 s wind-up, a yelp-and-collapse death. Reads as "fast, low beast": horizontal and red-brown next to the upright grey Ghoul.
+- Brute: a hulking stitched corpse of bruised violet-grey flesh with bone spurs, an iron collar, shackles with broken chains and huge fists, drawn on a 48×48 frame. A heavy stomp, an overhead two-fist slam striking at the 0.6 s wind-up (with thrown-up dust), a kneel-and-topple death.
 - Fortress: a 3/4-view stronghold — curtain walls with battlements, four round towers with slate cones, a gate where the lane arrives, a keep with lit windows and banners. Damage states break and lower the masonry, burn roofs, add cracks, scorch and rubble; fires with smoke appear, banners tear, the walls shake and throw dust when hit.
 - Towers: Archer (stone keep, timber platform, a hooded archer drawing a longbow), Cannon (drum tower, recoiling cannon with a muzzle blast), Frost (rune obelisk with a turning ice crystal and a cold glow). Each has idle and attack loops, rises in scaffolding when built and is dismantled into rubble when sold.
 - Arena: dark grass with moss/dry patches and tufts, a rutted dirt lane from a crypt in a graveyard (where the dead rise) to a cobbled clearing at the gate, graves, dead trees, lanterns, ruins; a 3/4 stone wall around the edge.

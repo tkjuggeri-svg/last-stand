@@ -27,6 +27,8 @@ Reference feel (mood only — never copy art): late SNES / modern "HD-pixel" act
 |---|---|---|
 | Hero | 32×40 | figure ≈ 28 px tall incl. plume; feet 7 art px below the node origin |
 | Ghoul | 32×32 | figure ≈ 21 px tall, hunched; feet 7 art px below the origin |
+| Hound | 32×32 | low quadruped ≈ 22 px long, 14 tall; paws on the same line as the Ghoul's feet |
+| Brute | 48×48 | figure ≈ 36 px tall; feet on art row 44 (sprite offset (0, −20)) |
 | Towers | 32×48 | base footprint ≈ 26×12 at the bottom of the frame |
 | Fortress | 96×96 | the 48×48 footprint (= 96×96 world collision box) sits at the bottom |
 | Swing trail | 72×72 | radius 34 = the hitbox's 68 px reach |
@@ -34,7 +36,7 @@ Reference feel (mood only — never copy art): late SNES / modern "HD-pixel" act
 | Small effects | 16–24 | sparks, dust, frost |
 | Explosion | 56×56 | = the 112 px blast area |
 
-**Hierarchy by size:** fortress ≫ towers > hero > ghoul. The hero must always be the most readable
+**Hierarchy by size:** fortress ≫ towers > brute > hero > ghoul > hound. The hero must always be the most readable
 thing on screen; enemies read second; buildings are big but darker and calmer.
 
 ## 3. Camera and perspective
@@ -69,7 +71,7 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 - **World:** desaturated, dark — grass `#24331a`, dirt `#433325`, stone `#5b5667`, slate roofs `#302c45`.
 - **Accent:** red (`TABARD`, `BANNER`) only on the hero and on the fortress's banners — the player's side.
 - **Gold:** trims, coins, UI highlights, the order's tower emblem.
-- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`).
+- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`).
 - **Magic/elements:** fire `FIRE` (orange → white), ice `ICE` (deep blue → white).
 - Characters are always **brighter and higher-contrast than the ground** they stand on.
 
@@ -156,7 +158,7 @@ godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 
 - `canvas.gd` — shaded primitives (ellipse, capsule, cylinder, block, polygon), contours, outline.
 - `palette.gd` — the ramps above.
-- `hero_art.gd`, `ghoul_art.gd`, `effects_art.gd`, … — one file per asset family, posed in code.
+- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
 - Review: `tools/art/preview_art.gd` (enlarged contact sheet) and the `gallery` scenario of
   `tests/tools/capture_screenshots.gd` (every animation at real game scale over the real level).
 
