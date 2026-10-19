@@ -107,6 +107,8 @@ Tick items as they're finished.
 - [x] 15-wave run (bosses at 5/10/15, Cultists from wave 4), difficulty tuning with a hero bot in the balance tool (idle hero never wins; a bot hero with a sensible build sometimes does); hero healed between waves
 - [x] Pause menu (truly frozen), settings (fullscreen, Master/Music/SFX volume with the audio buses, rebinding every action), saved to user:// and loaded at startup
 
+- [x] Internal playtest build: Linux + Windows export presets, `tools/build_playtest.sh`, `PLAYTEST.md`
+
 **Done when:** a 20–30 min run is fun from start to finish. → **Internal playtest build.**
 
 ---
@@ -132,7 +134,7 @@ Tick items as they're finished.
 ---
 
 ## M9 — Steam Release Prep
-- [ ] Windows export preset, build pipeline
+- [ ] Release build pipeline (the Linux/Windows presets and the playtest build script exist since M6): signing, store builds
 - [ ] Steam integration (achievements, cloud saves) — decide approach (GodotSteam is an external dependency → needs explicit approval)
 - [ ] Controller support
 - [ ] Performance pass (many enemies/projectiles on screen)
@@ -141,4 +143,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M6 in progress** (phases A–F: dash, Cultist, bosses, 15 waves + hero bot balance, pause/settings, playtest build).
+**M6 complete** (dash, Cultist, three bosses, 15-wave run tuned with a hero bot, pause menu and settings, playtest build tooling). Awaiting hands-on playtest feedback before M7.

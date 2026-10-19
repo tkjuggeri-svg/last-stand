@@ -7,3 +7,6 @@ override.cfg
 
 # Dev-only review screenshots (tests/tools/capture_screenshots.gd), never commit
 dev_screenshots/
+
+# Playtest builds (tools/build_playtest.sh), never commit
+builds/
