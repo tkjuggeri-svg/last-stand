@@ -71,7 +71,7 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 - **World:** desaturated, dark — grass `#24331a`, dirt `#433325`, stone `#5b5667`, slate roofs `#302c45`.
 - **Accent:** red (`TABARD`, `BANNER`) only on the hero and on the fortress's banners — the player's side.
 - **Gold:** trims, coins, UI highlights, the order's tower emblem.
-- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`).
+- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`, kept light because the cool dusk light flattens violets, plus a 1 px rim light on its top-left silhouette edges).
 - **Magic/elements:** fire `FIRE` (orange → white), ice `ICE` (deep blue → white).
 - Characters are always **brighter and higher-contrast than the ground** they stand on.
 

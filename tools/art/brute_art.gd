@@ -126,6 +126,7 @@ func frame(facing: String, pose: Dictionary) -> Image:
 	if pose["dust"]:
 		_dust(c, facing, pose)
 	c.finish()
+	_rim_light(c.image)
 	c.ground_shadow(FEET + Vector2(0, -0.5), Vector2(11.0, 3.2))
 	return c.image
 
@@ -239,6 +240,19 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 	_head(c, Vector2(31, 22.5) + (pose["head"] as Vector2), "side", pose["mouth"])
 	if not fists_up:
 		_arm(c, shoulder, pose["fist_r"], 1.0, pose["smear"])
+
+
+## A 1 px rim of light along the silhouette's top-left edges (the key light's side), so the big
+## dark bulk reads against the ground even under the dusk light.
+func _rim_light(img: Image) -> void:
+	var src: Image = img.duplicate() as Image
+	for y: int in range(1, img.get_height()):
+		for x: int in range(1, img.get_width()):
+			var c: Color = src.get_pixel(x, y)
+			if c.a < 1.0 or c.is_equal_approx(Canvas.OUTLINE):
+				continue
+			if src.get_pixel(x - 1, y).is_equal_approx(Canvas.OUTLINE) or src.get_pixel(x, y - 1).is_equal_approx(Canvas.OUTLINE):
+				img.set_pixel(x, y, c.lerp(P.BRUTE_SKIN[5], 0.45))
 
 
 # ---------------------------------------------------------------- body parts
