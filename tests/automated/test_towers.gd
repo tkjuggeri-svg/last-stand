@@ -24,6 +24,7 @@ func _initialize() -> void:
 	await _test_frost_slow()
 	await _test_slow_never_stacks()
 	await _test_dead_and_removed_targets()
+	await _test_no_attacks_while_building_or_sold()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -204,6 +205,54 @@ func _stationary_ghoul(level: Level, at: Vector2) -> Enemy:
 	ghoul.position = at
 	level.add_child(ghoul)
 	return ghoul
+
+## A ghoul waits in range before the tower is placed: no shot until construction is done, then it
+## fights; once sold it never fires again. Selling mid-construction refunds once, like any sale.
+func _test_no_attacks_while_building_or_sold() -> void:
+	var level: Level = _make_level(0, 1.0)
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var economy: Economy = level.get_node("%Economy")
+	var ghoul: Enemy = _stationary_ghoul(level, Vector2(-380, -30))  # 60 px below slot 3 (-380, -90)
+	(ghoul.get_node("%AttackRange") as Area2D).monitoring = false
+	var health: HealthComponent = ghoul.get_node("%HealthComponent")
+	await _frames(2)
+	var tower: Tower = _build(level, 3, ARCHER)
+	var finished: Array[bool] = [false]
+	tower.construction_finished.connect(func() -> void: finished[0] = true)
+	var build_frames: int = roundi(ARCHER.build_time * 60.0)
+	var quiet: bool = true
+	for _i: int in build_frames - 1:
+		await physics_frame
+		quiet = quiet and tower.is_building() and tower.get_target() == null and _shots(tower) == 0
+	_check("under construction (%.1f s) the tower neither aims nor fires" % ARCHER.build_time,
+		quiet and health.current_health == health.max_health and not finished[0])
+	await _until(func() -> bool: return _shots(tower) > 0, 5)
+	_check("it fires as soon as construction finishes", finished[0] and not tower.is_building() and _shots(tower) == 1)
+
+	await _until(func() -> bool: return _shots(tower) == 0, 60)  # the arrow lands
+	var slot: BuildSlot = builder.get_slots()[3]
+	var gold_before: int = economy.get_gold()
+	builder.sell(slot)
+	_check("a sold tower is deactivated at once", not tower.is_active() and tower.get_target() == null)
+	var health_after_sale: int = health.current_health
+	await _frames(roundi(ARCHER.fire_interval * 60.0) * 2)
+	_check("...and never shoots again", health.current_health == health_after_sale and economy.get_gold() == gold_before + builder.refund_for(ARCHER))
+
+	tower = _build(level, 3, ARCHER)
+	await _frames(5)
+	gold_before = economy.get_gold()
+	var refund: int = builder.sell(slot) + builder.sell(slot)
+	_check("selling mid-construction refunds the normal 50%% once (%d)" % refund,
+		refund == builder.refund_for(ARCHER) and economy.get_gold() == gold_before + refund and not tower.is_active())
+	await _frames(build_frames)
+	_check("...and the unfinished tower never fires", health.current_health == health_after_sale)
+	await _free(level)
+
+
+func _shots(tower: Tower) -> int:
+	if not is_instance_valid(tower):
+		return 0
+	return tower.get_children().filter(func(c: Node) -> bool: return c is Projectile).size()
 
 
 func _make_level(count: int, interval: float) -> Level:

@@ -2,11 +2,14 @@ class_name TowerData
 extends Resource
 ## Stats and look of one tower type. Make one .tres per tower in data/towers/ and tune it there.
 
-## Selects the tower's animations ("<id>_idle", "<id>_fire").
+## Selects the tower's animations ("<id>_idle", "<id>_fire", "<id>_build").
 @export var id: StringName = &""
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var cost: int = 50
+## Seconds of construction after placing: the tower can't target or fire until it is finished.
+## Its "<id>_build" animation is stretched to this length.
+@export var build_time: float = 0.6
 ## The tower scene to build (all towers share one scene; the data decides how it looks and fights).
 @export var scene: PackedScene
 

@@ -44,6 +44,7 @@ func remove_tower() -> Tower:
 	var removed: Tower = tower
 	tower = null
 	if removed != null:
+		removed.deactivate()
 		remove_child(removed)
 		_dismantle(removed.data)
 		_puff()

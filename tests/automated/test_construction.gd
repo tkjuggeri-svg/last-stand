@@ -57,7 +57,8 @@ func _test_slots_and_rules() -> void:
 	_check("a new tower rises in scaffolding (%s)" % tower_sprite.animation,
 		tower_sprite.animation == &"archer_build" and archer_tower.is_building())
 	await _frames(45)
-	_check("...then stands idle (%s)" % tower_sprite.animation, tower_sprite.animation == &"archer_idle" and not archer_tower.is_building())
+	_check("...then is finished: idle, or already firing (%s)" % tower_sprite.animation,
+		tower_sprite.animation in [&"archer_idle", &"archer_fire"] and not archer_tower.is_building())
 	var refund: int = builder.sell(slot)
 	await _frames(1)
 	var rubble: Array[Node] = slot.get_children().filter(func(n: Node) -> bool: return n.name.begins_with("TowerDismantle"))

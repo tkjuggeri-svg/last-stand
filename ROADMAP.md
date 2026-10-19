@@ -67,7 +67,7 @@ Tick items as they're finished.
 - [x] Hero and Ghoul redrawn at higher detail; idle/walk/attack/death animations; new swing, hit spark, dust
 - [x] 3/4-view fortress with 4 damage states, fires, smoke, banners, braziers, hit shake
 - [x] Archer, Cannon and Frost towers redesigned with idle and attack animations; new projectiles, explosion, frost effects
-- [x] Construction (scaffolding) and dismantling (rubble) animations
+- [x] Construction (scaffolding) and dismantling (rubble) animations; a tower under construction (`TowerData.build_time`, 0.6 s) can't fire, a sold tower stops at once
 - [x] Environment: richer ground, graveyard props and crypt, 3/4 arena wall; dusk lighting, fog, fireflies, vignette
 - [x] HUD and build menu: original pixel font, pixel frames, icons
 
