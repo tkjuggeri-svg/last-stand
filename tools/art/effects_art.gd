@@ -8,6 +8,10 @@ const P: GDScript = preload("res://tools/art/palette.gd")
 
 const SWING_SIZE: Vector2i = Vector2i(72, 72)
 const SWING_REACH: float = 34.0
+## Long Reach trails: the swing drawn at these multiples of the normal reach (1 to 4 stacks of
+## +15%), in bigger frames. Sprites never scale, so a longer swing needs its own art.
+const REACH_TIERS: Array[float] = [1.15, 1.3, 1.45, 1.6]
+const SWING_LONG_SIZE: Vector2i = Vector2i(128, 128)
 const SPARK_SIZE: Vector2i = Vector2i(16, 16)
 const DUST_SIZE: Vector2i = Vector2i(24, 24)
 
@@ -25,25 +29,38 @@ func swing_rows() -> Array[Array]:
 	return rows
 
 
+## The Long Reach trails: per reach tier, 8 rows (one per direction) of 4 frames.
+func swing_long_rows() -> Array[Array]:
+	var rows: Array[Array] = []
+	for tier: float in REACH_TIERS:
+		for direction: int in 8:
+			var frames: Array[Image] = []
+			for frame: int in 4:
+				frames.append(_swing_frame(direction * PI / 4.0, frame, SWING_LONG_SIZE, SWING_REACH * tier))
+			rows.append(frames)
+	return rows
+
+
 ## A crescent along the swing at the hitbox's 68 px reach (34 art px): a white-hot leading edge,
 ## a cool steel-blue body and a tail that breaks up into dither, plus a few flying glints.
-func _swing_frame(facing: float, frame: int) -> Image:
-	var img: Image = Image.create_empty(SWING_SIZE.x, SWING_SIZE.y, false, Image.FORMAT_RGBA8)
-	var center: Vector2 = Vector2(SWING_SIZE) / 2.0
+func _swing_frame(facing: float, frame: int, size: Vector2i = SWING_SIZE, reach: float = SWING_REACH) -> Image:
+	var img: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var center: Vector2 = Vector2(size) / 2.0
+	var grow: float = reach / SWING_REACH  # a longer swing has a proportionally thicker crescent
 	var lead: float = deg_to_rad([-10.0, 30.0, 52.0, 56.0][frame])
 	var trail: float = deg_to_rad([55.0, 95.0, 105.0, 90.0][frame])
 	var fade: float = [0.0, 0.0, 0.35, 0.75][frame]
 	var ramp: Array[Color] = [Color("3c4a6a"), Color("6f88b0"), Color("a9c2df"), Color("e4f0fa"), Color("ffffff")]
-	for y: int in SWING_SIZE.y:
-		for x: int in SWING_SIZE.x:
+	for y: int in size.y:
+		for x: int in size.x:
 			var v: Vector2 = Vector2(x + 0.5, y + 0.5) - center
 			var radius: float = v.length()
 			var angle: float = wrapf(v.angle() - facing, -PI, PI)
 			if angle > lead or angle < lead - trail or angle < deg_to_rad(-55.0):
 				continue
 			var t: float = (lead - angle) / trail  # 0 at the leading edge, 1 at the tail
-			var thickness: float = lerpf(13.0, 2.5, t) * ([0.8, 1.0, 0.85, 0.6][frame])
-			var depth: float = SWING_REACH - radius  # 0 at the outer rim
+			var thickness: float = lerpf(13.0, 2.5, t) * ([0.8, 1.0, 0.85, 0.6][frame]) * grow
+			var depth: float = reach - radius  # 0 at the outer rim
 			if depth < 0.0 or depth > thickness:
 				continue
 			var threshold: float = Canvas.BAYER_4[(y % 4) * 4 + (x % 4)] / 16.0
@@ -58,8 +75,8 @@ func _swing_frame(facing: float, frame: int) -> Image:
 	if frame in [1, 2]:
 		for k: int in 3:
 			var a: float = facing + lead - deg_to_rad(8.0 + k * 22.0)
-			var p: Vector2 = center + Vector2.from_angle(a) * (SWING_REACH + 2.0 + k + frame)
-			if p.x >= 0 and p.y >= 0 and p.x < SWING_SIZE.x and p.y < SWING_SIZE.y:
+			var p: Vector2 = center + Vector2.from_angle(a) * (reach + 2.0 + k + frame)
+			if p.x >= 0 and p.y >= 0 and p.x < size.x and p.y < size.y:
 				img.set_pixel(int(p.x), int(p.y), Color("ffffff") if k == 0 else ramp[2])
 	return img
 

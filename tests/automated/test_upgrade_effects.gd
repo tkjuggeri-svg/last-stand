@@ -76,8 +76,15 @@ func _test_upgrade(id: StringName) -> void:
 			mods.add_upgrade(data)
 			ok = hitbox.damage == 14
 		"long_reach":
+			var trail: AnimatedSprite2D = hero.get_node("%AttackVisual")
 			mods.add_upgrade(data)
-			ok = hitbox.scale.is_equal_approx(Vector2.ONE * 1.15)
+			hero.attack(hero.global_position + Vector2.RIGHT * 50)
+			var one: bool = hitbox.scale.is_equal_approx(Vector2.ONE * 1.15) and trail.animation == &"swing_0_1"
+			await _frames(30)
+			mods.add_upgrade(data)
+			hero.attack(hero.global_position + Vector2.RIGHT * 50)
+			label += " (the trail grows with it: %s, %s)" % [one, trail.animation]
+			ok = one and trail.animation == &"swing_0_2" and hero.get_reach_tier() == 2
 		"battle_rhythm":
 			mods.add_upgrade(data)
 			ok = is_equal_approx(mods.apply(hero.attack_cooldown, [RunModifiers.HERO_ATTACK_COOLDOWN]), hero.attack_cooldown * 0.85)

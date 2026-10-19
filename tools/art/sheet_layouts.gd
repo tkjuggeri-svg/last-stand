@@ -40,6 +40,47 @@ const SWING: Dictionary = {
 	],
 }
 
+## Long Reach swing trails ("swing_<direction>_<tier>", tier 1-4 = reach x1.15 .. x1.6), 128x128.
+const SWING_LONG: Dictionary = {
+	"png": "res://assets/sprites/effects/swing_long.png",
+	"frames": "res://entities/hero/swing_long_frames.tres",
+	"size": Vector2i(128, 128),
+	"anims": [
+		["swing_0_1", 0, 4, 24.0, false],
+		["swing_1_1", 1, 4, 24.0, false],
+		["swing_2_1", 2, 4, 24.0, false],
+		["swing_3_1", 3, 4, 24.0, false],
+		["swing_4_1", 4, 4, 24.0, false],
+		["swing_5_1", 5, 4, 24.0, false],
+		["swing_6_1", 6, 4, 24.0, false],
+		["swing_7_1", 7, 4, 24.0, false],
+		["swing_0_2", 8, 4, 24.0, false],
+		["swing_1_2", 9, 4, 24.0, false],
+		["swing_2_2", 10, 4, 24.0, false],
+		["swing_3_2", 11, 4, 24.0, false],
+		["swing_4_2", 12, 4, 24.0, false],
+		["swing_5_2", 13, 4, 24.0, false],
+		["swing_6_2", 14, 4, 24.0, false],
+		["swing_7_2", 15, 4, 24.0, false],
+		["swing_0_3", 16, 4, 24.0, false],
+		["swing_1_3", 17, 4, 24.0, false],
+		["swing_2_3", 18, 4, 24.0, false],
+		["swing_3_3", 19, 4, 24.0, false],
+		["swing_4_3", 20, 4, 24.0, false],
+		["swing_5_3", 21, 4, 24.0, false],
+		["swing_6_3", 22, 4, 24.0, false],
+		["swing_7_3", 23, 4, 24.0, false],
+		["swing_0_4", 24, 4, 24.0, false],
+		["swing_1_4", 25, 4, 24.0, false],
+		["swing_2_4", 26, 4, 24.0, false],
+		["swing_3_4", 27, 4, 24.0, false],
+		["swing_4_4", 28, 4, 24.0, false],
+		["swing_5_4", 29, 4, 24.0, false],
+		["swing_6_4", 30, 4, 24.0, false],
+		["swing_7_4", 31, 4, 24.0, false],
+	],
+}
+
 const GHOUL: Dictionary = {
 	"png": "res://assets/sprites/enemies/ghoul.png",
 	"frames": "res://entities/enemies/ghoul_frames.tres",
@@ -234,7 +275,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

@@ -15,6 +15,10 @@ const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_
 const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -34)
 ## Respawn protection blink: the sprite fades to this alpha and back, this many times per second.
 const BLINK_ALPHA: float = 0.3
+## The swing trail art: normal reach, and the Long Reach tiers (reach x REACH_TIERS[i] is tier i + 1).
+const SWING_FRAMES: SpriteFrames = preload("res://entities/hero/swing_frames.tres")
+const SWING_LONG_FRAMES: SpriteFrames = preload("res://entities/hero/swing_long_frames.tres")
+const REACH_TIERS: Array[float] = [1.0, 1.15, 1.3, 1.45, 1.6]
 const BLINKS_PER_SECOND: float = 6.0
 
 @export var move_speed: float = 200.0
@@ -164,11 +168,24 @@ func _update_animation() -> void:
 
 
 ## The trail art exists for 8 directions (every 45 degrees); the hitbox itself follows the exact aim.
+## With Long Reach the trail drawn at the nearest reach tier is used, so it matches the hitbox.
 func _play_swing_trail(angle: float) -> void:
 	var index: int = posmod(roundi(angle / (PI / 4.0)), 8)
+	var tier: int = get_reach_tier()
+	_attack_visual.sprite_frames = SWING_FRAMES if tier == 0 else SWING_LONG_FRAMES
 	_attack_visual.show()
 	_attack_visual.stop()
-	_attack_visual.play(StringName("swing_%d" % index))
+	_attack_visual.play(StringName("swing_%d" % index if tier == 0 else "swing_%d_%d" % [index, tier]))
+
+
+## Which trail size fits the swing's reach: 0 = normal, 1-4 = the Long Reach tiers (nearest).
+func get_reach_tier() -> int:
+	var reach: float = RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH])
+	var best: int = 0
+	for i: int in REACH_TIERS.size():
+		if absf(REACH_TIERS[i] - reach) < absf(REACH_TIERS[best] - reach):
+			best = i
+	return best
 
 
 ## Hit feedback: a red-white flash, a spark and a floating damage number.

@@ -32,6 +32,7 @@ func _initialize() -> void:
 	var jobs: Dictionary = {
 		"hero": func() -> void: _save(_sheet(HeroArt.new().sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
 		"swing": func() -> void: _save(_sheet(EffectsArt.new().swing_rows(), Layouts.SWING["size"]), Layouts.SWING["png"]),
+		"swing_long": func() -> void: _save(_sheet(EffectsArt.new().swing_long_rows(), Layouts.SWING_LONG["size"]), Layouts.SWING_LONG["png"]),
 		"ghoul": func() -> void: _save(_sheet(GhoulArt.new().sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),
 		"hound": func() -> void: _save(_sheet(HoundArt.new().sheet_rows(), Layouts.HOUND["size"]), Layouts.HOUND["png"]),
 		"brute": func() -> void: _save(_sheet(BruteArt.new().sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),

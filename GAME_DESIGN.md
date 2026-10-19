@@ -109,7 +109,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Upgrade | Category | Rarity | Effect |
   |---------|----------|--------|--------|
   | Honed Blade | Hero | common | Sword damage +4 |
-  | Long Reach | Hero | common | Sword reach +15% (the hitbox; the trail art stays) |
+  | Long Reach | Hero | common | Sword reach +15% (hitbox and trail: the trail is pre-drawn at x1.15/1.3/1.45/1.6 and the nearest is used) |
   | Battle Rhythm | Hero | common | Swing 15% faster |
   | Iron Constitution | Hero | common | Hero max HP +30 |
   | Second Wind | Hero | rare, once | +1 life |
