@@ -30,9 +30,9 @@ func _initialize() -> void:
 	_check("camera limits = arena + wall band (%s)" % view,
 		camera.limit_left == int(view.position.x) and camera.limit_top == int(view.position.y)
 		and camera.limit_right == int(view.end.x) and camera.limit_bottom == int(view.end.y))
-	var ground: Sprite2D = level.get_node("%Ground")
-	var ground_rect: Rect2 = Rect2(ground.position, ground.texture.get_size() * ground.scale)
-	_check("ground art covers exactly arena + wall band (%s)" % ground_rect, ground_rect == view and not ground.centered)
+	var ground: TiledGround = level.get_node("%Ground")
+	var ground_rect: Rect2 = ground.get_rect_in_parent()
+	_check("ground art covers exactly arena + wall band (%s)" % ground_rect, ground_rect == view and ground.get_child_count() > 1)
 	_check("the wall band lies on the collision walls",
 		_wall_rect(bounds, "WallTop").position.y <= view.position.y and _wall_rect(bounds, "WallLeft").position.x <= view.position.x
 		and _wall_rect(bounds, "WallBottom").end.y >= view.end.y and _wall_rect(bounds, "WallRight").end.x >= view.end.x)

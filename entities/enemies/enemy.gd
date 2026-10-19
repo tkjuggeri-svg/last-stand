@@ -50,6 +50,10 @@ var _claimed_limit: AttackerLimit = null
 var _slow_factor: float = 1.0
 var _slow_left: float = 0.0
 var _sprite_rest: Vector2 = Vector2.ZERO
+## Where on its lane the enemy is (curve offset), worked out once per physics frame: finding the
+## closest point on the curve is the costliest thing an enemy does, and towers ask for it too.
+var _lane_offset: float = 0.0
+var _lane_offset_frame: int = -1
 var _jolt: Tween
 
 @onready var _health: HealthComponent = %HealthComponent
@@ -127,7 +131,11 @@ func is_alive() -> bool:
 func get_lane_progress() -> float:
 	if lane == null:
 		return 0.0
-	return lane.curve.get_closest_offset(lane.to_local(global_position))
+	var frame: int = Engine.get_physics_frames()
+	if frame != _lane_offset_frame:
+		_lane_offset_frame = frame
+		_lane_offset = lane.curve.get_closest_offset(lane.to_local(global_position))
+	return _lane_offset
 
 
 func get_move_speed() -> float:
@@ -224,9 +232,7 @@ func _strike() -> void:
 
 
 func _direction_along_lane() -> Vector2:
-	var curve: Curve2D = lane.curve
-	var offset: float = curve.get_closest_offset(lane.to_local(global_position))
-	var target: Vector2 = lane.to_global(curve.sample_baked(offset + LANE_LOOKAHEAD))
+	var target: Vector2 = lane.to_global(lane.curve.sample_baked(get_lane_progress() + LANE_LOOKAHEAD))
 	var to_target: Vector2 = target - global_position
 	if to_target.length() < 1.0:
 		return Vector2.ZERO

@@ -1,6 +1,7 @@
-[gd_scene load_steps=75 format=3]
+[gd_scene load_steps=76 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
+[ext_resource type="Script" path="res://levels/tiled_ground.gd" id="36_tiled_ground"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
 [ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
 [ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
@@ -138,6 +139,7 @@ run_cycle = NodePath("Systems/RunCycle")
 modifiers = NodePath("Systems/RunModifiers")
 
 [node name="Backdrop" type="ColorRect" parent="."]
+light_mask = 0
 z_index = -3
 offset_left = -1400.0
 offset_top = -900.0
@@ -147,6 +149,7 @@ mouse_filter = 2
 color = Color(0.06, 0.055, 0.07, 1)
 
 [node name="Floor" type="ColorRect" parent="."]
+light_mask = 0
 unique_name_in_owner = true
 z_index = -2
 offset_left = -900.0
@@ -156,18 +159,19 @@ offset_bottom = 400.0
 mouse_filter = 2
 color = Color(0.16, 0.24, 0.14, 1)
 
-[node name="Ground" type="Sprite2D" parent="."]
+[node name="Ground" type="Node2D" parent="."]
 unique_name_in_owner = true
 z_index = -1
 position = Vector2(-932, -532)
 scale = Vector2(2, 2)
+script = ExtResource("36_tiled_ground")
 texture = ExtResource("7_ground")
-centered = false
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.64, 0.66, 0.8, 1)
 
 [node name="Fog" type="ColorRect" parent="."]
+light_mask = 0
 z_index = -1
 material = SubResource("ShaderMaterial_fog")
 offset_left = -900.0
