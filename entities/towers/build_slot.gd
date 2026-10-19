@@ -1,7 +1,8 @@
 class_name BuildSlot
 extends Node2D
 ## A fixed place where exactly one tower can stand. Shows a stone pad, glows while the hero is close
-## (with an "E" prompt) and can draw the tower's range. Building and selling rules live in TowerBuilder.
+## (with an "E" prompt) and draws a range ring: the one the build menu asks for, or its tower's range
+## while the mouse is over the slot. Building and selling rules live in TowerBuilder.
 
 signal hero_entered(slot: BuildSlot)
 signal hero_exited(slot: BuildSlot)
@@ -9,11 +10,15 @@ signal hero_exited(slot: BuildSlot)
 const RANGE_COLOR: Color = Color(0.95, 0.85, 0.5, 0.55)
 const DUST_SCENE: PackedScene = preload("res://entities/effects/dust_puff.tscn")
 const DISMANTLE_SCENE: PackedScene = preload("res://entities/towers/tower_dismantle.tscn")
+## The mouse-over area (slot-local px): the pad and the tower standing on it.
+const HOVER_RECT: Rect2 = Rect2(-30, -96, 60, 116)
 
 ## The tower standing here, or null.
 var tower: Tower = null
 
-var _range_radius: float = 0.0
+## Range ring requested by the build menu (0 = none).
+var _menu_range: float = 0.0
+var _hovered: bool = false
 
 @onready var _pad: Sprite2D = %Pad
 @onready var _prompt: Label = %Prompt
@@ -59,10 +64,29 @@ func set_highlighted(highlighted: bool) -> void:
 	_update_prompt()
 
 
-## Draws a range ring (0 hides it).
+## Draws a range ring (0 hides it) while the build menu is open here.
 func show_range(radius: float) -> void:
-	_range_radius = radius
+	_menu_range = radius
 	queue_redraw()
+
+
+## Mouse-over: the ring of the tower standing here (called every frame with the mouse position).
+func update_hover(mouse_world: Vector2) -> void:
+	var hovered: bool = HOVER_RECT.has_point(to_local(mouse_world))
+	if hovered != _hovered:
+		_hovered = hovered
+		queue_redraw()
+
+
+func is_hovered() -> bool:
+	return _hovered
+
+
+## The radius of the ring being drawn (0 = none).
+func get_shown_range() -> float:
+	if _menu_range > 0.0:
+		return _menu_range
+	return tower.get_attack_range() if _hovered and tower != null else 0.0
 
 
 ## A dust cloud when a tower goes up or comes down (display only).
@@ -86,13 +110,18 @@ func _dismantle(tower_data: TowerData) -> void:
 	add_child(effect)
 
 
+func _process(_delta: float) -> void:
+	update_hover(get_global_mouse_position())
+
+
 func _update_prompt() -> void:
 	if _prompt != null:
 		_prompt.text = "E  Build" if is_empty() else "E  " + tower.data.display_name
 
 
 func _draw() -> void:
-	if _range_radius <= 0.0:
+	var radius: float = get_shown_range()
+	if radius <= 0.0:
 		return
 	# A dashed ring, drawn in 2 px segments so it matches the pixel art.
 	var segments: int = 64
@@ -101,4 +130,4 @@ func _draw() -> void:
 			continue
 		var a: float = TAU * i / segments
 		var b: float = TAU * (i + 1) / segments
-		draw_line(Vector2.from_angle(a) * _range_radius, Vector2.from_angle(b) * _range_radius, RANGE_COLOR, 2.0)
+		draw_line(Vector2.from_angle(a) * radius, Vector2.from_angle(b) * radius, RANGE_COLOR, 2.0)

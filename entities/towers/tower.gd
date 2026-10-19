@@ -3,6 +3,8 @@ extends StaticBody2D
 ## A built tower. One scene for every tower type: its TowerData decides the look and the stats.
 ## It targets the living enemy in range that is furthest along the lane (closest to the fortress),
 ## keeps that target while it stays valid and in range, and fires a Projectile every fire_interval.
+## "In range" means the enemy's centre is within attack_range of the tower's base (the range area is
+## only the broad phase: it reports bodies that merely touch the circle).
 ## The base stands at the node's origin (the build slot's centre); a small body blocks the hero.
 ## After placing it is under construction for data.build_time seconds (shown by its "<id>_build"
 ## animation, stretched to that time): it tracks enemies entering its range but can't target or fire.
@@ -90,13 +92,23 @@ func deactivate() -> void:
 	_range_area.set_deferred(&"monitoring", false)
 
 
+## The current attack range in px (what the range ring shows).
+func get_attack_range() -> float:
+	return data.attack_range if data != null else 0.0
+
+
+## True if `point` is within attack range of the tower's base.
+func is_in_range(point: Vector2) -> bool:
+	return global_position.distance_to(point) <= get_attack_range()
+
+
 ## Untyped on purpose: the stored target may already be freed, and a freed object can't be passed
 ## as an Enemy. is_instance_valid() is checked before anything else touches it.
 func _is_valid_target(candidate: Variant) -> bool:
 	if not is_instance_valid(candidate):
 		return false
 	var enemy: Enemy = candidate as Enemy
-	return enemy != null and enemy.is_alive() and _in_range.has(enemy)
+	return enemy != null and enemy.is_alive() and _in_range.has(enemy) and is_in_range(enemy.global_position)
 
 
 func _pick_target() -> Enemy:
@@ -108,7 +120,7 @@ func _pick_target() -> Enemy:
 			_in_range.remove_at(i)
 			continue
 		var enemy: Enemy = body as Enemy
-		if enemy == null or not enemy.is_alive():
+		if enemy == null or not enemy.is_alive() or not is_in_range(enemy.global_position):
 			continue
 		var progress: float = enemy.get_lane_progress()
 		if progress > best_progress:
@@ -120,7 +132,7 @@ func _pick_target() -> Enemy:
 func _fire() -> void:
 	_cooldown_left = data.fire_interval
 	var shot: Projectile = PROJECTILE_SCENE.instantiate()
-	shot.launch(data, _target, global_position + data.muzzle_offset)
+	shot.launch(data, _target, global_position + data.muzzle_offset, global_position, get_attack_range())
 	add_child(shot)
 	_sprite.play(StringName("%s_fire" % data.id))
 

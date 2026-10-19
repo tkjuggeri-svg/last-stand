@@ -116,7 +116,7 @@ func _rebuild() -> void:
 		_info_text.text = _stats_text(data)
 		_sell_button.text = "Sell   +%d gold" % builder.refund_for(data)
 		_details.text = ""
-		_slot.show_range(data.attack_range)
+		_slot.show_range(_slot.tower.get_attack_range())
 		_sell_button.grab_focus.call_deferred()
 	_fit_panel()
 
