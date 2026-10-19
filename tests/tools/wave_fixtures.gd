@@ -17,6 +17,18 @@ static func make_wave(count: int, interval: float, enemy: EnemyData = GHOUL, lan
 	return wave
 
 
-## Replaces the spawner's waves with a single simple wave (call before the level enters the tree).
+## Replaces the spawner's waves with a single simple wave that starts as soon as the level is
+## ready, skipping the build phase (call before the level enters the tree).
 static func single_wave(spawner: WaveSpawner, count: int, interval: float, enemy: EnemyData = GHOUL) -> void:
 	spawner.waves = [make_wave(count, interval, enemy)]
+	spawner.autostart = true
+
+
+## Ends the level's build phase like the Start button does. Await it: during a test's _initialize()
+## a node added to the tree only becomes ready a frame later.
+static func start_wave(level: Node) -> void:
+	if not level.is_node_ready():
+		await level.ready
+	var cycle: RunCycle = level.get_node("%RunCycle")
+	var started: bool = cycle.start_wave()
+	assert(started, "the level was not in its build phase")

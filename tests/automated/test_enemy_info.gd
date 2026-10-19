@@ -1,6 +1,8 @@
 extends SceneTree
 ## Automated check for the enemy information HUD: counts, notifications and their wiring.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
+## The level's wave 1.
+const WAVE_SIZE: int = 10
 
 var _failures: int = 0
 
@@ -16,6 +18,7 @@ func _initialize() -> void:
 func _test_in_level() -> void:
 	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	root.add_child(level)
+	await WaveFixtures.start_wave(level)
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var hud: CanvasLayer = level.get_node("HUD")
 	var stats: Label = hud.get_node("%EnemyStatsLabel")
@@ -35,13 +38,13 @@ func _test_in_level() -> void:
 	# shows the latest counts (i.e. no frame ever displays stale numbers).
 	spawner.enemy_counts_changed.connect(func(_living: int, _spawned: int) -> void:
 		(func() -> void:
-			if stats.text != _stats_text(spawner.get_living_count(), spawner.get_spawned_count()):
+			if stats.text != _stats_text(spawner.get_remaining_count()):
 				events["label_lagged"] = true).call_deferred())
 	await _frames(2)
 
 	# --- First spawn ---
-	_check("stats after first spawn", stats.text == _stats_text(1, 1))
-	_check("'Ghoul incoming!' shown", _feed_texts(feed) == ["Ghoul incoming!"])
+	_check("a wave of 10: all still to deal with after the first spawn (%s)" % stats.text, stats.text == _stats_text(10))
+	_check("wave start and 'Ghoul incoming!' shown (%s)" % [_feed_texts(feed)], _feed_texts(feed) == ["Wave 1 begins!", "Ghoul incoming!"])
 
 	# --- Kill it ---
 	var ghoul: Enemy = spawner.get_child(0)
@@ -51,7 +54,7 @@ func _test_in_level() -> void:
 		hero.attack(ghoul.global_position)
 		await _frames(27)
 	_check("ghoul killed", not is_instance_valid(ghoul) and events["killed"] == 1)
-	_check("stats after kill (0 alive, 1 spawned)", stats.text == _stats_text(0, 1))
+	_check("a kill counts down the enemies left (%s)" % stats.text, stats.text == _stats_text(9))
 	_check("'Ghoul slain!' shown", _feed_texts(feed).has("Ghoul slain!"))
 	var slain_label: Label = _find_label(feed, "Ghoul slain!")
 
@@ -73,7 +76,7 @@ func _test_in_level() -> void:
 			and living == _alive_children(spawner).size()
 			and living == events["spawned"] - events["killed"] - events["reached"]
 			and spawner.get_spawned_count() == events["spawned"]
-			and stats.text == _stats_text(living, events["spawned"]))
+			and stats.text == _stats_text(WAVE_SIZE - events["killed"] - events["reached"]))
 	_check("a ghoul reached the fortress", fortress.health.current_health == 90 and events["reached"] == 1)
 	_check("reaching the fortress is not reported as a kill", events["killed"] == 1)
 	_check("counts and label match the living enemies every frame (%d frames)" % frames, counts_ok)
@@ -134,8 +137,8 @@ func _until_frame(frame: int) -> void:
 		await physics_frame
 
 
-func _stats_text(living: int, spawned: int) -> String:
-	return "Enemies alive: %d    Spawned: %d" % [living, spawned]
+func _stats_text(remaining: int) -> String:
+	return "Enemies left: %d / %d" % [remaining, WAVE_SIZE]
 
 
 func _feed_texts(feed: NotificationFeed) -> Array[String]:

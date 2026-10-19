@@ -27,6 +27,11 @@ func _initialize() -> void:
 	for child: Node in main.get_children():
 		if child is Level:
 			level = child
+	# Runs start in the build phase; the review set shows it, then every scenario starts wave 1.
+	if _scenario == "review":
+		await _shot("00_build_phase")
+	await WaveFixtures.start_wave(level)
+	await _frames(2)
 	if _scenario == "combat":
 		await _combat(level)
 		quit()

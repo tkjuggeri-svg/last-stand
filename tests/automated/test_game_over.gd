@@ -19,6 +19,11 @@ func _initialize() -> void:
 	_check("level is running", level.can_process() and not level.is_run_over())
 	var lost_count: Array[int] = [0]
 	level.run_lost.connect(func(_reason: Level.LossReason) -> void: lost_count[0] += 1)
+	await _frames(60)
+	_check("a run starts in the build phase: no enemies yet", _in_build_phase(level) and _enemy_count(level) == 0)
+	await _press_start_wave()
+	await _frames(2)
+	_check("Enter starts wave 1", not _in_build_phase(level) and _enemy_count(level) == 1)
 
 	# --- Trigger through a real enemy hit (a physics callback) ---
 	var fortress: Fortress = level.get_node("Fortress")
@@ -75,7 +80,11 @@ func _initialize() -> void:
 	_check("hero back at start position", new_hero.position == Vector2(-200, 80))
 	var hud_label: Label = level.get_node("HUD").get_node("%FortressBar").get_node("%ValueLabel")
 	_check("HUD shows the new fortress (100 / 100)", hud_label.text == "100 / 100")
-	_check("spawning restarted", (level.get_node("WaveSpawner") as WaveSpawner).get_child_count() == 1)
+	_check("the new run waits in the build phase again", _in_build_phase(level) and _enemy_count(level) == 0)
+	await _press_start_wave()
+	await _frames(2)
+	_check("...and its wave 1 starts from the first enemy", _enemy_count(level) == 1
+		and (level.get_node("%RunCycle") as RunCycle).get_current_wave_number() == 1)
 
 	Input.action_press("move_right")
 	await _frames(30)
@@ -105,6 +114,26 @@ func _current_level(main: Node) -> Level:
 
 func _level_count(main: Node) -> int:
 	return main.get_children().filter(func(c: Node) -> bool: return c is Level).size()
+
+
+func _in_build_phase(level: Level) -> bool:
+	return (level.get_node("%RunCycle") as RunCycle).get_phase() == RunCycle.Phase.BUILD
+
+
+func _enemy_count(level: Level) -> int:
+	return (level.get_node("WaveSpawner") as Node).get_child_count()
+
+
+## The real key: an input event, as the player's Enter press.
+func _press_start_wave() -> void:
+	var press: InputEventAction = InputEventAction.new()
+	press.action = "start_wave"
+	press.pressed = true
+	Input.parse_input_event(press)
+	await _frames(1)
+	var release: InputEventAction = InputEventAction.new()
+	release.action = "start_wave"
+	Input.parse_input_event(release)
 
 
 func _enemy_positions(spawner: WaveSpawner) -> Array[Vector2]:

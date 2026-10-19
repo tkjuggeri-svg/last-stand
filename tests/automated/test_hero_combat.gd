@@ -215,6 +215,7 @@ func _test_death_and_restart() -> void:
 	await _frames(2)
 	var screen: GameOverScreen = main.get_node("%GameOverScreen")
 	var level: Level = _level_of(main)
+	await WaveFixtures.start_wave(level)
 	var hero: Hero = level.get_node("Hero")
 	var reasons: Array[Level.LossReason] = []
 	level.run_lost.connect(func(reason: Level.LossReason) -> void: reasons.append(reason))

@@ -28,7 +28,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ## 3. Run structure
 
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
-- Each wave has a **build phase** (untimed in prototype; optional timer later) and a **combat phase**.
+- Each wave has a **build phase** and a **combat phase** (`RunCycle`, per level). The build phase is untimed (optional timer later): no enemies come until the player presses **Start wave** (HUD button, top-left) or **Enter** (`start_wave`). The combat phase ends when the wave's last enemy is dead or has reached the fortress; then the next build phase begins. After the last wave the run is finished. Building and selling stay allowed in both phases.
+- HUD: a top-left wave panel ("Wave 3 / 10", the phase, the Start button in the build phase); the bottom-left panel shows "Enemies left: n / total" during a wave and "Next wave: n enemies" between waves.
 - The run ends when the **fortress HP reaches 0** (defeat) or wave 15's boss dies (victory). In the prototype the hero's death also ends the run (until respawning exists).
   Prototype (M1): defeat freezes the level and shows a Game Over screen ("The fortress has fallen.") with Restart, which starts a completely fresh run.
 - Hero death is **not** run-ending: the hero respawns at the fortress after a delay (e.g. 5 s, growing each death). The fortress is the true fail state, which keeps the TD identity.
@@ -116,6 +117,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 | Ability     | Space / Right mouse|
 | Build menu  | B / click slot     |
 | Interact    | E                  |
+| Start wave  | Enter (build phase)|
 | Pause       | Esc                |
 
 Controller support is a post-prototype goal (Steam Deck verified is a nice-to-have).

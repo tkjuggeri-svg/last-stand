@@ -78,7 +78,7 @@ Tick items as they're finished.
 ## M4 — Waves & Run Structure
 - [x] `WaveData` + `SpawnGroup` resources; `WaveSpawner` driven by data (replaces the continuous spawner), wired to `WaveRewards`
 - [ ] 2–3 lanes; waves pick a lane per spawn group
-- [ ] Build phase ↔ combat phase cycle, "Start wave" button
+- [x] Build phase ↔ combat phase cycle (`RunCycle`), "Start wave" button + Enter, HUD wave/phase/enemies left
 - [ ] Enemy roster: Ghoul, Hound, Brute
 - [ ] Hero death + respawn
 - [ ] Victory after final wave; 10 hand-authored waves

@@ -121,7 +121,7 @@ Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16), `enemy_hitbo
 
 ## Input actions
 
-Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E: build menu at a slot). Menus also use Godot's built-in `ui_*` actions (Esc closes, Enter confirms). The hero ignores `attack` while the mouse is over UI.
+Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E: build menu at a slot), `start_wave` (Enter / keypad Enter: ends the build phase; the HUD also has a Start wave button). Menus also use Godot's built-in `ui_*` actions (Esc closes, Enter confirms). The hero ignores `attack` while the mouse is over UI.
 
 Planned, added by the feature that needs them: `ability_1` (Space/RMB), `build` (B), `pause` (Esc). Never check raw keycodes in code.
 

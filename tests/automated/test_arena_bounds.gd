@@ -15,6 +15,7 @@ var _failures: int = 0
 func _initialize() -> void:
 	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	root.add_child(level)
+	await WaveFixtures.start_wave(level)
 	await _frames(2)
 	var floor_rect_node: ColorRect = level.get_node("%Floor")
 	var arena: Rect2 = Rect2(floor_rect_node.position, floor_rect_node.size)

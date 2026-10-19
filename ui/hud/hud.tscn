@@ -114,6 +114,44 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.76, 0.82, 1)
 text = "Enemies alive: 0    Spawned: 0"
 
+[node name="WaveMargin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+offset_right = 320.0
+offset_bottom = 120.0
+mouse_filter = 2
+theme = ExtResource("4_theme")
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+
+[node name="WavePanel" type="PanelContainer" parent="WaveMargin"]
+custom_minimum_size = Vector2(232, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="WaveBox" type="VBoxContainer" parent="WaveMargin/WavePanel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="WaveLabel" type="Label" parent="WaveMargin/WavePanel/WaveBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
+text = "Wave 1 / 1"
+
+[node name="PhaseLabel" type="Label" parent="WaveMargin/WavePanel/WaveBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Build phase"
+
+[node name="StartWaveButton" type="Button" parent="WaveMargin/WavePanel/WaveBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Start wave  [Enter]"
+
 [node name="NotificationFeed" parent="." instance=ExtResource("3_feed")]
 unique_name_in_owner = true
 anchors_preset = 1

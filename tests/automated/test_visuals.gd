@@ -98,6 +98,7 @@ func _test_hero_animation() -> void:
 func _test_ghoul_and_effects() -> void:
 	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	root.add_child(level)
+	await WaveFixtures.start_wave(level)
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var hero: Hero = level.get_node("Hero")
 	var effects: Node2D = level.get_node("%Effects")

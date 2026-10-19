@@ -27,6 +27,7 @@ func _play(setup_name: String, plan: Array) -> void:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	(level.get_node("Hero") as Node2D).position = Vector2(-750, 330)  # idle, away from the lane
 	root.add_child(level)
+	await WaveFixtures.start_wave(level)
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	var economy: Economy = level.get_node("%Economy")
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")

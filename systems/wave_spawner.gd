@@ -89,6 +89,11 @@ func get_wave_enemy_total() -> int:
 	return waves[_wave_index].get_enemy_total() if _wave_index >= 0 else 0
 
 
+## Enemies the next wave will send (0 after the last wave).
+func get_next_wave_enemy_total() -> int:
+	return waves[_wave_index + 1].get_enemy_total() if has_next_wave() else 0
+
+
 ## Enemies of the current wave not yet dealt with: still to spawn, or alive.
 func get_remaining_count() -> int:
 	return get_wave_enemy_total() - _finished_count if _wave_open else 0
