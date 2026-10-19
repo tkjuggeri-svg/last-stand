@@ -28,7 +28,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ## 3. Run structure
 
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
-  **M4 prototype: 10 hand-authored waves** (no bosses yet) on the prototype arena; beating wave 10 wins the run (Victory screen, "Play again" starts a fresh run, same pattern as Game Over).
+  **M6: 15 hand-authored waves** with bosses at 5, 10 and 15 on the prototype arena; beating wave 15 wins the run (Victory screen, "Play again" starts a fresh run, same pattern as Game Over).
 - Each wave has a **build phase** and a **combat phase** (`RunCycle`, per level). The build phase is untimed (optional timer later): no enemies come until the player presses **Start wave** (HUD button, top-left) or **Enter** (`start_wave`). The combat phase ends when the wave's last enemy is dead or has reached the fortress; then the next build phase begins. After the last wave the run is finished. Building and selling stay allowed in both phases.
 - HUD: a top-left wave panel ("Wave 3 / 10", the phase, the Start button in the build phase); the bottom-left panel shows "Enemies left: n / total" during a wave and "Next wave: n enemies" between waves.
 - The run ends in defeat when the **fortress HP reaches 0** ("The fortress has fallen.") or the hero loses its **last life** ("The hero has fallen."), and in victory when the last wave is beaten.
@@ -146,22 +146,31 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Hand-authored for the first version; later add a difficulty scaler (HP/count multipliers) for endless mode.
 - `WaveSpawner` (per level, no autoload) holds the level's lanes and waves, starts one wave at a time (`start_next_wave()`), gives each spawned enemy its group's `EnemyData`, and emits `wave_started(n)` / `wave_cleared(n)` (every enemy of the wave spawned and gone: killed or used up at the fortress) plus per-enemy signals. Other systems (WaveRewards, HUD, Level) connect to it through exported node references, so no `Events` autoload is needed yet.
 
-- **M4 waves** (`data/waves/wave_01..10.tres`; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Brutes in wave 5; every wave brings more total enemy HP than the last:
-  | Wave | Ghouls | Hounds | Brutes | Total | Lanes | Total HP |
-  |------|--------|--------|--------|-------|-------|----------|
-  | 1  | 8  | –  | –  | 8   | W        | 240 |
-  | 2  | 13 | –  | –  | 13  | W, NE    | 390 |
-  | 3  | 11 | 6  | –  | 17  | W, NE    | 420 |
-  | 4  | 16 | 8  | –  | 24  | all      | 600 |
-  | 5  | 16 | 8  | 2  | 26  | all      | 900 |
-  | 6  | 24 | 14 | 2  | 40  | all      | 1230 |
-  | 7  | 18 | 24 | 5  | 47  | all      | 1650 |
-  | 8  | 30 | 28 | 8  | 66  | all      | 2520 |
-  | 9  | 40 | 50 | 16 | 106 | all      | 4350 |
-  | 10 | 60 | 76 | 20 | 156 | all      | 5940 |
-- Tuning (balance report after the playtest fixes, idle hero, towers and upgrades bought as gold allows, 5 s build phases): no tower-only plan wins. Best: archers + cannons and the mixed build fall in wave 9; all archers wave 8, all cannons wave 7, frost + archers wave 6. Mixing tower types beats any single type, and nobody can afford every tower at level 3 (21–22 of 30 levels by the end). The hero fighting is what should turn the late waves into a win.
-- **Wave toughness** (M5): `WaveData.health_multiplier` scales every enemy's HP in a wave without paying more gold (more enemies would also mean more gold): waves 1–4 ×1, then 1.15, 1.3, 1.45, 1.7, 1.9, 2.1 for waves 5–10. It absorbs the nine run upgrades a full run collects.
-- **M5 tuning** (balance report with run upgrades, idle hero, seed 1; the bot takes upgrades by a simple policy): without upgrades every plan falls in wave 7–8; with upgrades the best runs fall in wave 9–10, weaker picks in wave 6–9, so the picks move a run by up to three waves, and nothing wins without the hero. Other seeds give other runs (different offers): e.g. seed 4's offers only reach wave 7–8, seed 3's lucky Overcharge + Hellfire + War Tax opening wins with 30–50 fortress HP. No single upgrade wins a run on its own: alone, each moves the baseline by at most one wave (Hellfire, Overcharge, Bounty strongest).
+- **M6 waves** (`data/waves/wave_01..15.tres`, hand-authored; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Cultists in wave 4, Brutes in wave 5; a **boss** leads waves 5, 10 and 15. Every wave brings more regular-enemy HP than the last (a boss comes on top, and its HP is authored directly: the wave's toughness doesn't scale it); `health_multiplier` scales the regulars:
+  | Wave | Ghouls | Hounds | Brutes | Cultists | Boss | Total | Regular HP | × toughness |
+  |------|--------|--------|--------|----------|------|-------|------------|-------------|
+  | 1  | 8  | –  | –  | –  | – | 8   | 240  | 1.0 |
+  | 2  | 13 | –  | –  | –  | – | 13  | 390  | 1.0 |
+  | 3  | 11 | 6  | –  | –  | – | 17  | 420  | 1.0 |
+  | 4  | 14 | 8  | –  | 2  | – | 24  | 580  | 1.0 |
+  | 5  | 10 | 8  | 1  | 2  | Gravelord (900) | 22 | 610 | 1.1 |
+  | 6  | 24 | 10 | 2  | 3  | – | 39  | 1230 | 1.15 |
+  | 7  | 22 | 24 | 3  | 4  | – | 53  | 1550 | 1.25 |
+  | 8  | 30 | 18 | 5  | 8  | – | 61  | 2080 | 1.35 |
+  | 9  | 36 | 24 | 9  | 9  | – | 78  | 2970 | 1.5 |
+  | 10 | 42 | 26 | 9  | 6  | Bone Colossus (2000) | 84 | 3120 | 1.6 |
+  | 11 | 44 | 44 | 12 | 8  | – | 108 | 3940 | 1.85 |
+  | 12 | 52 | 30 | 14 | 14 | – | 110 | 4390 | 2.0 |
+  | 13 | 60 | 56 | 17 | 12 | – | 145 | 5430 | 2.15 |
+  | 14 | 66 | 64 | 20 | 20 | – | 170 | 6340 | 2.3 |
+  | 15 | 68 | 60 | 22 | 14 | Lich Warden (2600) | 165 | 6520 | 2.45 |
+- **Hero healing (M6 tuning, needs a playtest decision):** when a wave is cleared, a living hero gets its HP back (`HeroLives.heal_between_waves`, 1.0 = full). Without it a hero who fights wears down over 15 waves with no way back but dying, and a fighting hero did worse than an idle one in the balance tool. Lives still never come back.
+- **M6 tuning** (balance report, seed 1–4, 5 s build phases; the "bot" hero is `tests/tools/hero_bot.gd`: it walks to the nearest enemy on the busiest lane, swings, and at low HP dashes away and falls back to the fortress):
+  - **Idle hero: never wins** (seed 1: best runs fall in wave 15, typical ones in waves 8–13; no upgrades: wave 5–6).
+  - **Bot hero: a sensible build can win, rarely comfortably.** Seed 1: the mixed build wins with 15 fortress HP (tower or economy picks), or with more when the picks stacked fortress HP (150–171); all five towers win once (26). Across seeds 2–4, 15 of 39 bot runs win, most with 1–42 fortress HP; the rest fall in wave 6–15, the boss waves being the walls. Archers + cannons never quite win (wave 14–15). The hero alone is worth about 2–3 waves over the same build idle. Hero-only picks lose early (wave 6–10): towers carry the defence, the hero closes the gaps.
+  - **Length:** a won run is about 11–12 minutes of fighting; with a player's ~30 s per build phase and upgrade choice that is about 19–20 minutes, more for a player who fights slower than the bot.
+  - Performance: wave 15 runs at 600 fps average (271 fps 1% low) on the dev machine.
+- Earlier tuning (M4, M5: 10 waves, no bosses) is in git history.
 
 ### 4.8 Meta progression (later milestone)
 - Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.

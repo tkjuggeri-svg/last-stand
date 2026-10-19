@@ -21,7 +21,7 @@ func _initialize() -> void:
 func _test_wave_curve() -> void:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	var waves: Array[WaveData] = (level.get_node("WaveSpawner") as WaveSpawner).waves
-	_check("the level has 10 waves", waves.size() == 10)
+	_check("the level has 15 waves", waves.size() == 15)
 	var rising: bool = true
 	var previous: int = 0
 	var first_seen: Dictionary = {}
@@ -37,8 +37,15 @@ func _test_wave_curve() -> void:
 		rising = rising and hp > previous
 		previous = hp
 	_check("every wave brings more enemy HP than the one before (bosses on top)", rising)
-	_check("Ghouls from wave 1, Hounds from wave 3, Brutes from wave 5 (%s)" % [first_seen],
-		first_seen.get("Ghoul") == 1 and first_seen.get("Hound") == 3 and first_seen.get("Brute") == 5)
+	_check("Ghouls from wave 1, Hounds from 3, Cultists from 4, Brutes from 5 (%s)" % [first_seen],
+		first_seen.get("Ghoul") == 1 and first_seen.get("Hound") == 3 and first_seen.get("Cultist") == 4 and first_seen.get("Brute") == 5)
+	var bosses: Array[String] = []
+	for i: int in waves.size():
+		for group: SpawnGroup in waves[i].groups:
+			if group.enemy.is_boss:
+				bosses.append("%d: %s" % [i + 1, group.enemy.display_name])
+	_check("a boss in waves 5, 10 and 15, a different one each (%s)" % ", ".join(bosses),
+		bosses == ["5: The Gravelord", "10: The Bone Colossus", "15: The Lich Warden"])
 	_check("the waves use all 3 lanes", lanes.size() == 3)
 	level.free()
 
@@ -78,11 +85,11 @@ func _test_victory_and_restart() -> void:
 	(victory.get_node("%RestartButton") as Button).pressed.emit()
 	await _frames(2)
 	var fresh: Level = _level_of(main)
-	_check("Play again: a fresh run, screen hidden, wave 1 / 10 in the build phase",
+	_check("Play again: a fresh run, screen hidden, wave 1 / 15 in the build phase",
 		fresh != level and not victory.visible and fresh.can_process()
 		and (fresh.get_node("%RunCycle") as RunCycle).get_phase() == RunCycle.Phase.BUILD
 		and (fresh.get_node("%RunCycle") as RunCycle).get_current_wave_number() == 1
-		and (fresh.get_node("WaveSpawner") as WaveSpawner).get_wave_count() == 10)
+		and (fresh.get_node("WaveSpawner") as WaveSpawner).get_wave_count() == 15)
 	main.queue_free()
 	await _frames(2)
 

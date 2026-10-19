@@ -1,23 +1,23 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_kmlx7"]
-[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_tltcp"]
-[ext_resource type="Script" path="res://resources/wave_data.gd" id="3_v61q6"]
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_ghoul"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
 
-[sub_resource type="Resource" id="Resource_ow1wx"]
-script = ExtResource("1_kmlx7")
-enemy = ExtResource("2_tltcp")
-count = 8
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_ghoul")
+count = 9
 interval = 1.6
 
-[sub_resource type="Resource" id="Resource_gv7bh"]
-script = ExtResource("1_kmlx7")
-enemy = ExtResource("2_tltcp")
-count = 5
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_ghoul")
+count = 4
 interval = 2.0
 lane = 1
 delay = 6.0
 
 [resource]
-script = ExtResource("3_v61q6")
-groups = Array[ExtResource("1_kmlx7")]([SubResource("Resource_ow1wx"), SubResource("Resource_gv7bh")])
+script = ExtResource("9_wave")
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1")])

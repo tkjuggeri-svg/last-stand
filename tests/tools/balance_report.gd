@@ -1,22 +1,28 @@
 extends SceneTree
-## Plays the level's whole run (all waves) with an idle hero and prints what happened per wave and per
-## run: kills, leaks, fortress HP, gold, the upgrades taken. A tuning aid, not a pass/fail test.
+## Plays the level's whole run (all waves) and prints what happened per wave and per run: kills,
+## leaks, fortress HP, gold, hero falls, the upgrades taken and the run's length. A tuning aid, not a
+## pass/fail test.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd
-##     [-- --plan=mixed] [--policy=towers] [--seed=1] [--sweep] [--quiet]
+##     [-- --plan=mixed] [--policy=towers] [--seed=1] [--hero=idle|bot|both] [--sweep] [--quiet]
+## --hero: "idle" parks the hero out of every fight; "bot" plays it with HeroBot (hero_bot.gd: walks
+## to the nearest enemy on the busiest lane, swings, dashes away at low HP); "both" (default) runs each.
 ## The bot buys the plan's towers and tower upgrades in order as soon as the gold allows (any phase),
 ## starts each wave after BUILD_SECONDS of build phase, and takes run upgrades by a policy:
 ##   none: no run upgrades at all (the offers are switched off) - the baseline;
 ##   towers / economy / fortress / hero: the first card of that category, else by POLICY_FALLBACK;
-##   random: any card (seeded).
+##   random: any card (seeded). The "hero" policy only runs with the bot hero.
 ## --sweep: the "mixed" plan once per upgrade, with only that upgrade (given before wave 1, no offers):
-## how much each one is worth on its own. The hero never fights, so all of this is a floor: hero
-## upgrades show nothing here, and a player who fights does better.
+## how much each one is worth on its own (with the first --hero mode).
 ## Slots: 0-5 along the west crypt road, 6-7 by the north-east road, 8 by the south road, 9 where the
 ## north-east and south roads reach the fortress.
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
 const UPGRADES_DIR: String = "res://data/upgrades"
+const HeroBot: GDScript = preload("res://tests/tools/hero_bot.gd")
 const BUILD_SECONDS: float = 5.0
+## A player's build phase and upgrade choice take longer than the bot's: the run length is also
+## estimated with this many seconds per wave between the waves.
+const PLAYER_BREAK_SECONDS: float = 30.0
 ## Out of every lane's way, so the hero is never attacked.
 const HERO_PARKED: Vector2 = Vector2(380, 380)
 ## Tower builds per plan ([tower, slot]) in order. The bot builds the first EARLY_BUILDS, takes those
@@ -31,7 +37,7 @@ const PLANS: Dictionary = {
 		["frost", 6], ["ballista", 0], ["archer", 3], ["cannon", 1]],
 }
 const EARLY_BUILDS: int = 6
-const POLICIES: Array[String] = ["none", "towers", "economy", "fortress", "random"]
+const POLICIES: Array[String] = ["none", "towers", "economy", "fortress", "hero", "random"]
 const POLICY_CATEGORY: Dictionary = {
 	"towers": UpgradeData.Category.TOWERS,
 	"economy": UpgradeData.Category.ECONOMY,
@@ -44,6 +50,7 @@ const POLICY_FALLBACK: Array[int] = [UpgradeData.Category.TOWERS, UpgradeData.Ca
 
 var _seed: int = 1
 var _quiet: bool = false
+var _heroes: Array[String] = ["idle", "bot"]
 
 
 func _initialize() -> void:
@@ -61,21 +68,29 @@ func _initialize() -> void:
 			sweep = true
 		elif arg == "--quiet":
 			_quiet = true
+		elif arg.begins_with("--hero="):
+			var hero_mode: String = arg.trim_prefix("--hero=")
+			_heroes.clear()
+			_heroes.append_array(["idle", "bot"] if hero_mode == "both" else [hero_mode])
 	var summary: Array[String] = []
 	if sweep:
-		summary.append(await _play("mixed", PLANS["mixed"], "none", null))
+		summary.append(await _play("mixed", PLANS["mixed"], "none", null, _heroes[0]))
 		for file: String in DirAccess.get_files_at(UPGRADES_DIR):
 			if file.ends_with(".tres"):
 				var data: UpgradeData = load(UPGRADES_DIR.path_join(file))
-				summary.append(await _play("mixed", PLANS["mixed"], "only " + String(data.id), data))
+				summary.append(await _play("mixed", PLANS["mixed"], "only " + String(data.id), data, _heroes[0]))
 	else:
 		for plan_name: String in PLANS:
 			if not only_plan.is_empty() and only_plan != plan_name:
 				continue
-			for policy: String in POLICIES:
-				if only_policy.is_empty() or only_policy == policy:
-					summary.append(await _play(plan_name, PLANS[plan_name], policy, null))
-	print("\n%-18s %-22s %-16s %8s %6s %6s %7s %6s  %s" % ["plan", "upgrades", "result", "fortress", "kills", "leaks", "levels", "gold", "taken"])
+			for hero_mode: String in _heroes:
+				for policy: String in POLICIES:
+					if policy == "hero" and hero_mode == "idle":
+						continue
+					if only_policy.is_empty() or only_policy == policy:
+						summary.append(await _play(plan_name, PLANS[plan_name], policy, null, hero_mode))
+	print("\n%-18s %-5s %-14s %-24s %8s %5s %5s %5s %6s %5s %6s %7s  %s" % ["plan", "hero", "upgrades", "result", "fortress",
+		"falls", "kills", "leaks", "levels", "gold", "fights", "w/break", "taken"])
 	for line: String in summary:
 		print(line)
 	quit()
@@ -97,10 +112,11 @@ func _steps(builds: Array) -> Array:
 	return steps
 
 
-func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) -> String:
+func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, hero_mode: String) -> String:
 	var plan: Array = _steps(builds)
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
-	(level.get_node("Hero") as Node2D).position = HERO_PARKED
+	if hero_mode == "idle":
+		(level.get_node("Hero") as Node2D).position = HERO_PARKED
 	var offers: UpgradeOffers = level.get_node("%UpgradeOffers")
 	offers.seed_value = _seed
 	if policy == "none" or only != null:
@@ -117,7 +133,11 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) 
 		mods.add_upgrade(only)
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = _seed
-	var stats: Dictionary = {"kills": 0, "leaks": 0, "wave_kills": 0, "wave_leaks": 0, "won": false, "lost": false}
+	var hero: Hero = level.get_node("Hero")
+	var bot: RefCounted = HeroBot.new(hero, spawner) if hero_mode == "bot" else null
+	var stats: Dictionary = {"kills": 0, "leaks": 0, "wave_kills": 0, "wave_leaks": 0, "won": false, "lost": false,
+		"falls": 0, "combat": 0.0, "reason": ""}
+	hero.died.connect(func() -> void: stats["falls"] += 1)
 	spawner.enemy_killed.connect(func(_e: Enemy) -> void:
 		stats["kills"] += 1
 		stats["wave_kills"] += 1)
@@ -125,11 +145,14 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) 
 		stats["leaks"] += 1
 		stats["wave_leaks"] += 1)
 	level.run_won.connect(func() -> void: stats["won"] = true)
-	level.run_lost.connect(func(_r: Level.LossReason) -> void: stats["lost"] = true)
+	level.run_lost.connect(func(r: Level.LossReason) -> void:
+		stats["lost"] = true
+		stats["reason"] = "fort" if r == Level.LossReason.FORTRESS_DESTROYED else "hero")
 	spawner.wave_cleared.connect(func(n: int) -> void:
 		if not _quiet:
-			print("  %-18s %-10s wave %2d: %3d killed, %2d leaked, fortress %3d, gold %4d" % [plan_name, policy, n,
-				stats["wave_kills"], stats["wave_leaks"], fortress.health.current_health, economy.get_gold()])
+			print("  %-18s %-5s %-10s wave %2d: %3d killed, %2d leaked, fortress %3d, gold %4d, hero falls %d, %.0f s of fighting" % [plan_name,
+				hero_mode, policy, n, stats["wave_kills"], stats["wave_leaks"], fortress.health.current_health, economy.get_gold(),
+				stats["falls"], stats["combat"]])
 		stats["wave_kills"] = 0
 		stats["wave_leaks"] = 0)
 	var catalog: Dictionary = {}
@@ -137,8 +160,12 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) 
 		catalog[String(data.id)] = data
 	var next: int = 0
 	var build_time: float = 0.0
-	for _i: int in 60 * 60 * 25:
+	for _i: int in 60 * 60 * 45:
 		await physics_frame
+		if bot != null:
+			bot.call("step", mods)
+		if cycle.get_phase() == RunCycle.Phase.COMBAT:
+			stats["combat"] += 1.0 / 60.0
 		if next < plan.size():
 			var step: Array = plan[next]
 			var slot: BuildSlot = builder.get_slots()[step[1]]
@@ -159,7 +186,9 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) 
 				cycle.start_wave()
 		if stats["won"] or stats["lost"]:
 			break
-	var result: String = "WON" if stats["won"] else "lost in wave %d" % spawner.get_wave_number()
+	if bot != null:
+		bot.call("release")
+	var result: String = "WON" if stats["won"] else "lost w%d (%s)" % [spawner.get_wave_number(), stats["reason"]]
 	var levels: int = 0
 	for slot: BuildSlot in builder.get_slots():
 		if not slot.is_empty():
@@ -167,8 +196,10 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData) 
 	var taken: Array[String] = []
 	for data: UpgradeData in mods.get_taken():
 		taken.append(String(data.id))
-	var line: String = "%-18s %-22s %-16s %8d %6d %6d %7d %6d  %s" % [plan_name, policy, result, fortress.health.current_health,
-		stats["kills"], stats["leaks"], levels, economy.get_gold(), ", ".join(taken)]
+	var waves_played: int = spawner.get_wave_number()
+	var line: String = "%-18s %-5s %-14s %-24s %8d %5d %5d %5d %6d %5d %5.1fm %6.1fm  %s" % [plan_name, hero_mode, policy, result,
+		fortress.health.current_health, stats["falls"], stats["kills"], stats["leaks"], levels, economy.get_gold(),
+		stats["combat"] / 60.0, (stats["combat"] + waves_played * PLAYER_BREAK_SECONDS) / 60.0, ", ".join(taken)]
 	level.queue_free()
 	for _i: int in 2:
 		await physics_frame

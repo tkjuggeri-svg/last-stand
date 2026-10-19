@@ -104,7 +104,7 @@ Tick items as they're finished.
 - [x] Cultist (ranged) enemy: sieges the fortress from 170 px, turns on a nearby hero, telegraphed straight shots
 - [x] Bosses (5/10/15): Gravelord (summons Ghouls), Bone Colossus (charges the hero), Lich Warden (wards nearby enemies); telegraphs, boss HP bar, big deaths
 - [x] Hero ability: Dash (Space/Shift, 2 s cooldown on the HUD, immune while dashing, through enemies but not walls) + 2 dash upgrades (Fleet Step, Cinder Dash)
-- [ ] 15-wave run, difficulty tuning pass
+- [x] 15-wave run (bosses at 5/10/15, Cultists from wave 4), difficulty tuning with a hero bot in the balance tool (idle hero never wins; a bot hero with a sensible build sometimes does); hero healed between waves
 - [ ] Pause menu, settings (volume, fullscreen, keybinds)
 
 **Done when:** a 20–30 min run is fun from start to finish. → **Internal playtest build.**

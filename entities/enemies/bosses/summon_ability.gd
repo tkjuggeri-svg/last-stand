@@ -27,7 +27,8 @@ func setup(owner_enemy: Enemy) -> void:
 
 ## Its own minions still alive (summon_requested's receiver reports them back via track_minion()).
 func get_minion_count() -> int:
-	_minions = _minions.filter(func(m: Enemy) -> bool: return is_instance_valid(m) and m.is_alive())
+	# Untyped: some may already be freed.
+	_minions = _minions.filter(func(m: Variant) -> bool: return is_instance_valid(m) and (m as Enemy).is_alive())
 	return _minions.size()
 
 

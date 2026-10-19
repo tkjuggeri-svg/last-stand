@@ -80,7 +80,8 @@ func _test_single_ghoul() -> void:
 	var ghoul_ref: WeakRef = weakref(ghoul)  # a lambda must not hold an object that gets freed
 	await _until(func() -> bool: return ghoul_ref.get_ref() == null, 1200)
 	_check("the same ghoul still reaches and damages the fortress", fortress.health.current_health == 90)
-	_check("fortress damage leaves the hero alone", hero.health.current_health == hero_hp)
+	# (>=: the cleared wave heals the hero.)
+	_check("fortress damage leaves the hero alone", hero.health.current_health >= hero_hp)
 	level.queue_free()
 	await _frames(2)
 

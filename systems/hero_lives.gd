@@ -4,7 +4,7 @@ extends Node
 ## lives remain, the hero respawns at the respawn point (in front of the fortress) after respawn_delay
 ## seconds, with a visible countdown, and is protected for respawn_invulnerability seconds. The towers
 ## keep fighting meanwhile. Losing the last life ends the run (out_of_lives; the Level turns it into
-## Game Over).
+## Game Over). When a wave is cleared, a living hero gets heal_between_waves of its max HP back.
 
 signal lives_changed(lives_left: int)
 signal respawn_started(delay: float)
@@ -22,6 +22,10 @@ signal out_of_lives
 @export var respawn_invulnerability: float = 2.0
 ## The run's upgrades (extra lives). Null = `lives`.
 @export var modifiers: RunModifiers
+## Optional: heals the hero when one of its waves is cleared.
+@export var spawner: WaveSpawner
+## Share of the hero's max HP restored when a wave is cleared (1 = full health for every wave).
+@export_range(0.0, 1.0) var heal_between_waves: float = 1.0
 
 var _lives_left: int = 0
 var _max_lives: int = 0
@@ -36,6 +40,8 @@ func _ready() -> void:
 	hero.died.connect(_on_hero_died)
 	if modifiers != null:
 		modifiers.changed.connect(_on_modifiers_changed)
+	if spawner != null:
+		spawner.wave_cleared.connect(_on_wave_cleared)
 	set_physics_process(false)
 
 
@@ -77,6 +83,11 @@ func is_respawning() -> bool:
 ## Seconds until the hero is back (0 when not respawning).
 func get_respawn_time_left() -> float:
 	return _respawn_left if is_respawning() else 0.0
+
+
+func _on_wave_cleared(_wave_number: int) -> void:
+	if hero.is_inside_tree() and hero.health != null:
+		hero.health.heal(roundi(hero.health.max_health * heal_between_waves))
 
 
 func _on_hero_died() -> void:

@@ -1,81 +1,59 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_5y8qc"]
-[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_w4lrs"]
-[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_2gpjg"]
-[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_1fx3x"]
-[ext_resource type="Resource" path="res://data/enemies/colossus.tres" id="9_boss"]
-[ext_resource type="Script" path="res://resources/wave_data.gd" id="5_0nvuj"]
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/colossus.tres" id="3_colossus"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="4_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="5_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="6_hound"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
 
-[sub_resource type="Resource" id="Resource_8u8is"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("2_w4lrs")
-count = 7
-interval = 4.0
-
-[sub_resource type="Resource" id="Resource_wg1uf"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("2_w4lrs")
-count = 7
-interval = 4.0
-lane = 2
-delay = 4.0
-
-[sub_resource type="Resource" id="Resource_swcq7"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("2_w4lrs")
-count = 6
-interval = 6.0
-lane = 1
-delay = 12.0
-
-[sub_resource type="Resource" id="Resource_d5qdp"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("3_2gpjg")
-count = 30
-interval = 0.45
-lane = 1
-delay = 2.0
-
-[sub_resource type="Resource" id="Resource_6a7o5"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("3_2gpjg")
-count = 30
-interval = 0.45
-delay = 6.0
-
-[sub_resource type="Resource" id="Resource_jdaoc"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("4_1fx3x")
-count = 28
-interval = 0.2
-lane = 2
-delay = 12.0
-
-[sub_resource type="Resource" id="Resource_vrunj"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("4_1fx3x")
-count = 28
-interval = 0.2
-lane = 1
-delay = 30.0
-
-[sub_resource type="Resource" id="Resource_ogm8k"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("4_1fx3x")
-count = 20
-interval = 0.2
-delay = 40.0
-
-[sub_resource type="Resource" id="Resource_boss"]
-script = ExtResource("1_5y8qc")
-enemy = ExtResource("9_boss")
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_colossus")
 count = 1
 interval = 1.0
-lane = 0
+delay = 12.0
+
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_ghoul")
+count = 26
+interval = 0.8
+
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("6_hound")
+count = 26
+interval = 0.45
+lane = 2
+delay = 6.0
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 9
+interval = 5.0
+lane = 1
+delay = 8.0
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_cultist")
+count = 6
+interval = 2.5
+lane = 2
 delay = 10.0
 
+[sub_resource type="Resource" id="Resource_g5"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_ghoul")
+count = 16
+interval = 1.0
+lane = 1
+delay = 20.0
+
 [resource]
-script = ExtResource("5_0nvuj")
-health_multiplier = 2.1
-groups = Array[ExtResource("1_5y8qc")]([SubResource("Resource_8u8is"), SubResource("Resource_wg1uf"), SubResource("Resource_swcq7"), SubResource("Resource_d5qdp"), SubResource("Resource_6a7o5"), SubResource("Resource_jdaoc"), SubResource("Resource_vrunj"), SubResource("Resource_ogm8k"), SubResource("Resource_boss")])
+script = ExtResource("9_wave")
+health_multiplier = 1.6
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5")])

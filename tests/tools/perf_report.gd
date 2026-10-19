@@ -1,5 +1,5 @@
 extends SceneTree
-## Plays the run's last wave (156 enemies) with every slot built and upgraded and reports the frame
+## Plays the run's last wave (165 enemies and the Lich Warden) with every slot built and upgraded and reports the frame
 ## rate and frame times. Run it in a real window (not headless), at real speed:
 ##   godot --path . --resolution 1280x720 --script res://tests/tools/perf_report.gd [-- --seconds=60] [--no-towers]
 ## Vsync is switched off so the numbers show the real headroom. --no-towers leaves the whole wave

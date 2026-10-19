@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3]
+[gd_scene load_steps=83 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="Script" path="res://levels/tiled_ground.gd" id="36_tiled_ground"]
@@ -15,6 +15,11 @@
 [ext_resource type="Resource" path="res://data/waves/wave_08.tres" id="w08_wave"]
 [ext_resource type="Resource" path="res://data/waves/wave_09.tres" id="w09_wave"]
 [ext_resource type="Resource" path="res://data/waves/wave_10.tres" id="w10_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_11.tres" id="w11_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_12.tres" id="w12_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_13.tres" id="w13_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_14.tres" id="w14_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_15.tres" id="w15_wave"]
 [ext_resource type="Script" path="res://resources/wave_data.gd" id="26_wave_data"]
 [ext_resource type="Script" path="res://systems/run_cycle.gd" id="27_cycle"]
 [ext_resource type="Script" path="res://systems/hero_lives.gd" id="28_lives"]
@@ -766,12 +771,13 @@ script = ExtResource("27_cycle")
 spawner = NodePath("../../WaveSpawner")
 offers = NodePath("../UpgradeOffers")
 
-[node name="HeroLives" type="Node" parent="Systems" node_paths=PackedStringArray("hero", "respawn_point", "modifiers")]
+[node name="HeroLives" type="Node" parent="Systems" node_paths=PackedStringArray("hero", "respawn_point", "modifiers", "spawner")]
 unique_name_in_owner = true
 script = ExtResource("28_lives")
 hero = NodePath("../../Hero")
 respawn_point = NodePath("../../RespawnPoint")
 modifiers = NodePath("../RunModifiers")
+spawner = NodePath("../../WaveSpawner")
 
 [node name="TowerBuilder" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "slots_root", "modifiers")]
 unique_name_in_owner = true
@@ -819,7 +825,7 @@ y_sort_enabled = true
 script = ExtResource("4_spawner")
 enemy_scene = ExtResource("5_enemy")
 lanes = [NodePath("../Lane"), NodePath("../Lane2"), NodePath("../Lane3")]
-waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01"), ExtResource("w02_wave"), ExtResource("w03_wave"), ExtResource("w04_wave"), ExtResource("w05_wave"), ExtResource("w06_wave"), ExtResource("w07_wave"), ExtResource("w08_wave"), ExtResource("w09_wave"), ExtResource("w10_wave")])
+waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01"), ExtResource("w02_wave"), ExtResource("w03_wave"), ExtResource("w04_wave"), ExtResource("w05_wave"), ExtResource("w06_wave"), ExtResource("w07_wave"), ExtResource("w08_wave"), ExtResource("w09_wave"), ExtResource("w10_wave"), ExtResource("w11_wave"), ExtResource("w12_wave"), ExtResource("w13_wave"), ExtResource("w14_wave"), ExtResource("w15_wave")])
 
 [node name="RespawnPoint" parent="." instance=ExtResource("29_respawn")]
 position = Vector2(100, 100)

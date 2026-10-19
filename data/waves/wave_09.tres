@@ -1,64 +1,65 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
-[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_lgvv8"]
-[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_i61s3"]
-[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_2yp5j"]
-[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_4s2lh"]
-[ext_resource type="Script" path="res://resources/wave_data.gd" id="5_1rvv2"]
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="5_hound"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
 
-[sub_resource type="Resource" id="Resource_vcb2d"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("2_i61s3")
-count = 6
-interval = 5.0
-delay = 4.0
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 24
+interval = 0.8
 
-[sub_resource type="Resource" id="Resource_iprvc"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("2_i61s3")
-count = 6
-interval = 5.0
-lane = 1
-delay = 10.0
-
-[sub_resource type="Resource" id="Resource_tf3fq"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("2_i61s3")
-count = 4
-interval = 7.0
-lane = 2
-delay = 20.0
-
-[sub_resource type="Resource" id="Resource_rq2sq"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("3_2yp5j")
-count = 20
-interval = 0.55
-
-[sub_resource type="Resource" id="Resource_m0wpw"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("3_2yp5j")
-count = 20
-interval = 0.55
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_hound")
+count = 24
+interval = 0.45
 lane = 1
 delay = 5.0
 
-[sub_resource type="Resource" id="Resource_pf68i"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("4_4s2lh")
-count = 30
-interval = 0.25
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 6
+interval = 5.0
 lane = 2
+delay = 4.0
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 3
+interval = 8.0
+delay = 16.0
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 6
+interval = 2.0
 delay = 10.0
 
-[sub_resource type="Resource" id="Resource_o15ih"]
-script = ExtResource("1_lgvv8")
-enemy = ExtResource("4_4s2lh")
-count = 20
-interval = 0.25
-delay = 25.0
+[sub_resource type="Resource" id="Resource_g5"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 12
+interval = 1.0
+lane = 2
+delay = 18.0
+
+[sub_resource type="Resource" id="Resource_g6"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 3
+interval = 3.0
+lane = 2
+delay = 22.0
 
 [resource]
-script = ExtResource("5_1rvv2")
-health_multiplier = 1.9
-groups = Array[ExtResource("1_lgvv8")]([SubResource("Resource_vcb2d"), SubResource("Resource_iprvc"), SubResource("Resource_tf3fq"), SubResource("Resource_rq2sq"), SubResource("Resource_m0wpw"), SubResource("Resource_pf68i"), SubResource("Resource_o15ih")])
+script = ExtResource("9_wave")
+health_multiplier = 1.5
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6")])
