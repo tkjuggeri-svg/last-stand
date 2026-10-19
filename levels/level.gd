@@ -101,7 +101,8 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 
 func _boss_moment() -> void:
 	Engine.time_scale = BOSS_HIT_STOP_SCALE
-	get_tree().create_timer(BOSS_HIT_STOP_TIME, true, false, true).timeout.connect(func() -> void: Engine.time_scale = 1.0)
+	# Real seconds, and only while the game runs (a pause keeps time at 0 until it ends).
+	get_tree().create_timer(BOSS_HIT_STOP_TIME, false, false, true).timeout.connect(func() -> void: Engine.time_scale = 1.0)
 	var camera: Camera2D = get_viewport().get_camera_2d()
 	if camera == null:
 		return

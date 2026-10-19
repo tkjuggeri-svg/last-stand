@@ -188,6 +188,10 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 | Start wave  | Enter (build phase)|
 | Pause       | Esc                |
 
+All of these can be rebound in Settings (two bindings per action, keys or mouse buttons).
+
+**Pause menu and settings** (M6): Esc opens the pause menu (Resume, Settings, Restart run, Quit game) and freezes the game completely; Esc or Resume goes on. Esc first closes whatever menu is open in the level (the build menu), and does nothing during the upgrade choice (that screen holds the game itself) or on the Game Over / Victory screens. Settings: fullscreen or windowed, Master / Music / Sound volume (the audio buses exist from M6; the sounds come in M8), and the key bindings of every action: click a binding, press the new key or mouse button (Esc cancels); a key taken from another action is removed there; Reset controls restores the defaults. Every change applies and is saved at once (`user://settings.cfg`) and is loaded when the game starts.
+
 Controller support is a post-prototype goal (Steam Deck verified is a nice-to-have).
 
 ## 6. Presentation

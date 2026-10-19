@@ -2,7 +2,7 @@ extends RefCounted
 ## The "m6" screenshot scenario of capture_screenshots.gd (kept apart so that script stays short):
 ## the dash (afterimages, the HUD cooldown row, the Cinder Dash trail), the Cultist (casting at the
 ## fortress, at the hero, beside the other enemies), the bosses (arrival with the HUD bar, telegraph,
-## mechanic, death).
+## mechanic, death), the pause menu and the settings.
 ## `--only=dash` (comma-separated) runs just some parts.
 
 const CINDER_DASH: UpgradeData = preload("res://data/upgrades/cinder_dash.tres")
@@ -28,6 +28,8 @@ func run(level: Level) -> void:
 		await _cultist(level)
 	if _wants("bosses"):
 		await _bosses(level)
+	if _wants("pause"):
+		await _pause(level)
 
 
 func _wants(part: String) -> bool:
@@ -161,3 +163,21 @@ func _bosses(level: Level) -> void:
 				break
 		hero.global_position = Vector2(-560, -120)
 		_tool.call("_frame_camera", camera, Vector2.ZERO, 1.0, false)
+
+
+func _pause(level: Level) -> void:
+	var menu: PauseMenu = level.get_parent().get_node("%PauseMenu")
+	(level.get_node("%RunCycle") as RunCycle).start_wave()
+	await _tool.call("_frames", 200)
+	menu.open()
+	await _tool.call("_frames", 5)
+	await _tool.call("_shot", "m6_19_pause_menu")
+	(menu.get_node("%SettingsButton") as Button).pressed.emit()
+	await _tool.call("_frames", 5)
+	await _tool.call("_shot", "m6_20_settings")
+	var settings: SettingsMenu = menu.get_node("%SettingsMenu")
+	settings.get_binding_button(&"dash", 0).pressed.emit()
+	await _tool.call("_frames", 3)
+	await _tool.call("_shot", "m6_21_settings_rebinding")
+	settings.close()
+	menu.close()
