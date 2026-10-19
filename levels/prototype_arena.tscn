@@ -86,7 +86,7 @@ point_count = 4
 
 [sub_resource type="Curve2D" id="Curve2D_lane2"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 300, -360, 0, 0, 0, 0, 300, 0, 0, 0, 0, 0, 48, 0)
+"points": PackedVector2Array(0, 0, 0, 0, 300, -360, 0, 0, 0, 0, 300, 24, 0, 0, 0, 0, 48, 24)
 }
 point_count = 3
 
@@ -773,7 +773,7 @@ lanes = [NodePath("../Lane"), NodePath("../Lane2"), NodePath("../Lane3")]
 waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01"), ExtResource("w02_wave"), ExtResource("w03_wave"), ExtResource("w04_wave"), ExtResource("w05_wave"), ExtResource("w06_wave"), ExtResource("w07_wave"), ExtResource("w08_wave"), ExtResource("w09_wave"), ExtResource("w10_wave")])
 
 [node name="RespawnPoint" parent="." instance=ExtResource("29_respawn")]
-position = Vector2(90, 80)
+position = Vector2(100, 100)
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 position = Vector2(-200, 80)

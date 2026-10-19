@@ -20,6 +20,12 @@ const PLANS: Dictionary = {
 		["archer", 6], ["cannon", 0], ["frost", 3], ["archer", 1]],
 	"cannons first": [["archer", 4], ["cannon", 9], ["cannon", 2], ["cannon", 7], ["cannon", 8], ["frost", 5],
 		["archer", 6], ["archer", 0], ["frost", 3], ["archer", 1]],
+	"cannons only": [["cannon", 4], ["cannon", 9], ["cannon", 7], ["cannon", 8], ["cannon", 2], ["cannon", 5],
+		["cannon", 6], ["cannon", 0], ["cannon", 3], ["cannon", 1]],
+	"frost + archers": [["archer", 4], ["frost", 9], ["archer", 7], ["frost", 8], ["archer", 5], ["frost", 2],
+		["archer", 6], ["frost", 0], ["archer", 3], ["frost", 1]],
+	"balanced": [["archer", 4], ["archer", 9], ["cannon", 7], ["frost", 8], ["cannon", 5], ["archer", 2],
+		["frost", 6], ["cannon", 0], ["archer", 3], ["cannon", 1]],
 }
 
 

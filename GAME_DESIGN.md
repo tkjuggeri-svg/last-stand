@@ -54,7 +54,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Fortress HP is shown prominently in the HUD. It does **not** regenerate by default; some upgrades/rewards heal it.
 
 ### 4.3 Enemies
-- Spawn at crypts and follow **lanes** (`Path2D`) toward the fortress. The prototype arena has 3 lanes: the west crypt road (902 px), a short north-east road (612 px, to the east wall) and a south road (922 px, to the south wall); each wave's spawn groups pick their lane.
+- Spawn at crypts and follow **lanes** (`Path2D`) toward the fortress. The prototype arena has 3 lanes: the west crypt road (902 px), a short north-east road (636 px, to the east wall; its last stretch runs at y = 24, south of the fortress's y-sort line, so enemies there always draw in front of the castle) and a south road (922 px, to the south wall); each wave's spawn groups pick their lane.
 - **Decision:** enemies sample the lane curve and move themselves (not parented to `PathFollow2D`). This lets them leave the path to chase the hero briefly (aggro) and return, without re-parenting.
 - Defined by `EnemyData`: max HP, speed, damage to fortress, contact damage, gold reward, sprite, aggro range.
 - Prototype (M1): `EnemyData` has max HP, speed and fortress damage only. Each frame the enemy steers toward a point 24 px further along its lane, so it rounds corners slightly (≤ ~8 px off centre) and can rejoin the lane if pushed. Enemies have no physical collision yet. The Ghoul's `Hitbox` (enemy_hitbox) damages the fortress on contact and the Ghoul is removed (`Hitbox.hit` signal).
