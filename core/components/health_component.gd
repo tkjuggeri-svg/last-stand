@@ -30,5 +30,11 @@ func take_damage(amount: int) -> void:
 		died.emit()
 
 
+## Refills to max_health, also from 0 (the owner is brought back, e.g. a respawning hero).
+func revive() -> void:
+	current_health = max_health
+	health_changed.emit(current_health, max_health)
+
+
 func is_dead() -> bool:
 	return current_health <= 0

@@ -257,6 +257,12 @@ func _review(level: Level) -> void:
 	await _shot("06b_sell_menu_and_hud")
 	_press_interact()
 
+	# The hero falls: a countdown at the respawn point by the fortress, then it is back.
+	hero.health.take_damage(1000)
+	_frame_camera(camera, (level.get_node("RespawnPoint") as Node2D).position + Vector2(0, -60), 1.0, true)
+	await _frames(90)
+	await _shot("07_hero_respawn_countdown")
+
 	# Fortress damage states.
 	_frame_camera(camera, Vector2(0, -40), 2.0, true)
 	fortress.health.take_damage(fortress.health.current_health - 55)

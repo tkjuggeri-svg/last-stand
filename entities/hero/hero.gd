@@ -2,10 +2,13 @@ class_name Hero
 extends CharacterBody2D
 ## The player-controlled hero. Moves with the move_* actions and swings a melee attack toward the mouse.
 ## Enemy attacks hurt it through its Hurtbox (with a short invulnerability window after each hit).
+## When it falls it stops being a target (enemies walk on) until revive() brings it back.
 ## Visuals (DirectionalSprite, swing trail, hit feedback) only follow the gameplay state.
 
-## HP reached 0. The level turns this into Game Over.
+## HP reached 0. HeroLives decides whether it comes back.
 signal died
+## Back on its feet with full HP (see revive()).
+signal revived
 
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 ## Where damage numbers appear, relative to the hero.
@@ -20,6 +23,8 @@ const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -34)
 var _attack_time_left: float = 0.0
 var _cooldown_left: float = 0.0
 var _last_health: int = 0
+## The body's collision layer while alive (the hero layer); 0 while fallen.
+var _body_layer: int = 0
 
 ## Public so other systems (HUD) can read HP.
 @onready var health: HealthComponent = %HealthComponent
@@ -28,12 +33,14 @@ var _last_health: int = 0
 @onready var _attack_shape: CollisionPolygon2D = %AttackShape
 @onready var _attack_visual: AnimatedSprite2D = %AttackVisual
 @onready var _sprite: DirectionalSprite = %Sprite
+@onready var _hurtbox: Hurtbox = %Hurtbox
 
 
 func _ready() -> void:
 	_attack_visual.animation_finished.connect(_attack_visual.hide)
 	_hit_spark.animation_finished.connect(_hit_spark.hide)
 	_last_health = health.current_health
+	_body_layer = collision_layer
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_health_died)
 
@@ -64,6 +71,20 @@ func attack(target_position: Vector2) -> void:
 	_play_swing_trail(direction.angle())
 
 
+## Brings a fallen hero back at `at` with full HP, idle and targetable again. Does nothing while alive.
+func revive(at: Vector2) -> void:
+	if not health.is_dead():
+		return
+	global_position = at
+	velocity = Vector2.ZERO
+	_cooldown_left = 0.0
+	health.revive()
+	_set_targetable(true)
+	_sprite.facing = "down"
+	_sprite.play_state("idle", true)
+	revived.emit()
+
+
 func _move() -> void:
 	# get_vector() caps the length at 1, so diagonals are not faster than straight lines.
 	var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
@@ -83,6 +104,13 @@ func _set_attack_active(active: bool) -> void:
 	# Turning the shape on makes hurtboxes inside it register a new hit, so each swing hits once.
 	# Deferred because physics shapes should not change in the middle of a physics step.
 	_attack_shape.set_deferred("disabled", not active)
+
+
+## A fallen hero leaves the hero layer, so enemies' attack ranges let go and they walk on, and its
+## hurtbox stops listening. Deferred: this changes physics state, often inside a physics callback.
+func _set_targetable(targetable: bool) -> void:
+	set_deferred(&"collision_layer", _body_layer if targetable else 0)
+	_hurtbox.set_deferred(&"monitoring", targetable)
 
 
 func _update_animation() -> void:
@@ -128,5 +156,6 @@ func _on_health_died() -> void:
 	_attack_time_left = 0.0
 	_set_attack_active(false)
 	_attack_visual.hide()
+	_set_targetable(false)
 	_sprite.play(&"death")
 	died.emit()

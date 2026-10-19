@@ -1,6 +1,6 @@
 extends SceneTree
 ## Automated check for Ghoul-to-hero combat: attacks, cooldowns, invulnerability, lane resume,
-## hit feedback, hero death -> Game Over -> Restart, and that fortress damage still works.
+## hit feedback, hero death (not Game Over any more), and that fortress damage still works.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
@@ -18,7 +18,7 @@ func _initialize() -> void:
 	await _test_dodge()
 	await _test_crowd()
 	await _test_attacker_limit()
-	await _test_death_and_restart()
+	await _test_death_is_not_game_over()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -208,49 +208,27 @@ func _test_attacker_limit() -> void:
 	await _frames(2)
 
 
-## Through the real main.tscn: a ghoul kills the hero -> Game Over -> Restart -> fresh, playable run.
-func _test_death_and_restart() -> void:
-	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
-	root.add_child(main)
-	await _frames(2)
-	var screen: GameOverScreen = main.get_node("%GameOverScreen")
-	var level: Level = _level_of(main)
-	await WaveFixtures.start_wave(level)
+## A ghoul kills the hero: that no longer ends the run (lives and respawning: test_hero_respawn).
+func _test_death_is_not_game_over() -> void:
+	var level: Level = _make_level(1, 2.0)
 	var hero: Hero = level.get_node("Hero")
-	var reasons: Array[Level.LossReason] = []
-	level.run_lost.connect(func(reason: Level.LossReason) -> void: reasons.append(reason))
-	hero.health.take_damage(90)
+	var lost: Array[int] = [0]
+	level.run_lost.connect(func(_reason: Level.LossReason) -> void: lost[0] += 1)
 	hero.position = ON_LANE
+	await _frames(2)
+	hero.health.take_damage(90)
+	var ghoul: Enemy = (level.get_node("WaveSpawner") as WaveSpawner).get_child(0)
 	await _until(func() -> bool: return hero.health.is_dead(), 400)
 	await _frames(2)
 	var sprite: AnimatedSprite2D = hero.get_node("%Sprite")
 	_check("a ghoul's hit at 10 HP kills the hero", hero.health.current_health == 0)
-	_check("hero death triggers Game Over once, for the hero", reasons == [Level.LossReason.HERO_KILLED] and screen.visible)
-	_check("Game Over says the hero has fallen", (screen.get_node("%Subtitle") as Label).text == "The hero has fallen.")
-	_check("the level is frozen", not level.can_process() and level.is_run_over())
+	_check("hero death is not Game Over: the level keeps running", lost[0] == 0 and level.can_process() and not level.is_run_over())
 	_check("the death animation plays", sprite.animation == &"death")
 	await _frames(40)
 	var last_frame: int = sprite.sprite_frames.get_frame_count(&"death") - 1
-	_check("...and keeps playing while the world is frozen (frame %d of %d)" % [sprite.frame, last_frame], sprite.frame == last_frame)
-	(level.get_node("Fortress") as Fortress).destroyed.emit()
-	await _frames(2)
-	_check("no second Game Over afterwards", reasons.size() == 1)
-
-	(screen.get_node("%RestartButton") as Button).pressed.emit()
-	await _frames(2)
-	level = _level_of(main)
-	hero = level.get_node("Hero")
-	_check("restart: fresh level, hero at 100 HP, screen hidden",
-		level.can_process() and hero.health.current_health == 100 and not screen.visible)
-	_check("restart: hero is alive and idle", (hero.get_node("%Sprite") as AnimatedSprite2D).animation.begins_with("idle_"))
-	Input.action_press("move_right")
-	await _frames(20)
-	Input.action_release("move_right")
-	_check("restart: hero moves again", hero.position.x > -200.0)
-	(level.get_node("Fortress") as Fortress).health.take_damage(100)
-	await _frames(2)
-	_check("a later fortress loss shows the fortress text", (screen.get_node("%Subtitle") as Label).text == "The fortress has fallen.")
-	main.queue_free()
+	_check("...and ends on the fallen knight (frame %d of %d)" % [sprite.frame, last_frame], sprite.frame == last_frame)
+	_check("the ghoul leaves the fallen hero and walks on", is_instance_valid(ghoul) and not ghoul.has_target() and not ghoul.velocity.is_zero_approx())
+	level.queue_free()
 	await _frames(2)
 
 
@@ -260,13 +238,6 @@ func _make_level(count: int, interval: float) -> Level:
 	WaveFixtures.single_wave(spawner, count, interval)
 	root.add_child(level)
 	return level
-
-
-func _level_of(main: Node) -> Level:
-	for child: Node in main.get_children():
-		if child is Level:
-			return child
-	return null
 
 
 func _until(condition: Callable, max_frames: int) -> void:

@@ -7,6 +7,10 @@ extends CanvasLayer
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
 const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+const LOST_COLOR: Color = Color(1.0, 0.45, 0.38, 1)
+const LIFE_ICON: Texture2D = preload("res://assets/sprites/ui/icon_helm.png")
+## A spent life: the helm icon, dark.
+const LIFE_SPENT_TINT: Color = Color(0.25, 0.22, 0.28, 1)
 const PHASE_COLORS: Dictionary = {
 	RunCycle.Phase.BUILD: Color(0.72, 0.84, 0.62, 1),
 	RunCycle.Phase.COMBAT: Color(1.0, 0.5, 0.38, 1),
@@ -25,6 +29,7 @@ const PHASE_TEXTS: Dictionary = {
 @export var rewards: WaveRewards
 @export var builder: TowerBuilder
 @export var run_cycle: RunCycle
+@export var hero_lives: HeroLives
 
 @onready var _fortress_bar: HealthBar = %FortressBar
 @onready var _hero_bar: HealthBar = %HeroBar
@@ -39,6 +44,9 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _wave_label: Label = %WaveLabel
 @onready var _phase_label: Label = %PhaseLabel
 @onready var _start_wave_button: Button = %StartWaveButton
+@onready var _lives_row: Control = %LivesRow
+@onready var _lives_icons: HBoxContainer = %LivesIcons
+@onready var _lives_status: Label = %LivesStatus
 
 
 func _ready() -> void:
@@ -61,6 +69,19 @@ func _ready() -> void:
 		builder.tower_sold.connect(_on_tower_sold)
 		_update_slots()
 	_wave_margin.visible = run_cycle != null
+	_lives_row.visible = hero_lives != null
+	set_process(hero_lives != null)
+	if hero_lives != null:
+		for _i: int in hero_lives.lives:
+			var icon: TextureRect = TextureRect.new()
+			icon.texture = LIFE_ICON
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+			icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			_lives_icons.add_child(icon)
+		hero_lives.lives_changed.connect(func(_left: int) -> void: _update_lives())
+		hero_lives.hero_respawned.connect(_on_hero_respawned)
+		hero_lives.out_of_lives.connect(func() -> void: _feed.push("The hero has fallen for good!", LOST_COLOR))
+		_update_lives()
 	_start_wave_button.pressed.connect(_request_start_wave)
 	if run_cycle != null:
 		run_cycle.phase_changed.connect(func(_phase: RunCycle.Phase) -> void: _update_wave())
@@ -80,6 +101,11 @@ func _ready() -> void:
 		if not hero.is_node_ready():
 			await hero.ready
 		_hero_bar.track(hero.health)
+
+
+func _process(_delta: float) -> void:
+	if hero_lives.is_respawning():
+		_lives_status.text = "Back in %d s" % ceili(hero_lives.get_respawn_time_left())
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -109,6 +135,25 @@ func _update_wave() -> void:
 		_enemy_stats_label.text = "Next wave: %d enemies" % spawner.get_next_wave_enemy_total()
 	else:
 		_enemy_stats_label.text = "Enemies left: 0"
+
+
+## One helm per life (spent ones dark) and what the hero is doing.
+func _update_lives() -> void:
+	var left: int = hero_lives.get_lives_left()
+	for i: int in _lives_icons.get_child_count():
+		(_lives_icons.get_child(i) as CanvasItem).modulate = Color.WHITE if i < left else LIFE_SPENT_TINT
+	if left == 0:
+		_lives_status.text = "Fallen"
+		_lives_status.add_theme_color_override(&"font_color", LOST_COLOR)
+	elif hero_lives.is_respawning():
+		_lives_status.text = "Back in %d s" % ceili(hero_lives.get_respawn_time_left())
+	else:
+		_lives_status.text = ""
+
+
+func _on_hero_respawned() -> void:
+	_feed.push("The hero returns!", SLAIN_COLOR)
+	_update_lives()
 
 
 func _on_wave_started(wave_number: int) -> void:

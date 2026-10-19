@@ -3,7 +3,6 @@ extends Node
 
 const LOSS_TEXT: Dictionary = {
 	Level.LossReason.FORTRESS_DESTROYED: "The fortress has fallen.",
-	Level.LossReason.HERO_KILLED: "The hero has fallen.",
 }
 
 @export var level_scene: PackedScene
