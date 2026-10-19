@@ -58,6 +58,46 @@ const GHOUL: Dictionary = {
 	],
 }
 
+## The Grave Hound: same rows as the Ghoul; "walk" is a fast gallop. Attack: 4 wind-up frames at
+## 16 fps = the data's 0.25 s, then the bite.
+const HOUND: Dictionary = {
+	"png": "res://assets/sprites/enemies/hound.png",
+	"frames": "res://entities/enemies/hound_frames.tres",
+	"size": Vector2i(32, 32),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 14.0, true],
+		["walk_up", 4, 6, 14.0, true],
+		["walk_side", 5, 6, 14.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 16.0, false],
+		["attack_up", 8, 6, 16.0, false],
+		["attack_side", 9, 6, 16.0, false],
+	],
+}
+
+## The Brute: 48x48 frames (feet on art row 44). A slow, heavy walk; attack: 6 wind-up frames at
+## 10 fps = the data's 0.6 s, then the slam and a recover frame.
+const BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/brute.png",
+	"frames": "res://entities/enemies/brute_frames.tres",
+	"size": Vector2i(48, 48),
+	"anims": [
+		["idle_down", 0, 4, 4.0, true],
+		["idle_up", 1, 4, 4.0, true],
+		["idle_side", 2, 4, 4.0, true],
+		["walk_down", 3, 6, 6.0, true],
+		["walk_up", 4, 6, 6.0, true],
+		["walk_side", 5, 6, 6.0, true],
+		["death", 6, 7, 10.0, false],
+		["attack_down", 7, 8, 10.0, false],
+		["attack_up", 8, 8, 10.0, false],
+		["attack_side", 9, 8, 10.0, false],
+	],
+}
+
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
@@ -129,7 +169,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

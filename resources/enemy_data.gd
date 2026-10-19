@@ -1,6 +1,7 @@
 class_name EnemyData
 extends Resource
-## Stats for one enemy type. Make one .tres per enemy in data/enemies/ and tune it there.
+## Stats and look of one enemy type. Make one .tres per enemy in data/enemies/ and tune it there.
+## All enemies share entities/enemies/enemy.tscn; this data decides what it is.
 
 @export var display_name: String = ""
 @export var max_health: int = 30
@@ -20,3 +21,11 @@ extends Resource
 @export var attack_cooldown: float = 1.2
 ## Visual played where the enemy is killed (a one-shot scene). Optional.
 @export var death_effect: PackedScene
+
+@export_group("Body and look")
+## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.
+@export var body_radius: float = 12.0
+## The enemy's animations ("idle_<facing>", "walk_<facing>", "attack_<facing>", "death").
+@export var sprite_frames: SpriteFrames
+## Where the sprite sits relative to the body's centre (the feet should touch the body's bottom).
+@export var sprite_offset: Vector2 = Vector2(0, -10)

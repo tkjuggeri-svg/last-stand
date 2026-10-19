@@ -21,6 +21,10 @@ const BONE: Array[Color] = [Color("5b5446"), Color("8f8670"), Color("c3b99c"), C
 const EYE_GLOW: Array[Color] = [Color("6e1410"), Color("c2261b"), Color("ff5a3a"), Color("ffc9a0")]
 const ICHOR: Array[Color] = [Color("10170f"), Color("223322"), Color("3b5a33"), Color("6f9a4f")]
 const SOUL: Array[Color] = [Color("1e3d3a"), Color("2f6b5f"), Color("57b892"), Color("a8f0c8"), Color("e8fff0")]
+## Grave Hound: flayed, mangy red-brown hide over pale bone (warmer and redder than the Ghoul).
+const HOUND_HIDE: Array[Color] = [Color("26131a"), Color("45201f"), Color("6b3428"), Color("91503a"), Color("b47452"), Color("d39b72")]
+## Brute: bloated, bruised violet-grey corpse flesh (colder and bluer than the Ghoul).
+const BRUTE_SKIN: Array[Color] = [Color("221c2e"), Color("372d4a"), Color("51466a"), Color("6f638a"), Color("9184a8"), Color("b9add0")]
 
 # --- Buildings ---
 const STONE: Array[Color] = [Color("1e1c26"), Color("2f2c39"), Color("44404f"), Color("5b5667"), Color("777181"), Color("958f9c"), Color("b3adb6")]

@@ -5,6 +5,7 @@ extends RefCounted
 
 const Canvas: GDScript = preload("res://tools/art/canvas.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
+const Undead: GDScript = preload("res://tools/art/undead_fx.gd")
 
 const SIZE: Vector2i = Vector2i(32, 32)
 const FEET: Vector2 = Vector2(16, 28)
@@ -297,7 +298,7 @@ func _death_frames() -> Array[Image]:
 	recoil["hand_l"] = Vector2(9.5, 20)
 	recoil["hand_r"] = Vector2(22.5, 20)
 	var first: Image = frame("down", recoil)
-	_tint(first, Color("eef5e6"), 0.55)
+	Undead.tint(first, Color("eef5e6"), 0.55)
 	frames.append(first)
 	var stagger: Dictionary = _base_pose("down")
 	stagger["body"] = Vector2(1, 1)
@@ -319,8 +320,8 @@ func _death_frames() -> Array[Image]:
 	frames.append(lying)
 	for step: int in 3:
 		var dissolving: Image = lying.duplicate() as Image
-		_crumble(dissolving, step)
-		_soul(dissolving, step)
+		Undead.crumble(dissolving, step)
+		Undead.soul(dissolving, step, Vector2(16, 22))
 		frames.append(dissolving)
 	return frames
 
@@ -338,46 +339,3 @@ func _lying() -> Image:
 	out.image.blend_rect(body, used, Vector2i(floori((SIZE.x - used.size.x) / 2.0), int(FEET.y) + 1 - used.size.y))
 	out.ground_shadow(Vector2(16, FEET.y - 1), Vector2(11, 2.4))
 	return out.image
-
-
-## Eats the body away from the top with an ordered-dither pattern, leaving dark ash and bone bits.
-func _crumble(img: Image, step: int) -> void:
-	var used: Rect2i = img.get_used_rect()
-	var cut: float = [0.35, 0.7, 1.0][step]
-	for y: int in img.get_height():
-		for x: int in img.get_width():
-			var c: Color = img.get_pixel(x, y)
-			if c.a < 0.5:
-				continue
-			var t: float = 1.0 - float(y - used.position.y) / maxf(used.size.y, 1.0)
-			var threshold: float = Canvas.BAYER_4[(y % 4) * 4 + (x % 4)] / 16.0
-			if t * 0.6 + threshold * 0.6 < cut:
-				var ash: bool = (x * 7 + y * 3) % 5 == 0 and y > used.position.y + used.size.y - 4
-				img.set_pixel(x, y, (P.BONE[1] if (x + y) % 3 == 0 else P.SMOKE[1]) if ash else Color(0, 0, 0, 0))
-			elif step >= 1:
-				img.set_pixel(x, y, Color(c.lerp(P.SMOKE[1], 0.3 * step), c.a))
-
-
-## The pale green soul wisp rising out of the remains.
-func _soul(img: Image, step: int) -> void:
-	var base: Vector2 = Vector2(16, 22 - step * 6)
-	var radius: float = [2.6, 2.2, 1.6][step]
-	for y: int in range(floori(base.y - radius * 2.5), ceili(base.y + radius) + 1):
-		for x: int in range(floori(base.x - radius), ceili(base.x + radius) + 1):
-			if x < 0 or y < 0 or x >= img.get_width() or y >= img.get_height():
-				continue
-			var d: Vector2 = Vector2(x + 0.5 - base.x - sin(y * 0.8 + step) * 0.6, (y + 0.5 - base.y) * (0.4 if y < base.y else 1.0))
-			var k: float = d.length() / radius
-			if k > 1.0:
-				continue
-			if step == 2 and Canvas.BAYER_4[(y % 4) * 4 + (x % 4)] < 8:
-				continue
-			img.set_pixel(x, y, P.SOUL[4] if k < 0.35 else (P.SOUL[3] if k < 0.7 else P.SOUL[2]))
-
-
-func _tint(img: Image, color: Color, amount: float) -> void:
-	for y: int in img.get_height():
-		for x: int in img.get_width():
-			var c: Color = img.get_pixel(x, y)
-			if c.a > 0.5:
-				img.set_pixel(x, y, Color(c.lerp(color, amount), c.a))

@@ -5,7 +5,8 @@ extends CharacterBody2D
 ## If the target has an AttackerLimit, the enemy must claim a slot first; otherwise it waits its turn.
 ## Towers can slow it (apply_slow): the strongest slow wins and it always wears off.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
-## Stats come from an EnemyData resource. Visuals only follow the gameplay state.
+## Stats, body size and animations come from an EnemyData resource (one scene for every enemy type).
+## Visuals only follow the gameplay state.
 
 ## Killed by damage (e.g. the hero). Emitted at most once, and never together with reached_fortress.
 signal died(enemy: Enemy)
@@ -24,6 +25,12 @@ const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
 ## Hit recoil of the sprite (display only): how far it jolts, in world px, and for how long.
 const HIT_JOLT: float = 2.0
 const HIT_JOLT_TIME: float = 0.12
+## The hurtbox is this much bigger than the body, so hits that graze the body still count.
+const HURTBOX_MARGIN: float = 2.0
+## The claw/fist strike reaches this far past the body's edge (centre of the attack shape).
+const STRIKE_REACH: float = 10.0
+## The hit spark appears this far below the sprite's centre (on the chest).
+const SPARK_DROP: float = 2.0
 
 @export var data: EnemyData
 
@@ -62,8 +69,12 @@ func _ready() -> void:
 	_health.setup(data.max_health)
 	_fortress_hitbox.damage = data.fortress_damage
 	_attack_hitbox.damage = data.hero_damage
-	var body_radius: float = ((%BodyShape as CollisionShape2D).shape as CircleShape2D).radius
-	((%RangeShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius + data.attack_range
+	_apply_body(data.body_radius)
+	if data.sprite_frames != null:
+		_sprite.sprite_frames = data.sprite_frames
+		_sprite.play_state("idle")
+	_sprite.position = data.sprite_offset
+	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
 	_health.died.connect(_on_health_died)
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
@@ -85,6 +96,15 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = Vector2.ZERO
 	_update_animation()
+
+
+## Sizes every shape from the body radius (the shapes are local to each enemy instance).
+func _apply_body(body_radius: float) -> void:
+	((%BodyShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius
+	((%HurtShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius + HURTBOX_MARGIN
+	((%FortressShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius
+	((%RangeShape as CollisionShape2D).shape as CircleShape2D).radius = body_radius + data.attack_range
+	_attack_shape.position = Vector2(body_radius + STRIKE_REACH, 0)
 
 
 ## True while winding up or striking.

@@ -5,7 +5,7 @@ extends SceneTree
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
-const GHOUL_SCENE: PackedScene = preload("res://entities/enemies/ghoul.tscn")
+const ENEMY_SCENE: PackedScene = preload("res://entities/enemies/enemy.tscn")
 const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
 const ARCHER: TowerData = preload("res://data/towers/archer.tres")
 const FROST: TowerData = preload("res://data/towers/frost.tres")
@@ -201,7 +201,7 @@ func _first_ghoul(level: Level) -> Enemy:
 
 ## A ghoul without a lane: it just stands there (and still counts as a living enemy for towers).
 func _stationary_ghoul(level: Level, at: Vector2) -> Enemy:
-	var ghoul: Enemy = GHOUL_SCENE.instantiate()
+	var ghoul: Enemy = ENEMY_SCENE.instantiate()
 	ghoul.position = at
 	level.add_child(ghoul)
 	return ghoul

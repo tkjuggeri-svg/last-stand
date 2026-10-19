@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/brute_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/brute_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Brute"
+max_health = 150
+move_speed = 32.0
+gold_reward = 30
+fortress_damage = 30
+hero_damage = 22
+attack_range = 30.0
+attack_windup = 0.6
+attack_cooldown = 2.2
+death_effect = ExtResource("2_death")
+body_radius = 18.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -20)

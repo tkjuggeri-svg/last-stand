@@ -18,12 +18,15 @@ shader_parameter/flash = 0.0
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+resource_local_to_scene = true
 radius = 12.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hurt"]
+resource_local_to_scene = true
 radius = 14.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fortress_hit"]
+resource_local_to_scene = true
 radius = 12.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_range"]
@@ -33,7 +36,7 @@ radius = 36.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
 radius = 16.0
 
-[node name="Ghoul" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 0
 motion_mode = 1
@@ -82,7 +85,8 @@ collision_mask = 16
 script = ExtResource("4_hurtbox")
 health_component = NodePath("../HealthComponent")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="HurtShape" type="CollisionShape2D" parent="Hurtbox"]
+unique_name_in_owner = true
 shape = SubResource("CircleShape2D_hurt")
 
 [node name="FortressHitbox" type="Area2D" parent="."]
@@ -91,7 +95,8 @@ collision_layer = 128
 collision_mask = 0
 script = ExtResource("5_hitbox")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="FortressHitbox"]
+[node name="FortressShape" type="CollisionShape2D" parent="FortressHitbox"]
+unique_name_in_owner = true
 shape = SubResource("CircleShape2D_fortress_hit")
 
 [node name="AttackRange" type="Area2D" parent="."]

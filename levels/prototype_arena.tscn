@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://systems/run_cycle.gd" id="27_cycle"]
 [ext_resource type="Script" path="res://systems/hero_lives.gd" id="28_lives"]
 [ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
-[ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
+[ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/prototype_arena_ground.png" id="7_ground"]
 [ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
@@ -665,7 +665,7 @@ position = Vector2(-110, 90)
 [node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
-enemy_scene = ExtResource("5_ghoul")
+enemy_scene = ExtResource("5_enemy")
 lanes = [NodePath("../Lane")]
 waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01")])
 
