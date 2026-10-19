@@ -30,6 +30,9 @@ extends Resource
 ## True: the shot follows its target (arrows, frost bolts). False: a shell fired at the ground point
 ## where the target should be when it lands (simple lead) that explodes there; it can miss.
 @export var homing: bool = true
+## True: a bolt that flies straight along the ground line through its target (aimed with lead) out to
+## the range, hitting up to 1 + pierce enemies on its way (the Bone Ballista). Overrides homing.
+@export var line_shot: bool = false
 ## Where shots leave the tower, relative to its base (the top of the bow, barrel or crystal).
 @export var muzzle_offset: Vector2 = Vector2(0, -48)
 ## Colour of the light the tower gives off at its muzzle (e.g. the frost crystal). Alpha 0 = no light.
@@ -40,6 +43,14 @@ extends Resource
 @export_range(0.1, 1.0) var slow_factor: float = 1.0
 ## How long the slow lasts, in seconds.
 @export var slow_duration: float = 0.0
+
+@export_group("Pierce and fire")
+## Extra enemies each shot passes through after its first.
+@export var pierce: int = 0
+## Above 0: shots leave burning ground (radius, seconds) dealing this much damage per second.
+@export var burn_dps: float = 0.0
+@export var burn_radius: float = 40.0
+@export var burn_duration: float = 3.0
 
 @export_group("Upgrades")
 ## Level 2, 3, ... in order.
@@ -66,6 +77,10 @@ func stats_for(level: int) -> TowerTier:
 		_level_one.slow_factor = slow_factor
 		_level_one.slow_duration = slow_duration
 		_level_one.projectile_look = projectile_look
+		_level_one.pierce = pierce
+		_level_one.burn_dps = burn_dps
+		_level_one.burn_radius = burn_radius
+		_level_one.burn_duration = burn_duration
 	return _level_one
 
 

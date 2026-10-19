@@ -29,6 +29,8 @@ const BURN_ZONE_SCENE: PackedScene = preload("res://entities/towers/burn_zone.ts
 ## shot's path to be hit.
 const PIERCE_REACH: float = 160.0
 const PIERCE_HIT_RADIUS: float = 10.0
+## Looks drawn in 8 directions ("arrow_0".."arrow_7"), never rotated.
+const DIRECTIONAL_LOOKS: Array[StringName] = [&"arrow", &"bolt"]
 
 var data: TowerData
 ## The firing tower's stats at its level (damage, blast, slow, look).
@@ -84,6 +86,19 @@ func launch_at_point(tower_data: TowerData, level_stats: TowerTier, point: Vecto
 	_flight = maxf(base.distance_to(point), 1.0)
 
 
+## A bolt (TowerData.line_shot): from the tower's base straight along the ground through `aim` to the
+## range (+ RANGE_SLACK), hitting up to 1 + pierce enemies; the sprite flies at the muzzle's height.
+func launch_line(tower_data: TowerData, level_stats: TowerTier, aim: Vector2, base: Vector2, muzzle_offset: Vector2) -> void:
+	data = tower_data
+	stats = level_stats
+	top_level = true
+	position = base
+	_anchor = base
+	_destination = aim
+	_muzzle = Vector2(0, muzzle_offset.y)
+	_start_line(aim - base, level_stats.attack_range + RANGE_SLACK, level_stats.pierce + 1, [])
+
+
 ## Where the shot will end (a shell's landing point; a homing shot's current aim).
 func get_destination() -> Vector2:
 	return _destination
@@ -100,11 +115,13 @@ func _ready() -> void:
 		return
 	_hitbox.damage = stats.damage
 	_update_look(_destination - position)
+	if _line:
+		_sprite.position = _muzzle  # a bolt flies level, at the height it was loosed from
 	if _shell:
 		_marker = LANDING_MARKER_SCENE.instantiate()
 		_marker.top_level = true
 		_marker.position = _destination
-		(_marker as LandingMarker).setup(stats.splash_radius)
+		(_marker as LandingMarker).setup(stats.splash_radius if stats.splash_radius > 0.0 else stats.burn_radius)
 		add_child(_marker)
 		_update_arc()
 
@@ -161,11 +178,15 @@ func _draw() -> void:
 func _impact() -> void:
 	if _marker != null:
 		_marker.hide()
+	if _shell or stats.splash_radius > 0.0:
+		_leave_burn()
 	if stats.splash_radius > 0.0:
 		var explosion: Explosion = EXPLOSION_SCENE.instantiate()
 		explosion.setup(stats.damage, stats.splash_radius, stats.large_blast)
-		_leave_burn()
 		_finish_with(explosion)
+		return
+	if _shell:
+		queue_free()  # a fire glob: the burning ground it left does the work
 		return
 	if _target_alive() and not _lost:
 		target.receive_hit(_hitbox)
@@ -238,11 +259,11 @@ func _finish_with(effect: Node2D) -> void:
 	add_child(effect)
 
 
-## Arrows point where they fly (8 pre-drawn directions, never rotated); other shots just play.
+## Arrows and bolts point where they fly (8 pre-drawn directions, never rotated); other shots just play.
 func _update_look(direction: Vector2) -> void:
 	var look: StringName = stats.projectile_look if stats.projectile_look != &"" else data.projectile_look
-	if look == &"arrow":
+	if look in DIRECTIONAL_LOOKS:
 		if not direction.is_zero_approx():
-			_sprite.play(StringName("arrow_%d" % posmod(roundi(direction.angle() / (PI / 4.0)), 8)))
+			_sprite.play(StringName("%s_%d" % [look, posmod(roundi(direction.angle() / (PI / 4.0)), 8)]))
 	elif _sprite.animation != look:
 		_sprite.play(look)

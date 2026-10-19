@@ -9,6 +9,7 @@ extends RefCounted
 
 const Canvas: GDScript = preload("res://tools/art/canvas.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
+const Siege: GDScript = preload("res://tools/art/siege_tower_art.gd")
 
 const SIZE: Vector2i = Vector2i(32, 48)
 const BASE: float = 45.0
@@ -24,7 +25,9 @@ const FROST_NOVA_SIZE: Vector2i = Vector2i(48, 48)
 const BURN_SIZE: Vector2i = Vector2i(48, 32)
 
 const IDLE_FRAMES: int = 4
-const FIRE_FRAMES: Dictionary = {"archer": 4, "cannon": 5, "frost": 4}
+const FIRE_FRAMES: Dictionary = {"archer": 4, "cannon": 5, "frost": 4, "brazier": 4, "ballista": 4}
+## The M5 towers (drawn by siege_tower_art.gd); their rows come after all the rows above.
+const SIEGE_KINDS: Array[String] = ["brazier", "ballista"]
 const BUILD_FRAMES: int = 6
 const SELL_FRAMES: int = 6
 
@@ -51,6 +54,21 @@ func sheet_rows() -> Array[Array]:
 				for i: int in (IDLE_FRAMES if state == "idle" else int(FIRE_FRAMES[kind])):
 					frames.append(tower(kind, state, i, level))
 				rows.append(frames)
+	# M5 towers: idle, fire, build, sell, then idle/fire for levels 2 and 3.
+	for kind: String in SIEGE_KINDS:
+		for state: String in ["idle", "fire"]:
+			var frames2: Array[Image] = []
+			for i: int in (IDLE_FRAMES if state == "idle" else int(FIRE_FRAMES[kind])):
+				frames2.append(tower(kind, state, i))
+			rows.append(frames2)
+		rows.append(_build_frames(kind))
+		rows.append(_sell_frames(kind))
+		for level: int in [2, 3]:
+			for state: String in ["idle", "fire"]:
+				var frames3: Array[Image] = []
+				for i: int in (IDLE_FRAMES if state == "idle" else int(FIRE_FRAMES[kind])):
+					frames3.append(tower(kind, state, i, level))
+				rows.append(frames3)
 	return rows
 
 
@@ -61,8 +79,10 @@ func tower(kind: String, state: String, frame: int, level: int = 1) -> Image:
 			_archer(c, state, frame, level)
 		"cannon":
 			_cannon(c, state, frame, level)
-		_:
+		"frost":
 			_frost(c, state, frame, level)
+		_:
+			Siege.new().draw(c, kind, state, frame, level)
 	c.finish()
 	c.ground_shadow(Vector2(17.5, BASE), Vector2(13, 3.2))
 	return c.image
@@ -562,6 +582,10 @@ func projectile_rows() -> Array[Array]:
 		c3.image.set_pixel(11 if frame == 0 else 10, 0 if frame == 0 else 1, P.FIRE[4])
 		heavy.append(c3.image)
 	rows.append(heavy)
+	var siege: RefCounted = Siege.new()
+	rows.append(siege.fire_glob_frames())
+	for direction: int in 8:
+		rows.append([siege.bolt(direction)])
 	return rows
 
 

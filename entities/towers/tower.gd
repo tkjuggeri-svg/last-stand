@@ -224,7 +224,9 @@ func _fire() -> void:
 				targets.append(enemy)
 	for enemy: Enemy in targets:
 		var shot: Projectile = PROJECTILE_SCENE.instantiate()
-		if data.homing:
+		if data.line_shot:
+			shot.launch_line(data, stats, aim_point(enemy), global_position, data.muzzle_offset)
+		elif data.homing:
 			shot.launch(data, stats, enemy, global_position + data.muzzle_offset, global_position)
 		else:
 			shot.launch_at_point(data, stats, aim_point(enemy), global_position, data.muzzle_offset)
