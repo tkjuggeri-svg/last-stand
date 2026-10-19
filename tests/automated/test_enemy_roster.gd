@@ -75,6 +75,29 @@ func _test_in_a_wave() -> void:
 		sizes_ok = sizes_ok and (enemy.get_node("%Sprite") as AnimatedSprite2D).sprite_frames == enemy.data.sprite_frames
 		sizes_ok = sizes_ok and (enemy.get_node("%HealthComponent") as HealthComponent).max_health == enemy.data.max_health
 	_check("each enemy has its own body size, animations and HP (types don't share shapes)", sizes_ok)
+	var bars: Dictionary = {}
+	var hidden_at_first: bool = true
+	for type_name: String in by_name:
+		var bar: EnemyHealthBar = (by_name[type_name] as Enemy).get_node("%HealthBar")
+		bars[type_name] = bar
+		hidden_at_first = hidden_at_first and not bar.visible
+	_check("health bars stay hidden until an enemy is hurt", hidden_at_first)
+	var shown: bool = true
+	for type_name: String in by_name:
+		var enemy: Enemy = by_name[type_name]
+		(enemy.get_node("%HealthComponent") as HealthComponent).take_damage(5)
+		var bar: EnemyHealthBar = bars[type_name]
+		var expected: float = float(enemy.data.max_health - 5) / enemy.data.max_health
+		shown = shown and bar.visible and is_equal_approx(bar.get_fill_ratio(), expected)
+	_check("a hit shows the bar with the health left", shown)
+	var brute_bar: EnemyHealthBar = bars["Brute"]
+	var ghoul_bar: EnemyHealthBar = bars["Ghoul"]
+	var hound_bar: EnemyHealthBar = bars["Hound"]
+	_check("bars fit the body: the Brute's is wider and higher, the Hound's lower",
+		brute_bar.position.x < ghoul_bar.position.x and brute_bar.position.y < ghoul_bar.position.y
+		and hound_bar.position.y > ghoul_bar.position.y)
+	_check("bars sit on whole art pixels", [brute_bar, ghoul_bar, hound_bar].all(func(b: EnemyHealthBar) -> bool:
+		return is_equal_approx(fposmod(b.position.x, 1.0), 0.0) and is_equal_approx(fposmod(b.position.y, 1.0), 0.0)))
 	_check("the Hound overtakes the Ghoul on the lane",
 		(by_name["Hound"] as Enemy).get_lane_progress() > (by_name["Ghoul"] as Enemy).get_lane_progress())
 

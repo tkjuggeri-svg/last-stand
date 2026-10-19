@@ -19,3 +19,4 @@ death_effect = ExtResource("2_death")
 body_radius = 10.0
 sprite_frames = ExtResource("3_frames")
 sprite_offset = Vector2(0, -10)
+health_bar_y = -24.0

@@ -63,6 +63,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **At most 2 enemies attack the hero at once** (`AttackerLimit` on the hero, `max_attackers`). An enemy claims a slot before its wind-up and frees it when the strike ends or it dies; the others wait in range (idle) and take turns. Keeps crowds dangerous but readable and fair.
 - Two separate enemy hitboxes: the melee attack (`enemy_hitbox`, hurts the hero) and the fortress contact (`fortress_hitbox`, hurts only the fortress and uses the enemy up). Touching or fighting the hero never uses an enemy up.
 - Every enemy leaves exactly one way: `died` (killed) or `reached_fortress` (used up). `EnemySpawner` turns these into `enemy_killed` and `enemy_counts_changed(living, spawned)` for the HUD.
+- Enemies show a small pixel-art health bar above the head (`EnemyHealthBar`, height `EnemyData.health_bar_y`, width from the body) only after they first take damage.
 - All enemy types share one scene (`entities/enemies/enemy.tscn`); `EnemyData` also holds the body radius (hurtbox, fortress contact and reach scale with it), the SpriteFrames and the sprite offset, like towers and `TowerData`.
 - Starter roster (M4 values, all in `data/enemies/*.tres`):
   | Enemy  | Role | HP | Speed | Fortress dmg | Hero dmg | Wind-up / cooldown | Gold | Body |

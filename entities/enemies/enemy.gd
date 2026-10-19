@@ -62,6 +62,7 @@ var _jolt: Tween
 @onready var _hit_spark: AnimatedSprite2D = %HitSpark
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _frost_aura: AnimatedSprite2D = %FrostAura
+@onready var _health_bar: EnemyHealthBar = %HealthBar
 
 
 func _ready() -> void:
@@ -75,6 +76,7 @@ func _ready() -> void:
 		_sprite.play_state("idle")
 	_sprite.position = data.sprite_offset
 	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
+	_health_bar.setup(data.body_radius, data.health_bar_y)
 	_health.died.connect(_on_health_died)
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
@@ -241,8 +243,9 @@ func _update_animation() -> void:
 		_sprite.play_state("walk")
 
 
-## Damage feedback: a short white flash and a spark (health_changed only fires on damage).
-func _on_health_changed(_current_health: int, _max_health: int) -> void:
+## Damage feedback: a short white flash, a spark and the health bar (health_changed only fires on damage).
+func _on_health_changed(current_health: int, max_health: int) -> void:
+	_health_bar.show_health(current_health, max_health)
 	var flash_material: ShaderMaterial = _sprite.material
 	flash_material.set_shader_parameter("flash", 1.0)  # visible in the same frame as the hit
 	var flash: Tween = create_tween()

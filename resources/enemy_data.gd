@@ -29,3 +29,5 @@ extends Resource
 @export var sprite_frames: SpriteFrames
 ## Where the sprite sits relative to the body's centre (the feet should touch the body's bottom).
 @export var sprite_offset: Vector2 = Vector2(0, -10)
+## Height of the health bar (shown once damaged) relative to the body's centre: just above the head.
+@export var health_bar_y: float = -36.0
