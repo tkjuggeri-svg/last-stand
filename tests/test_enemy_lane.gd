@@ -4,7 +4,7 @@ extends Node2D
 var _spawned_count: int = 0
 
 @onready var _fortress: Fortress = %Fortress
-@onready var _spawner: EnemySpawner = %EnemySpawner
+@onready var _spawner: WaveSpawner = %WaveSpawner
 @onready var _label: Label = %StatusLabel
 
 
@@ -28,4 +28,4 @@ func _update_label() -> void:
 	var fortress_text: String = "DESTROYED" if _fortress.health.is_dead() else "%d / %d" % [
 		_fortress.health.current_health, _fortress.health.max_health]
 	_label.text = "Fortress HP: %s    Ghouls spawned: %d / %d" % [
-		fortress_text, _spawned_count, _spawner.spawn_count]
+		fortress_text, _spawned_count, _spawner.get_wave_enemy_total()]

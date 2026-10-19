@@ -36,7 +36,7 @@ func _initialize() -> void:
 	_check("run_lost emitted once", lost_count[0] == 1)
 
 	# --- Gameplay is frozen ---
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var hero: Hero = level.get_node("Hero")
 	var spawns_after_game_over: Array[int] = [0]
 	spawner.enemy_spawned.connect(func(_e: Enemy) -> void: spawns_after_game_over[0] += 1)
@@ -75,7 +75,7 @@ func _initialize() -> void:
 	_check("hero back at start position", new_hero.position == Vector2(-200, 80))
 	var hud_label: Label = level.get_node("HUD").get_node("%FortressBar").get_node("%ValueLabel")
 	_check("HUD shows the new fortress (100 / 100)", hud_label.text == "100 / 100")
-	_check("spawning restarted", (level.get_node("EnemySpawner") as EnemySpawner).get_child_count() == 1)
+	_check("spawning restarted", (level.get_node("WaveSpawner") as WaveSpawner).get_child_count() == 1)
 
 	Input.action_press("move_right")
 	await _frames(30)
@@ -107,7 +107,7 @@ func _level_count(main: Node) -> int:
 	return main.get_children().filter(func(c: Node) -> bool: return c is Level).size()
 
 
-func _enemy_positions(spawner: EnemySpawner) -> Array[Vector2]:
+func _enemy_positions(spawner: WaveSpawner) -> Array[Vector2]:
 	var positions: Array[Vector2] = []
 	for enemy: Node in spawner.get_children():
 		positions.append((enemy as Enemy).global_position)

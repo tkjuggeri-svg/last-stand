@@ -51,7 +51,7 @@ res://
 │   ├── projectiles/
 │   └── fortress/
 ├── resources/           # Custom Resource class scripts (enemy_data.gd, tower_data.gd, ...)
-├── systems/             # Non-visual game logic nodes: enemy_spawner, economy, wave_rewards, tower_builder
+├── systems/             # Non-visual game logic nodes: wave_spawner, economy, wave_rewards, tower_builder
 ├── levels/              # Maps: arena layout, lanes (Path2D), build slots
 ├── ui/                  # hud/, menus/, upgrade_screen/, shared widgets/
 ├── main/                # main.tscn — boot, scene switching

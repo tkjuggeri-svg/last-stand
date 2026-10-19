@@ -9,7 +9,7 @@ const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 
 @export var fortress: Fortress
 @export var hero: Hero
-@export var spawner: EnemySpawner
+@export var spawner: WaveSpawner
 @export var economy: Economy
 @export var rewards: WaveRewards
 @export var builder: TowerBuilder

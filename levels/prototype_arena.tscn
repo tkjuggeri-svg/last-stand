@@ -1,9 +1,11 @@
-[gd_scene load_steps=32 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
 [ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
-[ext_resource type="Script" path="res://systems/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
+[ext_resource type="Resource" path="res://data/waves/wave_01.tres" id="25_wave01"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="26_wave_data"]
 [ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
 [ext_resource type="Texture2D" path="res://assets/sprites/environment/prototype_arena_ground.png" id="7_ground"]
@@ -81,7 +83,7 @@ y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
 hero = NodePath("Hero")
-spawner = NodePath("EnemySpawner")
+spawner = NodePath("WaveSpawner")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 z_index = -3
@@ -617,7 +619,7 @@ starting_gold = 100
 unique_name_in_owner = true
 script = ExtResource("9_rewards")
 economy = NodePath("../Economy")
-spawner = NodePath("../../EnemySpawner")
+spawner = NodePath("../../WaveSpawner")
 
 [node name="TowerBuilder" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "slots_root")]
 unique_name_in_owner = true
@@ -647,11 +649,13 @@ position = Vector2(-140, -80)
 [node name="Slot6" parent="BuildSlots" instance=ExtResource("14_slot")]
 position = Vector2(-110, 90)
 
-[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
 enemy_scene = ExtResource("5_ghoul")
-lane = NodePath("../Lane")
+lanes = [NodePath("../Lane")]
+waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01")])
+autostart = true
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 position = Vector2(-200, 80)
@@ -682,7 +686,7 @@ expand_mode = 1
 [node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
-spawner = NodePath("../EnemySpawner")
+spawner = NodePath("../WaveSpawner")
 economy = NodePath("../Systems/Economy")
 rewards = NodePath("../Systems/WaveRewards")
 builder = NodePath("../Systems/TowerBuilder")

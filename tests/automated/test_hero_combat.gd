@@ -28,7 +28,7 @@ func _test_single_ghoul() -> void:
 	var level: Level = _make_level(1, 2.0)
 	var hero: Hero = level.get_node("Hero")
 	var fortress: Fortress = level.get_node("Fortress")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var hero_bar_label: Label = level.get_node("HUD").get_node("%HeroBar").get_node("%ValueLabel")
 	hero.position = ON_LANE
 	await _frames(2)
@@ -91,7 +91,7 @@ func _test_dodge() -> void:
 	var hero: Hero = level.get_node("Hero")
 	hero.position = ON_LANE
 	await _frames(2)
-	var ghoul: Enemy = (level.get_node("EnemySpawner") as EnemySpawner).get_child(0)
+	var ghoul: Enemy = (level.get_node("WaveSpawner") as WaveSpawner).get_child(0)
 	var started: Array[bool] = [false]
 	ghoul.attack_started.connect(func(_e: Enemy) -> void: started[0] = true)
 	await _until(func() -> bool: return started[0], 300)
@@ -106,7 +106,7 @@ func _test_dodge() -> void:
 func _test_crowd() -> void:
 	var level: Level = _make_level(3, 0.4)
 	var hero: Hero = level.get_node("Hero")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	hero.position = ON_LANE
 	var hits: Array[int] = []
 	hero.health.health_changed.connect(func(_c: int, _m: int) -> void: hits.append(Engine.get_physics_frames()))
@@ -151,7 +151,7 @@ func _test_crowd() -> void:
 func _test_attacker_limit() -> void:
 	var level: Level = _make_level(3, 0.01)
 	var hero: Hero = level.get_node("Hero")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	hero.position = ON_LANE
 	hero.health.setup(1000)  # survive the whole test
 	var limit: AttackerLimit = AttackerLimit.find_on(hero)
@@ -182,7 +182,7 @@ func _test_attacker_limit() -> void:
 	# Fresh run: kill one of the two attackers at the moment the third is ready but held back.
 	level = _make_level(3, 0.01)
 	hero = level.get_node("Hero")
-	spawner = level.get_node("EnemySpawner")
+	spawner = level.get_node("WaveSpawner")
 	hero.position = ON_LANE
 	hero.health.setup(1000)
 	limit = AttackerLimit.find_on(hero)
@@ -255,9 +255,8 @@ func _test_death_and_restart() -> void:
 
 func _make_level(count: int, interval: float) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
-	spawner.spawn_count = count
-	spawner.spawn_interval = interval
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	WaveFixtures.single_wave(spawner, count, interval)
 	root.add_child(level)
 	return level
 

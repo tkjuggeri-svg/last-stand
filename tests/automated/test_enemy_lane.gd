@@ -1,5 +1,5 @@
 extends SceneTree
-## Automated check for the lane, the Ghoul and the EnemySpawner.
+## Automated check for the lane, the Ghoul and the WaveSpawner.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 ## (--fixed-fps makes the ~55 s of simulated game time run as fast as the machine allows.)
 
@@ -34,7 +34,7 @@ func _test_ghoul_data() -> void:
 
 func _test_single_ghoul_reaches_fortress() -> void:
 	var level: Node = _make_level(1, 2.0)
-	var spawner: EnemySpawner = level.get_node("%EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("%WaveSpawner")
 	var fortress: Fortress = level.get_node("%Fortress")
 	var lane: Path2D = level.get_node("Lane")
 	await _frames(2)
@@ -60,7 +60,7 @@ func _test_single_ghoul_reaches_fortress() -> void:
 
 func _test_hero_kills_ghoul() -> void:
 	var level: Node = _make_level(1, 2.0)
-	var spawner: EnemySpawner = level.get_node("%EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("%WaveSpawner")
 	var fortress: Fortress = level.get_node("%Fortress")
 	var hero: Hero = level.get_node("Hero")
 	await _frames(2)
@@ -80,7 +80,7 @@ func _test_hero_kills_ghoul() -> void:
 
 func _test_spawner_timing() -> void:
 	var level: Node = _make_level(5, 0.5)
-	var spawner: EnemySpawner = level.get_node("%EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("%WaveSpawner")
 	var spawn_positions: Array[Vector2] = []
 	spawner.enemy_spawned.connect(func(e: Enemy) -> void: spawn_positions.append(e.global_position))
 	# _make_level added the level already; the first spawn happens on the first physics frame.
@@ -97,7 +97,7 @@ func _test_spawner_timing() -> void:
 
 func _test_full_run_destroys_fortress() -> void:
 	var level: Node = _make_level(10, 2.0)
-	var spawner: EnemySpawner = level.get_node("%EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("%WaveSpawner")
 	var fortress: Fortress = level.get_node("%Fortress")
 	var destroyed_count: Array[int] = [0]
 	fortress.destroyed.connect(func() -> void: destroyed_count[0] += 1)
@@ -115,9 +115,8 @@ func _test_full_run_destroys_fortress() -> void:
 ## Instances the sandbox scene with custom spawner settings (set before _ready runs).
 func _make_level(count: int, interval: float) -> Node:
 	var level: Node = (load(SCENE_PATH) as PackedScene).instantiate()
-	var spawner: EnemySpawner = level.get_node("%EnemySpawner")
-	spawner.spawn_count = count
-	spawner.spawn_interval = interval
+	var spawner: WaveSpawner = level.get_node("%WaveSpawner")
+	WaveFixtures.single_wave(spawner, count, interval)
 	root.add_child(level)
 	return level
 

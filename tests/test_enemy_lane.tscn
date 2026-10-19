@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://tests/test_enemy_lane.gd" id="1_test"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
 [ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
-[ext_resource type="Script" path="res://systems/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
+[ext_resource type="Resource" path="res://data/waves/wave_01.tres" id="6_wave"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="7_wave_data"]
 [ext_resource type="PackedScene" path="res://entities/enemies/ghoul.tscn" id="5_ghoul"]
 
 [sub_resource type="Curve2D" id="Curve2D_lane"]
@@ -35,11 +37,13 @@ joint_mode = 2
 [node name="Fortress" parent="." instance=ExtResource("2_fortress")]
 unique_name_in_owner = true
 
-[node name="EnemySpawner" type="Node2D" parent="." node_paths=PackedStringArray("lane")]
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 unique_name_in_owner = true
 script = ExtResource("4_spawner")
 enemy_scene = ExtResource("5_ghoul")
-lane = NodePath("../Lane")
+lanes = [NodePath("../Lane")]
+waves = Array[ExtResource("7_wave_data")]([ExtResource("6_wave")])
+autostart = true
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 position = Vector2(-200, 80)

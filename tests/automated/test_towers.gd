@@ -61,7 +61,7 @@ func _test_archer() -> void:
 func _test_archer_targets_the_leader() -> void:
 	var level: Level = _make_level(2, 1.2)
 	var tower: Tower = _build(level, 0, ARCHER)
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	await _until(func() -> bool: return spawner.get_child_count() == 2, 200)
 	var leader: Enemy = spawner.get_child(0)
 	var follower: Enemy = spawner.get_child(1)
@@ -194,7 +194,7 @@ func _build(level: Level, slot_index: int, data: TowerData) -> Tower:
 
 
 func _first_ghoul(level: Level) -> Enemy:
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	await _until(func() -> bool: return spawner.get_child_count() > 0, 120)
 	return spawner.get_child(0)
 
@@ -257,9 +257,8 @@ func _shots(tower: Tower) -> int:
 
 func _make_level(count: int, interval: float) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
-	spawner.spawn_count = count
-	spawner.spawn_interval = interval
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	WaveFixtures.single_wave(spawner, count, interval)
 	(level.get_node("Hero") as Node2D).position = HERO_AWAY
 	root.add_child(level)
 	return level

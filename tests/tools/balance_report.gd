@@ -29,13 +29,13 @@ func _play(setup_name: String, plan: Array) -> void:
 	root.add_child(level)
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	var economy: Economy = level.get_node("%Economy")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var rewards: WaveRewards = level.get_node("%WaveRewards")
 	var fortress: Fortress = level.get_node("Fortress")
 	var stats: Dictionary = {"kills": 0, "leaks": 0, "bonus": 0, "cleared": false}
 	spawner.enemy_killed.connect(func(_e: Enemy) -> void: stats["kills"] += 1)
 	spawner.enemy_reached_fortress.connect(func(_e: Enemy) -> void: stats["leaks"] += 1)
-	spawner.wave_cleared.connect(func() -> void: stats["cleared"] = true)
+	spawner.wave_cleared.connect(func(_wave: int) -> void: stats["cleared"] = true)
 	rewards.perfect_defense_awarded.connect(func(b: int) -> void: stats["bonus"] = b)
 	var catalog: Dictionary = {}
 	for data: TowerData in builder.catalog:

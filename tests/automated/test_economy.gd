@@ -47,7 +47,7 @@ func _test_kill_gold_once() -> void:
 	var level: Level = _make_level(2, 3.0)
 	var economy: Economy = level.get_node("%Economy")
 	await _frames(2)
-	var ghoul: Enemy = (level.get_node("EnemySpawner") as EnemySpawner).get_child(0)
+	var ghoul: Enemy = (level.get_node("WaveSpawner") as WaveSpawner).get_child(0)
 	var health: HealthComponent = ghoul.get_node("%HealthComponent")
 	health.take_damage(100)
 	health.take_damage(100)  # already dead
@@ -78,7 +78,7 @@ func _test_perfect_defense() -> void:
 	var level: Level = _make_level(10, 0.05)
 	var economy: Economy = level.get_node("%Economy")
 	var rewards: WaveRewards = level.get_node("%WaveRewards")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var feed: NotificationFeed = level.get_node("HUD").get_node("%NotificationFeed")
 	var bonuses: Array[int] = []
 	rewards.perfect_defense_awarded.connect(func(b: int) -> void: bonuses.append(b))
@@ -86,7 +86,7 @@ func _test_perfect_defense() -> void:
 	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
 		(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(100))
 	var cleared: Array[bool] = [false]
-	spawner.wave_cleared.connect(func() -> void:
+	spawner.wave_cleared.connect(func(_wave: int) -> void:
 		cleared[0] = true
 		for label: Node in feed.get_children():
 			feed_texts.append((label as Label).text))
@@ -97,7 +97,7 @@ func _test_perfect_defense() -> void:
 	_check("the HUD announces the perfect defense", feed_texts.has("Perfect defense! +10 gold"))
 	# The same wave cannot pay again.
 	_check("ending the wave again pays nothing", rewards.end_wave() == 0)
-	spawner.wave_cleared.emit()
+	spawner.wave_cleared.emit(1)
 	await _frames(1)
 	_check("a repeated wave_cleared pays nothing", economy.get_gold() == START_GOLD + 110 and bonuses.size() == 1)
 	await _free(level)
@@ -107,7 +107,7 @@ func _test_one_leak_cancels_bonus() -> void:
 	var level: Level = _make_level(3, 0.05)
 	var economy: Economy = level.get_node("%Economy")
 	var rewards: WaveRewards = level.get_node("%WaveRewards")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	(level.get_node("Hero") as Node2D).position = OFF_LANE
 	var bonuses: Array[int] = []
 	rewards.perfect_defense_awarded.connect(func(b: int) -> void: bonuses.append(b))
@@ -117,7 +117,7 @@ func _test_one_leak_cancels_bonus() -> void:
 		if spawned[0] <= 2:  # kill two, let the third walk to the fortress
 			(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(100))
 	var cleared: Array[bool] = [false]
-	spawner.wave_cleared.connect(func() -> void: cleared[0] = true)
+	spawner.wave_cleared.connect(func(_wave: int) -> void: cleared[0] = true)
 	await _until(func() -> bool: return cleared[0], 1200)
 	await _frames(1)
 	_check("one ghoul reaching the fortress cancels the bonus", cleared[0] and bonuses.is_empty())
@@ -144,9 +144,8 @@ func _test_bonus_ratio_math() -> void:
 
 func _make_level(count: int, interval: float) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
-	spawner.spawn_count = count
-	spawner.spawn_interval = interval
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	WaveFixtures.single_wave(spawner, count, interval)
 	root.add_child(level)
 	return level
 

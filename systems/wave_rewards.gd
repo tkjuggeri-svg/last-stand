@@ -2,13 +2,13 @@ class_name WaveRewards
 extends Node
 ## Turns enemy kills into gold (each enemy's EnemyData.gold_reward, once per enemy) and pays the
 ## perfect-defense bonus when a wave ends without any enemy reaching the fortress.
-## For now a "wave" is one spawner run (wave_started .. wave_cleared). The future wave system can
-## call begin_wave() / end_wave() itself instead.
+## A wave is the WaveSpawner's wave_started .. wave_cleared; begin_wave() / end_wave() can also be
+## called directly.
 
 signal perfect_defense_awarded(bonus: int)
 
 @export var economy: Economy
-@export var spawner: EnemySpawner
+@export var spawner: WaveSpawner
 ## Share of the wave's kill gold paid as a bonus when nothing reached the fortress.
 @export var perfect_defense_ratio: float = 0.1
 
@@ -20,8 +20,8 @@ var _wave_leaked: bool = false
 func _ready() -> void:
 	assert(economy != null, "WaveRewards needs an Economy: %s" % get_path())
 	if spawner != null:
-		spawner.wave_started.connect(begin_wave)
-		spawner.wave_cleared.connect(end_wave)
+		spawner.wave_started.connect(func(_wave_number: int) -> void: begin_wave())
+		spawner.wave_cleared.connect(func(_wave_number: int) -> void: end_wave())
 		spawner.enemy_killed.connect(_on_enemy_killed)
 		spawner.enemy_reached_fortress.connect(_on_enemy_reached_fortress)
 		if spawner.is_wave_active():

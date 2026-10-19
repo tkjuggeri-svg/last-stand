@@ -81,7 +81,7 @@ func _test_slots_and_rules() -> void:
 func _test_build_during_combat() -> void:
 	var level: Level = _make_level(10)
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	await _frames(150)  # ghouls are on the lane
 	var ghoul: Enemy = spawner.get_child(0)
 	var before: Vector2 = ghoul.global_position
@@ -210,8 +210,8 @@ func _panel_fits(panel: Control) -> bool:
 
 func _make_level(count: int) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
-	spawner.spawn_count = count
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	WaveFixtures.single_wave(spawner, count, 2.0)
 	root.add_child(level)
 	return level
 

@@ -46,7 +46,7 @@ func _initialize() -> void:
 	await _shot("01_start")
 
 	var hero: Hero = level.get_node("Hero")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var fortress: Fortress = level.get_node("Fortress")
 
 	# Walk toward the lane, then fight the first ghoul.
@@ -83,7 +83,7 @@ func _initialize() -> void:
 ## The hero stands on the lane; the first ghoul stops, winds up and strikes until the hero falls.
 func _combat(level: Level) -> void:
 	var hero: Hero = level.get_node("Hero")
-	var ghoul: Enemy = (level.get_node("EnemySpawner") as EnemySpawner).get_child(0)
+	var ghoul: Enemy = (level.get_node("WaveSpawner") as WaveSpawner).get_child(0)
 	hero.position = Vector2(-560, -250)
 	hero.health.take_damage(60)  # start low so the whole fight fits in a few seconds
 	var started: Array[bool] = [false]
@@ -151,7 +151,7 @@ func _gallery(level: Level) -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--frames="):
 			sheets = arg.trim_prefix("--frames=").split(",")
-	(level.get_node("EnemySpawner") as Node).process_mode = Node.PROCESS_MODE_DISABLED
+	(level.get_node("WaveSpawner") as Node).process_mode = Node.PROCESS_MODE_DISABLED
 	var hero: Hero = level.get_node("Hero")
 	hero.position = Vector2(-500, 150)
 	await _frames(30)
@@ -187,7 +187,7 @@ func _review(level: Level) -> void:
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	var slots: Array[BuildSlot] = builder.get_slots()
 	var fortress: Fortress = level.get_node("Fortress")
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	(level.get_node("%Economy") as Economy).earn(400, Economy.Source.KILL)
 
 	# Hero meets the first ghoul on the lane.
@@ -286,7 +286,7 @@ func _press_interact() -> void:
 
 func _level_shows(level: Level, what: String) -> bool:
 	if what == "slowed":
-		return (level.get_node("EnemySpawner") as Node).get_children().any(func(e: Node) -> bool: return (e as Enemy).is_slowed())
+		return (level.get_node("WaveSpawner") as Node).get_children().any(func(e: Node) -> bool: return (e as Enemy).is_slowed())
 	return not level.find_children("*", what, true, false).is_empty()
 
 

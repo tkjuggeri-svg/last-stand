@@ -16,7 +16,7 @@ func _initialize() -> void:
 func _test_in_level() -> void:
 	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	root.add_child(level)
-	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var hud: CanvasLayer = level.get_node("HUD")
 	var stats: Label = hud.get_node("%EnemyStatsLabel")
 	var feed: NotificationFeed = hud.get_node("%NotificationFeed")
@@ -125,7 +125,7 @@ func _test_hud_alone() -> void:
 
 
 ## Enemies still in the tree and not already removed this frame (queue_free takes effect at frame end).
-func _alive_children(spawner: EnemySpawner) -> Array[Node]:
+func _alive_children(spawner: WaveSpawner) -> Array[Node]:
 	return spawner.get_children().filter(func(n: Node) -> bool: return not n.is_queued_for_deletion())
 
 

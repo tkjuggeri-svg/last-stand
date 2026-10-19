@@ -87,7 +87,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 
 ### 4.5 Economy
 - **Gold** (in-run): starts at 100. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul: 10); an enemy that reaches the fortress pays nothing. Spent on towers (later: upgrades). Never negative. Resets every run.
-- **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. Until M4 a "wave" is one spawner run (`WaveRewards.begin_wave()/end_wave()` are the hook for the wave system).
+- **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. A wave is one `WaveSpawner` wave (`wave_started` .. `wave_cleared`).
 - **Soul Shards** (meta): earned at run end based on waves survived. Spent in the meta hub on permanent unlocks.
 - Keep it to these two currencies. More resources only if a system clearly needs them.
 
@@ -99,9 +99,9 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Rerolls cost gold (later).
 
 ### 4.7 Waves
-- Defined by `WaveData`: list of spawn groups `{enemy, count, interval, lane, delay}`.
-- Hand-authored for waves 1–15 in the first version; later add a difficulty scaler (HP/count multipliers) for endless mode.
-- `WaveSpawner` (in `systems/`) reads `WaveData`, spawns enemies, and emits `wave_started` / `wave_cleared` via `Events`.
+- Defined by `WaveData` (`data/waves/wave_NN.tres`): a list of `SpawnGroup`s `{enemy: EnemyData, count, interval, lane, delay}`. The groups of a wave run in parallel: a group's k-th enemy appears at `delay + k × interval` seconds after the wave starts, on the level lane with index `lane`.
+- Hand-authored for the first version; later add a difficulty scaler (HP/count multipliers) for endless mode.
+- `WaveSpawner` (per level, no autoload) holds the level's lanes and waves, starts one wave at a time (`start_next_wave()`), gives each spawned enemy its group's `EnemyData`, and emits `wave_started(n)` / `wave_cleared(n)` (every enemy of the wave spawned and gone: killed or used up at the fortress) plus per-enemy signals. Other systems (WaveRewards, HUD, Level) connect to it through exported node references, so no `Events` autoload is needed yet.
 
 ### 4.8 Meta progression (later milestone)
 - Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.
