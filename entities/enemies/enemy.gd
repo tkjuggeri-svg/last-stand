@@ -23,17 +23,10 @@ signal attack_started(enemy: Enemy)
 const LANE_LOOKAHEAD: float = 24.0
 ## How long the attack hitbox stays active once the strike lands, in seconds.
 const STRIKE_DURATION: float = 0.1
-## Tint while slowed by frost.
-const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
-## Hit recoil of the sprite (display only): how far it jolts, in world px, and for how long.
-const HIT_JOLT: float = 2.0
-const HIT_JOLT_TIME: float = 0.12
 ## The hurtbox is this much bigger than the body, so hits that graze the body still count.
 const HURTBOX_MARGIN: float = 2.0
 ## The claw/fist strike reaches this far past the body's edge (centre of the attack shape).
 const STRIKE_REACH: float = 10.0
-## The hit spark appears this far below the sprite's centre (on the chest).
-const SPARK_DROP: float = 2.0
 const BOLT_SCENE: PackedScene = preload("res://entities/enemies/enemy_bolt.tscn")
 ## Ranged enemies cast from this height above their centre (the hands).
 const CAST_HEIGHT: float = 14.0
@@ -57,12 +50,10 @@ var _claimed_limit: AttackerLimit = null
 ## Current speed multiplier from slows (1 = normal) and how long it still lasts.
 var _slow_factor: float = 1.0
 var _slow_left: float = 0.0
-var _sprite_rest: Vector2 = Vector2.ZERO
 ## Where on its lane the enemy is (curve offset), worked out once per physics frame: finding the
 ## closest point on the curve is the costliest thing an enemy does, and towers ask for it too.
 var _lane_offset: float = 0.0
 var _lane_offset_frame: int = -1
-var _jolt: Tween
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -71,11 +62,8 @@ var _jolt: Tween
 @onready var _attack_hitbox: Hitbox = %AttackHitbox
 @onready var _attack_shape: CollisionShape2D = %AttackShape
 @onready var _sprite: DirectionalSprite = %Sprite
-@onready var _hit_spark: AnimatedSprite2D = %HitSpark
 @onready var _hurtbox: Hurtbox = %Hurtbox
-@onready var _frost_aura: AnimatedSprite2D = %FrostAura
-@onready var _health_bar: EnemyHealthBar = %HealthBar
-@onready var _glow: PointLight2D = %Glow
+@onready var _look: EnemyLook = %Look
 
 
 func _ready() -> void:
@@ -84,22 +72,12 @@ func _ready() -> void:
 	_fortress_hitbox.damage = data.fortress_damage
 	_attack_hitbox.damage = data.hero_damage
 	_apply_body(data.body_radius)
-	if data.sprite_frames != null:
-		_sprite.sprite_frames = data.sprite_frames
-		_sprite.play_state("idle")
-	_sprite.position = data.sprite_offset
-	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
-	_health_bar.setup(data.body_radius, data.health_bar_y)
-	_glow.enabled = data.glow_color.a > 0.0
-	_glow.color = data.glow_color
-	_glow.position = data.sprite_offset
+	_look.setup(data)
 	_health.died.connect(_on_health_died)
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
 	_attack_range.body_entered.connect(_on_attack_range_body_entered)
 	_attack_range.body_exited.connect(_on_attack_range_body_exited)
-	_hit_spark.animation_finished.connect(_hit_spark.hide)
-	_sprite_rest = _sprite.position
 
 
 func _physics_process(delta: float) -> void:
@@ -178,9 +156,7 @@ func apply_slow(factor: float, duration: float) -> void:
 		return
 	_slow_factor = minf(_slow_factor, factor) if is_slowed() else factor
 	_slow_left = maxf(_slow_left, duration)
-	_sprite.self_modulate = SLOWED_TINT
-	_frost_aura.show()
-	_frost_aura.play(&"frost_aura")
+	_look.show_slowed(true)
 
 
 func _update_slow(delta: float) -> void:
@@ -190,8 +166,7 @@ func _update_slow(delta: float) -> void:
 	if _slow_left <= 0.0:
 		_slow_left = 0.0
 		_slow_factor = 1.0
-		_sprite.self_modulate = Color.WHITE
-		_frost_aura.hide()
+		_look.show_slowed(false)
 
 
 ## True when it could start an attack right now if the target's AttackerLimit gave it a slot.
@@ -293,22 +268,9 @@ func _update_animation() -> void:
 		_sprite.play_state("walk")
 
 
-## Damage feedback: a short white flash, a spark and the health bar (health_changed only fires on damage).
+## Damage feedback (health_changed only fires on damage).
 func _on_health_changed(current_health: int, max_health: int) -> void:
-	_health_bar.show_health(current_health, max_health)
-	var flash_material: ShaderMaterial = _sprite.material
-	flash_material.set_shader_parameter("flash", 1.0)  # visible in the same frame as the hit
-	var flash: Tween = create_tween()
-	flash.tween_property(flash_material, "shader_parameter/flash", 0.0, 0.15)
-	# A quick jolt: up (thrown back), then settle.
-	if _jolt != null:
-		_jolt.kill()
-	_jolt = create_tween()
-	_sprite.position = _sprite_rest + Vector2(0, -HIT_JOLT)
-	_jolt.tween_property(_sprite, "position", _sprite_rest, HIT_JOLT_TIME)
-	_hit_spark.show()
-	_hit_spark.stop()
-	_hit_spark.play(&"spark")
+	_look.show_hit(current_health, max_health)
 
 
 func _on_attack_range_body_entered(body: Node2D) -> void:

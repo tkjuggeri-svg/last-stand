@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_data"]
@@ -12,6 +12,8 @@
 [ext_resource type="SpriteFrames" path="res://entities/effects/frost_frames.tres" id="10_frost"]
 [ext_resource type="Script" path="res://entities/enemies/enemy_health_bar.gd" id="11_bar"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="12_light"]
+[ext_resource type="Script" path="res://entities/enemies/enemy_look.gd" id="13_look"]
+[ext_resource type="Script" path="res://entities/enemies/shield_bubble.gd" id="14_bubble"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -87,6 +89,16 @@ animation = &"frost_aura"
 unique_name_in_owner = true
 z_index = 2
 script = ExtResource("11_bar")
+
+[node name="ShieldBubble" type="Node2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+script = ExtResource("14_bubble")
+
+[node name="Look" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("13_look")
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true
