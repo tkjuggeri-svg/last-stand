@@ -41,7 +41,7 @@ func _test_pool() -> void:
 		categories[data.category] = true
 		rarities[data.rarity] = true
 		var plus: bool = data.modifiers.any(func(m: StatModifier) -> bool: return m.flat > 0.0 or m.percent > 0.0)
-		var minus: bool = data.modifiers.any(func(m: StatModifier) -> bool: return m.flat < 0.0 and m.stat != RunModifiers.HERO_ATTACK_COOLDOWN or m.percent < 0.0 and m.stat == &"tower.range" or m.percent < 0.0 and m.stat == RunModifiers.HERO_MAX_HEALTH)
+		var minus: bool = data.modifiers.any(_is_drawback)
 		if plus and minus:
 			trade_offs += 1
 	_check("%d upgrades, each with id (= file name), name, description, icon and an effect" % _pool.size(), _pool.size() >= 15 and complete)
@@ -107,8 +107,8 @@ func _test_upgrade(id: StringName) -> void:
 			var cannon: Tower = await _tower(level, 2, CANNON)
 			mods.add_upgrade(data)
 			ok = cannon.get_stats().damage == roundi(CANNON.damage * (1.0 + _percent(data, &"tower.damage")))
-			ok = ok and _percent(data, &"tower.range") < 0.0
-			ok = ok and is_equal_approx(cannon.get_attack_range(), CANNON.attack_range * (1.0 + _percent(data, &"tower.range")))
+			ok = ok and _percent(data, &"tower.fire_interval") > 0.0 and is_equal_approx(cannon.get_attack_range(), CANNON.attack_range)
+			ok = ok and is_equal_approx(cannon.get_stats().fire_interval, CANNON.fire_interval * (1.0 + _percent(data, &"tower.fire_interval")))
 		"piercing":
 			ok = await _check_pierce(level, data)
 		"hellfire":
@@ -196,6 +196,15 @@ func _check_thorns(level: Level, data: UpgradeData) -> bool:
 	mods.add_upgrade(data)
 	await _frames(62)
 	return _hp(near) < GHOUL.max_health and _hp(far) == GHOUL.max_health and is_equal_approx(fortress.get_thorns_dps(), 12.0)
+
+
+## A drawback: less of a good stat, or a longer interval (slower firing).
+func _is_drawback(m: StatModifier) -> bool:
+	if m.flat < 0.0 and m.stat != RunModifiers.HERO_ATTACK_COOLDOWN:
+		return true
+	if m.percent < 0.0 and m.stat == RunModifiers.HERO_MAX_HEALTH:
+		return true
+	return m.percent > 0.0 and m.stat == &"tower.fire_interval"
 
 
 ## The upgrade's percent modifier on `stat` (0 if it has none).

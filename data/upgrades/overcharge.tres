@@ -7,18 +7,18 @@
 [sub_resource type="Resource" id="Resource_6h68p"]
 script = ExtResource("2_up0ha")
 stat = &"tower.damage"
-percent = 0.3
+percent = 0.4
 
 [sub_resource type="Resource" id="Resource_l41to"]
 script = ExtResource("2_up0ha")
-stat = &"tower.range"
-percent = -0.15
+stat = &"tower.fire_interval"
+percent = 0.15
 
 [resource]
 script = ExtResource("3_kwmg6")
 id = &"overcharge"
 display_name = "Overcharged Engines"
-description = "All towers deal 30% more damage, but reach 15% less far."
+description = "All towers deal 40% more damage, but fire 15% slower."
 icon = ExtResource("1_d8lt5")
 category = 1
 rarity = 1

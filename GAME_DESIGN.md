@@ -117,7 +117,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Keen Fletching | Towers | common | All towers +10% damage |
   | Eagle Eye | Towers | common | All towers +12% range |
   | Quick Masons | Towers | common, once | Towers built 60% faster |
-  | Overcharged Engines | Towers | rare, once | All towers +30% damage, −15% range (trade-off; hurts the short-range Brazier most) |
+  | Overcharged Engines | Towers | rare, once | All towers +40% damage, but fire 15% slower (trade-off; net about +22% damage per second). It used to cost range, which crippled the short-range Brazier |
   | Piercing Arrows | Towers | rare, once | Archer arrows fly on (along the ground line from the tower) through 1 more enemy |
   | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 3 damage/s for 3 s |
   | Deep Freeze | Towers | common | Frost slows last 40% longer |
