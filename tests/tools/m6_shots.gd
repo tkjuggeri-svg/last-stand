@@ -27,8 +27,10 @@ func run(level: Level) -> void:
 	if _wants("cultist"):
 		await _cultist(level)
 	if _wants("bosses"):
+		await _clear(level)
 		await _bosses(level)
 	if _wants("pause"):
+		await _clear(level)
 		await _pause(level)
 
 
@@ -109,6 +111,8 @@ func _bosses(level: Level) -> void:
 	var cycle: RunCycle = level.get_node("%RunCycle")
 	var boss_ids: Array[String] = ["gravelord", "colossus", "lich"]
 	var waves: Array[WaveData] = []
+	for _i: int in spawner.get_wave_number():
+		waves.append(WaveData.new())  # the waves an earlier part already played
 	for id: String in boss_ids:
 		var wave: WaveData = WaveFixtures.make_wave(1, 1.0, load("res://data/enemies/%s.tres" % id) as EnemyData, 0)
 		wave.groups.append(WaveFixtures.make_wave(6, 1.2, GHOUL, 0, 2.0).groups[0])
@@ -181,3 +185,16 @@ func _pause(level: Level) -> void:
 	await _tool.call("_shot", "m6_21_settings_rebinding")
 	settings.close()
 	menu.close()
+
+
+## Ends whatever wave an earlier part left running, so each part starts in a build phase.
+func _clear(level: Level) -> void:
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	for _i: int in 60 * 30:
+		if not spawner.is_wave_active():
+			break
+		for e: Node in spawner.get_children():
+			if e is Enemy and (e as Enemy).is_alive():
+				(e as Enemy).get_health().take_damage(100000)
+		await _tool.call("_frames", 1)
+	await _tool.call("_frames", 5)

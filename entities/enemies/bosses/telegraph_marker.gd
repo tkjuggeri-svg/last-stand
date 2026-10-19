@@ -7,7 +7,9 @@ extends Node2D
 enum Shape { RING, ARROW }
 
 const ART_PX: float = 2.0
-const SEGMENTS: int = 48
+## A ring is drawn as dots this many px apart (every other one lit), at least MIN_SEGMENTS of them.
+const DOT_SPACING: float = 5.0
+const MIN_SEGMENTS: int = 24
 
 var shape: Shape = Shape.RING
 var color: Color = Color(1, 0.3, 0.25, 0.7)
@@ -36,14 +38,16 @@ func _draw() -> void:
 
 func _draw_ring() -> void:
 	var faint: Color = Color(color, color.a * 0.35)
-	for i: int in SEGMENTS:
+	var segments: int = maxi(ceili(TAU * size / DOT_SPACING), MIN_SEGMENTS)
+	for i: int in segments:
 		if i % 2 == 0:
-			_dot(Vector2.from_angle(TAU * i / SEGMENTS) * size, color)
+			_dot(Vector2.from_angle(TAU * i / segments) * size, color)
 	# The inner ring grows to the outer one as the moment comes.
 	var inner: float = size * progress
 	if inner > ART_PX * 2.0:
-		for i: int in SEGMENTS:
-			_dot(Vector2.from_angle(TAU * i / SEGMENTS) * inner, faint if progress < 1.0 else color)
+		var inner_segments: int = maxi(ceili(TAU * inner / DOT_SPACING), MIN_SEGMENTS)
+		for i: int in inner_segments:
+			_dot(Vector2.from_angle(TAU * i / inner_segments) * inner, faint if progress < 1.0 else color)
 
 
 func _draw_arrow() -> void:

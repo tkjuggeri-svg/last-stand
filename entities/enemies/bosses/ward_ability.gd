@@ -4,7 +4,7 @@ extends EnemyAbility
 ## telegraph_time), then every other enemy inside it gets a ward that absorbs `shield` damage for
 ## `duration` seconds (never stacking). It never wards itself: kill the Lich and the wards stop.
 
-const RING_COLOR: Color = Color(0.6, 0.85, 1.0, 0.8)
+const RING_COLOR: Color = Color(0.65, 0.88, 1.0, 1.0)
 
 @export var radius: float = 200.0
 @export var shield: int = 60
