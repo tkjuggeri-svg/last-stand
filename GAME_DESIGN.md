@@ -68,9 +68,9 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Starter roster (M4 values, all in `data/enemies/*.tres`):
   | Enemy  | Role | HP | Speed | Fortress dmg | Hero dmg | Wind-up / cooldown | Gold | Body |
   |--------|------|----|-------|--------------|----------|--------------------|------|------|
-  | Ghoul  | Basic, medium speed, weak | 30 | 60 | 10 | 10 | 0.35 / 1.2 s | 10 | r 12 |
-  | Hound  | Fast, fragile, comes in packs; light on the fortress | 15 | 115 | 5 | 6 | 0.25 / 0.9 s | 6 | r 10 |
-  | Brute  | Slow, tanky, hits the fortress hard | 150 | 32 | 30 | 22 | 0.6 / 2.2 s | 30 | r 18 |
+  | Ghoul  | Basic, medium speed, weak | 30 | 60 | 10 | 10 | 0.35 / 1.2 s | 8 | r 12 |
+  | Hound  | Fast, fragile, comes in packs; light on the fortress | 15 | 115 | 5 | 6 | 0.25 / 0.9 s | 4 | r 10 |
+  | Brute  | Slow, tanky, hits the fortress hard | 150 | 32 | 30 | 22 | 0.6 / 2.2 s | 20 | r 18 |
   | Cultist (later) | Ranged, targets hero or towers | | | | | | | |
   | Boss (later)    | Big HP, special attack, summons adds | | | | | | | |
 
@@ -83,18 +83,18 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **Cannon shells are ground-targeted** (`TowerData.homing = false`, decided after the M4 playtest): the tower aims at the target's position at impact (its current velocity × the flight time, iterated twice, clamped to the range), the shell flies there in a visible arc with a shadow while a dashed ring marks the blast area, and explodes on that spot. It never follows anyone, so it hits whatever stands in the blast and can miss an enemy that changes speed or direction. Arrows and frost bolts stay homing.
 - **Range is strict** (fixed after the M4 playtest): a tower only takes a target whose *centre* is within `attack_range` of its base and drops it the moment it leaves. Homing shots follow their target only while it stays within range + 32 px of the tower; a target that gets away is lost and the shot misses. Range rings: while the mouse is over a slot with a tower, while the build menu is open at a tower, and as a preview of each tower card at an empty slot.
 - Damage goes through the same `Hurtbox`/`HealthComponent` path as melee. Towers never hurt the hero or the fortress (cannon blasts are on `hero_hitbox`, which only enemies listen to).
-- M3 towers (values tuned with `tests/tools/balance_report.gd`; one tower already makes a difference, two hold a 10-Ghoul wave):
-  | Tower  | Cost | Role | Damage / interval | Range | Special |
-  |--------|------|------|-------------------|-------|---------|
-  | Archer | 50   | Reliable single target | 10 / 0.9 s | 210 | Arrows home in on one enemy |
-  | Frost  | 70   | Crowd control | 4 / 1.1 s | 180 | Slows to 50% for 2 s; strongest slow wins, never stacks, always expires |
-  | Cannon | 100  | Slow, heavy area damage | 30 / 2.0 s | 190 | Ground-targeted shell (not homing): lands where the target should be (simple lead), explodes on every enemy within 56 px; can miss fast or turning enemies |
+- Towers (values retuned after the M4 playtest with `tests/tools/balance_report.gd`; level 1 → 2 → 3, upgrade prices in brackets):
+  | Tower  | Cost (upgrades) | Role | Damage / interval | Range | Special |
+  |--------|-----------------|------|-------------------|-------|---------|
+  | Archer | 50 (100, 180)   | Reliable single target | 10/0.8 s → 12/0.75 → 14/0.7 | 210 → 220 → 230 | Arrows home in on one enemy; level 3 looses a volley at 2 enemies |
+  | Frost  | 60 (90, 150)    | Crowd control | 8/1.1 s → 10/1.0 → 12/0.95 | 180 → 190 → 200 | Slows to 50% for 2 s → 42% / 2.6 s → 35% / 3.2 s; strongest slow wins, never stacks, always expires; level 3 slows every enemy within 48 px of the impact |
+  | Cannon | 100 (160, 260)  | Slow, heavy area damage | 30/2.5 s → 34/2.3 → 42/2.2 | 190 → 200 → 205 | Ground-targeted shell (not homing): lands where the target should be (simple lead), explodes on every enemy within 40 → 44 → 50 px; can miss fast or turning enemies; level 3 heavy shells |
 - Future ideas: Brazier (burning AoE), Bone Ballista (piercing).
 - **Tower upgrades** (pulled forward from M5 after the M4 playtest; the rest of M5 stays later): every tower has 2 upgrade tiers (level 1 → 2 → 3), bought from the tower's build-menu view, which shows the next level's price and what changes ("Damage 10 → 14, Range 210 → 225"). Data: `TowerTier` resources in `TowerData.tiers` (price + full stats per level); `TowerBuilder.upgrade()` owns the rules (gold, top level, not during construction). Level 3 specials: Archer looses a volley at 2 targets, Cannon fires heavy shells with a bigger blast, Frost slows every enemy near the impact (frost nova). Each level has its own look (Archer: the order's banner, then a second archer and a gold pennant; Cannon: bronze barrel and iron band, then a heavy mortar barrel and war banner; Frost: ice spikes and orbiting shards, then a bigger crystal with a crown of shards). Upgrading is instant with a bright flash.
 - Selling refunds **50% of everything spent on that tower** (build + upgrades).
 
 ### 4.5 Economy
-- **Gold** (in-run): starts at 100. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul: 10); an enemy that reaches the fortress pays nothing. Spent on towers (later: upgrades). Never negative. Resets every run.
+- **Gold** (in-run): starts at 150. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul 8, Hound 4, Brute 20; lowered after the M4 playtest so gold stays tight); an enemy that reaches the fortress pays nothing. Spent on towers and their upgrades. Never negative. Resets every run.
 - **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. A wave is one `WaveSpawner` wave (`wave_started` .. `wave_cleared`).
 - **Soul Shards** (meta): earned at run end based on waves survived. Spent in the meta hub on permanent unlocks.
 - Keep it to these two currencies. More resources only if a system clearly needs them.
@@ -114,17 +114,17 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **M4 waves** (`data/waves/wave_01..10.tres`; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Brutes in wave 5; every wave brings more total enemy HP than the last:
   | Wave | Ghouls | Hounds | Brutes | Total | Lanes | Total HP |
   |------|--------|--------|--------|-------|-------|----------|
-  | 1  | 8  | –  | – | 8  | W        | 240 |
-  | 2  | 13 | –  | – | 13 | W, NE    | 390 |
-  | 3  | 11 | 6  | – | 17 | W, NE    | 420 |
-  | 4  | 16 | 8  | – | 24 | all      | 600 |
-  | 5  | 12 | 8  | 2 | 22 | W, S     | 780 |
-  | 6  | 20 | 12 | 2 | 34 | all      | 1080 |
-  | 7  | 18 | 20 | 3 | 41 | all      | 1290 |
-  | 8  | 26 | 20 | 5 | 51 | all      | 1830 |
-  | 9  | 28 | 26 | 6 | 60 | all      | 2130 |
-  | 10 | 32 | 38 | 8 | 78 | all      | 2730 |
-- Tuning (balance report, idle hero, towers bought as gold allows, 5 s build phases): no towers falls in wave 2; all-archers falls in wave 10; a mixed build falls in wave 9; cannons-first wins with the fortress at 95. So towers alone can just about win with a strong build; the hero fighting is what makes weaker builds hold. Gold piles up once all slots are full (nothing to buy until upgrades in M5).
+  | 1  | 8  | –  | –  | 8   | W        | 240 |
+  | 2  | 13 | –  | –  | 13  | W, NE    | 390 |
+  | 3  | 11 | 6  | –  | 17  | W, NE    | 420 |
+  | 4  | 16 | 8  | –  | 24  | all      | 600 |
+  | 5  | 16 | 8  | 2  | 26  | all      | 900 |
+  | 6  | 24 | 14 | 2  | 40  | all      | 1230 |
+  | 7  | 18 | 24 | 5  | 47  | all      | 1650 |
+  | 8  | 30 | 28 | 8  | 66  | all      | 2520 |
+  | 9  | 40 | 50 | 16 | 106 | all      | 4350 |
+  | 10 | 60 | 76 | 20 | 156 | all      | 5940 |
+- Tuning (balance report after the playtest fixes, idle hero, towers and upgrades bought as gold allows, 5 s build phases): no tower-only plan wins. Best: archers + cannons and the mixed build fall in wave 9; all archers wave 8, all cannons wave 7, frost + archers wave 6. Mixing tower types beats any single type, and nobody can afford every tower at level 3 (21–22 of 30 levels by the end). The hero fighting is what should turn the late waves into a win.
 
 ### 4.8 Meta progression (later milestone)
 - Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.

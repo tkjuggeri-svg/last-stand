@@ -706,7 +706,7 @@ curve = SubResource("Curve2D_lane3")
 [node name="Economy" type="Node" parent="Systems"]
 unique_name_in_owner = true
 script = ExtResource("8_economy")
-starting_gold = 100
+starting_gold = 150
 
 [node name="WaveRewards" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "spawner")]
 unique_name_in_owner = true

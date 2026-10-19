@@ -5,8 +5,9 @@ extends SceneTree
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
 const OFF_LANE: Vector2 = Vector2(-200, 200)
+## The test pins the level's starting gold, so the numbers below don't move with tuning.
 const START_GOLD: int = 100
-const GHOUL_GOLD: int = 10
+const GHOUL_DATA: EnemyData = preload("res://data/enemies/ghoul.tres")
 
 var _failures: int = 0
 
@@ -53,9 +54,9 @@ func _test_kill_gold_once() -> void:
 	health.take_damage(100)  # already dead
 	(ghoul.get_node("%FortressHitbox") as Hitbox).register_hit(null)  # "reached the fortress" in the same frame
 	await _frames(2)
-	_check("a kill pays the ghoul's gold_reward exactly once (%d)" % economy.get_gold(), economy.get_gold() == START_GOLD + GHOUL_GOLD)
+	_check("a kill pays the ghoul's gold_reward exactly once (%d)" % economy.get_gold(), economy.get_gold() == START_GOLD + GHOUL_DATA.gold_reward)
 	var gold_label: Label = level.get_node("HUD").get_node("%GoldLabel")
-	_check("HUD shows the new gold", gold_label.text == str(START_GOLD + GHOUL_GOLD))
+	_check("HUD shows the new gold", gold_label.text == str(START_GOLD + GHOUL_DATA.gold_reward))
 	await _free(level)
 
 
@@ -92,14 +93,17 @@ func _test_perfect_defense() -> void:
 			feed_texts.append((label as Label).text))
 	await _until(func() -> bool: return cleared[0], 300)
 	await _frames(1)
-	_check("10 kills x 10 gold + 10%% bonus = 110 earned (gold %d)" % economy.get_gold(), economy.get_gold() == START_GOLD + 110)
-	_check("bonus paid once, exactly 10 (%s)" % [bonuses], bonuses == [10])
-	_check("the HUD announces the perfect defense", feed_texts.has("Perfect defense! +10 gold"))
+	var kill_gold: int = 10 * GHOUL_DATA.gold_reward
+	var bonus: int = roundi(kill_gold * rewards.perfect_defense_ratio)
+	_check("10 kills x %d gold + 10%% bonus = %d earned (gold %d)" % [GHOUL_DATA.gold_reward, kill_gold + bonus, economy.get_gold()],
+		economy.get_gold() == START_GOLD + kill_gold + bonus)
+	_check("bonus paid once, exactly %d (%s)" % [bonus, bonuses], bonuses == [bonus])
+	_check("the HUD announces the perfect defense", feed_texts.has("Perfect defense! +%d gold" % bonus))
 	# The same wave cannot pay again.
 	_check("ending the wave again pays nothing", rewards.end_wave() == 0)
 	spawner.wave_cleared.emit(1)
 	await _frames(1)
-	_check("a repeated wave_cleared pays nothing", economy.get_gold() == START_GOLD + 110 and bonuses.size() == 1)
+	_check("a repeated wave_cleared pays nothing", economy.get_gold() == START_GOLD + kill_gold + bonus and bonuses.size() == 1)
 	await _free(level)
 
 
@@ -121,7 +125,7 @@ func _test_one_leak_cancels_bonus() -> void:
 	await _until(func() -> bool: return cleared[0], 1200)
 	await _frames(1)
 	_check("one ghoul reaching the fortress cancels the bonus", cleared[0] and bonuses.is_empty())
-	_check("kill gold is still paid (gold %d)" % economy.get_gold(), economy.get_gold() == START_GOLD + 2 * GHOUL_GOLD)
+	_check("kill gold is still paid (gold %d)" % economy.get_gold(), economy.get_gold() == START_GOLD + 2 * GHOUL_DATA.gold_reward)
 	await _free(level)
 
 
@@ -146,6 +150,7 @@ func _make_level(count: int, interval: float) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	WaveFixtures.single_wave(spawner, count, interval)
+	(level.get_node("%Economy") as Economy).starting_gold = START_GOLD
 	root.add_child(level)
 	return level
 

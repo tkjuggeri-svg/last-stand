@@ -7,6 +7,7 @@ const ARENA: String = "res://levels/prototype_arena.tscn"
 const ARCHER: TowerData = preload("res://data/towers/archer.tres")
 const FROST: TowerData = preload("res://data/towers/frost.tres")
 const CANNON: TowerData = preload("res://data/towers/cannon.tres")
+## The test pins the level's starting gold (exactly one Cannon), so it doesn't move with tuning.
 const START_GOLD: int = 100
 ## 50% of the Archer Tower's 50 gold build price.
 const ARCHER_REFUND: int = 25
@@ -74,7 +75,7 @@ func _test_slots_and_rules() -> void:
 	gold_before = economy.get_gold()
 	var total: int = builder.sell(slot) + builder.sell(slot) + builder.sell(slot)  # e.g. a frantic triple click
 	_check("repeated sells in one frame refund once (%d)" % total, total == ARCHER_REFUND and economy.get_gold() == gold_before + total)
-	_check("refund is based on the build price", builder.refund_for(CANNON) == 50 and builder.refund_for(FROST) == 35)
+	_check("refund is based on the build price", builder.refund_for(CANNON) == floori(CANNON.cost * 0.5) and builder.refund_for(FROST) == floori(FROST.cost * 0.5))
 	await _free(level)
 
 
@@ -124,7 +125,7 @@ func _test_menu_flow() -> void:
 		names.append(_labels_in(card)[0])
 		costs.append(_labels_in(card)[1])
 	_check("menu lists name and price of all 3 towers (%s %s)" % [names, costs],
-		names == ["Archer Tower", "Frost Tower", "Cannon Tower"] and costs == ["50", "70", "100"])
+		names == ["Archer Tower", "Frost Tower", "Cannon Tower"] and costs == [str(ARCHER.cost), str(FROST.cost), str(CANNON.cost)])
 	var details: Label = menu.get_node("%Details")
 	var described: bool = true
 	for i: int in cards.size():
@@ -145,9 +146,10 @@ func _test_menu_flow() -> void:
 	_check("selling from the menu refunds 50 once (gold %d)" % economy.get_gold(), economy.get_gold() == 50 and slot.is_empty())
 	_check("the menu confirms the refund", message.text == "Sold for 50 gold.")
 	cards = (menu.get_node("%Options") as Node).get_children().filter(func(n: Node) -> bool: return not n.is_queued_for_deletion())
-	(cards[1].find_child("Build", true, false) as Button).pressed.emit()  # Frost: 70 > 50
+	(cards[1].find_child("Build", true, false) as Button).pressed.emit()  # Frost costs more than the 50 left
 	await _frames(1)
-	_check("not enough gold: clear message, nothing built", slot.is_empty() and message.text == "Not enough gold! Frost Tower costs 70.")
+	_check("not enough gold: clear message, nothing built", FROST.cost > 50 and slot.is_empty()
+		and message.text == "Not enough gold! Frost Tower costs %d." % FROST.cost)
 	var cost_label: Label = _cost_label(cards[1])
 	_check("unaffordable prices are shown in red", cost_label.get_theme_color("font_color").r > 0.9 and cost_label.get_theme_color("font_color").g < 0.6)
 
@@ -213,6 +215,7 @@ func _make_level(count: int) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	WaveFixtures.single_wave(spawner, count, 2.0)
+	(level.get_node("%Economy") as Economy).starting_gold = START_GOLD
 	root.add_child(level)
 	return level
 

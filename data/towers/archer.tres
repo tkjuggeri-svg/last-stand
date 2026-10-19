@@ -4,19 +4,19 @@
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_56gh1"]
 
+[sub_resource type="Resource" id="Resource_56gh1"]
+script = ExtResource("3_56gh1")
+cost = 100
+damage = 12
+fire_interval = 0.75
+attack_range = 220.0
+
 [sub_resource type="Resource" id="Resource_41dcb"]
 script = ExtResource("3_56gh1")
-cost = 70
+cost = 180
 damage = 14
-fire_interval = 0.8
-attack_range = 225.0
-
-[sub_resource type="Resource" id="Resource_dledb"]
-script = ExtResource("3_56gh1")
-cost = 110
-damage = 18
 fire_interval = 0.7
-attack_range = 235.0
+attack_range = 230.0
 targets = 2
 
 [resource]
@@ -26,7 +26,7 @@ display_name = "Archer Tower"
 description = "Steady single-target damage: one enemy at a time."
 scene = ExtResource("2_scene")
 attack_range = 210.0
-fire_interval = 0.9
+fire_interval = 0.8
 projectile_speed = 440.0
 muzzle_offset = Vector2(14, -48)
-tiers = Array[ExtResource("3_56gh1")]([SubResource("Resource_41dcb"), SubResource("Resource_dledb")])
+tiers = Array[ExtResource("3_56gh1")]([SubResource("Resource_56gh1"), SubResource("Resource_41dcb")])

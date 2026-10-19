@@ -9,47 +9,55 @@
 [sub_resource type="Resource" id="Resource_vcb2d"]
 script = ExtResource("1_lgvv8")
 enemy = ExtResource("2_i61s3")
-count = 3
-interval = 8.0
+count = 6
+interval = 5.0
 delay = 4.0
 
 [sub_resource type="Resource" id="Resource_iprvc"]
 script = ExtResource("1_lgvv8")
 enemy = ExtResource("2_i61s3")
-count = 3
-interval = 8.0
+count = 6
+interval = 5.0
 lane = 1
 delay = 10.0
 
 [sub_resource type="Resource" id="Resource_tf3fq"]
 script = ExtResource("1_lgvv8")
-enemy = ExtResource("3_2yp5j")
-count = 14
-interval = 0.7
+enemy = ExtResource("2_i61s3")
+count = 4
+interval = 7.0
+lane = 2
+delay = 20.0
 
 [sub_resource type="Resource" id="Resource_rq2sq"]
 script = ExtResource("1_lgvv8")
 enemy = ExtResource("3_2yp5j")
-count = 14
-interval = 0.7
-lane = 1
-delay = 5.0
+count = 20
+interval = 0.55
 
 [sub_resource type="Resource" id="Resource_m0wpw"]
 script = ExtResource("1_lgvv8")
-enemy = ExtResource("4_4s2lh")
-count = 16
-interval = 0.35
-lane = 2
-delay = 10.0
+enemy = ExtResource("3_2yp5j")
+count = 20
+interval = 0.55
+lane = 1
+delay = 5.0
 
 [sub_resource type="Resource" id="Resource_pf68i"]
 script = ExtResource("1_lgvv8")
 enemy = ExtResource("4_4s2lh")
-count = 10
-interval = 0.35
+count = 30
+interval = 0.25
+lane = 2
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_o15ih"]
+script = ExtResource("1_lgvv8")
+enemy = ExtResource("4_4s2lh")
+count = 20
+interval = 0.25
 delay = 25.0
 
 [resource]
 script = ExtResource("5_1rvv2")
-groups = Array[ExtResource("1_lgvv8")]([SubResource("Resource_vcb2d"), SubResource("Resource_iprvc"), SubResource("Resource_tf3fq"), SubResource("Resource_rq2sq"), SubResource("Resource_m0wpw"), SubResource("Resource_pf68i")])
+groups = Array[ExtResource("1_lgvv8")]([SubResource("Resource_vcb2d"), SubResource("Resource_iprvc"), SubResource("Resource_tf3fq"), SubResource("Resource_rq2sq"), SubResource("Resource_m0wpw"), SubResource("Resource_pf68i"), SubResource("Resource_o15ih")])

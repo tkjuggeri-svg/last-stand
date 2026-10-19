@@ -138,8 +138,9 @@ func _test_ghoul_and_effects() -> void:
 	var gold_texts: Array[Node] = effects.get_children().filter(func(n: Node) -> bool: return n is DamageNumber)
 	_check("death effect spawned at the ghoul's position",
 		death_effects.size() == 1 and (death_effects[0] as Node2D).global_position.distance_to(death_spot) < 2.0)
-	_check("a gold '+10' rises where the ghoul died",
-		gold_texts.size() == 1 and (gold_texts[0].get_node("%Label") as Label).text == "+10"
+	var reward: int = (load("res://data/enemies/ghoul.tres") as EnemyData).gold_reward
+	_check("a gold '+%d' rises where the ghoul died" % reward,
+		gold_texts.size() == 1 and (gold_texts[0].get_node("%Label") as Label).text == "+%d" % reward
 		and (gold_texts[0] as Node2D).global_position.distance_to(death_spot) < 40.0)
 	await _frames(70)
 	_check("death effect and gold text remove themselves (within ~1 s)", effects.get_child_count() == 0)

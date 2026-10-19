@@ -53,8 +53,9 @@ func _test_archer() -> void:
 	_check("arrows are visible, pointing where they fly (%s...)" % [arrow_looks.slice(0, 2)],
 		not arrow_looks.is_empty() and arrow_looks.all(func(a: StringName) -> bool: return String(a).begins_with("arrow_")))
 	# _build() first adds the tower's price, so the build itself is gold-neutral here.
-	_check("the tower's kill pays gold (+10, +1 perfect-defense bonus; gold %d)" % economy.get_gold(),
-		economy.get_gold() == 100 + 10 + 1)
+	var reward: int = (load("res://data/enemies/ghoul.tres") as EnemyData).gold_reward
+	_check("the tower's kill pays gold (+%d, +%d perfect-defense bonus; gold %d)" % [reward, roundi(reward * 0.1), economy.get_gold()],
+		economy.get_gold() == economy.starting_gold + reward + roundi(reward * 0.1))
 	await _free(level)
 
 

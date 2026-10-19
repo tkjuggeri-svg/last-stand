@@ -4,33 +4,32 @@
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_4uqr0"]
 
-[sub_resource type="Resource" id="Resource_110pk"]
+[sub_resource type="Resource" id="Resource_4uqr0"]
 script = ExtResource("3_4uqr0")
-cost = 80
-damage = 6
+cost = 90
 attack_range = 190.0
 slow_factor = 0.42
 slow_duration = 2.6
 
-[sub_resource type="Resource" id="Resource_odqda"]
+[sub_resource type="Resource" id="Resource_110pk"]
 script = ExtResource("3_4uqr0")
-cost = 130
-damage = 8
+cost = 150
+damage = 12
 fire_interval = 0.95
 attack_range = 200.0
 slow_factor = 0.35
 slow_duration = 3.2
-slow_area = 44.0
+slow_area = 48.0
 
 [resource]
 script = ExtResource("1_data")
 id = &"frost"
 display_name = "Frost Tower"
 description = "Icy bolts slow enemies to half speed for 2 s."
-cost = 70
+cost = 60
 scene = ExtResource("2_scene")
 attack_range = 180.0
-damage = 4
+damage = 8
 fire_interval = 1.1
 projectile_speed = 320.0
 projectile_look = &"frost_bolt"
@@ -38,4 +37,4 @@ muzzle_offset = Vector2(0, -62)
 glow_color = Color(0.45, 0.75, 1, 1)
 slow_factor = 0.5
 slow_duration = 2.0
-tiers = Array[ExtResource("3_4uqr0")]([SubResource("Resource_110pk"), SubResource("Resource_odqda")])
+tiers = Array[ExtResource("3_4uqr0")]([SubResource("Resource_4uqr0"), SubResource("Resource_110pk")])

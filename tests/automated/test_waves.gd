@@ -78,12 +78,14 @@ func _test_wave_cycle_and_rewards() -> void:
 	await _until(func() -> bool: return cleared.size() == 1, 120)
 	_check("wave 1 clears once all its enemies are dead", cleared == [1] and not spawner.is_wave_active())
 	_check("...remaining count back to 0", spawner.get_remaining_count() == 0 and spawner.get_living_count() == 0)
-	_check("...and pays kills + perfect-defense bonus (gold %d)" % economy.get_gold(), economy.get_gold() == 100 + 20 + 2)
+	var reward: int = WaveFixtures.GHOUL.gold_reward
+	var start: int = economy.starting_gold
+	_check("...and pays kills + perfect-defense bonus (gold %d)" % economy.get_gold(), economy.get_gold() == start + 2 * reward + roundi(2 * reward * 0.1))
 	_check("a next wave exists", spawner.has_next_wave() and spawner.get_wave_count() == 2)
 	spawner.start_next_wave()
 	_check("wave 2 counts its own enemies", spawner.get_wave_number() == 2 and spawner.get_remaining_count() == 3)
 	await _until(func() -> bool: return cleared.size() == 2, 120)
-	_check("wave 2 clears and pays its own bonus (gold %d)" % economy.get_gold(), cleared == [1, 2] and economy.get_gold() == 122 + 30 + 3)
+	_check("wave 2 clears and pays its own bonus (gold %d)" % economy.get_gold(), cleared == [1, 2] and economy.get_gold() == start + 5 * reward + roundi(2 * reward * 0.1) + roundi(3 * reward * 0.1))
 	_check("after the last wave nothing more starts", not spawner.has_next_wave() and not spawner.start_next_wave())
 	await _free(level)
 
