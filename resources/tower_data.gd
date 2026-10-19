@@ -24,6 +24,9 @@ extends Resource
 @export var projectile_look: StringName = &"arrow"
 ## Above 0: the projectile explodes on impact and damages every enemy within this radius.
 @export var splash_radius: float = 0.0
+## True: the shot follows its target (arrows, frost bolts). False: a shell fired at the ground point
+## where the target should be when it lands (simple lead) that explodes there; it can miss.
+@export var homing: bool = true
 ## Where shots leave the tower, relative to its base (the top of the bow, barrel or crystal).
 @export var muzzle_offset: Vector2 = Vector2(0, -48)
 ## Colour of the light the tower gives off at its muzzle (e.g. the frost crystal). Alpha 0 = no light.

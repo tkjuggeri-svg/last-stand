@@ -19,3 +19,4 @@ splash_radius = 56.0
 slow_factor = 1.0
 muzzle_offset = Vector2(14, -22)
 slow_duration = 0.0
+homing = false

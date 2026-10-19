@@ -102,6 +102,16 @@ func is_in_range(point: Vector2) -> bool:
 	return global_position.distance_to(point) <= get_attack_range()
 
 
+## Where a shell fired now must land to meet `enemy`, if it keeps its current velocity (simple lead:
+## the flight time is measured along the ground from the tower's base). Never beyond the range.
+func aim_point(enemy: Enemy) -> Vector2:
+	var aim: Vector2 = enemy.global_position
+	for _i: int in 2:
+		var flight: float = global_position.distance_to(aim) / data.projectile_speed
+		aim = enemy.global_position + enemy.velocity * flight
+	return global_position + (aim - global_position).limit_length(get_attack_range())
+
+
 ## Untyped on purpose: the stored target may already be freed, and a freed object can't be passed
 ## as an Enemy. is_instance_valid() is checked before anything else touches it.
 func _is_valid_target(candidate: Variant) -> bool:
@@ -132,7 +142,10 @@ func _pick_target() -> Enemy:
 func _fire() -> void:
 	_cooldown_left = data.fire_interval
 	var shot: Projectile = PROJECTILE_SCENE.instantiate()
-	shot.launch(data, _target, global_position + data.muzzle_offset, global_position, get_attack_range())
+	if data.homing:
+		shot.launch(data, _target, global_position + data.muzzle_offset, global_position, get_attack_range())
+	else:
+		shot.launch_at_point(data, aim_point(_target), global_position, data.muzzle_offset)
 	add_child(shot)
 	_sprite.play(StringName("%s_fire" % data.id))
 
