@@ -9,10 +9,14 @@ extends SceneTree
 ## milestone review set: whole battlefield, hero vs ghoul close up, the three towers, construction and
 ## dismantling, the fortress's damage states, build menu and HUD) and "run" (a late wave with every
 ## enemy type on several lanes, then the Victory screen) and "m5" (the upgrade choice screen, the HUD's
-## upgrade row, a Long Reach swing, the Brazier's fire, a Ballista bolt, the 5-tower build menu).
+## upgrade row, a Long Reach swing, the Brazier's fire, a Ballista bolt, the 5-tower build menu) and
+## "m6" (M6 content, see m6_shots.gd; --only=dash,... picks parts).
+
+const M6Shots: GDScript = preload("res://tests/tools/m6_shots.gd")
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
+var _only: PackedStringArray = PackedStringArray()
 
 
 func _initialize() -> void:
@@ -21,6 +25,8 @@ func _initialize() -> void:
 			_out_dir = arg.trim_prefix("--out=")
 		elif arg.begins_with("--scenario="):
 			_scenario = arg.trim_prefix("--scenario=")
+		elif arg.begins_with("--only="):
+			_only = arg.trim_prefix("--only=").split(",")
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out_dir))
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
@@ -31,6 +37,10 @@ func _initialize() -> void:
 			level = child
 	if _scenario == "run":
 		await _run(level)
+		quit()
+		return
+	if _scenario == "m6":
+		await M6Shots.new(self, _only).run(level)
 		quit()
 		return
 	if _scenario == "m5":

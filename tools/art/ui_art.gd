@@ -174,7 +174,7 @@ func bar_fill(ramp: Array) -> Image:
 
 # ---------------------------------------------------------------- icons
 
-## 10x10 art icons (saved at 2x): coin, keep, helm, skull, foundation.
+## 10x10 art icons (saved at 2x): coin, keep, helm, skull, foundation, dash (a boot with speed lines).
 func icon(kind: String) -> Image:
 	var c: Canvas = Canvas.new(10, 10)
 	match kind:
@@ -207,6 +207,18 @@ func icon(kind: String) -> Image:
 			c.px(7, 4, P.OUTLINE)
 			c.px(4, 7, P.BONE[0])
 			c.px(6, 7, P.BONE[0])
+		"dash":
+			c.part(true)
+			for y: int in [3, 5, 7]:
+				c.rect(Rect2i(0, y, 2 + (y % 3), 1), P.ICE[4] if y == 5 else P.ICE[3])
+			c.part()
+			c.polygon(PackedVector2Array([Vector2(4, 1), Vector2(8, 1), Vector2(8, 5.5), Vector2(10, 7), Vector2(10, 9.5),
+				Vector2(3.5, 9.5), Vector2(3.5, 7), Vector2(4.5, 5.5)]), P.STEEL.slice(1, 4), Vector3(-0.5, -0.5, 1))
+			c.rect(Rect2i(4, 2, 1, 5), P.STEEL[4])
+			c.rect(Rect2i(7, 2, 1, 5), P.STEEL[1])
+			c.rect(Rect2i(4, 7, 5, 1), P.STEEL[4])
+			c.rect(Rect2i(4, 2, 4, 1), P.TABARD[3])
+			c.rect(Rect2i(4, 9, 6, 1), P.LEATHER[2])
 		"slot":
 			c.part()
 			c.cylinder(5, 5, 6, 4.4, 2.4, P.STONE, P.STONE.slice(2, 6))

@@ -102,7 +102,7 @@ Tick items as they're finished.
 
 ## M6 — Content & Challenge
 - [ ] Cultist (ranged) enemy, boss waves (5/10/15)
-- [ ] Hero ability (dash or slam)
+- [x] Hero ability: Dash (Space/Shift, 2 s cooldown on the HUD, immune while dashing, through enemies but not walls) + 2 dash upgrades (Fleet Step, Cinder Dash)
 - [ ] 15-wave run, difficulty tuning pass
 - [ ] Pause menu, settings (volume, fullscreen, keybinds)
 
@@ -140,4 +140,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M5 complete** (run modifier store, upgrade choice after each wave, 20 upgrades, tower upgrades, Brazier and Bone Ballista, balance and performance). Awaiting hands-on playtest feedback before M6.
+**M6 in progress** (phases A–F: dash, Cultist, bosses, 15 waves + hero bot balance, pause/settings, playtest build).

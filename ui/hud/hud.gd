@@ -1,5 +1,5 @@
 extends CanvasLayer
-## In-game overlay: fortress and hero HP, gold, enemy counts, the wave and phase (with the "Start
+## In-game overlay: fortress and hero HP, the dash cooldown, gold, enemy counts, the wave and phase (with the "Start
 ## wave" button and key during the build phase), and short event notifications.
 ## Assign its targets in the level scene. Parts whose target is not assigned are hidden, so the HUD
 ## also runs on its own. It only displays and sends the start-wave intent; RunCycle decides.
@@ -7,6 +7,8 @@ extends CanvasLayer
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
 const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+## The dash row while the dash recharges (it is bright again when ready).
+const DASH_COOLING_TINT: Color = Color(0.55, 0.55, 0.62, 1)
 const LIFE_ICON: Texture2D = preload("res://assets/sprites/ui/icon_helm.png")
 ## A spent life: the helm icon, dark.
 const LIFE_SPENT_TINT: Color = Color(0.25, 0.22, 0.28, 1)
@@ -50,6 +52,9 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _lives_icons: HBoxContainer = %LivesIcons
 @onready var _lives_status: Label = %LivesStatus
 @onready var _upgrade_icons: HFlowContainer = %UpgradeIcons
+@onready var _dash_row: Control = %DashRow
+@onready var _dash_bar: ProgressBar = %DashBar
+@onready var _dash_label: Label = %DashLabel
 
 
 func _ready() -> void:
@@ -76,7 +81,8 @@ func _ready() -> void:
 	if modifiers != null:
 		modifiers.upgrade_added.connect(_on_upgrade_added)
 	_lives_icons.visible = hero_lives != null
-	set_process(hero_lives != null)
+	_dash_row.visible = hero != null
+	set_process(hero_lives != null or hero != null)
 	if hero_lives != null:
 		hero_lives.lives_changed.connect(func(_left: int) -> void: _update_lives())
 		hero_lives.hero_respawned.connect(_on_hero_respawned)
@@ -103,9 +109,21 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if hero != null and hero.is_node_ready():
+		_update_dash(hero.get_dash())
+	if hero_lives == null:
+		return
 	_lives_status.visible = hero_lives.is_respawning()
 	if hero_lives.is_respawning():
 		_lives_status.text = "Hero back in %d s" % ceili(hero_lives.get_respawn_time_left())
+
+
+## The bar fills up as the dash recharges; "Ready" (bright) once it can be used again.
+func _update_dash(dash: HeroDash) -> void:
+	var left: float = dash.get_cooldown_left()
+	_dash_bar.value = 1.0 - left / dash.get_cooldown() if left > 0.0 else 1.0
+	_dash_label.text = "Ready" if left <= 0.0 else "%.1f s" % left
+	_dash_row.modulate = Color.WHITE if left <= 0.0 else DASH_COOLING_TINT
 
 
 func _unhandled_input(event: InputEvent) -> void:

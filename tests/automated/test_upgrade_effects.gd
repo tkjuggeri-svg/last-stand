@@ -94,6 +94,12 @@ func _test_upgrade(id: StringName) -> void:
 		"second_wind":
 			mods.add_upgrade(data)
 			ok = lives.get_lives_left() == 4 and lives.get_max_lives() == 4
+		"fleet_step":
+			mods.add_upgrade(data)
+			ok = is_equal_approx(hero.get_dash().get_cooldown(), hero.get_dash().cooldown * 0.75)
+		"cinder_dash":
+			mods.add_upgrade(data)
+			ok = is_equal_approx(hero.get_dash().get_trail_dps(), 16.0)
 		"berserker":
 			mods.add_upgrade(data)
 			ok = hitbox.damage == 16 and hero.health.max_health == 70

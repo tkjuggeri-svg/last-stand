@@ -80,7 +80,8 @@ func _ui() -> void:
 	_save(ui.bar_frame(), Layouts.UI_DIR + "bar_frame.png")
 	_save(ui.bar_fill([Color("1d2a4a"), Color("2f4a7a"), Color("4a6fa8"), Color("86aedb")]), Layouts.UI_DIR + "bar_fortress.png")
 	_save(ui.bar_fill([Color("2c0f17"), Color("85282e"), Color("c0453a"), Color("ec7a5c")]), Layouts.UI_DIR + "bar_hero.png")
-	for kind: String in ["keep", "helm", "skull", "slot"]:
+	_save(ui.bar_fill([Color("102438"), Color("2f6596"), Color("5aa0c8"), Color("b8e4f0")]), Layouts.UI_DIR + "bar_dash.png")
+	for kind: String in ["keep", "helm", "skull", "slot", "dash"]:
 		_save(ui.icon(kind), Layouts.UI_DIR + "icon_%s.png" % kind)
 
 

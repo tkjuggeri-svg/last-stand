@@ -43,7 +43,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Stats: max HP, move speed, attack damage, attack speed, attack range.
 - **Basic attack** (LMB): short-range **melee arc** aimed at the mouse (decided). Melee makes positioning matter and contrasts with ranged towers. One hero only at first.
   Prototype values: ~100° arc, 68 px reach (was 52, raised after the first playtest) from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
-- **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
+- **Dash** (M6, `dash` action: Space or Shift, rebindable): a short burst in the movement direction (standing still: the way the hero last moved), 120 px in 0.16 s (750 px/s), **2 s cooldown** (shown on the HUD: a Dash row with a filling bar, "Ready" or the seconds left). The hero is **immune to hits** while dashing and for 0.08 s after. Its body only collides with the world and the fortress, so the dash **passes through enemies but stops at walls and the fortress** (`move_and_slide`). No swing can start mid-dash; a swing never blocks a dash. Implemented as a `HeroDash` component node on the hero (values exported there); afterimages and a dust puff are display only. Space was taken out of Godot's built-in `ui_accept` (Enter still confirms), so dashing with Space never presses a focused menu button.
 - Builds towers at slots **at any time**, before or during a wave (decided in M3): walk to a slot, press **E**.
 - Hero HP: 100 (prototype). Enemy melee hits it through a `Hurtbox`; after each hit the hero is invulnerable for 0.5 s, so a crowd can't shred it in an instant. Feedback: red-white flash, hit spark, floating damage number, HUD bar. At 0 HP the knight falls (death animation) and costs a life; it respawns at the fortress while lives remain, and the last life lost is Game Over (see 3. Run structure).
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
@@ -105,7 +105,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - After each wave (except the last), before the build phase: choose **1 of 3** random upgrades (`UpgradeOffers` + `UpgradeChoiceScreen`; `RunCycle` phase CHOOSE). The game is paused while the screen is open; mouse or keyboard (arrows, Enter). No duplicate cards in an offer; non-stackable upgrades never come back once taken; commons are drawn 3× as often as rares. One reroll per offer for gold (25, then +25 each reroll used in the run). The run's RNG is seeded (`UpgradeOffers.seed_value`, -1 = random), so tests and the balance tool are reproducible. The HUD shows a row of the run's upgrade icons (stack counts, hover for details) under the wave panel.
 - Defined by `UpgradeData` (`data/upgrades/*.tres`): id, name, description, icon, category (Hero / Towers / Fortress / Economy), rarity (common / rare), stackable or once per run, a list of `StatModifier`s and an optional instant effect (e.g. repair the fortress now).
 - **Run modifier store** (`RunModifiers`, per level under Systems, no autoload; Restart = fresh level = empty store): flat and percent modifiers on named stats, final = (base + flats) × (1 + percents), percents add up. Systems read their final values through it, so an empty store changes nothing: hero damage, move speed, max HP, attack cooldown, reach, lives; tower damage, fire interval, range, build time, slow duration, pierce, burn (all towers via `tower.<stat>`, one type via `tower.<id>.<stat>`); fortress max HP and thorns; kill gold, interest on unspent gold (capped), tower upgrade prices. Max HP changes move current HP by the same amount.
-- **M5 pool** (20 upgrades, `data/upgrades/`, original 16×16 icons; "once" = not stackable):
+- **M5 pool** (20 upgrades, plus 2 dash upgrades in M6, `data/upgrades/`, original 16×16 icons; "once" = not stackable):
   | Upgrade | Category | Rarity | Effect |
   |---------|----------|--------|--------|
   | Honed Blade | Hero | common | Sword damage +4 |
@@ -128,6 +128,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Treasury | Economy | rare, once | End of each wave: +10% of unspent gold, up to 40 |
   | Guild Discount | Economy | common, once | Tower upgrades cost 20% less |
   | War Tax | Economy | rare, once | Kills pay 30% more gold, fortress max HP −25 (trade-off) |
+  | Fleet Step (M6) | Hero | common | Dash recharges 25% faster (stacks; never below 0.6 s) |
+  | Cinder Dash (M6) | Hero | rare, once | The dash leaves burning ground: a patch every 30 px of the path (radius 26), 16 damage/s for 2 s; overlapping patches add up |
 - Burning ground (`BurnZone`) and thorns damage enemies in ticks through their Hurtboxes like any other hit.
 - Rerolls cost gold (see above).
 
@@ -163,7 +165,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 |-------------|--------------------|
 | Move        | WASD / Arrows      |
 | Attack      | Left mouse         |
-| Ability     | Space / Right mouse|
+| Dash        | Space / Shift      |
 | Build menu  | B / click slot     |
 | Interact    | E                  |
 | Start wave  | Enter (build phase)|

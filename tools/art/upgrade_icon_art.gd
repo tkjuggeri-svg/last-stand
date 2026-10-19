@@ -8,7 +8,7 @@ const P: GDScript = preload("res://tools/art/palette.gd")
 const SIZE: int = 16
 const IDS: Array[String] = ["honed_blade", "long_reach", "battle_rhythm", "iron_body", "second_wind", "berserker",
 	"fletching", "eagle_eye", "quick_masons", "overcharge", "piercing", "hellfire", "deep_freeze",
-	"masonry", "repairs", "thorns", "bounty", "treasury", "guild", "war_tax"]
+	"masonry", "repairs", "thorns", "bounty", "treasury", "guild", "war_tax", "fleet_step", "cinder_dash"]
 
 
 func icon(id: String) -> Image:
@@ -118,6 +118,37 @@ func _berserker(c: Canvas) -> void:
 	c.ellipse(Vector2(12, 12), Vector2(2.6, 2.4), P.BONE)
 	c.px(11, 12, P.EYE_GLOW[2])
 	c.px(13, 12, P.EYE_GLOW[2])
+
+
+## An armoured boot striding right, speed lines behind it.
+func _boot(c: Canvas, at: Vector2) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([at + Vector2(-2, -7), at + Vector2(2, -7), at + Vector2(2, -1.5), at + Vector2(5, 0),
+		at + Vector2(5, 2.5), at + Vector2(-2.5, 2.5), at + Vector2(-2.5, -1), at + Vector2(-1.5, -2)]), P.STEEL.slice(1, 4), Vector3(-0.5, -0.5, 1))
+	var x: int = roundi(at.x)
+	var y: int = roundi(at.y)
+	c.rect(Rect2i(x - 2, y - 7, 1, 5), P.STEEL[4])  # lit left edge
+	c.rect(Rect2i(x + 1, y - 7, 1, 6), P.STEEL[1])  # shaded right edge
+	c.rect(Rect2i(x - 2, y - 1, 6, 1), P.STEEL[4])  # the toe plate's top
+	c.rect(Rect2i(x - 2, y - 6, 4, 1), P.TABARD[3])
+	c.rect(Rect2i(roundi(at.x) - 2, roundi(at.y) + 2, 7, 1), P.LEATHER[2])
+
+
+func _fleet_step(c: Canvas) -> void:
+	c.part(true)
+	for k: int in 3:
+		c.rect(Rect2i(1, 5 + k * 3, 4 - k % 2 * 2, 1), P.ICE[4] if k == 1 else P.ICE[3])
+	_boot(c, Vector2(9, 10))
+	c.part(true)
+	c.px(13, 2, P.GOLD[4])
+	c.px(12, 3, P.GOLD[3])
+	c.px(14, 3, P.GOLD[3])
+
+
+func _cinder_dash(c: Canvas) -> void:
+	_flame(c, Vector2(3, 14), 6.0)
+	_flame(c, Vector2(6.5, 14.5), 4.0)
+	_boot(c, Vector2(10.5, 10))
 
 
 # ---------------------------------------------------------------- towers

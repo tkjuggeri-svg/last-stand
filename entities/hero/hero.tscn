@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -11,6 +11,7 @@
 [ext_resource type="SpriteFrames" path="res://entities/effects/hit_spark_frames.tres" id="9_spark"]
 [ext_resource type="Script" path="res://core/components/attacker_limit.gd" id="10_limit"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="11_light"]
+[ext_resource type="Script" path="res://entities/hero/hero_dash.gd" id="12_dash"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -100,3 +101,7 @@ animation = &"spark"
 [node name="AttackerLimit" type="Node" parent="."]
 script = ExtResource("10_limit")
 max_attackers = 2
+
+[node name="Dash" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("12_dash")

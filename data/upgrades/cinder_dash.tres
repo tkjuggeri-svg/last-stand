@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/cinder_dash.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_data"]
+
+[sub_resource type="Resource" id="Resource_trail"]
+script = ExtResource("2_mod")
+stat = &"hero.dash_trail"
+flat = 16.0
+
+[resource]
+script = ExtResource("3_data")
+id = &"cinder_dash"
+display_name = "Cinder Dash"
+description = "Your dash leaves burning ground: 16 damage/s for 2 s."
+icon = ExtResource("1_icon")
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_trail")])

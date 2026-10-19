@@ -1,6 +1,7 @@
 class_name Hero
 extends CharacterBody2D
-## The player-controlled hero. Moves with the move_* actions and swings a melee attack toward the mouse.
+## The player-controlled hero. Moves with the move_* actions, swings a melee attack toward the mouse and
+## dashes (HeroDash) in the movement direction, passing through enemies and immune while it lasts.
 ## Enemy attacks hurt it through its Hurtbox (with a short invulnerability window after each hit).
 ## When it falls it stops being a target (enemies walk on) until revive() brings it back.
 ## Visuals (DirectionalSprite, swing trail, hit feedback) only follow the gameplay state.
@@ -30,6 +31,8 @@ const BLINKS_PER_SECOND: float = 6.0
 @export var attack_cooldown: float = 0.4
 
 var _attack_time_left: float = 0.0
+## The last direction the hero moved in: a dash from standing still goes this way.
+var _last_direction: Vector2 = Vector2.DOWN
 var _cooldown_left: float = 0.0
 var _last_health: int = 0
 var _base_max_health: int = 0
@@ -46,6 +49,7 @@ var _body_layer: int = 0
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _attack_hitbox: Hitbox = %AttackHitbox
+@onready var _dash: HeroDash = %Dash
 
 
 func _ready() -> void:
@@ -55,6 +59,8 @@ func _ready() -> void:
 	_body_layer = collision_layer
 	_base_max_health = health.max_health
 	_base_damage = _attack_hitbox.damage
+	_dash.modifiers = modifiers
+	_dash.setup(self, _sprite)
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 		_apply_modifiers()
@@ -65,7 +71,13 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if health.is_dead():
 		return
-	_move()
+	if Input.is_action_just_pressed("dash"):
+		dash(_input_direction())
+	if _dash.is_dashing():
+		velocity = _dash.get_velocity()
+		move_and_slide()
+	else:
+		_move()
 	_update_attack_timers(delta)
 	# Holding the button keeps swinging, limited by the cooldown. Clicks on UI (e.g. the build menu)
 	# are not swings.
@@ -76,7 +88,7 @@ func _physics_process(delta: float) -> void:
 
 ## Swings toward a point in the world. Does nothing while the previous swing is on cooldown.
 func attack(target_position: Vector2) -> void:
-	if _cooldown_left > 0.0 or health.is_dead():
+	if _cooldown_left > 0.0 or health.is_dead() or _dash.is_dashing():
 		return
 	var direction: Vector2 = target_position - global_position
 	_attack_pivot.rotation = direction.angle()
@@ -86,6 +98,22 @@ func attack(target_position: Vector2) -> void:
 	_sprite.face(direction)
 	_sprite.play_state("attack", true)
 	_play_swing_trail(direction.angle())
+
+
+## Dashes toward `direction` (zero: the way the hero last moved). Hits are ignored while it lasts.
+## Returns false while dashing, on cooldown or fallen.
+func dash(direction: Vector2) -> bool:
+	if health.is_dead():
+		return false
+	if not _dash.try_dash(direction if not direction.is_zero_approx() else _last_direction):
+		return false
+	_hurtbox.make_invulnerable(_dash.get_invulnerability())
+	return true
+
+
+## The dash component (cooldown, for the HUD).
+func get_dash() -> HeroDash:
+	return _dash
 
 
 ## Max HP, swing damage and reach under the run's upgrades (re-read whenever they change).
@@ -130,10 +158,16 @@ func _blink(seconds: float) -> void:
 
 
 func _move() -> void:
-	# get_vector() caps the length at 1, so diagonals are not faster than straight lines.
-	var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	var input_direction: Vector2 = _input_direction()
+	if not input_direction.is_zero_approx():
+		_last_direction = input_direction
 	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED])
 	move_and_slide()
+
+
+func _input_direction() -> Vector2:
+	# get_vector() caps the length at 1, so diagonals are not faster than straight lines.
+	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
 
 
 func _update_attack_timers(delta: float) -> void:
@@ -211,6 +245,7 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 
 func _on_health_died() -> void:
 	_attack_time_left = 0.0
+	_dash.cancel()
 	_set_attack_active(false)
 	_attack_visual.hide()
 	_set_targetable(false)
