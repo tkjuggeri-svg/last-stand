@@ -63,6 +63,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **At most 2 enemies attack the hero at once** (`AttackerLimit` on the hero, `max_attackers`). An enemy claims a slot before its wind-up and frees it when the strike ends or it dies; the others wait in range (idle) and take turns. Keeps crowds dangerous but readable and fair.
 - Two separate enemy hitboxes: the melee attack (`enemy_hitbox`, hurts the hero) and the fortress contact (`fortress_hitbox`, hurts only the fortress and uses the enemy up). Touching or fighting the hero never uses an enemy up.
 - Every enemy leaves exactly one way: `died` (killed) or `reached_fortress` (used up). `EnemySpawner` turns these into `enemy_killed` and `enemy_counts_changed(living, spawned)` for the HUD.
+- **Cultist** (M6, ranged; `EnemyData.bolt_speed > 0`): walks its lane like the others but stops **170 px before the lane's end** (`siege_distance`) and shoots the fortress from there (4 damage per shot, every 2 s). When the hero comes within **150 px** (`attack_range` + body) it stops wherever it is and shoots the hero instead (8 damage), and goes back to the fortress (or walks on) once the hero leaves. Every shot is telegraphed by a 0.5 s cast (the witchfire swells over its head) and is a straight, non-homing bolt (230 px/s) aimed where the target stood at the release, so stepping aside or dashing through it avoids it. Ranged enemies take no `AttackerLimit` slot (the limit keeps melee crowds readable). Its shots (`EnemyBolt`, a moving `Hitbox`) sit on `enemy_hitbox` (at the hero) or `fortress_hitbox` (at the fortress), never both; they die with the caster. With 20 HP it falls to 2 sword swings or 2 arrows, so towers near the fortress or the hero should hunt it down.
 - Enemies show a small pixel-art health bar above the head (`EnemyHealthBar`, height `EnemyData.health_bar_y`, width from the body) only after they first take damage.
 - All enemy types share one scene (`entities/enemies/enemy.tscn`); `EnemyData` also holds the body radius (hurtbox, fortress contact and reach scale with it), the SpriteFrames and the sprite offset, like towers and `TowerData`.
 - Starter roster (M4 values, all in `data/enemies/*.tres`):
@@ -71,7 +72,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Ghoul  | Basic, medium speed, weak | 30 | 60 | 10 | 10 | 0.35 / 1.2 s | 8 | r 12 |
   | Hound  | Fast, fragile, comes in packs; light on the fortress | 15 | 115 | 5 | 6 | 0.25 / 0.9 s | 4 | r 10 |
   | Brute  | Slow, tanky, hits the fortress hard | 150 | 32 | 30 | 22 | 0.6 / 2.2 s | 20 | r 18 |
-  | Cultist (later) | Ranged, targets hero or towers | | | | | | | |
+  | Cultist (M6) | Ranged caster, fragile: hunt it down | 20 | 52 | 4 per shot (siege) | 8 per shot | 0.5 / 2.0 s | 10 | r 10 |
   | Boss (later)    | Big HP, special attack, summons adds | | | | | | | |
 
 ### 4.4 Towers

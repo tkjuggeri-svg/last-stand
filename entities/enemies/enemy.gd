@@ -3,6 +3,9 @@ extends CharacterBody2D
 ## Base enemy: walks along its lane toward the fortress. When the hero comes within attack range it
 ## stops and attacks (wind-up, strike, cooldown), then resumes the lane once the hero is gone.
 ## If the target has an AttackerLimit, the enemy must claim a slot first; otherwise it waits its turn.
+## A ranged enemy (EnemyData.bolt_speed > 0, the Cultist) shoots instead of striking (no slot
+## needed), and stops data.siege_distance before its lane's end to shoot the fortress, unless the
+## hero is in range: then the hero is its target.
 ## Towers can slow it (apply_slow): the strongest slow wins and it always wears off.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
 ## Stats, body size and animations come from an EnemyData resource (one scene for every enemy type).
@@ -31,6 +34,9 @@ const HURTBOX_MARGIN: float = 2.0
 const STRIKE_REACH: float = 10.0
 ## The hit spark appears this far below the sprite's centre (on the chest).
 const SPARK_DROP: float = 2.0
+const BOLT_SCENE: PackedScene = preload("res://entities/enemies/enemy_bolt.tscn")
+## Ranged enemies cast from this height above their centre (the hands).
+const CAST_HEIGHT: float = 14.0
 
 @export var data: EnemyData
 
@@ -69,6 +75,7 @@ var _jolt: Tween
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _frost_aura: AnimatedSprite2D = %FrostAura
 @onready var _health_bar: EnemyHealthBar = %HealthBar
+@onready var _glow: PointLight2D = %Glow
 
 
 func _ready() -> void:
@@ -83,6 +90,9 @@ func _ready() -> void:
 	_sprite.position = data.sprite_offset
 	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
 	_health_bar.setup(data.body_radius, data.health_bar_y)
+	_glow.enabled = data.glow_color.a > 0.0
+	_glow.color = data.glow_color
+	_glow.position = data.sprite_offset
 	_health.died.connect(_on_health_died)
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
@@ -96,7 +106,7 @@ func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	_update_slow(delta)
 	_update_attack(delta)
-	if is_attacking() or has_target():
+	if is_attacking() or has_target() or is_sieging():
 		velocity = Vector2.ZERO  # stand and fight
 	elif lane != null:
 		velocity = _direction_along_lane() * get_move_speed()
@@ -122,6 +132,14 @@ func is_attacking() -> bool:
 
 func has_target() -> bool:
 	return _target != null and is_instance_valid(_target)
+
+
+## True for a ranged enemy that has reached its firing spot before the fortress (and isn't busy
+## with the hero): it stands there and shoots the fortress.
+func is_sieging() -> bool:
+	if data.siege_distance <= 0.0 or lane == null or has_target() or not data.is_ranged():
+		return false
+	return lane.curve.get_baked_length() - get_lane_progress() <= data.siege_distance
 
 
 ## Still in play: not killed, not used up at the fortress. Towers only target living enemies.
@@ -191,12 +209,15 @@ func _update_attack(delta: float) -> void:
 		_windup_left -= delta
 		if _windup_left < 0.0:
 			_strike()
-	elif has_target() and _cooldown_left <= 0.0 and _strike_left <= 0.0 and _claim_slot():
-		_begin_attack()
+	elif _cooldown_left <= 0.0 and _strike_left <= 0.0:
+		if (has_target() and _claim_slot()) or is_sieging():
+			_begin_attack()
 
 
 ## True if the target allows another attacker right now (or has no limit).
 func _claim_slot() -> bool:
+	if data.is_ranged():
+		return true  # the limit keeps melee crowds readable; shots don't crowd
 	var limit: AttackerLimit = AttackerLimit.find_on(_target)
 	if limit == null:
 		return true
@@ -219,18 +240,39 @@ func _exit_tree() -> void:
 func _begin_attack() -> void:
 	_cooldown_left = data.attack_cooldown
 	_windup_left = data.attack_windup
-	_sprite.face(_target.global_position - global_position)
+	_sprite.face(_aim_point() - global_position)
 	_sprite.play_state("attack", true)
 	attack_started.emit(self)
 
 
 ## The strike lands toward where the target is now; if it stepped away during the wind-up, it misses.
+## A ranged enemy shoots instead, at where the hero (or the fortress) is now.
 func _strike() -> void:
+	if data.is_ranged():
+		_shoot()
+		return
 	if has_target():
 		_attack_pivot.rotation = (_target.global_position - global_position).angle()
 	# Turning the shape on counts as a new overlap, so one strike hits at most once.
 	_attack_shape.set_deferred("disabled", false)
 	_strike_left = STRIKE_DURATION
+
+
+func _shoot() -> void:
+	if not has_target() and not is_sieging():
+		return  # the hero left during the cast and the fortress is out of reach
+	var bolt: EnemyBolt = BOLT_SCENE.instantiate()
+	var against_hero: bool = has_target()
+	var from: Vector2 = global_position + Vector2(0, -CAST_HEIGHT)
+	bolt.setup(from, _aim_point(), data.bolt_speed, data.hero_damage if against_hero else data.siege_damage, against_hero)
+	add_child(bolt)  # a caster's spell dies with it
+
+
+## What the next attack is aimed at: the hero in range, else the end of the lane (the fortress).
+func _aim_point() -> Vector2:
+	if has_target():
+		return _target.global_position
+	return lane.to_global(lane.curve.sample_baked(lane.curve.get_baked_length())) if lane != null else global_position
 
 
 func _direction_along_lane() -> Vector2:

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/cultist_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/cultist_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Cultist"
+max_health = 20
+move_speed = 52.0
+gold_reward = 10
+fortress_damage = 8
+hero_damage = 8
+attack_range = 140.0
+attack_windup = 0.5
+attack_cooldown = 2.0
+death_effect = ExtResource("2_death")
+body_radius = 10.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -12)
+health_bar_y = -38.0
+glow_color = Color(0.55, 1, 0.45, 1)
+bolt_speed = 230.0
+siege_distance = 170.0
+siege_damage = 4

@@ -29,6 +29,7 @@ Reference feel (mood only — never copy art): late SNES / modern "HD-pixel" act
 | Ghoul | 32×32 | figure ≈ 21 px tall, hunched; feet 7 art px below the origin |
 | Hound | 32×32 | low quadruped ≈ 22 px long, 14 tall; paws on the same line as the Ghoul's feet |
 | Brute | 48×48 | figure ≈ 36 px tall; feet on art row 44 (sprite offset (0, −20)) |
+| Cultist | 32×32 | figure ≈ 23 px tall with the pointed hood; hem on the Ghoul's foot line |
 | Towers | 32×48 | base footprint ≈ 26×12 at the bottom of the frame |
 | Fortress | 96×96 | the 48×48 footprint (= 96×96 world collision box) sits at the bottom |
 | Swing trail | 72×72 | radius 34 = the hitbox's 68 px reach |
@@ -71,7 +72,7 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 - **World:** desaturated, dark — grass `#24331a`, dirt `#433325`, stone `#5b5667`, slate roofs `#302c45`.
 - **Accent:** red (`TABARD`, `BANNER`) only on the hero and on the fortress's banners — the player's side.
 - **Gold:** trims, coins, UI highlights, the order's tower emblem.
-- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`, kept light because the cool dusk light flattens violets, plus a 1 px rim light on its top-left silhouette edges).
+- **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`, kept light because the cool dusk light flattens violets, plus a 1 px rim light on its top-left silhouette edges), Cultist a pale ash-grey robe (`CULT_ROBE`, the lightest enemy, so the fragile caster is spotted at once) with a black hood hollow and bright green witchfire (`WITCHFIRE`: eyes, orb, shots) plus a faint green light.
 - **Magic/elements:** fire `FIRE` (orange → white), ice `ICE` (deep blue → white).
 - Characters are always **brighter and higher-contrast than the ground** they stand on.
 
@@ -158,7 +159,7 @@ godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 
 - `canvas.gd` — shaded primitives (ellipse, capsule, cylinder, block, polygon), contours, outline.
 - `palette.gd` — the ramps above.
-- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
+- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `cultist_art.gd`, `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
 - Review: `tools/art/preview_art.gd` (enlarged contact sheet) and the `gallery` scenario of
   `tests/tools/capture_screenshots.gd` (every animation at real game scale over the real level).
 

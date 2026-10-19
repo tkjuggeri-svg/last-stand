@@ -101,7 +101,8 @@ Tick items as they're finished.
 ---
 
 ## M6 — Content & Challenge
-- [ ] Cultist (ranged) enemy, boss waves (5/10/15)
+- [x] Cultist (ranged) enemy: sieges the fortress from 170 px, turns on a nearby hero, telegraphed straight shots
+- [ ] Boss waves (5/10/15)
 - [x] Hero ability: Dash (Space/Shift, 2 s cooldown on the HUD, immune while dashing, through enemies but not walls) + 2 dash upgrades (Fleet Step, Cinder Dash)
 - [ ] 15-wave run, difficulty tuning pass
 - [ ] Pause menu, settings (volume, fullscreen, keybinds)

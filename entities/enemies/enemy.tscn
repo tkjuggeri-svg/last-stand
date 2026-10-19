@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_data"]
@@ -11,6 +11,7 @@
 [ext_resource type="SpriteFrames" path="res://entities/effects/hit_spark_frames.tres" id="9_spark"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/frost_frames.tres" id="10_frost"]
 [ext_resource type="Script" path="res://entities/enemies/enemy_health_bar.gd" id="11_bar"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="12_light"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -57,6 +58,13 @@ sprite_frames = ExtResource("7_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
 script = ExtResource("6_sprite")
+
+[node name="Glow" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+enabled = false
+energy = 0.25
+texture = ExtResource("12_light")
+texture_scale = 1.1
 
 [node name="HitSpark" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true

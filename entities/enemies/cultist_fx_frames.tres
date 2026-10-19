@@ -1,0 +1,58 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/enemies/cultist_fx.png" id="1_lcuq1"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ay5sx"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cl71w"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oickb"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5qpyn"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l0hkl"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ckiio"]
+atlas = ExtResource("1_lcuq1")
+region = Rect2(48, 16, 16, 16)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ay5sx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cl71w")
+}],
+"loop": 1,
+"name": &"bolt",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oickb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5qpyn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l0hkl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ckiio")
+}],
+"loop": 0,
+"name": &"burst",
+"speed": 18.0
+}]

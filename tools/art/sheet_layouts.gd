@@ -139,6 +139,34 @@ const BRUTE: Dictionary = {
 	],
 }
 
+## The Cultist: same rows as the Ghoul; the walk is a glide. Attack: 6 wind-up frames at 12 fps
+## = the data's 0.5 s (the witchfire swells overhead), then the release and a recover frame.
+const CULTIST: Dictionary = {
+	"png": "res://assets/sprites/enemies/cultist.png",
+	"frames": "res://entities/enemies/cultist_frames.tres",
+	"size": Vector2i(32, 32),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 8.0, true],
+		["walk_up", 4, 6, 8.0, true],
+		["walk_side", 5, 6, 8.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 8, 12.0, false],
+		["attack_up", 8, 8, 12.0, false],
+		["attack_side", 9, 8, 12.0, false],
+	],
+}
+
+## The Cultist's witchfire bolt (flying, looped) and its burst.
+const CULTIST_FX: Dictionary = {
+	"png": "res://assets/sprites/enemies/cultist_fx.png",
+	"frames": "res://entities/enemies/cultist_fx_frames.tres",
+	"size": Vector2i(16, 16),
+	"anims": [["bolt", 0, 2, 10.0, true], ["burst", 1, 4, 18.0, false]],
+}
+
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
@@ -275,7 +303,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

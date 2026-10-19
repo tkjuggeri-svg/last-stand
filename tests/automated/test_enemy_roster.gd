@@ -9,8 +9,9 @@ const ARENA: String = "res://levels/prototype_arena.tscn"
 const GHOUL: EnemyData = preload("res://data/enemies/ghoul.tres")
 const HOUND: EnemyData = preload("res://data/enemies/hound.tres")
 const BRUTE: EnemyData = preload("res://data/enemies/brute.tres")
+const CULTIST: EnemyData = preload("res://data/enemies/cultist.tres")
 ## Index of the frame in each attack animation where the blow lands (see the art files).
-const STRIKE_FRAME: Dictionary = {"Ghoul": 4, "Hound": 4, "Brute": 6}
+const STRIKE_FRAME: Dictionary = {"Ghoul": 4, "Hound": 4, "Brute": 6, "Cultist": 6}
 const ANIMATIONS: Array[String] = ["idle_down", "idle_up", "idle_side", "walk_down", "walk_up", "walk_side",
 	"attack_down", "attack_up", "attack_side", "death"]
 ## Far from the lane: the hero stays out of every fight.
@@ -39,7 +40,7 @@ func _test_roles() -> void:
 
 
 func _test_animations() -> void:
-	for data: EnemyData in [GHOUL, HOUND, BRUTE]:
+	for data: EnemyData in [GHOUL, HOUND, BRUTE, CULTIST]:
 		var frames: SpriteFrames = data.sprite_frames
 		var complete: bool = ANIMATIONS.all(func(a: String) -> bool: return frames.has_animation(a) and frames.get_frame_count(a) >= 4)
 		_check("%s has every animation (idle/walk/attack per facing, death)" % data.display_name, complete)

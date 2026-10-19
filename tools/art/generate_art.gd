@@ -14,6 +14,7 @@ const HeroArt: GDScript = preload("res://tools/art/hero_art.gd")
 const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const HoundArt: GDScript = preload("res://tools/art/hound_art.gd")
 const BruteArt: GDScript = preload("res://tools/art/brute_art.gd")
+const CultistArt: GDScript = preload("res://tools/art/cultist_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
@@ -36,6 +37,8 @@ func _initialize() -> void:
 		"ghoul": func() -> void: _save(_sheet(GhoulArt.new().sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),
 		"hound": func() -> void: _save(_sheet(HoundArt.new().sheet_rows(), Layouts.HOUND["size"]), Layouts.HOUND["png"]),
 		"brute": func() -> void: _save(_sheet(BruteArt.new().sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),
+		"cultist": func() -> void: _save(_sheet(CultistArt.new().sheet_rows(), Layouts.CULTIST["size"]), Layouts.CULTIST["png"]),
+		"cultist_fx": func() -> void: _save(_sheet(CultistArt.new().fx_rows(), Layouts.CULTIST_FX["size"]), Layouts.CULTIST_FX["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),
 		"fortress": func() -> void: _save(_sheet([FortressArt.new().sheet_frames()], Layouts.FORTRESS["size"]), Layouts.FORTRESS["png"]),

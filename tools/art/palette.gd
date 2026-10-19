@@ -26,6 +26,12 @@ const HOUND_HIDE: Array[Color] = [Color("26131a"), Color("45201f"), Color("6b342
 ## Brute: bloated, bruised violet-grey corpse flesh (colder and bluer than the Ghoul). Kept light:
 ## the cool dusk light flattens violets, and the biggest enemy must still pop off the dark grass.
 const BRUTE_SKIN: Array[Color] = [Color("2a2236"), Color("463a5a"), Color("66597f"), Color("8b7ca3"), Color("b0a2c4"), Color("dcd2ea")]
+## Cultist: a pale, ash-grey ritual robe (lighter than every other enemy, so the caster pops off the
+## grass) with a near-black hood opening, lit by witchfire.
+const CULT_ROBE: Array[Color] = [Color("2a2630"), Color("4a4450"), Color("716a72"), Color("9a9294"), Color("c2b9b2"), Color("e2dace")]
+const CULT_DARK: Array[Color] = [Color("0d0a12"), Color("1b1424"), Color("2c2038")]
+## Witchfire: the Cultist's sickly, bright green magic (its eyes, the orb it casts, its shots).
+const WITCHFIRE: Array[Color] = [Color("1f4a1c"), Color("3f8f2a"), Color("7fd13b"), Color("c8f57a"), Color("f2ffd0")]
 
 # --- Buildings ---
 const STONE: Array[Color] = [Color("1e1c26"), Color("2f2c39"), Color("44404f"), Color("5b5667"), Color("777181"), Color("958f9c"), Color("b3adb6")]

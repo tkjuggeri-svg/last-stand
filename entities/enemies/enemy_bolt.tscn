@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/enemy_bolt.gd" id="1_bolt"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/cultist_fx_frames.tres" id="2_frames"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bolt"]
+radius = 6.0
+
+[node name="EnemyBolt" type="Area2D"]
+z_index = 1
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_bolt")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_bolt")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("2_frames")
+animation = &"bolt"
+
+[node name="Glow" type="PointLight2D" parent="."]
+color = Color(0.55, 1, 0.45, 1)
+energy = 0.3
+texture = ExtResource("3_light")
+texture_scale = 0.6
