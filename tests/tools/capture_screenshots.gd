@@ -8,7 +8,8 @@ extends SceneTree
 ## --frames=res://a.tres,res://b.tres picks the sheets, default: hero and ghoul) and "review" (the
 ## milestone review set: whole battlefield, hero vs ghoul close up, the three towers, construction and
 ## dismantling, the fortress's damage states, build menu and HUD) and "run" (a late wave with every
-## enemy type on several lanes, then the Victory screen).
+## enemy type on several lanes, then the Victory screen) and "m5" (the upgrade choice screen, the HUD's
+## upgrade row, a Long Reach swing, the Brazier's fire, a Ballista bolt, the 5-tower build menu).
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -30,6 +31,10 @@ func _initialize() -> void:
 			level = child
 	if _scenario == "run":
 		await _run(level)
+		quit()
+		return
+	if _scenario == "m5":
+		await _m5(level)
 		quit()
 		return
 	# Runs start in the build phase; the review set shows it, then every scenario starts wave 1.
@@ -315,6 +320,74 @@ func _run(level: Level) -> void:
 	_frame_camera(camera, Vector2.ZERO, 1.0, false)
 	await _frames(30)
 	await _shot("run_victory")
+
+
+## The M5 review set: the choice screen after a real wave, the upgrades in the HUD, the longer swing
+## trail, the new towers in a fight (close up) and the 5-tower build menu.
+func _m5(level: Level) -> void:
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var offers: UpgradeOffers = level.get_node("%UpgradeOffers")
+	var mods: RunModifiers = level.get_node("%RunModifiers")
+	var cycle: RunCycle = level.get_node("%RunCycle")
+	var hero: Hero = level.get_node("Hero")
+	var camera: Camera2D = hero.get_node("Camera2D")
+	(level.get_node("%Economy") as Economy).earn(2000, Economy.Source.KILL)
+	offers.set_seed(3)
+	spawner.waves = [WaveFixtures.make_wave(2, 0.5), spawner.waves[5], WaveData.new()]
+	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
+		if spawner.get_wave_number() == 1:
+			(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(1000))
+	cycle.start_wave()
+	for _i: int in 600:
+		await _frames(1)
+		if cycle.get_phase() == RunCycle.Phase.CHOOSE:
+			break
+	await _frames(20)
+	await _shot("m5_01_choice_screen")
+	offers.pick(0)
+	await _frames(5)
+	# A few more upgrades for the HUD row, two stacks of Long Reach for the trail.
+	for id: String in ["long_reach", "long_reach", "honed_blade", "masonry", "bounty", "hellfire"]:
+		mods.add_upgrade(load("res://data/upgrades/%s.tres" % id))
+	await _frames(10)
+	await _shot("m5_02_hud_upgrade_row")
+	_frame_camera(camera, Vector2.ZERO, 2.0, false)
+	await _frames(10)
+	hero.attack(hero.global_position + Vector2(60, 10))
+	await _frames(3)
+	await _shot("m5_03_long_reach_swing")
+	# The new towers along the west road, one of each at level 1 and level 3.
+	_frame_camera(camera, Vector2.ZERO, 1.0, false)
+	builder.build(builder.get_slots()[0], builder.catalog[3])
+	builder.build(builder.get_slots()[3], builder.catalog[3])
+	builder.build(builder.get_slots()[2], builder.catalog[4])
+	builder.build(builder.get_slots()[1], builder.catalog[4])
+	await _frames(60)
+	for slot: int in [3, 1]:
+		builder.upgrade(builder.get_slots()[slot])
+		builder.upgrade(builder.get_slots()[slot])
+	hero.position = Vector2(-470, 30)
+	cycle.start_wave()
+	_frame_camera(camera, builder.get_slots()[0].position + Vector2(40, -40), 2.0, true)
+	for _i: int in 900:
+		await _frames(1)
+		if not level.find_children("*", "BurnZone", true, false).is_empty() and _i > 300:
+			break
+	await _shot("m5_04_brazier_fire")
+	_frame_camera(camera, builder.get_slots()[2].position + Vector2(-60, -40), 2.0, true)
+	for _i: int in 900:
+		await _frames(1)
+		var bolts: Array = builder.get_slots()[2].tower.get_children().filter(func(c: Node) -> bool: return c is Projectile)
+		if not bolts.is_empty() and (bolts[0] as Node2D).global_position.distance_to(builder.get_slots()[2].position) > 60.0:
+			break
+	await _shot("m5_05_ballista_bolt")
+	_frame_camera(camera, Vector2.ZERO, 1.0, false)
+	hero.position = builder.get_slots()[5].position + Vector2(0, 44)
+	await _frames(30)
+	_press_interact()
+	await _frames(20)
+	await _shot("m5_06_build_menu_five_towers")
 
 
 ## Detached: the camera holds `at`; attached: it follows the hero again.
