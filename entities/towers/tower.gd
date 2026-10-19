@@ -19,6 +19,8 @@ const PROJECTILE_SCENE: PackedScene = preload("res://entities/towers/projectile.
 const UPGRADE_FLASH_TIME: float = 0.35
 
 @export var data: TowerData
+## The run's upgrades (set by TowerBuilder): damage, range etc. read through it. Null = base stats.
+var modifiers: RunModifiers
 
 ## Gold put into this tower so far (build + upgrades); selling refunds a share of it.
 var invested: int = 0
@@ -45,15 +47,17 @@ func _ready() -> void:
 		_active = false
 		set_physics_process(false)
 		return
-	_stats = data.stats_for(_level)
+	_stats = _effective_stats()
 	_apply_range()
+	if modifiers != null:
+		modifiers.changed.connect(_on_modifiers_changed)
 	_glow.enabled = data.glow_color.a > 0.0
 	_glow.color = data.glow_color
 	_glow.position = data.muzzle_offset
 	_range_area.body_entered.connect(_on_range_body_entered)
 	_range_area.body_exited.connect(_on_range_body_exited)
 	_sprite.animation_finished.connect(_on_sprite_animation_finished)
-	_build_left = data.build_time
+	_build_left = RunModifiers.value(modifiers, data.build_time, RunModifiers.tower_stats(RunModifiers.TOWER_BUILD_TIME, data.id))
 	var build: StringName = StringName("%s_build" % data.id)
 	if _build_left > 0.0 and _sprite.sprite_frames.has_animation(build):
 		var length: float = _sprite.sprite_frames.get_frame_count(build) / _sprite.sprite_frames.get_animation_speed(build)
@@ -110,15 +114,15 @@ func is_max_level() -> bool:
 	return data == null or _level >= data.max_level()
 
 
-## The stats at the current level.
+## The stats at the current level, with the run's upgrades applied.
 func get_stats() -> TowerTier:
-	return _stats if _stats != null else data.stats_for(_level)
+	return _stats if _stats != null else _effective_stats()
 
 
 ## Switches to `level` (TowerBuilder does the paying): new stats, range and look, with a flash.
 func set_level(level: int) -> void:
 	_level = clampi(level, 1, data.max_level())
-	_stats = data.stats_for(_level)
+	_stats = _effective_stats()
 	_apply_range()
 	if not is_building():
 		_sprite.play(_anim("idle"))
@@ -152,6 +156,26 @@ func _anim(state: String) -> StringName:
 	if _level > 1 and _sprite.sprite_frames.has_animation(name_at_level):
 		return name_at_level
 	return StringName("%s_%s" % [data.id, state])
+
+
+## The level's stats with the run's modifiers applied (a copy: the data stays untouched).
+func _effective_stats() -> TowerTier:
+	var base: TowerTier = data.stats_for(_level)
+	if modifiers == null:
+		return base
+	var stats: TowerTier = base.duplicate() as TowerTier
+	stats.damage = modifiers.apply_int(base.damage, RunModifiers.tower_stats(RunModifiers.TOWER_DAMAGE, data.id))
+	stats.fire_interval = maxf(modifiers.apply(base.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
+	stats.attack_range = modifiers.apply(base.attack_range, RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
+	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
+	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
+	stats.burn_dps = modifiers.apply(base.burn_dps, RunModifiers.tower_stats(RunModifiers.TOWER_BURN, data.id))
+	return stats
+
+
+func _on_modifiers_changed() -> void:
+	_stats = _effective_stats()
+	_apply_range()
 
 
 func _apply_range() -> void:

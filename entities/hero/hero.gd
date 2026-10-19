@@ -18,6 +18,8 @@ const BLINK_ALPHA: float = 0.3
 const BLINKS_PER_SECOND: float = 6.0
 
 @export var move_speed: float = 200.0
+## The run's upgrades (damage, speed, max HP, attack speed, reach). Null = base stats.
+@export var modifiers: RunModifiers
 ## How long the swing's hitbox stays active, in seconds.
 @export var attack_duration: float = 0.12
 ## Time between the start of two swings, in seconds. Keep it longer than attack_duration.
@@ -26,6 +28,8 @@ const BLINKS_PER_SECOND: float = 6.0
 var _attack_time_left: float = 0.0
 var _cooldown_left: float = 0.0
 var _last_health: int = 0
+var _base_max_health: int = 0
+var _base_damage: int = 0
 ## The body's collision layer while alive (the hero layer); 0 while fallen.
 var _body_layer: int = 0
 
@@ -37,6 +41,7 @@ var _body_layer: int = 0
 @onready var _attack_visual: AnimatedSprite2D = %AttackVisual
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hurtbox: Hurtbox = %Hurtbox
+@onready var _attack_hitbox: Hitbox = %AttackHitbox
 
 
 func _ready() -> void:
@@ -44,6 +49,11 @@ func _ready() -> void:
 	_hit_spark.animation_finished.connect(_hit_spark.hide)
 	_last_health = health.current_health
 	_body_layer = collision_layer
+	_base_max_health = health.max_health
+	_base_damage = _attack_hitbox.damage
+	if modifiers != null:
+		modifiers.changed.connect(_apply_modifiers)
+		_apply_modifiers()
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_health_died)
 
@@ -66,12 +76,20 @@ func attack(target_position: Vector2) -> void:
 		return
 	var direction: Vector2 = target_position - global_position
 	_attack_pivot.rotation = direction.angle()
-	_cooldown_left = attack_cooldown
+	_cooldown_left = RunModifiers.value(modifiers, attack_cooldown, [RunModifiers.HERO_ATTACK_COOLDOWN])
 	_attack_time_left = attack_duration
 	_set_attack_active(true)
 	_sprite.face(direction)
 	_sprite.play_state("attack", true)
 	_play_swing_trail(direction.angle())
+
+
+## Max HP, swing damage and reach under the run's upgrades (re-read whenever they change).
+func _apply_modifiers() -> void:
+	health.set_max_health(modifiers.apply_int(_base_max_health, [RunModifiers.HERO_MAX_HEALTH]))
+	_attack_hitbox.damage = modifiers.apply_int(_base_damage, [RunModifiers.HERO_DAMAGE])
+	# Scaling the hitbox (an Area2D, not a sprite) lengthens the swing's reach; the trail art stays.
+	_attack_hitbox.scale = Vector2.ONE * modifiers.apply(1.0, [RunModifiers.HERO_REACH])
 
 
 ## Brings a fallen hero back at `at` with full HP, idle and targetable again, and immune to hits for
@@ -110,7 +128,7 @@ func _blink(seconds: float) -> void:
 func _move() -> void:
 	# get_vector() caps the length at 1, so diagonals are not faster than straight lines.
 	var input_direction: Vector2 = Input.get_vector("move_left", "move_right", "move_up", "move_down")
-	velocity = input_direction * move_speed
+	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED])
 	move_and_slide()
 
 

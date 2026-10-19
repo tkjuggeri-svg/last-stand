@@ -18,7 +18,11 @@ const DUST_AREA: Rect2 = Rect2(-50, -40, 100, 90)
 ## Dust clouds when the fortress falls.
 const COLLAPSE_PUFFS: int = 7
 
+## The run's upgrades (max HP, thorns). Null = base stats.
+@export var modifiers: RunModifiers
+
 var _shake: Tween
+var _base_max_health: int = 0
 var _last_health: int = 0
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _sprite_rest: Vector2 = Vector2.ZERO
@@ -37,7 +41,19 @@ func _ready() -> void:
 	_last_health = health.current_health
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_health_died)
+	_base_max_health = health.max_health
+	if modifiers != null:
+		modifiers.changed.connect(_apply_modifiers)
 	_show_look(look_for(health.current_health, health.max_health))
+
+
+## Repairs the walls by `fraction` of the max HP (an upgrade's instant effect).
+func repair(fraction: float) -> void:
+	health.heal(roundi(health.max_health * fraction))
+
+
+func _apply_modifiers() -> void:
+	health.set_max_health(modifiers.apply_int(_base_max_health, [RunModifiers.FORTRESS_MAX_HEALTH]))
 
 
 ## Which sprite frame (a Look) fits this much health.

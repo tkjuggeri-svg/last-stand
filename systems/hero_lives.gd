@@ -20,8 +20,11 @@ signal out_of_lives
 @export var respawn_delay: float = 4.0
 ## Seconds after a respawn during which hits are ignored (the hero blinks).
 @export var respawn_invulnerability: float = 2.0
+## The run's upgrades (extra lives). Null = `lives`.
+@export var modifiers: RunModifiers
 
 var _lives_left: int = 0
+var _max_lives: int = 0
 var _respawn_left: float = 0.0
 
 
@@ -29,7 +32,10 @@ func _ready() -> void:
 	assert(hero != null, "HeroLives needs a hero: %s" % get_path())
 	assert(respawn_point != null, "HeroLives needs a respawn point: %s" % get_path())
 	_lives_left = lives
+	_max_lives = lives
 	hero.died.connect(_on_hero_died)
+	if modifiers != null:
+		modifiers.changed.connect(_on_modifiers_changed)
 	set_physics_process(false)
 
 
@@ -47,6 +53,21 @@ func _physics_process(delta: float) -> void:
 
 func get_lives_left() -> int:
 	return _lives_left
+
+
+## Lives this run can have (base + extra lives from upgrades).
+func get_max_lives() -> int:
+	return _max_lives
+
+
+## An extra life from an upgrade is added at once (and a lost one isn't given back by a change).
+func _on_modifiers_changed() -> void:
+	var new_max: int = modifiers.apply_int(lives, [RunModifiers.HERO_LIVES])
+	if new_max == _max_lives:
+		return
+	_lives_left = maxi(_lives_left + new_max - _max_lives, 0)
+	_max_lives = new_max
+	lives_changed.emit(_lives_left)
 
 
 func is_respawning() -> bool:

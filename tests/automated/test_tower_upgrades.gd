@@ -60,7 +60,8 @@ func _test_upgrade_rules_and_refund() -> void:
 		builder.upgrade(slot) and tower.get_level() == 2 and economy.get_gold() == gold - ARCHER.upgrade_cost(2) and upgraded == [2])
 	var radius: float = ((tower.get_node("%RangeShape") as CollisionShape2D).shape as CircleShape2D).radius
 	_check("...with the new stats (damage %d, range %.0f)" % [tower.get_stats().damage, radius],
-		tower.get_stats() == ARCHER.stats_for(2) and is_equal_approx(radius, ARCHER.stats_for(2).attack_range))
+		tower.get_stats().damage == ARCHER.stats_for(2).damage and is_equal_approx(tower.get_stats().fire_interval, ARCHER.stats_for(2).fire_interval)
+		and is_equal_approx(radius, ARCHER.stats_for(2).attack_range))
 	_check("...and the new look (%s)" % (tower.get_node("%Sprite") as AnimatedSprite2D).animation,
 		String((tower.get_node("%Sprite") as AnimatedSprite2D).animation).ends_with("_2"))
 	builder.upgrade(slot)

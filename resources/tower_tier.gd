@@ -23,6 +23,13 @@ extends Resource
 @export var projectile_look: StringName = &""
 ## The bigger blast animation for big shells.
 @export var large_blast: bool = false
+## Extra enemies each shot passes through after hitting its target (in a straight line).
+@export var pierce: int = 0
+## Above 0: a shot leaves burning ground (radius burn_radius, for burn_duration s) that deals this
+## much damage per second to every enemy on it.
+@export var burn_dps: float = 0.0
+@export var burn_radius: float = 40.0
+@export var burn_duration: float = 3.0
 
 
 ## A short "what changes" line from `before` to this level, e.g. "Damage 10 → 14, Range 210 → 225".

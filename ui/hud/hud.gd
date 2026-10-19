@@ -70,12 +70,6 @@ func _ready() -> void:
 	_lives_icons.visible = hero_lives != null
 	set_process(hero_lives != null)
 	if hero_lives != null:
-		for _i: int in hero_lives.lives:
-			var icon: TextureRect = TextureRect.new()
-			icon.texture = LIFE_ICON
-			icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-			icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			_lives_icons.add_child(icon)
 		hero_lives.lives_changed.connect(func(_left: int) -> void: _update_lives())
 		hero_lives.hero_respawned.connect(_on_hero_respawned)
 		_update_lives()
@@ -137,6 +131,12 @@ func _update_wave() -> void:
 
 ## One helm per life next to the hero's HP bar (spent ones dark).
 func _update_lives() -> void:
+	while _lives_icons.get_child_count() < hero_lives.get_max_lives():
+		var icon: TextureRect = TextureRect.new()
+		icon.texture = LIFE_ICON
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_lives_icons.add_child(icon)
 	var left: int = hero_lives.get_lives_left()
 	for i: int in _lives_icons.get_child_count():
 		(_lives_icons.get_child(i) as CanvasItem).modulate = Color.WHITE if i < left else LIFE_SPENT_TINT

@@ -101,8 +101,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 
 ### 4.6 Upgrades (roguelite layer)
 - After each wave: choose **1 of 3** random upgrades from a weighted pool.
-- Defined by `UpgradeData`: id, name, description, rarity, category (Hero / Tower / Fortress / Economy), effect, max stacks.
-- Effects implemented as small, composable modifiers (e.g. `+15% tower fire rate`, `hero attacks chain`, `+20 fortress HP`) applied through a **stat modifier** system rather than special-cased code.
+- Defined by `UpgradeData` (`data/upgrades/*.tres`): id, name, description, icon, category (Hero / Towers / Fortress / Economy), rarity (common / rare), stackable or once per run, a list of `StatModifier`s and an optional instant effect (e.g. repair the fortress now).
+- **Run modifier store** (`RunModifiers`, per level under Systems, no autoload; Restart = fresh level = empty store): flat and percent modifiers on named stats, final = (base + flats) × (1 + percents), percents add up. Systems read their final values through it, so an empty store changes nothing: hero damage, move speed, max HP, attack cooldown, reach, lives; tower damage, fire interval, range, build time, slow duration, pierce, burn (all towers via `tower.<stat>`, one type via `tower.<id>.<stat>`); fortress max HP and thorns; kill gold, interest on unspent gold (capped), tower upgrade prices. Max HP changes move current HP by the same amount.
 - Examples: *Bloodthirst* (hero heals on kill), *Volley* (arrow towers fire 2 arrows), *Tithe* (+gold per wave), *Iron Walls* (+fortress max HP), *Frostbite* (slowed enemies take +damage).
 - Rerolls cost gold (later).
 

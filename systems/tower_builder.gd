@@ -19,6 +19,8 @@ const NO_TOWER: String = "No tower here"
 const UNDER_CONSTRUCTION: String = "Still under construction"
 
 @export var economy: Economy
+## The run's upgrades: handed to every tower, and they can make tower upgrades cheaper.
+@export var modifiers: RunModifiers
 ## Parent node of the level's BuildSlots.
 @export var slots_root: Node
 ## The towers that can be built, in menu order.
@@ -68,7 +70,8 @@ func refund_for_tower(tower: Tower) -> int:
 func upgrade_cost(slot: BuildSlot) -> int:
 	if slot == null or slot.is_empty() or slot.tower.is_max_level():
 		return -1
-	return slot.tower.data.upgrade_cost(slot.tower.get_level() + 1)
+	var base: int = slot.tower.data.upgrade_cost(slot.tower.get_level() + 1)
+	return RunModifiers.value_int(modifiers, base, [RunModifiers.TOWER_UPGRADE_COST])
 
 
 ## Upgrades the slot's tower one level if the gold allows. Returns false (and changes nothing) otherwise.
@@ -104,6 +107,7 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 		return false
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
+	tower.modifiers = modifiers
 	tower.invested = data.cost
 	slot.place(tower)
 	tower_built.emit(slot, tower)

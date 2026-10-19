@@ -6,11 +6,14 @@ extends Node
 ## called directly.
 
 signal perfect_defense_awarded(bonus: int)
+signal interest_paid(amount: int)
 
 @export var economy: Economy
 @export var spawner: WaveSpawner
 ## Share of the wave's kill gold paid as a bonus when nothing reached the fortress.
 @export var perfect_defense_ratio: float = 0.1
+## The run's upgrades (kill gold, interest). Null = base.
+@export var modifiers: RunModifiers
 
 var _wave_active: bool = false
 var _wave_kill_gold: int = 0
@@ -40,6 +43,7 @@ func end_wave() -> int:
 	if not _wave_active:
 		return 0
 	_wave_active = false
+	_pay_interest()
 	if _wave_leaked:
 		return 0
 	var bonus: int = roundi(_wave_kill_gold * perfect_defense_ratio)
@@ -59,7 +63,7 @@ func is_wave_perfect_so_far() -> bool:
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:
-	var reward: int = enemy.data.gold_reward
+	var reward: int = RunModifiers.value_int(modifiers, enemy.data.gold_reward, [RunModifiers.KILL_GOLD])
 	economy.earn(reward, Economy.Source.KILL)
 	if _wave_active:
 		_wave_kill_gold += reward
@@ -68,3 +72,16 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 func _on_enemy_reached_fortress(_enemy: Enemy) -> void:
 	if _wave_active:
 		_wave_leaked = true
+
+
+## Interest upgrade: a share of the unspent gold, capped, at the end of every wave.
+func _pay_interest() -> void:
+	if modifiers == null:
+		return
+	var rate: float = modifiers.apply(0.0, [RunModifiers.INTEREST])
+	if rate <= 0.0:
+		return
+	var amount: int = mini(floori(economy.get_gold() * rate), modifiers.apply_int(0, [RunModifiers.INTEREST_CAP]))
+	if amount > 0:
+		economy.earn(amount, Economy.Source.INTEREST)
+		interest_paid.emit(amount)

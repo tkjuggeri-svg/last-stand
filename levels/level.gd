@@ -18,6 +18,7 @@ const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 @export var spawner: WaveSpawner
 @export var hero_lives: HeroLives
 @export var run_cycle: RunCycle
+@export var modifiers: RunModifiers
 
 var _run_over: bool = false
 
@@ -31,6 +32,8 @@ func _ready() -> void:
 		hero_lives.out_of_lives.connect(func() -> void: _end_run(LossReason.HERO_KILLED))
 	if run_cycle != null:
 		run_cycle.all_waves_cleared.connect(_on_all_waves_cleared)
+	if modifiers != null:
+		modifiers.upgrade_added.connect(_on_upgrade_added)
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 
@@ -41,6 +44,12 @@ func is_run_over() -> bool:
 
 func _on_fortress_destroyed() -> void:
 	_end_run(LossReason.FORTRESS_DESTROYED)
+
+
+## Upgrades that do something once when picked.
+func _on_upgrade_added(data: UpgradeData, _stacks: int) -> void:
+	if data.instant_effect == RunModifiers.INSTANT_REPAIR_FORTRESS:
+		fortress.repair(data.effect_amount)
 
 
 func _on_all_waves_cleared() -> void:
