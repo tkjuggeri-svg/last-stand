@@ -83,7 +83,7 @@ Full visual rules (palette ramps, light, sizes, animation timing, review checkli
   `godot --headless --path . --script res://tools/art/generate_art.gd` → `godot --headless --path . --import` → `godot --headless --path . --script res://tools/art/build_sprite_frames.gd`.
   Add `-- --only=hero,ghoul` to the first command to regenerate just some sheets. Drawing code lives in one file per asset family (`hero_art.gd`, `ghoul_art.gd`, `effects_art.gd`, ...) on top of `canvas.gd` (shaded primitives, contours, outline) and `palette.gd` (colour ramps).
   Never hand-edit the generated PNGs or `*_frames.tres`. The arena ground is baked from the level's `Floor`, `Lane` and `Fortress`, so regenerate it after changing those.
-- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir> [--scenario=tour|combat|build|gallery]` plays a scripted scene in a real window and saves screenshots (`gallery` shows every animation at game scale). `tools/art/preview_art.gd` saves an enlarged contact sheet of one generated PNG.
+- Visual review: `godot --path . --resolution 1280x720 --fixed-fps 60 --script res://tests/tools/capture_screenshots.gd -- --out=<dir> [--scenario=tour|combat|build|gallery|review]` plays a scripted scene in a real window and saves screenshots (`gallery` shows every animation at game scale; `review` is the milestone review set). Keep review shots in the git-ignored `dev_screenshots/`. `tools/art/preview_art.gd` saves an enlarged contact sheet of one generated PNG.
 - Balance check: `godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd` plays a full wave per tower setup and prints kills, leaks, fortress HP and gold.
 
 ## GDScript conventions

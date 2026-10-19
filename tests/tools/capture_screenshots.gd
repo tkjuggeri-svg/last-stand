@@ -5,7 +5,9 @@ extends SceneTree
 ## Scenarios: "tour" (default: walk, swing, kill, damaged fortress, Game Over), "combat" (a ghoul fights
 ## the hero to death), "build" (towers on slots, the build menu, towers fighting a wave) and "gallery"
 ## (every animation of the given SpriteFrames side by side at game scale, over the real level;
-## --frames=res://a.tres,res://b.tres picks the sheets, default: hero and ghoul).
+## --frames=res://a.tres,res://b.tres picks the sheets, default: hero and ghoul) and "review" (the
+## milestone review set: whole battlefield, hero vs ghoul close up, the three towers, construction and
+## dismantling, the fortress's damage states, build menu and HUD).
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -35,6 +37,10 @@ func _initialize() -> void:
 		return
 	if _scenario == "gallery":
 		await _gallery(level)
+		quit()
+		return
+	if _scenario == "review":
+		await _review(level)
 		quit()
 		return
 	await _shot("01_start")
@@ -173,6 +179,111 @@ func _gallery(level: Level) -> void:
 		await _shot("gallery_%d" % i)
 
 
+## The review set, in game order. The camera is lifted off the hero for framed shots and zoomed by
+## whole steps only (2 = close-up), except the battlefield, which is shot at 0.5 and scaled back up.
+func _review(level: Level) -> void:
+	var hero: Hero = level.get_node("Hero")
+	var camera: Camera2D = hero.get_node("Camera2D")
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var slots: Array[BuildSlot] = builder.get_slots()
+	var fortress: Fortress = level.get_node("Fortress")
+	var spawner: EnemySpawner = level.get_node("EnemySpawner")
+	(level.get_node("%Economy") as Economy).earn(400, Economy.Source.KILL)
+
+	# Hero meets the first ghoul on the lane.
+	hero.position = Vector2(-470, -255)
+	var ghoul: Enemy = spawner.get_child(0)
+	await _frames(5)
+	_frame_camera(camera, Vector2.ZERO, 2.0, false)
+	while is_instance_valid(ghoul) and hero.global_position.distance_to(ghoul.global_position) > 72.0:
+		await _frames(1)
+	await _shot("02a_hero_and_ghoul_closeup")
+	hero.attack(ghoul.global_position)
+	await _frames(3)
+	await _shot("02b_hero_strikes_ghoul")
+	hero.position = Vector2(-470, -20)
+
+	# Three towers going up; the archer is shot mid-construction, close up.
+	builder.build(slots[0], builder.catalog[0])
+	builder.build(slots[3], builder.catalog[1])
+	builder.build(slots[2], builder.catalog[2])
+	_frame_camera(camera, slots[0].position + Vector2(0, -30), 2.0, true)
+	await _frames(12)
+	await _shot("04a_construction_scaffolding")
+	await _frames(12)
+	await _shot("04b_construction_almost_done")
+	_frame_camera(camera, Vector2(-390, -170), 1.0, true)
+	await _frames(150)
+	await _shot("03_three_towers")
+
+	# The whole battlefield: zoomed out to 1 screen px per art px, cropped to the arena, scaled 2x.
+	level.get_node("HUD").set(&"visible", false)
+	_frame_camera(camera, Vector2(-250, -50), 0.5, true)
+	await _frames(3)
+	await RenderingServer.frame_post_draw
+	var image: Image = root.get_texture().get_image()
+	var arena: Rect2i = Rect2i(Vector2i(640 - 341, 360 - 241), Vector2i(682, 482))
+	image = image.get_region(arena)
+	image.resize(arena.size.x * 2, arena.size.y * 2, Image.INTERPOLATE_NEAREST)
+	_save(image, "01_battlefield")
+	level.get_node("HUD").set(&"visible", true)
+
+	# Selling the frost tower: rubble, close up.
+	_frame_camera(camera, slots[3].position + Vector2(0, -30), 2.0, true)
+	await _frames(5)
+	builder.sell(slots[3])
+	await _frames(10)
+	await _shot("04c_dismantling")
+	await _frames(14)
+	await _shot("04d_dismantling_rubble")
+
+	# Build menu and HUD at normal zoom on the hero.
+	_frame_camera(camera, Vector2.ZERO, 1.0, false)
+	hero.position = slots[1].position + Vector2(0, 44)
+	await _frames(30)
+	_press_interact()
+	await _frames(20)
+	await _shot("06a_build_menu_and_hud")
+	_press_interact()
+	hero.position = slots[0].position + Vector2(0, 44)
+	await _frames(30)
+	_press_interact()
+	await _frames(20)
+	await _shot("06b_sell_menu_and_hud")
+	_press_interact()
+
+	# Fortress damage states.
+	_frame_camera(camera, Vector2(0, -40), 2.0, true)
+	fortress.health.take_damage(fortress.health.current_health - 55)
+	await _frames(40)
+	await _shot("05a_fortress_damaged")
+	fortress.health.take_damage(fortress.health.current_health - 25)
+	await _frames(40)
+	await _shot("05b_fortress_badly_damaged")
+	fortress.health.take_damage(fortress.health.current_health)
+	await _frames(40)
+	await _shot("05c_fortress_destroyed_game_over")
+
+
+## Detached: the camera holds `at`; attached: it follows the hero again.
+func _frame_camera(camera: Camera2D, at: Vector2, zoom: float, detached: bool) -> void:
+	camera.top_level = detached
+	camera.position = at if detached else Vector2.ZERO
+	camera.zoom = Vector2(zoom, zoom)
+	if zoom < 1.0:
+		camera.limit_enabled = false
+	else:
+		camera.limit_enabled = true
+	camera.reset_smoothing()
+
+
+func _press_interact() -> void:
+	var press: InputEventAction = InputEventAction.new()
+	press.action = "interact"
+	press.pressed = true
+	Input.parse_input_event(press)
+
+
 func _level_shows(level: Level, what: String) -> bool:
 	if what == "slowed":
 		return (level.get_node("EnemySpawner") as Node).get_children().any(func(e: Node) -> bool: return (e as Enemy).is_slowed())
@@ -181,8 +292,12 @@ func _level_shows(level: Level, what: String) -> bool:
 
 func _shot(shot_name: String) -> void:
 	await RenderingServer.frame_post_draw
+	_save(root.get_texture().get_image(), shot_name)
+
+
+func _save(image: Image, shot_name: String) -> void:
 	var path: String = ProjectSettings.globalize_path(_out_dir.path_join(shot_name + ".png"))
-	root.get_texture().get_image().save_png(path)
+	image.save_png(path)
 	print("saved ", path)
 
 

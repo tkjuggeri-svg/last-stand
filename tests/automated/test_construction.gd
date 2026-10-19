@@ -114,6 +114,9 @@ func _test_menu_flow() -> void:
 	await _press_interact()
 	_check("E opens the build menu for that slot", menu.call("is_open") and menu.call("get_slot") == slot)
 	_check("the game does not pause", not paused)
+	var panel: Control = menu.get_node("%Panel")
+	await _frames(2)
+	_check("the panel fits its content and stays on screen (%s)" % panel.get_rect(), _panel_fits(panel))
 	var cards: Array[Node] = (menu.get_node("%Options") as Node).get_children()
 	var names: Array[String] = []
 	var costs: Array[String] = []
@@ -132,6 +135,8 @@ func _test_menu_flow() -> void:
 	(cards[2].find_child("Build", true, false) as Button).pressed.emit()  # Cannon: exactly the 100 we start with
 	await _frames(1)
 	_check("buying the cannon with exactly 100 works", slot.tower != null and economy.get_gold() == 0)
+	await _frames(2)
+	_check("...also in the sell view (%s)" % panel.get_rect(), _panel_fits(panel))
 	_check("the menu now shows the tower and its refund",
 		(menu.get_node("%TowerInfo") as Control).visible and (menu.get_node("%SellButton") as Button).text == "Sell   +50 gold")
 	(menu.get_node("%SellButton") as Button).pressed.emit()
@@ -196,6 +201,11 @@ func _press_interact() -> void:
 	release.pressed = false
 	Input.parse_input_event(release)
 	await _frames(1)
+
+
+func _panel_fits(panel: Control) -> bool:
+	var screen: Rect2 = Rect2(Vector2.ZERO, panel.get_viewport_rect().size)
+	return screen.encloses(panel.get_global_rect()) and is_equal_approx(panel.size.y, panel.get_combined_minimum_size().y)
 
 
 func _make_level(count: int) -> Level:

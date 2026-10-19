@@ -34,6 +34,9 @@ var _cost_labels: Dictionary = {}
 
 func _ready() -> void:
 	_panel.hide()
+	# Autowrap labels report a transient, far too tall minimum until they get their width: re-fit
+	# every time the content's minimum changes instead of once.
+	_panel.minimum_size_changed.connect(_fit_panel)
 	_sell_button.pressed.connect(_on_sell_pressed)
 	if builder != null:
 		builder.active_slot_changed.connect(_on_active_slot_changed)
@@ -115,11 +118,11 @@ func _rebuild() -> void:
 		_details.text = ""
 		_slot.show_range(data.attack_range)
 		_sell_button.grab_focus.call_deferred()
-	_fit_panel.call_deferred()
+	_fit_panel()
 
 
 ## The panel hangs from the bottom edge: fit its height to the content (switching between the
-## build cards and the sell view changes it).
+## build cards and the sell view changes it). Called whenever the panel's minimum size changes.
 func _fit_panel() -> void:
 	_panel.offset_top = _panel.offset_bottom - _panel.get_combined_minimum_size().y
 
