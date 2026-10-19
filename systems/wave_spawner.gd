@@ -128,6 +128,7 @@ func _spawn_enemy(group: SpawnGroup) -> void:
 	var enemy: Enemy = enemy_scene.instantiate()
 	enemy.data = group.enemy
 	enemy.lane = lane
+	enemy.health_multiplier = waves[_wave_index].health_multiplier
 	enemy.died.connect(_on_enemy_died)
 	enemy.reached_fortress.connect(_on_enemy_reached_fortress)
 	add_child(enemy)

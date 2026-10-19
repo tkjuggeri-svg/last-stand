@@ -94,6 +94,8 @@ Tick items as they're finished.
 - [x] Tower upgrades (2 tiers per tower) — pulled forward into M4 after the playtest
 - [x] Towers: Brazier (burning ground), Bone Ballista (piercing line shots), both with 2 upgrade tiers. ~~Frost Obelisk~~ dropped: it overlaps the Frost tower
 
+- [x] Balance with run upgrades (bot pick policies, per-upgrade sweep, wave HP multipliers) and a wave-10 performance pass (2D light fix: 163 → 457 fps)
+
 **Done when:** two runs feel meaningfully different because of choices made.
 
 ---
@@ -138,4 +140,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M4 complete** (waves, build/combat cycle, hero lives, Hound and Brute, 3 lanes, 10 waves, victory). Awaiting hands-on playtest feedback (wave difficulty, lives/respawn feel, lane readability) before M5 (roguelite upgrades), which will also give the late-game gold something to buy.
+**M5 complete** (run modifier store, upgrade choice after each wave, 20 upgrades, tower upgrades, Brazier and Bone Ballista, balance and performance). Awaiting hands-on playtest feedback before M6.

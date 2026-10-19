@@ -4,6 +4,9 @@ extends Resource
 ## wave in data/waves/ and tune it there.
 
 @export var groups: Array[SpawnGroup] = []
+## Every enemy of this wave has this many times its normal HP (the late-wave difficulty curve: it
+## makes enemies tougher without paying out more gold, unlike adding more of them).
+@export var health_multiplier: float = 1.0
 
 
 ## How many enemies the whole wave sends.

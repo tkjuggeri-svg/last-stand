@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="Resource_ywkih"]
 script = ExtResource("2_6jk3j")
 stat = &"economy.kill_gold"
-percent = 0.5
+percent = 0.3
 
 [sub_resource type="Resource" id="Resource_w7uq8"]
 script = ExtResource("2_6jk3j")
@@ -18,7 +18,7 @@ flat = -25.0
 script = ExtResource("3_fu5v0")
 id = &"war_tax"
 display_name = "War Tax"
-description = "Kills pay 50% more gold, but fortress max HP -25."
+description = "Kills pay 30% more gold, but fortress max HP -25."
 icon = ExtResource("1_pastd")
 category = 3
 rarity = 1

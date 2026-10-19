@@ -7,13 +7,13 @@
 [sub_resource type="Resource" id="Resource_68p5d"]
 script = ExtResource("2_8hm6h")
 stat = &"tower.cannon.burn"
-flat = 8.0
+flat = 3.0
 
 [resource]
 script = ExtResource("3_6p1w5")
 id = &"hellfire"
 display_name = "Hellfire Shells"
-description = "Cannon shells set the ground on fire (8 damage per second for 3 s)."
+description = "Cannon shells set the ground on fire (3 damage per second for 3 s)."
 icon = ExtResource("1_x6wmq")
 category = 1
 rarity = 1

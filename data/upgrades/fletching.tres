@@ -7,13 +7,13 @@
 [sub_resource type="Resource" id="Resource_b7ig1"]
 script = ExtResource("2_7bulg")
 stat = &"tower.damage"
-percent = 0.15
+percent = 0.1
 
 [resource]
 script = ExtResource("3_m0aw8")
 id = &"fletching"
 display_name = "Keen Fletching"
-description = "All towers deal 15% more damage."
+description = "All towers deal 10% more damage."
 icon = ExtResource("1_owmnn")
 category = 1
 modifiers = Array[ExtResource("2_7bulg")]([SubResource("Resource_b7ig1")])

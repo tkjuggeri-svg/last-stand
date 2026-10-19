@@ -17,6 +17,7 @@ func _initialize() -> void:
 	await _test_groups_and_timing()
 	await _test_wave_cycle_and_rewards()
 	await _test_empty_wave()
+	await _test_health_multiplier()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -100,6 +101,29 @@ func _test_empty_wave() -> void:
 	await _frames(30)
 	_check("a wave without enemies spawns nothing and is over at once", cleared == [1] and spawner.get_child_count() == 0)
 	await _free(level)
+
+
+## A wave's health_multiplier makes its enemies tougher; the curve rises over the level's waves.
+func _test_health_multiplier() -> void:
+	var tough: WaveData = WaveFixtures.make_wave(1, 1.0)
+	tough.health_multiplier = 1.5
+	var level: Level = _make_level([tough, WaveData.new()])
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	await _frames(2)
+	spawner.start_next_wave()
+	await _frames(3)
+	var enemy: Enemy = spawner.get_child(0)
+	_check("a wave with health x1.5 spawns a 45 HP ghoul (%d)" % (enemy.get_node("%HealthComponent") as HealthComponent).max_health,
+		(enemy.get_node("%HealthComponent") as HealthComponent).max_health == roundi(WaveFixtures.GHOUL.max_health * 1.5))
+	level.queue_free()
+	await _frames(2)
+	var real: Level = (load(ARENA) as PackedScene).instantiate()
+	var multipliers: Array = (real.get_node("WaveSpawner") as WaveSpawner).waves.map(func(w: WaveData) -> float: return w.health_multiplier)
+	var rising: bool = true
+	for i: int in range(1, multipliers.size()):
+		rising = rising and multipliers[i] >= multipliers[i - 1]
+	_check("the level's waves get tougher towards the end (%s)" % [multipliers], rising and multipliers.back() > 1.5 and multipliers[0] == 1.0)
+	real.free()
 
 
 func _make_level(waves: Array[WaveData]) -> Level:

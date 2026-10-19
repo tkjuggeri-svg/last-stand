@@ -93,7 +93,7 @@ func _test_upgrade(id: StringName) -> void:
 		"fletching":
 			var archer: Tower = await _tower(level, 3, ARCHER)
 			mods.add_upgrade(data)
-			ok = archer.get_stats().damage == roundi(ARCHER.damage * 1.15)
+			ok = archer.get_stats().damage == roundi(ARCHER.damage * (1.0 + _percent(data, &"tower.damage")))
 		"eagle_eye":
 			var archer2: Tower = await _tower(level, 3, ARCHER)
 			mods.add_upgrade(data)
@@ -106,7 +106,9 @@ func _test_upgrade(id: StringName) -> void:
 		"overcharge":
 			var cannon: Tower = await _tower(level, 2, CANNON)
 			mods.add_upgrade(data)
-			ok = cannon.get_stats().damage == roundi(CANNON.damage * 1.4) and is_equal_approx(cannon.get_attack_range(), CANNON.attack_range * 0.8)
+			ok = cannon.get_stats().damage == roundi(CANNON.damage * (1.0 + _percent(data, &"tower.damage")))
+			ok = ok and _percent(data, &"tower.range") < 0.0
+			ok = ok and is_equal_approx(cannon.get_attack_range(), CANNON.attack_range * (1.0 + _percent(data, &"tower.range")))
 		"piercing":
 			ok = await _check_pierce(level, data)
 		"hellfire":
@@ -126,7 +128,7 @@ func _test_upgrade(id: StringName) -> void:
 			ok = await _check_thorns(level, data)
 		"bounty":
 			mods.add_upgrade(data)
-			ok = mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * 1.25)
+			ok = mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * (1.0 + _percent(data, RunModifiers.KILL_GOLD)))
 		"treasury":
 			mods.add_upgrade(data)
 			var rewards: WaveRewards = level.get_node("%WaveRewards")
@@ -142,7 +144,8 @@ func _test_upgrade(id: StringName) -> void:
 			ok = builder.upgrade_cost(builder.get_slots()[3]) == roundi(ARCHER.upgrade_cost(2) * 0.8)
 		"war_tax":
 			mods.add_upgrade(data)
-			ok = mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * 1.5) and fortress.health.max_health == 75
+			ok = mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * (1.0 + _percent(data, RunModifiers.KILL_GOLD)))
+			ok = ok and _percent(data, RunModifiers.KILL_GOLD) > 0.0 and fortress.health.max_health < 100
 		_:
 			label += " (no test for this upgrade yet)"
 	_check(label, ok)
@@ -193,6 +196,15 @@ func _check_thorns(level: Level, data: UpgradeData) -> bool:
 	mods.add_upgrade(data)
 	await _frames(62)
 	return _hp(near) < GHOUL.max_health and _hp(far) == GHOUL.max_health and is_equal_approx(fortress.get_thorns_dps(), 12.0)
+
+
+## The upgrade's percent modifier on `stat` (0 if it has none).
+func _percent(data: UpgradeData, stat: StringName) -> float:
+	var total: float = 0.0
+	for modifier: StatModifier in data.modifiers:
+		if modifier.stat == stat:
+			total += modifier.percent
+	return total
 
 
 func _tower(level: Level, slot_index: int, data: TowerData) -> Tower:

@@ -37,4 +37,5 @@ delay = 8.0
 
 [resource]
 script = ExtResource("5_m8y68")
+health_multiplier = 1.15
 groups = Array[ExtResource("1_7o5fj")]([SubResource("Resource_vrfmb"), SubResource("Resource_o0kll"), SubResource("Resource_j3vnv"), SubResource("Resource_lcmvi")])

@@ -114,20 +114,20 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Iron Constitution | Hero | common | Hero max HP +30 |
   | Second Wind | Hero | rare, once | +1 life |
   | Berserker's Oath | Hero | rare, once | Sword damage +60%, hero max HP −30% (trade-off) |
-  | Keen Fletching | Towers | common | All towers +15% damage |
+  | Keen Fletching | Towers | common | All towers +10% damage |
   | Eagle Eye | Towers | common | All towers +12% range |
   | Quick Masons | Towers | common, once | Towers built 60% faster |
-  | Overcharged Engines | Towers | rare, once | All towers +40% damage, −20% range (trade-off) |
+  | Overcharged Engines | Towers | rare, once | All towers +30% damage, −15% range (trade-off; hurts the short-range Brazier most) |
   | Piercing Arrows | Towers | rare, once | Archer arrows fly on (along the ground line from the tower) through 1 more enemy |
-  | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 8 damage/s for 3 s |
+  | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 3 damage/s for 3 s |
   | Deep Freeze | Towers | common | Frost slows last 40% longer |
   | Stout Masonry | Fortress | common | Fortress max HP +25 |
   | Emergency Repairs | Fortress | common | Repair 30% of the fortress's max HP now |
   | Thorned Walls | Fortress | rare, once | Enemies at the walls (92 px) take 12 damage/s |
-  | Bounty Hunters | Economy | common | Kills pay 25% more gold |
+  | Bounty Hunters | Economy | common | Kills pay 20% more gold |
   | Treasury | Economy | rare, once | End of each wave: +10% of unspent gold, up to 40 |
   | Guild Discount | Economy | common, once | Tower upgrades cost 20% less |
-  | War Tax | Economy | rare, once | Kills pay 50% more gold, fortress max HP −25 (trade-off) |
+  | War Tax | Economy | rare, once | Kills pay 30% more gold, fortress max HP −25 (trade-off) |
 - Burning ground (`BurnZone`) and thorns damage enemies in ticks through their Hurtboxes like any other hit.
 - Rerolls cost gold (see above).
 
@@ -150,6 +150,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | 9  | 40 | 50 | 16 | 106 | all      | 4350 |
   | 10 | 60 | 76 | 20 | 156 | all      | 5940 |
 - Tuning (balance report after the playtest fixes, idle hero, towers and upgrades bought as gold allows, 5 s build phases): no tower-only plan wins. Best: archers + cannons and the mixed build fall in wave 9; all archers wave 8, all cannons wave 7, frost + archers wave 6. Mixing tower types beats any single type, and nobody can afford every tower at level 3 (21–22 of 30 levels by the end). The hero fighting is what should turn the late waves into a win.
+- **Wave toughness** (M5): `WaveData.health_multiplier` scales every enemy's HP in a wave without paying more gold (more enemies would also mean more gold): waves 1–4 ×1, then 1.15, 1.3, 1.45, 1.7, 1.9, 2.1 for waves 5–10. It absorbs the nine run upgrades a full run collects.
+- **M5 tuning** (balance report with run upgrades, idle hero, seed 1; the bot takes upgrades by a simple policy): without upgrades every plan falls in wave 7–8; with upgrades the best runs fall in wave 9–10, weaker picks in wave 6–9, so the picks move a run by up to three waves, and nothing wins without the hero. Other seeds give other runs (different offers): e.g. seed 4's offers only reach wave 7–8, seed 3's lucky Overcharge + Hellfire + War Tax opening wins with 30–50 fortress HP. No single upgrade wins a run on its own: alone, each moves the baseline by at most one wave (Hellfire, Overcharge, Bounty strongest).
 
 ### 4.8 Meta progression (later milestone)
 - Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.

@@ -36,6 +36,8 @@ const SPARK_DROP: float = 2.0
 
 ## The Path2D to follow. Set by the spawner before the enemy is added to the tree.
 var lane: Path2D
+## Its wave's toughness: max HP = data.max_health x this. Set by the spawner before it enters the tree.
+var health_multiplier: float = 1.0
 
 var _is_finished: bool = false
 ## The body (the hero) currently inside attack range, if any.
@@ -71,7 +73,7 @@ var _jolt: Tween
 
 func _ready() -> void:
 	assert(data != null, "Enemy needs EnemyData: %s" % get_path())
-	_health.setup(data.max_health)
+	_health.setup(maxi(roundi(data.max_health * health_multiplier), 1))
 	_fortress_hitbox.damage = data.fortress_damage
 	_attack_hitbox.damage = data.hero_damage
 	_apply_body(data.body_radius)

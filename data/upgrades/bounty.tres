@@ -7,13 +7,13 @@
 [sub_resource type="Resource" id="Resource_vkdo7"]
 script = ExtResource("2_1y8g5")
 stat = &"economy.kill_gold"
-percent = 0.25
+percent = 0.2
 
 [resource]
 script = ExtResource("3_samhr")
 id = &"bounty"
 display_name = "Bounty Hunters"
-description = "Kills pay 25% more gold."
+description = "Kills pay 20% more gold."
 icon = ExtResource("1_l2mpp")
 category = 3
 modifiers = Array[ExtResource("2_1y8g5")]([SubResource("Resource_vkdo7")])
