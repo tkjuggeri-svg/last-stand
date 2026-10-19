@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3]
+[gd_scene load_steps=75 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -51,6 +51,8 @@
 [ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
 [ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
 [ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
+[ext_resource type="Resource" path="res://data/towers/brazier.tres" id="34_brazier"]
+[ext_resource type="Resource" path="res://data/towers/ballista.tres" id="35_ballista"]
 [ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
 [ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
 
@@ -771,7 +773,7 @@ script = ExtResource("10_builder")
 economy = NodePath("../Economy")
 slots_root = NodePath("../../BuildSlots")
 modifiers = NodePath("../RunModifiers")
-catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon")])
+catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon"), ExtResource("34_brazier"), ExtResource("35_ballista")])
 
 [node name="BuildSlots" type="Node2D" parent="."]
 y_sort_enabled = true

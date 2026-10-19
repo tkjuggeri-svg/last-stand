@@ -124,8 +124,9 @@ func _test_menu_flow() -> void:
 	for card: Node in cards:
 		names.append(_labels_in(card)[0])
 		costs.append(_labels_in(card)[1])
-	_check("menu lists name and price of all 3 towers (%s %s)" % [names, costs],
-		names == ["Archer Tower", "Frost Tower", "Cannon Tower"] and costs == [str(ARCHER.cost), str(FROST.cost), str(CANNON.cost)])
+	_check("menu lists name and price of all 5 towers (%s %s)" % [names, costs],
+		names == builder.catalog.map(func(d: TowerData) -> String: return d.display_name)
+		and costs == builder.catalog.map(func(d: TowerData) -> String: return str(d.cost)) and names.size() == 5)
 	var details: Label = menu.get_node("%Details")
 	var described: bool = true
 	for i: int in cards.size():

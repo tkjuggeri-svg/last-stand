@@ -24,7 +24,8 @@ var _cost_labels: Dictionary = {}
 @onready var _panel: Control = %Panel
 @onready var _title: Label = %Title
 @onready var _message: Label = %Message
-@onready var _options: HBoxContainer = %Options
+## Tower cards, 3 per row.
+@onready var _options: GridContainer = %Options
 @onready var _tower_info: HBoxContainer = %TowerInfo
 @onready var _info_icon: TextureRect = %InfoIcon
 @onready var _info_name: Label = %InfoName
@@ -207,8 +208,14 @@ func _icon_for(data: TowerData, level: int = 1) -> Texture2D:
 
 func _stats_text(stats: TowerTier) -> String:
 	var lines: Array[String] = ["Damage %d every %s s, range %d" % [stats.damage, String.num(stats.fire_interval, 2), roundi(stats.attack_range)]]
+	if stats.damage <= 0:
+		lines[0] = "Every %s s, range %d" % [String.num(stats.fire_interval, 2), roundi(stats.attack_range)]
 	if stats.targets > 1:
 		lines[0] += ", %d targets" % stats.targets
+	if stats.pierce > 0:
+		lines.append("Passes through %d more enem%s" % [stats.pierce, "y" if stats.pierce == 1 else "ies"])
+	if stats.burn_dps > 0.0:
+		lines.append("Burns %d/s for %s s within %d px" % [roundi(stats.burn_dps), String.num(stats.burn_duration, 1), roundi(stats.burn_radius)])
 	if stats.splash_radius > 0.0:
 		lines.append("Explodes: hits all enemies within %d px" % roundi(stats.splash_radius))
 	if stats.slow_factor < 1.0:

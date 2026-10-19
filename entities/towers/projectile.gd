@@ -214,7 +214,8 @@ func _start_line(direction: Vector2, reach: float, count: int, already: Array[En
 	_line_left = reach
 	_pierce_left = count
 	_pierced = already
-	_update_look(_line_dir)
+	if is_node_ready():
+		_update_look(_line_dir)  # before that, _ready() sets the look
 
 
 func _fly_line(step: float) -> void:

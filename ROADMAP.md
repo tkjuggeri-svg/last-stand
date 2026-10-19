@@ -92,7 +92,7 @@ Tick items as they're finished.
 - [x] Upgrade choice screen (1 of 3) after each wave: paused, keyboard + mouse, seeded, one reroll per offer
 - [x] 20 upgrades across Hero / Tower / Fortress / Economy, with trade-offs and icons
 - [x] Tower upgrades (2 tiers per tower) — pulled forward into M4 after the playtest
-- [ ] Towers: Brazier, Frost Obelisk, Bone Ballista
+- [x] Towers: Brazier (burning ground), Bone Ballista (piercing line shots), both with 2 upgrade tiers. ~~Frost Obelisk~~ dropped: it overlaps the Frost tower
 
 **Done when:** two runs feel meaningfully different because of choices made.
 

@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_mq2bg"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_yybw4"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_7ea86"]
+
+[sub_resource type="Resource" id="Resource_6glx1"]
+script = ExtResource("3_7ea86")
+cost = 160
+damage = 34
+fire_interval = 2.6
+attack_range = 320.0
+pierce = 4
+
+[sub_resource type="Resource" id="Resource_hmakn"]
+script = ExtResource("3_7ea86")
+cost = 240
+damage = 44
+fire_interval = 2.4
+attack_range = 340.0
+pierce = 6
+
+[resource]
+script = ExtResource("2_yybw4")
+id = &"ballista"
+display_name = "Bone Ballista"
+description = "Slow, long-range bolts that pierce a whole line of enemies."
+cost = 120
+scene = ExtResource("1_mq2bg")
+attack_range = 300.0
+damage = 26
+fire_interval = 2.8
+projectile_speed = 520.0
+projectile_look = &"bolt"
+homing = false
+line_shot = true
+muzzle_offset = Vector2(0, -26)
+pierce = 3
+tiers = Array[ExtResource("3_7ea86")]([SubResource("Resource_6glx1"), SubResource("Resource_hmakn")])

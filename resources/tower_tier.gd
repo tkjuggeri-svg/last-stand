@@ -51,6 +51,12 @@ func describe_changes(before: TowerTier) -> String:
 		parts.append("Slows every enemy within %d px" % roundi(slow_area))
 	if targets > before.targets:
 		parts.append("Hits %d targets" % targets)
+	if pierce != before.pierce:
+		parts.append("Pierce %d → %d" % [before.pierce, pierce])
+	if not is_equal_approx(burn_dps, before.burn_dps):
+		parts.append("Burn %d/s → %d/s" % [roundi(before.burn_dps), roundi(burn_dps)])
+	if not is_equal_approx(burn_radius, before.burn_radius) and burn_dps > 0.0:
+		parts.append("Fire area %d → %d" % [roundi(before.burn_radius), roundi(burn_radius)])
 	if large_blast and not before.large_blast:
 		parts.append("Heavy shells")
 	return ", ".join(parts)

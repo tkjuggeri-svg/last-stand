@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_3dkr6"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_84c1e"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_afn0k"]
+
+[sub_resource type="Resource" id="Resource_eo0ol"]
+script = ExtResource("3_afn0k")
+cost = 110
+damage = 0
+fire_interval = 1.5
+attack_range = 130.0
+burn_dps = 14.0
+
+[sub_resource type="Resource" id="Resource_0pj21"]
+script = ExtResource("3_afn0k")
+cost = 170
+damage = 0
+fire_interval = 1.4
+attack_range = 140.0
+burn_dps = 18.0
+burn_radius = 46.0
+burn_duration = 3.5
+
+[resource]
+script = ExtResource("2_84c1e")
+id = &"brazier"
+display_name = "Brazier"
+description = "Lobs burning pitch: the ground burns, hurting every enemy on it."
+cost = 80
+scene = ExtResource("1_3dkr6")
+attack_range = 120.0
+damage = 0
+fire_interval = 1.6
+projectile_speed = 220.0
+projectile_look = &"fire_glob"
+homing = false
+muzzle_offset = Vector2(0, -40)
+glow_color = Color(1, 0.6, 0.3, 1)
+burn_dps = 10.0
+burn_radius = 36.0
+burn_duration = 2.5
+tiers = Array[ExtResource("3_afn0k")]([SubResource("Resource_eo0ol"), SubResource("Resource_0pj21")])
