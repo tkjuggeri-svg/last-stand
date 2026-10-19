@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/honed_blade.png" id="1_ehemj"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_3dj37"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_bdilu"]
+
+[sub_resource type="Resource" id="Resource_jrsbq"]
+script = ExtResource("2_3dj37")
+stat = &"hero.damage"
+flat = 4.0
+
+[resource]
+script = ExtResource("3_bdilu")
+id = &"honed_blade"
+display_name = "Honed Blade"
+description = "Sword damage +4."
+icon = ExtResource("1_ehemj")
+modifiers = Array[ExtResource("2_3dj37")]([SubResource("Resource_jrsbq")])

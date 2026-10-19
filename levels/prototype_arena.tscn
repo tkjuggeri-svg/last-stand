@@ -1,4 +1,4 @@
-[gd_scene load_steps=52 format=3]
+[gd_scene load_steps=73 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
@@ -20,6 +20,27 @@
 [ext_resource type="Script" path="res://systems/run_modifiers.gd" id="30_mods"]
 [ext_resource type="Script" path="res://systems/upgrade_offers.gd" id="31_offers"]
 [ext_resource type="PackedScene" path="res://ui/upgrade_screen/upgrade_choice_screen.tscn" id="32_choice"]
+[ext_resource type="Resource" path="res://data/upgrades/battle_rhythm.tres" id="u_battle_rhythm"]
+[ext_resource type="Resource" path="res://data/upgrades/berserker.tres" id="u_berserker"]
+[ext_resource type="Resource" path="res://data/upgrades/bounty.tres" id="u_bounty"]
+[ext_resource type="Resource" path="res://data/upgrades/deep_freeze.tres" id="u_deep_freeze"]
+[ext_resource type="Resource" path="res://data/upgrades/eagle_eye.tres" id="u_eagle_eye"]
+[ext_resource type="Resource" path="res://data/upgrades/fletching.tres" id="u_fletching"]
+[ext_resource type="Resource" path="res://data/upgrades/guild.tres" id="u_guild"]
+[ext_resource type="Resource" path="res://data/upgrades/hellfire.tres" id="u_hellfire"]
+[ext_resource type="Resource" path="res://data/upgrades/honed_blade.tres" id="u_honed_blade"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_body.tres" id="u_iron_body"]
+[ext_resource type="Resource" path="res://data/upgrades/long_reach.tres" id="u_long_reach"]
+[ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="u_masonry"]
+[ext_resource type="Resource" path="res://data/upgrades/overcharge.tres" id="u_overcharge"]
+[ext_resource type="Resource" path="res://data/upgrades/piercing.tres" id="u_piercing"]
+[ext_resource type="Resource" path="res://data/upgrades/quick_masons.tres" id="u_quick_masons"]
+[ext_resource type="Resource" path="res://data/upgrades/repairs.tres" id="u_repairs"]
+[ext_resource type="Resource" path="res://data/upgrades/second_wind.tres" id="u_second_wind"]
+[ext_resource type="Resource" path="res://data/upgrades/thorns.tres" id="u_thorns"]
+[ext_resource type="Resource" path="res://data/upgrades/treasury.tres" id="u_treasury"]
+[ext_resource type="Resource" path="res://data/upgrades/war_tax.tres" id="u_war_tax"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="33_upgrade_data"]
 [ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
 [ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
@@ -717,6 +738,7 @@ unique_name_in_owner = true
 script = ExtResource("31_offers")
 modifiers = NodePath("../RunModifiers")
 economy = NodePath("../Economy")
+pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_quick_masons"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax")])
 
 [node name="Economy" type="Node" parent="Systems"]
 unique_name_in_owner = true

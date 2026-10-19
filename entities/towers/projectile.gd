@@ -24,8 +24,11 @@ const LANDING_MARKER_SCENE: PackedScene = preload("res://entities/towers/landing
 const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
 const FROST_BURST_SCENE: PackedScene = preload("res://entities/effects/frost_burst.tscn")
 const FROST_NOVA_SCENE: PackedScene = preload("res://entities/effects/frost_nova.tscn")
-## Physics layer 3 ("enemies"), as a bit value: what a frost nova's area query looks for.
-const ENEMY_BODY_MASK: int = 4
+const BURN_ZONE_SCENE: PackedScene = preload("res://entities/towers/burn_zone.tscn")
+## Piercing shots: how far past their first target they fly on, and how close an enemy must be to the
+## shot's path to be hit.
+const PIERCE_REACH: float = 160.0
+const PIERCE_HIT_RADIUS: float = 10.0
 
 var data: TowerData
 ## The firing tower's stats at its level (damage, blast, slow, look).
@@ -43,6 +46,13 @@ var _shell: bool = false
 var _muzzle: Vector2 = Vector2.ZERO
 var _flight: float = 1.0
 var _marker: Node2D
+## Line flight (a piercing shot after its target, or a bolt): straight on, hitting each enemy once.
+var _line: bool = false
+var _line_dir: Vector2 = Vector2.RIGHT
+var _line_left: float = 0.0
+var _pierce_left: int = 0
+var _pierced: Array[Enemy] = []
+var _last_dir: Vector2 = Vector2.RIGHT
 
 @onready var _sprite: AnimatedSprite2D = %Sprite
 @onready var _hitbox: Hitbox = %Hitbox
@@ -104,6 +114,9 @@ func _physics_process(delta: float) -> void:
 	if _life > MAX_LIFETIME:
 		queue_free()
 		return
+	if _line:
+		_fly_line(data.projectile_speed * delta)
+		return
 	if not _lost and _target_alive():
 		if target.global_position.distance_to(_anchor) <= _reach:
 			_destination = target.global_position
@@ -115,7 +128,8 @@ func _physics_process(delta: float) -> void:
 		global_position = _destination
 		_impact()
 		return
-	global_position += to_destination.normalized() * step
+	_last_dir = to_destination.normalized()
+	global_position += _last_dir * step
 	_update_look(to_destination)
 	if _shell:
 		_update_arc()
@@ -150,6 +164,7 @@ func _impact() -> void:
 	if stats.splash_radius > 0.0:
 		var explosion: Explosion = EXPLOSION_SCENE.instantiate()
 		explosion.setup(stats.damage, stats.splash_radius, stats.large_blast)
+		_leave_burn()
 		_finish_with(explosion)
 		return
 	if _target_alive() and not _lost:
@@ -162,22 +177,56 @@ func _impact() -> void:
 			else:
 				_finish_with(FROST_BURST_SCENE.instantiate())
 			return
+		if stats.pierce > 0:
+			# On along the ground line from the tower through its target (not the arrow's tilted path
+			# from the raised muzzle), so it finds the enemies walking behind.
+			_start_line(target.global_position - _anchor, PIERCE_REACH, stats.pierce, [target])
+			return
 	# An arrow that hit, or a shot whose target is already gone, just disappears.
 	queue_free()
 
 
+## Flies straight on along `direction` for `reach` px, hitting up to `count` enemies (not `already`).
+func _start_line(direction: Vector2, reach: float, count: int, already: Array[Enemy]) -> void:
+	_line = true
+	_line_dir = direction.normalized()
+	_line_left = reach
+	_pierce_left = count
+	_pierced = already
+	_update_look(_line_dir)
+
+
+func _fly_line(step: float) -> void:
+	global_position += _line_dir * step
+	_line_left -= step
+	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, PIERCE_HIT_RADIUS):
+		if _pierce_left <= 0:
+			break
+		if _pierced.has(enemy):
+			continue
+		_pierced.append(enemy)
+		enemy.receive_hit(_hitbox)
+		_pierce_left -= 1
+	if _pierce_left <= 0 or _line_left <= 0.0:
+		queue_free()
+
+
+## Burning ground where a shell lands (hellfire upgrade, the brazier). It outlives the shot, so it
+## goes next to it (on the tower), not under it.
+func _leave_burn() -> void:
+	if stats.burn_dps <= 0.0:
+		return
+	var zone: BurnZone = BURN_ZONE_SCENE.instantiate()
+	zone.setup(stats.burn_dps, stats.burn_radius, stats.burn_duration)
+	zone.top_level = true
+	zone.position = global_position
+	get_parent().add_child(zone)
+
+
 ## Frost nova: every living enemy whose body is within slow_area of the impact is slowed too.
 func _slow_area() -> void:
-	var circle: CircleShape2D = CircleShape2D.new()
-	circle.radius = stats.slow_area
-	var query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
-	query.shape = circle
-	query.transform = Transform2D(0.0, global_position)
-	query.collision_mask = ENEMY_BODY_MASK
-	for hit: Dictionary in get_world_2d().direct_space_state.intersect_shape(query, 32):
-		var enemy: Enemy = hit["collider"] as Enemy
-		if enemy != null and enemy.is_alive():
-			enemy.apply_slow(stats.slow_factor, stats.slow_duration)
+	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, stats.slow_area):
+		enemy.apply_slow(stats.slow_factor, stats.slow_duration)
 
 
 ## Stops here and shows an impact effect; the shot removes itself once the effect is done.

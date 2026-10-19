@@ -106,6 +106,8 @@ func _play(plan_name: String, builds: Array) -> String:
 				var data: TowerData = catalog[step[0]]
 				if economy.can_afford(data.cost) and builder.build(slot, data):
 					next += 1
+		if cycle.get_phase() == RunCycle.Phase.CHOOSE:
+			(level.get_node("%UpgradeOffers") as UpgradeOffers).pick(0)
 		if cycle.get_phase() == RunCycle.Phase.BUILD:
 			build_time += 1.0 / 60.0
 			if build_time >= BUILD_SECONDS:

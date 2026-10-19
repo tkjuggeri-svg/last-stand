@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/war_tax.png" id="1_pastd"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_6jk3j"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_fu5v0"]
+
+[sub_resource type="Resource" id="Resource_ywkih"]
+script = ExtResource("2_6jk3j")
+stat = &"economy.kill_gold"
+percent = 0.5
+
+[sub_resource type="Resource" id="Resource_w7uq8"]
+script = ExtResource("2_6jk3j")
+stat = &"fortress.max_health"
+flat = -25.0
+
+[resource]
+script = ExtResource("3_fu5v0")
+id = &"war_tax"
+display_name = "War Tax"
+description = "Kills pay 50% more gold, but fortress max HP -25."
+icon = ExtResource("1_pastd")
+category = 3
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_6jk3j")]([SubResource("Resource_ywkih"), SubResource("Resource_w7uq8")])

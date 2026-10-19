@@ -82,10 +82,13 @@ func _make_card(data: UpgradeData, index: int) -> Control:
 	var column: VBoxContainer = VBoxContainer.new()
 	column.add_theme_constant_override("separation", 8)
 	card.add_child(column)
+	# The 32 px icon (16 art px at 2x) shown at exactly twice that: still whole pixels, easy to read.
 	var icon: TextureRect = TextureRect.new()
 	icon.texture = data.icon
-	icon.custom_minimum_size = Vector2(0, 40)
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.custom_minimum_size = Vector2(64, 64)
+	icon.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	column.add_child(icon)
 	var title: Label = Label.new()
 	title.text = data.display_name

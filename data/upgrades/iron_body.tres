@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/iron_body.png" id="1_d5jp2"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_ahecu"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_smhkc"]
+
+[sub_resource type="Resource" id="Resource_yy48v"]
+script = ExtResource("2_ahecu")
+stat = &"hero.max_health"
+flat = 30.0
+
+[resource]
+script = ExtResource("3_smhkc")
+id = &"iron_body"
+display_name = "Iron Constitution"
+description = "Hero max HP +30."
+icon = ExtResource("1_d5jp2")
+modifiers = Array[ExtResource("2_ahecu")]([SubResource("Resource_yy48v")])

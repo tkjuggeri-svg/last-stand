@@ -20,6 +20,8 @@ const FROST_FX_SIZE: Vector2i = Vector2i(20, 20)
 ## The big-shell blast (cannon level 3) and the frost nova (frost level 3).
 const EXPLOSION_LARGE_SIZE: Vector2i = Vector2i(72, 72)
 const FROST_NOVA_SIZE: Vector2i = Vector2i(48, 48)
+## Burning ground (hellfire shells, the brazier): a scorched patch with flames, 96x64 px in the world.
+const BURN_SIZE: Vector2i = Vector2i(48, 32)
 
 const IDLE_FRAMES: int = 4
 const FIRE_FRAMES: Dictionary = {"archer": 4, "cannon": 5, "frost": 4}
@@ -706,3 +708,36 @@ func frost_rows() -> Array[Array]:
 				cc.px(p.x + 1, p.y - height - 1, Color("ffffff"))
 		aura.append(cc.finish(false, P.ICE[1]))
 	return [burst, aura]
+
+
+## Burning ground: a scorched, glowing patch with flame tongues licking up (4 looping frames).
+func burn_frames() -> Array[Image]:
+	var frames: Array[Image] = []
+	var center: Vector2 = Vector2(BURN_SIZE) / 2.0 + Vector2(0, 3)
+	var tongues: Array[Vector2] = [Vector2(-14, 2), Vector2(-7, -3), Vector2(0, 3), Vector2(7, -2), Vector2(14, 1),
+		Vector2(-10, 6), Vector2(4, 7), Vector2(11, 6), Vector2(-3, -5)]
+	for frame: int in 4:
+		var c: Canvas = Canvas.new(BURN_SIZE.x, BURN_SIZE.y)
+		c.part(true)
+		for y: int in BURN_SIZE.y:
+			for x: int in BURN_SIZE.x:
+				var v: Vector2 = Vector2(x + 0.5, y + 0.5) - center
+				var d: float = Vector2(v.x / 20.0, v.y / 9.0).length()
+				var threshold: float = Canvas.BAYER_4[(y % 4) * 4 + (x % 4)] / 16.0
+				if d < 1.0 and threshold > d * 0.7:
+					c.px(x, y, P.FIRE[0] if d > 0.6 else P.FIRE[1])
+				elif d < 0.45 and (x + y + frame) % 5 == 0:
+					c.px(x, y, P.FIRE[2])
+		for k: int in tongues.size():
+			var base: Vector2 = center + tongues[k]
+			var height: float = 5.0 + float((k * 3 + frame * 2) % 4) * 1.6
+			var sway: float = [0.0, 1.0, 0.0, -1.0][(frame + k) % 4]
+			# Outer flame (orange to red at the edges), inner core (yellow), a hot white-yellow base.
+			c.polygon(PackedVector2Array([base + Vector2(-3.5, 0.5), base + Vector2(-1.5 + sway * 0.5, -height * 0.55),
+				base + Vector2(sway, -height), base + Vector2(2 + sway * 0.5, -height * 0.5), base + Vector2(3.5, 0.5)]),
+				[P.FIRE[2]], Vector3(0, 0, 1))
+			c.polygon(PackedVector2Array([base + Vector2(-2, 0.5), base + Vector2(sway * 0.6, -height * 0.6), base + Vector2(2, 0.5)]),
+				[P.FIRE[3]], Vector3(0, 0, 1))
+			c.rect(Rect2i(roundi(base.x) - 1, roundi(base.y) - 1, 2, 1), P.FIRE[4])
+		frames.append(c.finish(false))
+	return frames

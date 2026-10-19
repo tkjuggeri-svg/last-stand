@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/repairs.png" id="1_0pqn3"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_au3d0"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_0eir0"]
+
+[resource]
+script = ExtResource("3_0eir0")
+id = &"repairs"
+display_name = "Emergency Repairs"
+description = "Repair the fortress by 30% of its max HP now."
+icon = ExtResource("1_0pqn3")
+category = 2
+instant_effect = &"repair_fortress"
+effect_amount = 0.3

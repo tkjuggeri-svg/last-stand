@@ -111,6 +111,7 @@ func _make_level(waves: Array) -> Level:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves.assign(waves)
+	WaveFixtures.no_upgrades(level)
 	(level.get_node("Hero") as Node2D).position = HERO_AWAY
 	root.add_child(level)
 	return level

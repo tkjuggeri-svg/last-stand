@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/masonry.png" id="1_iscyk"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_jj85u"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_t76ob"]
+
+[sub_resource type="Resource" id="Resource_dmx7o"]
+script = ExtResource("2_jj85u")
+stat = &"fortress.max_health"
+flat = 25.0
+
+[resource]
+script = ExtResource("3_t76ob")
+id = &"masonry"
+display_name = "Stout Masonry"
+description = "Fortress max HP +25."
+icon = ExtResource("1_iscyk")
+category = 2
+modifiers = Array[ExtResource("2_jj85u")]([SubResource("Resource_dmx7o")])

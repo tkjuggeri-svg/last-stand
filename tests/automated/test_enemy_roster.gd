@@ -56,6 +56,7 @@ func _test_in_a_wave() -> void:
 	wave.groups.append(WaveFixtures.make_wave(1, 1.0, HOUND, 0, 0.5).groups[0])
 	wave.groups.append(WaveFixtures.make_wave(1, 1.0, BRUTE, 0, 1.0).groups[0])
 	spawner.waves = [wave, WaveData.new()]  # a later wave: clearing this one doesn't win the run
+	WaveFixtures.no_upgrades(level)
 	spawner.autostart = true
 	(level.get_node("Hero") as Node2D).position = HERO_AWAY
 	root.add_child(level)

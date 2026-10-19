@@ -107,6 +107,7 @@ func _make_level(waves: Array[WaveData]) -> Level:
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = waves
 	spawner.autostart = false
+	WaveFixtures.no_upgrades(level)
 	(level.get_node("Hero") as Node2D).position = HERO_AWAY
 	root.add_child(level)
 	return level

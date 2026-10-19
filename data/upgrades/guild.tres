@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/guild.png" id="1_lkjnp"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_kx0sa"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_dxclt"]
+
+[sub_resource type="Resource" id="Resource_0bn3i"]
+script = ExtResource("2_kx0sa")
+stat = &"economy.tower_upgrade_cost"
+percent = -0.2
+
+[resource]
+script = ExtResource("3_dxclt")
+id = &"guild"
+display_name = "Guild Discount"
+description = "Tower upgrades cost 20% less."
+icon = ExtResource("1_lkjnp")
+category = 3
+stackable = false
+modifiers = Array[ExtResource("2_kx0sa")]([SubResource("Resource_0bn3i")])

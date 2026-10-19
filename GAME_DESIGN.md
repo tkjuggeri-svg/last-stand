@@ -103,7 +103,30 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - After each wave (except the last), before the build phase: choose **1 of 3** random upgrades (`UpgradeOffers` + `UpgradeChoiceScreen`; `RunCycle` phase CHOOSE). The game is paused while the screen is open; mouse or keyboard (arrows, Enter). No duplicate cards in an offer; non-stackable upgrades never come back once taken; commons are drawn 3× as often as rares. One reroll per offer for gold (25, then +25 each reroll used in the run). The run's RNG is seeded (`UpgradeOffers.seed_value`, -1 = random), so tests and the balance tool are reproducible. The HUD shows a row of the run's upgrade icons (stack counts, hover for details) under the wave panel.
 - Defined by `UpgradeData` (`data/upgrades/*.tres`): id, name, description, icon, category (Hero / Towers / Fortress / Economy), rarity (common / rare), stackable or once per run, a list of `StatModifier`s and an optional instant effect (e.g. repair the fortress now).
 - **Run modifier store** (`RunModifiers`, per level under Systems, no autoload; Restart = fresh level = empty store): flat and percent modifiers on named stats, final = (base + flats) × (1 + percents), percents add up. Systems read their final values through it, so an empty store changes nothing: hero damage, move speed, max HP, attack cooldown, reach, lives; tower damage, fire interval, range, build time, slow duration, pierce, burn (all towers via `tower.<stat>`, one type via `tower.<id>.<stat>`); fortress max HP and thorns; kill gold, interest on unspent gold (capped), tower upgrade prices. Max HP changes move current HP by the same amount.
-- Examples: *Bloodthirst* (hero heals on kill), *Volley* (arrow towers fire 2 arrows), *Tithe* (+gold per wave), *Iron Walls* (+fortress max HP), *Frostbite* (slowed enemies take +damage).
+- **M5 pool** (20 upgrades, `data/upgrades/`, original 16×16 icons; "once" = not stackable):
+  | Upgrade | Category | Rarity | Effect |
+  |---------|----------|--------|--------|
+  | Honed Blade | Hero | common | Sword damage +4 |
+  | Long Reach | Hero | common | Sword reach +15% (the hitbox; the trail art stays) |
+  | Battle Rhythm | Hero | common | Swing 15% faster |
+  | Iron Constitution | Hero | common | Hero max HP +30 |
+  | Second Wind | Hero | rare, once | +1 life |
+  | Berserker's Oath | Hero | rare, once | Sword damage +60%, hero max HP −30% (trade-off) |
+  | Keen Fletching | Towers | common | All towers +15% damage |
+  | Eagle Eye | Towers | common | All towers +12% range |
+  | Quick Masons | Towers | common, once | Towers built 60% faster |
+  | Overcharged Engines | Towers | rare, once | All towers +40% damage, −20% range (trade-off) |
+  | Piercing Arrows | Towers | rare, once | Archer arrows fly on (along the ground line from the tower) through 1 more enemy |
+  | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 8 damage/s for 3 s |
+  | Deep Freeze | Towers | common | Frost slows last 40% longer |
+  | Stout Masonry | Fortress | common | Fortress max HP +25 |
+  | Emergency Repairs | Fortress | common | Repair 30% of the fortress's max HP now |
+  | Thorned Walls | Fortress | rare, once | Enemies at the walls (92 px) take 12 damage/s |
+  | Bounty Hunters | Economy | common | Kills pay 25% more gold |
+  | Treasury | Economy | rare, once | End of each wave: +10% of unspent gold, up to 40 |
+  | Guild Discount | Economy | common, once | Tower upgrades cost 20% less |
+  | War Tax | Economy | rare, once | Kills pay 50% more gold, fortress max HP −25 (trade-off) |
+- Burning ground (`BurnZone`) and thorns damage enemies in ticks through their Hurtboxes like any other hit.
 - Rerolls cost gold (see above).
 
 ### 4.7 Waves

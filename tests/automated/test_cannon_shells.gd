@@ -84,6 +84,7 @@ func _test_lead_on_a_walking_target() -> void:
 	var level: Level = _make_level()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = [WaveFixtures.make_wave(1, 1.0), WaveData.new()]
+	WaveFixtures.no_upgrades(level)
 	await _frames(2)
 	var tower: Tower = _build(level, 1, CANNON)  # (-420, -330), above the west road's first stretch
 	spawner.start_next_wave()

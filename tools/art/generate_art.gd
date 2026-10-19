@@ -19,6 +19,7 @@ const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
+const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
 
 
@@ -50,6 +51,8 @@ func _initialize() -> void:
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
 		"explosion_large": func() -> void: _save(_sheet([TowerArt.new().explosion_frames(TowerArt.EXPLOSION_LARGE_SIZE)], Layouts.EXPLOSION_LARGE["size"]), Layouts.EXPLOSION_LARGE["png"]),
 		"frost_nova": func() -> void: _save(_sheet([TowerArt.new().frost_nova_frames()], Layouts.FROST_NOVA["size"]), Layouts.FROST_NOVA["png"]),
+		"burn": func() -> void: _save(_sheet([TowerArt.new().burn_frames()], Layouts.BURN["size"]), Layouts.BURN["png"]),
+		"upgrade_icons": _upgrade_icons,
 		"frost": func() -> void: _save(_sheet(TowerArt.new().frost_rows(), Layouts.FROST_FX["size"]), Layouts.FROST_FX["png"]),
 		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
 	}
@@ -78,6 +81,12 @@ func _ui() -> void:
 	_save(ui.bar_fill([Color("2c0f17"), Color("85282e"), Color("c0453a"), Color("ec7a5c")]), Layouts.UI_DIR + "bar_hero.png")
 	for kind: String in ["keep", "helm", "skull", "slot"]:
 		_save(ui.icon(kind), Layouts.UI_DIR + "icon_%s.png" % kind)
+
+
+func _upgrade_icons() -> void:
+	var art: RefCounted = UpgradeIconArt.new()
+	for id: String in UpgradeIconArt.IDS:
+		_save(art.icon(id), Layouts.UPGRADE_ICON_DIR + id + ".png")
 
 
 # ---------------------------------------------------------------- arena ground

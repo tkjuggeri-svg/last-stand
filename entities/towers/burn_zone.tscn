@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://entities/towers/burn_zone.gd" id="1_zone"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/burn_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://core/components/hitbox.gd" id="3_hitbox"]
+
+[node name="BurnZone" type="Node2D"]
+z_index = -1
+script = ExtResource("1_zone")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("2_frames")
+animation = &"burn"
+
+[node name="Hitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 0
+monitorable = false
+script = ExtResource("3_hitbox")

@@ -23,6 +23,7 @@ func _test_cycle() -> void:
 	var level: Level = (load(ARENA) as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = [WaveFixtures.make_wave(2, 0.3), WaveFixtures.make_wave(3, 0.3)]
+	WaveFixtures.no_upgrades(level)
 	(level.get_node("Hero") as Node2D).position = HERO_AWAY
 	root.add_child(level)
 	await _frames(2)

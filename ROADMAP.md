@@ -88,9 +88,9 @@ Tick items as they're finished.
 ---
 
 ## M5 — Roguelite Upgrades
-- [ ] `UpgradeData` + stat modifier system
-- [ ] Upgrade choice screen (1 of 3) after each wave
-- [ ] ~15 upgrades across Hero / Tower / Fortress / Economy
+- [x] `UpgradeData` + stat modifier system (`RunModifiers`, per level)
+- [x] Upgrade choice screen (1 of 3) after each wave: paused, keyboard + mouse, seeded, one reroll per offer
+- [x] 20 upgrades across Hero / Tower / Fortress / Economy, with trade-offs and icons
 - [x] Tower upgrades (2 tiers per tower) — pulled forward into M4 after the playtest
 - [ ] Towers: Brazier, Frost Obelisk, Bone Ballista
 

@@ -23,6 +23,15 @@ static func make_wave(count: int, interval: float, enemy: EnemyData = GHOUL, lan
 static func single_wave(spawner: WaveSpawner, count: int, interval: float, enemy: EnemyData = GHOUL) -> void:
 	spawner.waves = [make_wave(count, interval, enemy), WaveData.new()]
 	spawner.autostart = true
+	no_upgrades(spawner.get_parent())
+
+
+## No upgrade offers between waves (a cleared wave goes straight to the build phase), for tests that
+## aren't about upgrades. Call before or after the level enters the tree.
+static func no_upgrades(level: Node) -> void:
+	var offers: UpgradeOffers = level.get_node_or_null("%UpgradeOffers")
+	if offers != null:
+		offers.pool = []
 
 
 ## Ends the level's build phase like the Start button does. Await it: during a test's _initialize()

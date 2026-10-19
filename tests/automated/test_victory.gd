@@ -50,6 +50,7 @@ func _test_victory_and_restart() -> void:
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var cycle: RunCycle = level.get_node("%RunCycle")
 	spawner.waves = [WaveFixtures.make_wave(2, 0.2), WaveFixtures.make_wave(2, 0.2)]  # a short run
+	WaveFixtures.no_upgrades(level)
 	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
 		(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(1000))
 	var won: Array[int] = [0]

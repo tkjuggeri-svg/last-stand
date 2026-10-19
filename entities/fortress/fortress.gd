@@ -17,12 +17,18 @@ const SHAKE_TIME: float = 0.2
 const DUST_AREA: Rect2 = Rect2(-50, -40, 100, 90)
 ## Dust clouds when the fortress falls.
 const COLLAPSE_PUFFS: int = 7
+## Thorned walls (upgrade): enemies whose body is this close to the fortress's centre take the
+## thorns' damage per second, in ticks of THORNS_TICK seconds.
+const THORNS_RADIUS: float = 92.0
+const THORNS_TICK: float = 0.5
 
 ## The run's upgrades (max HP, thorns). Null = base stats.
 @export var modifiers: RunModifiers
 
 var _shake: Tween
 var _base_max_health: int = 0
+var _thorns_left: float = 0.0
+var _thorns_hitbox: Hitbox
 var _last_health: int = 0
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _sprite_rest: Vector2 = Vector2.ZERO
@@ -42,6 +48,7 @@ func _ready() -> void:
 	health.health_changed.connect(_on_health_changed)
 	health.died.connect(_on_health_died)
 	_base_max_health = health.max_health
+	set_physics_process(false)
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 	_show_look(look_for(health.current_health, health.max_health))
@@ -54,6 +61,26 @@ func repair(fraction: float) -> void:
 
 func _apply_modifiers() -> void:
 	health.set_max_health(modifiers.apply_int(_base_max_health, [RunModifiers.FORTRESS_MAX_HEALTH]))
+	set_physics_process(get_thorns_dps() > 0.0)
+
+
+## Damage per second the walls deal to enemies right at them (0 without the upgrade).
+func get_thorns_dps() -> float:
+	return modifiers.apply(0.0, [RunModifiers.FORTRESS_THORNS]) if modifiers != null else 0.0
+
+
+func _physics_process(delta: float) -> void:
+	_thorns_left -= delta
+	if _thorns_left > 0.0:
+		return
+	_thorns_left += THORNS_TICK
+	if _thorns_hitbox == null:
+		_thorns_hitbox = Hitbox.new()
+		_thorns_hitbox.collision_layer = 0  # hits are dealt directly, never by overlap
+		add_child(_thorns_hitbox)
+	_thorns_hitbox.damage = maxi(roundi(get_thorns_dps() * THORNS_TICK), 1)
+	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, THORNS_RADIUS):
+		enemy.receive_hit(_thorns_hitbox)
 
 
 ## Which sprite frame (a Look) fits this much health.

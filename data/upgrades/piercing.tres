@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/piercing.png" id="1_j4uby"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_q873k"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_fgqha"]
+
+[sub_resource type="Resource" id="Resource_nsf1q"]
+script = ExtResource("2_q873k")
+stat = &"tower.archer.pierce"
+flat = 1.0
+
+[resource]
+script = ExtResource("3_fgqha")
+id = &"piercing"
+display_name = "Piercing Arrows"
+description = "Archer arrows fly on through 1 more enemy."
+icon = ExtResource("1_j4uby")
+category = 1
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_q873k")]([SubResource("Resource_nsf1q")])

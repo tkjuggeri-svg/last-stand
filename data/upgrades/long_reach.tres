@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/long_reach.png" id="1_7c2ky"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_lk4dn"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_th6a0"]
+
+[sub_resource type="Resource" id="Resource_mfg01"]
+script = ExtResource("2_lk4dn")
+stat = &"hero.reach"
+percent = 0.15
+
+[resource]
+script = ExtResource("3_th6a0")
+id = &"long_reach"
+display_name = "Long Reach"
+description = "Sword reach +15%."
+icon = ExtResource("1_7c2ky")
+modifiers = Array[ExtResource("2_lk4dn")]([SubResource("Resource_mfg01")])

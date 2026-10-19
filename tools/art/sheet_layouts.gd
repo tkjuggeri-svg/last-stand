@@ -192,6 +192,14 @@ const FROST_NOVA: Dictionary = {
 	"anims": [["frost_nova", 0, 6, 16.0, false]],
 }
 
+## Burning ground (looping): hellfire shells and the brazier's fire.
+const BURN: Dictionary = {
+	"png": "res://assets/sprites/effects/burn.png",
+	"frames": "res://entities/effects/burn_frames.tres",
+	"size": Vector2i(48, 32),
+	"anims": [["burn", 0, 4, 10.0, true]],
+}
+
 const FROST_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/frost.png",
 	"frames": "res://entities/effects/frost_frames.tres",
@@ -200,7 +208,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {
@@ -245,6 +253,8 @@ const SMOKE_PNG: String = "res://assets/sprites/effects/smoke_puff.png"
 ## UI textures are saved pre-scaled to 2x (StyleBoxTexture/TextureRect draw texels 1:1).
 const COIN_PNG: String = "res://assets/sprites/ui/coin.png"
 const UI_DIR: String = "res://assets/sprites/ui/"
+## Run upgrade icons, one PNG per upgrade id (32x32, pre-scaled 2x).
+const UPGRADE_ICON_DIR: String = "res://assets/sprites/ui/upgrades/"
 ## The pixel font (bitmap FontFile, 12 px cell incl. outline; the theme draws it at 24 = 2x).
 const FONT: String = "res://assets/fonts/pixel_font.res"
 const FONT_ATLAS_PNG: String = "res://assets/fonts/pixel_font_atlas.png"
