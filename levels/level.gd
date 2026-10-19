@@ -1,19 +1,21 @@
 class_name Level
 extends Node2D
-## Root of a playable level. The run is lost when the fortress is destroyed (the hero has lives, see
-## HeroLives): everything in the level stops, and run_lost (once) tells the owner (Main) to show Game Over.
+## Root of a playable level. The run is lost when the fortress is destroyed or the hero loses its last
+## life (HeroLives): everything in the level stops, and run_lost (once) tells the owner (Main) to show
+## Game Over.
 ## It also places one-shot visuals (an enemy's death effect and the "+gold" it was worth) in its
 ## Effects layer.
 
 signal run_lost(reason: LossReason)
 
-enum LossReason { FORTRESS_DESTROYED }
+enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
 
 const FLOATING_TEXT_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 
 @export var fortress: Fortress
 @export var spawner: WaveSpawner
+@export var hero_lives: HeroLives
 
 var _run_over: bool = false
 
@@ -23,6 +25,8 @@ var _run_over: bool = false
 func _ready() -> void:
 	assert(fortress != null, "Level needs a fortress: %s" % get_path())
 	fortress.destroyed.connect(_on_fortress_destroyed)
+	if hero_lives != null:
+		hero_lives.out_of_lives.connect(func() -> void: _end_run(LossReason.HERO_KILLED))
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 

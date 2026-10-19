@@ -28,6 +28,12 @@ func _physics_process(delta: float) -> void:
 		set_physics_process(false)
 
 
+## Ignores hits for `seconds` (e.g. right after a respawn). Never shortens a longer window.
+func make_invulnerable(seconds: float) -> void:
+	_invulnerable_left = maxf(_invulnerable_left, seconds)
+	set_physics_process(_invulnerable_left > 0.0)
+
+
 func is_invulnerable() -> bool:
 	return _invulnerable_left > 0.0
 

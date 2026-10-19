@@ -81,11 +81,12 @@ size = Vector2(1500, 100)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(100, 1100)
 
-[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner")]
+[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives")]
 y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
 spawner = NodePath("WaveSpawner")
+hero_lives = NodePath("Systems/HeroLives")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 z_index = -3

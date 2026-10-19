@@ -1,21 +1,25 @@
 class_name HeroLives
 extends Node
-## The hero's lives for one run. Each fall costs a life; while lives remain, the hero respawns at the
-## respawn point (in front of the fortress) after respawn_delay seconds, with a visible countdown.
-## After the last life it stays down and the run goes on: only the fortress falling ends a run.
+## The hero's lives for one run (they don't come back between waves). Each fall costs a life; while
+## lives remain, the hero respawns at the respawn point (in front of the fortress) after respawn_delay
+## seconds, with a visible countdown, and is protected for respawn_invulnerability seconds. The towers
+## keep fighting meanwhile. Losing the last life ends the run (out_of_lives; the Level turns it into
+## Game Over).
 
 signal lives_changed(lives_left: int)
 signal respawn_started(delay: float)
 signal hero_respawned
-## The hero fell with no lives left; it won't come back this run.
+## The hero fell with no lives left: the run is lost.
 signal out_of_lives
 
 @export var hero: Hero
 @export var respawn_point: RespawnPoint
-## Falls the hero can take in a run; the last one is final.
+## Lives per run; losing the last one ends the run.
 @export var lives: int = 3
 ## Seconds between a fall and the respawn.
-@export var respawn_delay: float = 6.0
+@export var respawn_delay: float = 4.0
+## Seconds after a respawn during which hits are ignored (the hero blinks).
+@export var respawn_invulnerability: float = 2.0
 
 var _lives_left: int = 0
 var _respawn_left: float = 0.0
@@ -37,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	_respawn_left = 0.0
 	set_physics_process(false)
 	respawn_point.hide_countdown()
-	hero.revive(respawn_point.global_position)
+	hero.revive(respawn_point.global_position, respawn_invulnerability)
 	hero_respawned.emit()
 
 

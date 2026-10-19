@@ -30,9 +30,9 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
 - Each wave has a **build phase** and a **combat phase** (`RunCycle`, per level). The build phase is untimed (optional timer later): no enemies come until the player presses **Start wave** (HUD button, top-left) or **Enter** (`start_wave`). The combat phase ends when the wave's last enemy is dead or has reached the fortress; then the next build phase begins. After the last wave the run is finished. Building and selling stay allowed in both phases.
 - HUD: a top-left wave panel ("Wave 3 / 10", the phase, the Start button in the build phase); the bottom-left panel shows "Enemies left: n / total" during a wave and "Next wave: n enemies" between waves.
-- The run ends when the **fortress HP reaches 0** (defeat) or the last wave is beaten (victory). The hero falling never ends the run.
+- The run ends in defeat when the **fortress HP reaches 0** ("The fortress has fallen.") or the hero loses its **last life** ("The hero has fallen."), and in victory when the last wave is beaten.
   Prototype (M1): defeat freezes the level and shows a Game Over screen ("The fortress has fallen.") with Restart, which starts a completely fresh run.
-- Hero death is **not** run-ending (decided in M4): the hero has **3 lives** per run (`HeroLives.lives`). Each fall costs one; while lives remain, the hero respawns at the `RespawnPoint` in front of the fortress after **6 s** (`respawn_delay`, to be tuned), with full HP and a visible countdown ("Hero returns in 5" at the spot, "Back in 5 s" plus one helm per life in the HUD). The third fall is final: the hero stays down and the towers fight on. The fortress is the only fail state, which keeps the TD identity.
+- **Hero lives (decided in M4):** the hero has **3 lives** per run (`HeroLives.lives`); they don't come back between waves (revisit after playtesting). Each fall costs one. While lives remain, the hero respawns at the `RespawnPoint` in front of the fortress after **4 s** (`respawn_delay`), with full HP, a visible countdown ("Hero returns in 3" at the spot, "Hero back in 3 s" in the HUD) and **2 s of invulnerability** (`respawn_invulnerability`) shown by a blink. The towers keep defending meanwhile. Losing the last life ends the run. The HUD shows one helm per life next to the hero's HP bar (spent lives dark).
 - While fallen the hero can't move, attack or build, and is not a target: it leaves the hero physics layer, so enemies' attack ranges let go and they walk on.
 
 ## 4. Systems
@@ -44,7 +44,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   Prototype values: ~100° arc, 68 px reach (was 52, raised after the first playtest) from the hero's centre, 10 damage, hitbox active 0.12 s, 0.4 s cooldown; holding LMB keeps swinging. Each swing hits each target at most once.
 - **Ability** (Space/RMB) on cooldown — e.g. dash or AoE slam. Added after the core loop works.
 - Builds towers at slots **at any time**, before or during a wave (decided in M3): walk to a slot, press **E**.
-- Hero HP: 100 (prototype). Enemy melee hits it through a `Hurtbox`; after each hit the hero is invulnerable for 0.5 s, so a crowd can't shred it in an instant. Feedback: red-white flash, hit spark, floating damage number, HUD bar. At 0 HP the knight falls (death animation) and costs a life; it respawns at the fortress while lives remain (see 3. Run structure).
+- Hero HP: 100 (prototype). Enemy melee hits it through a `Hurtbox`; after each hit the hero is invulnerable for 0.5 s, so a crowd can't shred it in an instant. Feedback: red-white flash, hit spark, floating damage number, HUD bar. At 0 HP the knight falls (death animation) and costs a life; it respawns at the fortress while lives remain, and the last life lost is Game Over (see 3. Run structure).
 - Implementation: `CharacterBody2D` + `HealthComponent` + `Hurtbox`; simple state machine (Idle, Move, Attack, Dead) only once more than ~3 states exist.
 
 ### 4.2 Fortress

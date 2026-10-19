@@ -13,6 +13,9 @@ signal revived
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 ## Where damage numbers appear, relative to the hero.
 const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -34)
+## Respawn protection blink: the sprite fades to this alpha and back, this many times per second.
+const BLINK_ALPHA: float = 0.3
+const BLINKS_PER_SECOND: float = 6.0
 
 @export var move_speed: float = 200.0
 ## How long the swing's hitbox stays active, in seconds.
@@ -71,8 +74,9 @@ func attack(target_position: Vector2) -> void:
 	_play_swing_trail(direction.angle())
 
 
-## Brings a fallen hero back at `at` with full HP, idle and targetable again. Does nothing while alive.
-func revive(at: Vector2) -> void:
+## Brings a fallen hero back at `at` with full HP, idle and targetable again, and immune to hits for
+## `invulnerable_time` seconds (shown by a blink). Does nothing while alive.
+func revive(at: Vector2, invulnerable_time: float = 0.0) -> void:
 	if not health.is_dead():
 		return
 	global_position = at
@@ -82,7 +86,25 @@ func revive(at: Vector2) -> void:
 	_set_targetable(true)
 	_sprite.facing = "down"
 	_sprite.play_state("idle", true)
+	if invulnerable_time > 0.0:
+		_hurtbox.make_invulnerable(invulnerable_time)
+		_blink(invulnerable_time)
 	revived.emit()
+
+
+## True while hits are ignored (right after a hit or a respawn).
+func is_invulnerable() -> bool:
+	return _hurtbox.is_invulnerable()
+
+
+## Display only: the sprite flickers for `seconds`, then is fully visible again.
+func _blink(seconds: float) -> void:
+	var blinks: int = maxi(roundi(seconds * BLINKS_PER_SECOND), 1)
+	var half: float = seconds / blinks / 2.0
+	var tween: Tween = _sprite.create_tween()
+	for _i: int in blinks:
+		tween.tween_property(_sprite, "modulate:a", BLINK_ALPHA, half)
+		tween.tween_property(_sprite, "modulate:a", 1.0, half)
 
 
 func _move() -> void:
