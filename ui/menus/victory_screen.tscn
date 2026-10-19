@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/menus/victory_screen.gd" id="1_screen"]
+[ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
+
+[node name="VictoryScreen" type="CanvasLayer"]
+layer = 10
+visible = false
+script = ExtResource("1_screen")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="Center" type="CenterContainer" parent="."]
+theme = ExtResource("2_theme")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
+theme_override_font_sizes/font_size = 72
+text = "VICTORY"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "The fortress stands."
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="Center/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Play again"

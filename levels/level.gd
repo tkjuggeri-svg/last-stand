@@ -1,12 +1,13 @@
 class_name Level
 extends Node2D
 ## Root of a playable level. The run is lost when the fortress is destroyed or the hero loses its last
-## life (HeroLives): everything in the level stops, and run_lost (once) tells the owner (Main) to show
-## Game Over.
+## life (HeroLives), and won when RunCycle reports the last wave cleared: either way everything in the
+## level stops, and run_lost / run_won (once, never both) tells the owner (Main) which screen to show.
 ## It also places one-shot visuals (an enemy's death effect and the "+gold" it was worth) in its
 ## Effects layer.
 
 signal run_lost(reason: LossReason)
+signal run_won
 
 enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
 
@@ -16,6 +17,7 @@ const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
 @export var fortress: Fortress
 @export var spawner: WaveSpawner
 @export var hero_lives: HeroLives
+@export var run_cycle: RunCycle
 
 var _run_over: bool = false
 
@@ -27,6 +29,8 @@ func _ready() -> void:
 	fortress.destroyed.connect(_on_fortress_destroyed)
 	if hero_lives != null:
 		hero_lives.out_of_lives.connect(func() -> void: _end_run(LossReason.HERO_KILLED))
+	if run_cycle != null:
+		run_cycle.all_waves_cleared.connect(_on_all_waves_cleared)
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 
@@ -39,15 +43,27 @@ func _on_fortress_destroyed() -> void:
 	_end_run(LossReason.FORTRESS_DESTROYED)
 
 
+func _on_all_waves_cleared() -> void:
+	if _stop():
+		run_won.emit()
+
+
 func _end_run(reason: LossReason) -> void:
+	if _stop():
+		run_lost.emit(reason)
+
+
+## Freezes the level once; returns false if the run was already over (a loss and a win in the same
+## moment: whichever came first counts).
+func _stop() -> bool:
 	if _run_over:
-		return
+		return false
 	_run_over = true
 	# Disabling the level stops every node in it (hero, enemies, spawner) and takes their collision
 	# shapes out of physics. Deferred, because this runs inside a physics callback (an enemy hit).
 	# Nodes set to PROCESS_MODE_ALWAYS (the hero's sprite) keep animating, so the death plays out.
 	set_deferred("process_mode", PROCESS_MODE_DISABLED)
-	run_lost.emit(reason)
+	return true
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:

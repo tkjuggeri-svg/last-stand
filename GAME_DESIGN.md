@@ -28,6 +28,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ## 3. Run structure
 
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
+  **M4 prototype: 10 hand-authored waves** (no bosses yet) on the prototype arena; beating wave 10 wins the run (Victory screen, "Play again" starts a fresh run, same pattern as Game Over).
 - Each wave has a **build phase** and a **combat phase** (`RunCycle`, per level). The build phase is untimed (optional timer later): no enemies come until the player presses **Start wave** (HUD button, top-left) or **Enter** (`start_wave`). The combat phase ends when the wave's last enemy is dead or has reached the fortress; then the next build phase begins. After the last wave the run is finished. Building and selling stay allowed in both phases.
 - HUD: a top-left wave panel ("Wave 3 / 10", the phase, the Start button in the build phase); the bottom-left panel shows "Enemies left: n / total" during a wave and "Next wave: n enemies" between waves.
 - The run ends in defeat when the **fortress HP reaches 0** ("The fortress has fallen.") or the hero loses its **last life** ("The hero has fallen."), and in victory when the last wave is beaten.
@@ -53,7 +54,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Fortress HP is shown prominently in the HUD. It does **not** regenerate by default; some upgrades/rewards heal it.
 
 ### 4.3 Enemies
-- Spawn at map edges and follow **lanes** (`Path2D`) toward the fortress.
+- Spawn at crypts and follow **lanes** (`Path2D`) toward the fortress. The prototype arena has 3 lanes: the west crypt road (902 px), a short north-east road (612 px, to the east wall) and a south road (922 px, to the south wall); each wave's spawn groups pick their lane.
 - **Decision:** enemies sample the lane curve and move themselves (not parented to `PathFollow2D`). This lets them leave the path to chase the hero briefly (aggro) and return, without re-parenting.
 - Defined by `EnemyData`: max HP, speed, damage to fortress, contact damage, gold reward, sprite, aggro range.
 - Prototype (M1): `EnemyData` has max HP, speed and fortress damage only. Each frame the enemy steers toward a point 24 px further along its lane, so it rounds corners slightly (≤ ~8 px off centre) and can rejoin the lane if pushed. Enemies have no physical collision yet. The Ghoul's `Hitbox` (enemy_hitbox) damages the fortress on contact and the Ghoul is removed (`Hitbox.hit` signal).
@@ -76,7 +77,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Built on **predefined build slots** placed in the level.
   - **Decision:** slots instead of free placement. Avoids grid/collision/pathing edge cases, makes map design deliberate, and is far cheaper to prototype. Free placement can be revisited later.
 - Defined by `TowerData` (`data/towers/*.tres`): name, description, cost, range, damage, fire interval, projectile speed and look, splash radius, slow factor/duration, muzzle position.
-- **Building is allowed before and during waves**; the game never pauses for it. Prototype arena: 6 slots beside the lane (each ≥ 80 px from its centre line, so towers never block enemies). Walk to a slot and press **E**: a compact panel lists each tower's icon, name, price (red if unaffordable) and description; an occupied slot shows the tower's stats and **Sell (+50% of the build price)**. Esc/E or walking away closes it. A new tower is **under construction for `build_time` (0.6 s, in its TowerData)**: it can't aim or fire until it is finished. A sold tower stops at once (selling mid-construction refunds the usual 50%).
+- **Building is allowed before and during waves**; the game never pauses for it. Prototype arena: 10 slots beside the lanes (6 along the west road, 2 by the north-east road, 1 by the south road, 1 where the north-east and south roads reach the fortress; each ≥ 80 px from every lane's centre line, so towers never block enemies). Walk to a slot and press **E**: a compact panel lists each tower's icon, name, price (red if unaffordable) and description; an occupied slot shows the tower's stats and **Sell (+50% of the build price)**. Esc/E or walking away closes it. A new tower is **under construction for `build_time` (0.6 s, in its TowerData)**: it can't aim or fire until it is finished. A sold tower stops at once (selling mid-construction refunds the usual 50%).
 - Targeting: "first along path" (the living enemy furthest along the lane, kept while valid and in range). Later options: nearest, strongest.
 - Damage goes through the same `Hurtbox`/`HealthComponent` path as melee. Towers never hurt the hero or the fortress (cannon blasts are on `hero_hitbox`, which only enemies listen to).
 - M3 towers (values tuned with `tests/tools/balance_report.gd`; one tower already makes a difference, two hold a 10-Ghoul wave):
@@ -105,6 +106,21 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Defined by `WaveData` (`data/waves/wave_NN.tres`): a list of `SpawnGroup`s `{enemy: EnemyData, count, interval, lane, delay}`. The groups of a wave run in parallel: a group's k-th enemy appears at `delay + k × interval` seconds after the wave starts, on the level lane with index `lane`.
 - Hand-authored for the first version; later add a difficulty scaler (HP/count multipliers) for endless mode.
 - `WaveSpawner` (per level, no autoload) holds the level's lanes and waves, starts one wave at a time (`start_next_wave()`), gives each spawned enemy its group's `EnemyData`, and emits `wave_started(n)` / `wave_cleared(n)` (every enemy of the wave spawned and gone: killed or used up at the fortress) plus per-enemy signals. Other systems (WaveRewards, HUD, Level) connect to it through exported node references, so no `Events` autoload is needed yet.
+
+- **M4 waves** (`data/waves/wave_01..10.tres`; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Brutes in wave 5; every wave brings more total enemy HP than the last:
+  | Wave | Ghouls | Hounds | Brutes | Total | Lanes | Total HP |
+  |------|--------|--------|--------|-------|-------|----------|
+  | 1  | 8  | –  | – | 8  | W        | 240 |
+  | 2  | 13 | –  | – | 13 | W, NE    | 390 |
+  | 3  | 11 | 6  | – | 17 | W, NE    | 420 |
+  | 4  | 16 | 8  | – | 24 | all      | 600 |
+  | 5  | 12 | 8  | 2 | 22 | W, S     | 780 |
+  | 6  | 20 | 12 | 2 | 34 | all      | 1080 |
+  | 7  | 18 | 20 | 3 | 41 | all      | 1290 |
+  | 8  | 26 | 20 | 5 | 51 | all      | 1830 |
+  | 9  | 28 | 26 | 6 | 60 | all      | 2130 |
+  | 10 | 32 | 38 | 8 | 78 | all      | 2730 |
+- Tuning (balance report, idle hero, towers bought as gold allows, 5 s build phases): no towers falls in wave 2; all-archers falls in wave 10; a mixed build falls in wave 9; cannons-first wins with the fortress at 95. So towers alone can just about win with a strong build; the hero fighting is what makes weaker builds hold. Gold piles up once all slots are full (nothing to buy until upgrades in M5).
 
 ### 4.8 Meta progression (later milestone)
 - Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.

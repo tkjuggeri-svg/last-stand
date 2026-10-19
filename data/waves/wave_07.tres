@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_cuacw"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_ymg01"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_v18cx"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_8gwo6"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="5_j4r3q"]
+
+[sub_resource type="Resource" id="Resource_uqrl3"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("2_ymg01")
+
+[sub_resource type="Resource" id="Resource_1yp0f"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("2_ymg01")
+lane = 2
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_4co7d"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("2_ymg01")
+lane = 1
+delay = 20.0
+
+[sub_resource type="Resource" id="Resource_r82ir"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("3_v18cx")
+count = 18
+interval = 0.9
+delay = 2.0
+
+[sub_resource type="Resource" id="Resource_3dfl0"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("4_8gwo6")
+count = 12
+interval = 0.5
+lane = 1
+delay = 8.0
+
+[sub_resource type="Resource" id="Resource_myc8v"]
+script = ExtResource("1_cuacw")
+enemy = ExtResource("4_8gwo6")
+count = 8
+interval = 0.5
+lane = 2
+delay = 16.0
+
+[resource]
+script = ExtResource("5_j4r3q")
+groups = Array[ExtResource("1_cuacw")]([SubResource("Resource_uqrl3"), SubResource("Resource_1yp0f"), SubResource("Resource_4co7d"), SubResource("Resource_r82ir"), SubResource("Resource_3dfl0"), SubResource("Resource_myc8v")])

@@ -34,16 +34,16 @@ func _test_slots_and_rules() -> void:
 	var failures: Array[String] = []
 	builder.build_failed.connect(func(_s: BuildSlot, _d: TowerData, reason: String) -> void: failures.append(reason))
 
-	_check("6 build slots, all empty", slots.size() == 6 and builder.get_free_slot_count() == 6)
-	_check("HUD shows free slots", (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 6 / 6")
-	_check("slots keep clear of the lane, the fortress and the walls", _slots_placed_well(level, slots))
+	_check("10 build slots, all empty", slots.size() == 10 and builder.get_free_slot_count() == 10)
+	_check("HUD shows free slots", (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 10 / 10")
+	_check("slots keep clear of every lane, the fortress and the walls", _slots_placed_well(level, slots))
 
 	var slot: BuildSlot = slots[0]
 	_check("an empty slot accepts a tower", builder.build(slot, ARCHER) and slot.tower != null and slot.tower.data == ARCHER)
 	_check("the cost is deducted (gold %d)" % economy.get_gold(), economy.get_gold() == START_GOLD - ARCHER.cost)
 	_check("HUD gold and free slots update",
 		(hud.get_node("%GoldLabel") as Label).text == str(START_GOLD - ARCHER.cost)
-		and (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 5 / 6")
+		and (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 9 / 10")
 	_check("an occupied slot rejects a second tower",
 		not builder.build(slot, FROST) and slot.tower.data == ARCHER and failures.back() == TowerBuilder.SLOT_OCCUPIED)
 	_check("...and no gold is taken for it", economy.get_gold() == START_GOLD - ARCHER.cost)
@@ -166,13 +166,14 @@ func _test_menu_flow() -> void:
 
 
 func _slots_placed_well(level: Level, slots: Array[BuildSlot]) -> bool:
-	var lane: Path2D = level.get_node("Lane")
 	var floor_node: ColorRect = level.get_node("%Floor")
 	var arena: Rect2 = Rect2(floor_node.position, floor_node.size).grow(-48)
 	var fortress: Vector2 = (level.get_node("Fortress") as Node2D).global_position
 	for slot: BuildSlot in slots:
-		var local: Vector2 = lane.to_local(slot.global_position)
-		var lane_distance: float = local.distance_to(lane.curve.get_closest_point(local))
+		var lane_distance: float = INF
+		for lane: Path2D in (level.get_node("WaveSpawner") as WaveSpawner).lanes:
+			var local: Vector2 = lane.to_local(slot.global_position)
+			lane_distance = minf(lane_distance, local.distance_to(lane.curve.get_closest_point(local)))
 		if lane_distance < LANE_CLEARANCE or not arena.has_point(slot.global_position) or slot.global_position.distance_to(fortress) < 110.0:
 			print("  badly placed slot %s (lane %.0f px)" % [slot.position, lane_distance])
 			return false

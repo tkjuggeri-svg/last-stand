@@ -1,10 +1,19 @@
-[gd_scene load_steps=37 format=3]
+[gd_scene load_steps=48 format=3]
 
 [ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
 [ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
 [ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
 [ext_resource type="Resource" path="res://data/waves/wave_01.tres" id="25_wave01"]
+[ext_resource type="Resource" path="res://data/waves/wave_02.tres" id="w02_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_03.tres" id="w03_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_04.tres" id="w04_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_05.tres" id="w05_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_06.tres" id="w06_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_07.tres" id="w07_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_08.tres" id="w08_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_09.tres" id="w09_wave"]
+[ext_resource type="Resource" path="res://data/waves/wave_10.tres" id="w10_wave"]
 [ext_resource type="Script" path="res://resources/wave_data.gd" id="26_wave_data"]
 [ext_resource type="Script" path="res://systems/run_cycle.gd" id="27_cycle"]
 [ext_resource type="Script" path="res://systems/hero_lives.gd" id="28_lives"]
@@ -75,18 +84,31 @@ _data = {
 }
 point_count = 4
 
+[sub_resource type="Curve2D" id="Curve2D_lane2"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 300, -360, 0, 0, 0, 0, 300, 0, 0, 0, 0, 0, 48, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve2D" id="Curve2D_lane3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -730, 240, 0, 0, 0, 0, 0, 240, 0, 0, 0, 0, 0, 48)
+}
+point_count = 3
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
 size = Vector2(1500, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(100, 1100)
 
-[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives")]
+[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle")]
 y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
 spawner = NodePath("WaveSpawner")
 hero_lives = NodePath("Systems/HeroLives")
+run_cycle = NodePath("Systems/RunCycle")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 z_index = -3
@@ -142,6 +164,68 @@ texture = ExtResource("21_light")
 texture_scale = 2.0
 
 [node name="Souls" type="CPUParticles2D" parent="Crypt"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Crypt2" type="Sprite2D" parent="."]
+position = Vector2(230, -372)
+scale = Vector2(2, 2)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Crypt2"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.65, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Crypt2"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Crypt3" type="Sprite2D" parent="."]
+position = Vector2(-800, 228)
+scale = Vector2(2, 2)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Crypt3"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.65, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Crypt3"]
 position = Vector2(0, -6)
 scale = Vector2(0.5, 0.5)
 amount = 7
@@ -354,7 +438,7 @@ hframes = 12
 frame = 11
 
 [node name="Prop23" type="Sprite2D" parent="Props"]
-position = Vector2(-720, 250)
+position = Vector2(-610, 300)
 scale = Vector2(2, 2)
 texture = ExtResource("20_props")
 offset = Vector2(0, -20)
@@ -370,7 +454,7 @@ hframes = 12
 frame = 9
 
 [node name="Prop25" type="Sprite2D" parent="Props"]
-position = Vector2(-830, 160)
+position = Vector2(-860, 100)
 scale = Vector2(2, 2)
 texture = ExtResource("20_props")
 offset = Vector2(0, -20)
@@ -474,7 +558,7 @@ hframes = 12
 frame = 4
 
 [node name="Prop37" type="Sprite2D" parent="Props"]
-position = Vector2(220, -380)
+position = Vector2(130, -440)
 scale = Vector2(2, 2)
 texture = ExtResource("20_props")
 offset = Vector2(0, -20)
@@ -498,7 +582,7 @@ hframes = 12
 frame = 7
 
 [node name="Prop40" type="Sprite2D" parent="Props"]
-position = Vector2(300, -50)
+position = Vector2(360, -60)
 scale = Vector2(2, 2)
 texture = ExtResource("20_props")
 offset = Vector2(0, -20)
@@ -609,6 +693,12 @@ shape = SubResource("RectangleShape2D_wall_v")
 [node name="Lane" type="Path2D" parent="."]
 curve = SubResource("Curve2D_lane")
 
+[node name="Lane2" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane2")
+
+[node name="Lane3" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane3")
+
 [node name="Fortress" parent="." instance=ExtResource("2_fortress")]
 
 [node name="Systems" type="Node" parent="."]
@@ -663,15 +753,27 @@ position = Vector2(-140, -80)
 [node name="Slot6" parent="BuildSlots" instance=ExtResource("14_slot")]
 position = Vector2(-110, 90)
 
+[node name="Slot7" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(200, -200)
+
+[node name="Slot8" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(180, -90)
+
+[node name="Slot9" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-300, 150)
+
+[node name="Slot10" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(110, 150)
+
 [node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
 enemy_scene = ExtResource("5_enemy")
-lanes = [NodePath("../Lane")]
-waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01")])
+lanes = [NodePath("../Lane"), NodePath("../Lane2"), NodePath("../Lane3")]
+waves = Array[ExtResource("26_wave_data")]([ExtResource("25_wave01"), ExtResource("w02_wave"), ExtResource("w03_wave"), ExtResource("w04_wave"), ExtResource("w05_wave"), ExtResource("w06_wave"), ExtResource("w07_wave"), ExtResource("w08_wave"), ExtResource("w09_wave"), ExtResource("w10_wave")])
 
 [node name="RespawnPoint" parent="." instance=ExtResource("29_respawn")]
-position = Vector2(0, 92)
+position = Vector2(90, 80)
 
 [node name="Hero" parent="." instance=ExtResource("3_hero")]
 position = Vector2(-200, 80)

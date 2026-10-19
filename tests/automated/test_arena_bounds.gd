@@ -60,12 +60,18 @@ func _initialize() -> void:
 		_near(hero.position.x, arena.position.x + HERO_RADIUS) and _near(hero.position.y, arena.position.y + HERO_RADIUS))
 
 	# --- Enemies are unaffected ---
-	var lane: Path2D = level.get_node("Lane")
 	var playable: Rect2 = arena.grow(-GHOUL_RADIUS)
-	var lane_inside: bool = true
-	for point: Vector2 in lane.curve.get_baked_points():
-		lane_inside = lane_inside and playable.has_point(lane.to_global(point))
-	_check("whole lane lies inside the arena", lane_inside)
+	var lanes: Array[Path2D] = (level.get_node("WaveSpawner") as WaveSpawner).lanes
+	var lane_inside: bool = lanes.size() == 3
+	for lane: Path2D in lanes:
+		for point: Vector2 in lane.curve.get_baked_points():
+			lane_inside = lane_inside and playable.has_point(lane.to_global(point))
+	_check("all 3 lanes lie inside the arena", lane_inside)
+	var ends_at_fortress: bool = true
+	for lane: Path2D in lanes:
+		var end: Vector2 = lane.to_global(lane.curve.sample_baked(lane.curve.get_baked_length()))
+		ends_at_fortress = ends_at_fortress and absf(maxf(absf(end.x), absf(end.y)) - 48.0) < 1.0
+	_check("every lane ends on the fortress wall", ends_at_fortress)
 	var fortress: Fortress = level.get_node("Fortress")
 	var frames: int = 0
 	while fortress.health.current_health == 100 and frames < 1200:

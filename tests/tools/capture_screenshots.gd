@@ -7,7 +7,8 @@ extends SceneTree
 ## (every animation of the given SpriteFrames side by side at game scale, over the real level;
 ## --frames=res://a.tres,res://b.tres picks the sheets, default: hero and ghoul) and "review" (the
 ## milestone review set: whole battlefield, hero vs ghoul close up, the three towers, construction and
-## dismantling, the fortress's damage states, build menu and HUD).
+## dismantling, the fortress's damage states, build menu and HUD) and "run" (a late wave with every
+## enemy type on several lanes, then the Victory screen).
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -27,6 +28,10 @@ func _initialize() -> void:
 	for child: Node in main.get_children():
 		if child is Level:
 			level = child
+	if _scenario == "run":
+		await _run(level)
+		quit()
+		return
 	# Runs start in the build phase; the review set shows it, then every scenario starts wave 1.
 	if _scenario == "review":
 		await _shot("00_build_phase")
@@ -274,6 +279,42 @@ func _review(level: Level) -> void:
 	fortress.health.take_damage(fortress.health.current_health)
 	await _frames(40)
 	await _shot("05c_fortress_destroyed_game_over")
+
+
+## Jumps to wave 8 with towers on every slot, frames the fight, then wins a short run for the Victory screen.
+func _run(level: Level) -> void:
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var hero: Hero = level.get_node("Hero")
+	var camera: Camera2D = hero.get_node("Camera2D")
+	(level.get_node("%Economy") as Economy).earn(2000, Economy.Source.KILL)
+	var kinds: Array[int] = [0, 2, 0, 1, 0, 2, 0, 2, 0, 1]
+	for i: int in builder.get_slots().size():
+		builder.build(builder.get_slots()[i], builder.catalog[kinds[i]])
+	spawner.waves = spawner.waves.slice(7, 8)
+	hero.position = Vector2(-140, 40)
+	await WaveFixtures.start_wave(level)
+	_frame_camera(camera, Vector2(-120, -40), 1.0, true)
+	for second: int in [12, 22, 32]:
+		await _frames(600)  # ~10 s between shots
+		await _shot("run_wave8_%02ds" % second)
+	_frame_camera(camera, Vector2(-250, -50), 0.5, true)
+	level.get_node("HUD").set(&"visible", false)
+	await _frames(3)
+	await _shot("run_wave8_battlefield")
+	level.get_node("HUD").set(&"visible", true)
+	# Victory: clear what is left.
+	for enemy: Node in spawner.get_children():
+		(enemy.get_node("%HealthComponent") as HealthComponent).take_damage(10000)
+	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
+		(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(10000))
+	for _i: int in 3600:
+		await _frames(1)
+		if level.is_run_over():
+			break
+	_frame_camera(camera, Vector2.ZERO, 1.0, false)
+	await _frames(30)
+	await _shot("run_victory")
 
 
 ## Detached: the camera holds `at`; attached: it follows the hero again.

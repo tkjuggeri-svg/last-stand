@@ -1,12 +1,16 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://levels/prototype_arena.tscn" id="2_level"]
 [ext_resource type="PackedScene" path="res://ui/menus/game_over_screen.tscn" id="3_game_over"]
+[ext_resource type="PackedScene" path="res://ui/menus/victory_screen.tscn" id="4_victory"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 level_scene = ExtResource("2_level")
 
 [node name="GameOverScreen" parent="." instance=ExtResource("3_game_over")]
+unique_name_in_owner = true
+
+[node name="VictoryScreen" parent="." instance=ExtResource("4_victory")]
 unique_name_in_owner = true

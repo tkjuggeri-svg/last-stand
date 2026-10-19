@@ -2,7 +2,7 @@ extends SceneTree
 ## Automated check for the enemy information HUD: counts, notifications and their wiring.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 ## The level's wave 1.
-const WAVE_SIZE: int = 10
+const WAVE_SIZE: int = 8
 
 var _failures: int = 0
 
@@ -43,7 +43,7 @@ func _test_in_level() -> void:
 	await _frames(2)
 
 	# --- First spawn ---
-	_check("a wave of 10: all still to deal with after the first spawn (%s)" % stats.text, stats.text == _stats_text(10))
+	_check("a wave of 8: all still to deal with after the first spawn (%s)" % stats.text, stats.text == _stats_text(WAVE_SIZE))
 	_check("wave start and 'Ghoul incoming!' shown (%s)" % [_feed_texts(feed)], _feed_texts(feed) == ["Wave 1 begins!", "Ghoul incoming!"])
 
 	# --- Kill it ---
@@ -54,7 +54,7 @@ func _test_in_level() -> void:
 		hero.attack(ghoul.global_position)
 		await _frames(27)
 	_check("ghoul killed", not is_instance_valid(ghoul) and events["killed"] == 1)
-	_check("a kill counts down the enemies left (%s)" % stats.text, stats.text == _stats_text(9))
+	_check("a kill counts down the enemies left (%s)" % stats.text, stats.text == _stats_text(WAVE_SIZE - 1))
 	_check("'Ghoul slain!' shown", _feed_texts(feed).has("Ghoul slain!"))
 	var slain_label: Label = _find_label(feed, "Ghoul slain!")
 

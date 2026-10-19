@@ -8,7 +8,7 @@ Tick items as they're finished.
 ## M0 — Foundation *(no gameplay)*
 - [x] Project docs: `CLAUDE.md`, `GAME_DESIGN.md`, `ROADMAP.md`
 - [x] `git init` (branch `main`)
-- [ ] First commit
+- [x] First commit
 - [x] Create folder structure (from `CLAUDE.md`)
 - [x] Project settings: Compatibility renderer, 1280×720, 2D gravity 0, physics layer names, input actions, main scene, `untyped_declaration` warning
 - [x] Empty `main.tscn` set as main scene
@@ -77,11 +77,11 @@ Tick items as they're finished.
 
 ## M4 — Waves & Run Structure
 - [x] `WaveData` + `SpawnGroup` resources; `WaveSpawner` driven by data (replaces the continuous spawner), wired to `WaveRewards`
-- [ ] 2–3 lanes; waves pick a lane per spawn group
+- [x] 3 lanes (west crypt road, north-east road, south road) with their crypts and 10 build slots; waves pick a lane per spawn group
 - [x] Build phase ↔ combat phase cycle (`RunCycle`), "Start wave" button + Enter, HUD wave/phase/enemies left
 - [x] Enemy roster: Ghoul, Hound (fast, fragile), Brute (slow, tanky) with full art and animations; one data-driven enemy scene
 - [x] Hero death + respawn: 3 lives per run, 4 s respawn at the fortress with countdown, 2 s blinking invulnerability; the last life lost (or the fortress) ends the run
-- [ ] Victory after final wave; 10 hand-authored waves
+- [x] Victory after final wave (Victory screen, Play again); 10 hand-authored waves with a rising curve; full-run balance report
 
 **Done when:** a full run can be won or lost.
 
@@ -119,7 +119,7 @@ Tick items as they're finished.
 ---
 
 ## M8 — Audio, Feel & Presentation
-- [ ] Art for everything added since M2 (towers, new enemies, UI frames) in the M2 style
+- [ ] Art pass for whatever M5–M7 add (new towers, Cultist, bosses, upgrade/meta UI) in the M3.5 style — the M2–M4 content (towers, Hound, Brute, UI frames) already has final-style art
 - [ ] SFX + music
 - [ ] Juice: screen shake, damage numbers, particles (hit flash done in M2)
 - [ ] Main menu, title, credits
@@ -138,4 +138,4 @@ Tick items as they're finished.
 ---
 
 ## Current focus
-**M3.5 complete** (visual overhaul). Awaiting hands-on playtest feedback before M4 (waves). M4 should drive `WaveRewards.begin_wave()/end_wave()` and the spawner per wave.
+**M4 complete** (waves, build/combat cycle, hero lives, Hound and Brute, 3 lanes, 10 waves, victory). Awaiting hands-on playtest feedback (wave difficulty, lives/respawn feel, lane readability) before M5 (roguelite upgrades), which will also give the late-game gold something to buy.

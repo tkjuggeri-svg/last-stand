@@ -80,18 +80,22 @@ func _ui() -> void:
 
 # ---------------------------------------------------------------- arena ground
 
-## Bakes the prototype arena's ground from the level's floor, lane and fortress.
+## Bakes the prototype arena's ground from the level's floor, lanes (every Path2D named Lane*) and fortress.
 func _ground() -> Image:
 	var level: Node = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	var floor_node: ColorRect = level.get_node("Floor")
-	var lane: Path2D = level.get_node("Lane")
-	var lane_points: Array[Vector2] = []
-	for i: int in lane.curve.point_count:
-		lane_points.append(lane.to_global(lane.curve.get_point_position(i)))
+	var lanes: Array[Array] = []
+	for child: Node in level.get_children():
+		if child is Path2D and child.name.begins_with("Lane"):
+			var lane: Path2D = child
+			var lane_points: Array[Vector2] = []
+			for i: int in lane.curve.point_count:
+				lane_points.append(lane.position + lane.curve.get_point_position(i))
+			lanes.append(lane_points)
 	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
 	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
 	level.free()
-	return EnvironmentArt.new().ground(floor_rect, lane_points, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
 
 # ---------------------------------------------------------------- image helpers
 

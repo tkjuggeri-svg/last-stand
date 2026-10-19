@@ -1,7 +1,7 @@
 extends RefCounted
 ## The battlefield (dev-time art generator): the baked arena ground, graveyard props, the crypt the
 ## dead crawl out of, and the build-slot foundations.
-## The ground is baked from the level itself (floor rect, lane Path2D, fortress position), so it has
+## The ground is baked from the level itself (floor rect, lane Path2Ds, fortress position), so it has
 ## to be regenerated after changing those.
 
 const Canvas: GDScript = preload("res://tools/art/canvas.gd")
@@ -20,15 +20,18 @@ const MOTE_SIZE: Vector2i = Vector2i(4, 4)
 # ---------------------------------------------------------------- ground
 
 ## Bakes the floor and the wall band. band and scale are in world px; returns the image in art px.
-func ground(floor_rect: Rect2, lane_world: Array[Vector2], keep_world: Vector2, band: int, scale: float) -> Image:
+## Each lane is a polyline in world px (from its crypt to the fortress).
+func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, band: int, scale: float) -> Image:
 	var origin: Vector2 = floor_rect.position - Vector2(band, band)
 	var size: Vector2i = Vector2i(((floor_rect.size + Vector2(band, band) * 2.0) / scale).round())
 	var floor_art: Rect2i = Rect2i(Vector2i(int(band / scale), int(band / scale)), Vector2i((floor_rect.size / scale).round()))
-	var lane: Array[Vector2] = []
-	for p: Vector2 in lane_world:
-		lane.append((p - origin) / scale)
+	var lanes: Array[Array] = []
+	for lane_world: Array in lanes_world:
+		var lane: Array[Vector2] = []
+		for p: Vector2 in lane_world:
+			lane.append((p - origin) / scale)
+		lanes.append(lane)
 	var keep: Vector2 = (keep_world - origin) / scale
-	var spawn: Vector2 = lane[0]
 	var img: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 1234
@@ -47,14 +50,23 @@ func ground(floor_rect: Rect2, lane_world: Array[Vector2], keep_world: Vector2, 
 			var p: Vector2 = Vector2(x + 0.5, y + 0.5)
 			var n: float = noise.get_noise_2d(x, y)
 			var fine: float = noise.get_noise_2d(x * 3.1, y * 3.1)
-			var lane_d: float = _distance_to_polyline(p, lane) + fine * 1.4
+			var lane_d: float = INF
+			var apron_d: float = INF
+			var nearest: Array = lanes[0]
+			for lane: Array in lanes:
+				var d: float = _distance_to_polyline(p, lane)
+				if d < lane_d:
+					lane_d = d
+					nearest = lane
+				# A trodden patch from each crypt door (the level's crypts stand 35 art px west of the spawn) to its lane.
+				var spawn: Vector2 = lane[0]
+				apron_d = minf(apron_d, p.distance_to(Geometry2D.get_closest_point_to_segment(p, spawn + Vector2(-35, -5), spawn)) - 9.0 + fine * 2.5)
+			lane_d += fine * 1.4
 			var clearing_d: float = p.distance_to(keep) - 36.0 + fine * 2.5
-			# A trodden patch from the crypt door (see the level's Crypt, 35 art px west of the spawn) to the lane.
-			var apron_d: float = p.distance_to(Geometry2D.get_closest_point_to_segment(p, spawn + Vector2(-35, -5), spawn)) - 9.0 + fine * 2.5
 			var path_d: float = minf(minf(lane_d - 8.5, clearing_d), apron_d)
 			var color: Color
 			if path_d < -0.5:
-				color = _dirt(p, n, lane_d, lane, keep, rng)
+				color = _dirt(p, n, lane_d, nearest, keep, rng)
 			elif path_d < 1.2:
 				color = P.DIRT[1] if (x + y) % 3 != 0 else P.GRASS[1]  # ragged edge where grass meets the path
 			else:
@@ -73,7 +85,7 @@ func ground(floor_rect: Rect2, lane_world: Array[Vector2], keep_world: Vector2, 
 			img.set_pixel(x, y, color)
 
 	var keep_out: Callable = func(p: Vector2) -> bool:
-		return (_distance_to_polyline(p, lane) < 12.0 or p.distance_to(keep) < 42.0
+		return (lanes.any(func(lane: Array) -> bool: return _distance_to_polyline(p, lane) < 12.0) or p.distance_to(keep) < 42.0
 			or not Rect2(floor_art).grow(-3).has_point(p))
 	_grass_details(img, keep_out, rng, patches)
 	_wall_band(img, floor_art)
@@ -81,7 +93,7 @@ func ground(floor_rect: Rect2, lane_world: Array[Vector2], keep_world: Vector2, 
 
 
 ## Lane and clearing dirt: worn ruts along the lane, pebbles, puddles, cobbles at the gate.
-func _dirt(p: Vector2, n: float, lane_d: float, lane: Array[Vector2], keep: Vector2, rng: RandomNumberGenerator) -> Color:
+func _dirt(p: Vector2, n: float, lane_d: float, lane: Array, keep: Vector2, rng: RandomNumberGenerator) -> Color:
 	var x: int = int(p.x)
 	var y: int = int(p.y)
 	var value: float = 0.5 + n * 0.35
@@ -89,9 +101,9 @@ func _dirt(p: Vector2, n: float, lane_d: float, lane: Array[Vector2], keep: Vect
 	if lane_d > 2.0 and lane_d < 3.6:
 		value -= 0.25
 	var color: Color = Canvas.shade(P.DIRT.slice(1, 6), value, x, y, true)
-	# Cobbles in front of the gate (the lane's last stretch).
+	# Cobbles where the lane meets the fortress (its last point), just outside the wall.
 	var gate: Vector2 = lane[lane.size() - 1]
-	if p.distance_to(gate + Vector2(-6, 0)) < 13.0 and p.distance_to(keep) > 26.0:
+	if p.distance_to(gate + (gate - keep).normalized() * 6.0) < 13.0 and p.distance_to(keep) > 26.0:
 		var cell: Vector2i = Vector2i(floori(p.x / 3.0 + (floori(p.y / 3.0) % 2) * 0.5), floori(p.y / 3.0))
 		var in_x: float = fposmod(p.x / 3.0 + (cell.y % 2) * 0.5, 1.0)
 		var in_y: float = fposmod(p.y / 3.0, 1.0)
@@ -222,7 +234,7 @@ func _distance_to_floor(p: Vector2i, floor_art: Rect2i) -> int:
 	return maxi(dx, dy)
 
 
-func _distance_to_polyline(p: Vector2, points: Array[Vector2]) -> float:
+func _distance_to_polyline(p: Vector2, points: Array) -> float:
 	var best: float = INF
 	for i: int in points.size() - 1:
 		best = minf(best, p.distance_to(Geometry2D.get_closest_point_to_segment(p, points[i], points[i + 1])))
