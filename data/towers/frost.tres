@@ -1,7 +1,26 @@
-[gd_resource type="Resource" script_class="TowerData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="1_data"]
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_4uqr0"]
+
+[sub_resource type="Resource" id="Resource_110pk"]
+script = ExtResource("3_4uqr0")
+cost = 80
+damage = 6
+attack_range = 190.0
+slow_factor = 0.42
+slow_duration = 2.6
+
+[sub_resource type="Resource" id="Resource_odqda"]
+script = ExtResource("3_4uqr0")
+cost = 130
+damage = 8
+fire_interval = 0.95
+attack_range = 200.0
+slow_factor = 0.35
+slow_duration = 3.2
+slow_area = 44.0
 
 [resource]
 script = ExtResource("1_data")
@@ -15,8 +34,8 @@ damage = 4
 fire_interval = 1.1
 projectile_speed = 320.0
 projectile_look = &"frost_bolt"
-splash_radius = 0.0
-slow_factor = 0.5
 muzzle_offset = Vector2(0, -62)
 glow_color = Color(0.45, 0.75, 1, 1)
+slow_factor = 0.5
 slow_duration = 2.0
+tiers = Array[ExtResource("3_4uqr0")]([SubResource("Resource_110pk"), SubResource("Resource_odqda")])

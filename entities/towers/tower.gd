@@ -2,20 +2,29 @@ class_name Tower
 extends StaticBody2D
 ## A built tower. One scene for every tower type: its TowerData decides the look and the stats.
 ## It targets the living enemy in range that is furthest along the lane (closest to the fortress),
-## keeps that target while it stays valid and in range, and fires a Projectile every fire_interval.
-## "In range" means the enemy's centre is within attack_range of the tower's base (the range area is
+## keeps that target while it stays valid and in range, and fires a volley every fire_interval (one
+## shot, or one per target for multi-target levels: the next leading enemies in range).
+## "In range" means the enemy's centre is within the range of the tower's base (the range area is
 ## only the broad phase: it reports bodies that merely touch the circle).
 ## The base stands at the node's origin (the build slot's centre); a small body blocks the hero.
 ## After placing it is under construction for data.build_time seconds (shown by its "<id>_build"
 ## animation, stretched to that time): it tracks enemies entering its range but can't target or fire.
-## deactivate() (called when it is sold) stops it for good.
+## Levels: it starts at 1; TowerBuilder upgrades it (set_level) and the stats come from
+## data.stats_for(level). deactivate() (called when it is sold) stops it for good.
 
 signal construction_finished
 
 const PROJECTILE_SCENE: PackedScene = preload("res://entities/towers/projectile.tscn")
+## Upgrade feedback (display only): a bright flash that fades over this many seconds.
+const UPGRADE_FLASH_TIME: float = 0.35
 
 @export var data: TowerData
 
+## Gold put into this tower so far (build + upgrades); selling refunds a share of it.
+var invested: int = 0
+
+var _level: int = 1
+var _stats: TowerTier
 var _build_left: float = 0.0
 var _active: bool = true
 var _target: Enemy = null
@@ -36,7 +45,8 @@ func _ready() -> void:
 		_active = false
 		set_physics_process(false)
 		return
-	(_range_shape.shape as CircleShape2D).radius = data.attack_range
+	_stats = data.stats_for(_level)
+	_apply_range()
 	_glow.enabled = data.glow_color.a > 0.0
 	_glow.color = data.glow_color
 	_glow.position = data.muzzle_offset
@@ -49,7 +59,7 @@ func _ready() -> void:
 		var length: float = _sprite.sprite_frames.get_frame_count(build) / _sprite.sprite_frames.get_animation_speed(build)
 		_sprite.play(build, length / _build_left)
 	else:
-		_sprite.play(StringName("%s_idle" % data.id))
+		_sprite.play(_anim("idle"))
 
 
 func _physics_process(delta: float) -> void:
@@ -92,9 +102,33 @@ func deactivate() -> void:
 	_range_area.set_deferred(&"monitoring", false)
 
 
+func get_level() -> int:
+	return _level
+
+
+func is_max_level() -> bool:
+	return data == null or _level >= data.max_level()
+
+
+## The stats at the current level.
+func get_stats() -> TowerTier:
+	return _stats if _stats != null else data.stats_for(_level)
+
+
+## Switches to `level` (TowerBuilder does the paying): new stats, range and look, with a flash.
+func set_level(level: int) -> void:
+	_level = clampi(level, 1, data.max_level())
+	_stats = data.stats_for(_level)
+	_apply_range()
+	if not is_building():
+		_sprite.play(_anim("idle"))
+	_sprite.modulate = Color(2.2, 2.2, 2.2, 1.0)  # overbright, then back to normal
+	_sprite.create_tween().tween_property(_sprite, "modulate", Color.WHITE, UPGRADE_FLASH_TIME)
+
+
 ## The current attack range in px (what the range ring shows).
 func get_attack_range() -> float:
-	return data.attack_range if data != null else 0.0
+	return get_stats().attack_range if data != null else 0.0
 
 
 ## True if `point` is within attack range of the tower's base.
@@ -112,6 +146,18 @@ func aim_point(enemy: Enemy) -> Vector2:
 	return global_position + (aim - global_position).limit_length(get_attack_range())
 
 
+## "<id>_<state>" for level 1, "<id>_<state>_<level>" above (falls back to level 1 art if missing).
+func _anim(state: String) -> StringName:
+	var name_at_level: StringName = StringName("%s_%s_%d" % [data.id, state, _level])
+	if _level > 1 and _sprite.sprite_frames.has_animation(name_at_level):
+		return name_at_level
+	return StringName("%s_%s" % [data.id, state])
+
+
+func _apply_range() -> void:
+	(_range_shape.shape as CircleShape2D).radius = get_attack_range()
+
+
 ## Untyped on purpose: the stored target may already be freed, and a freed object can't be passed
 ## as an Enemy. is_instance_valid() is checked before anything else touches it.
 func _is_valid_target(candidate: Variant) -> bool:
@@ -121,33 +167,45 @@ func _is_valid_target(candidate: Variant) -> bool:
 	return enemy != null and enemy.is_alive() and _in_range.has(enemy) and is_in_range(enemy.global_position)
 
 
-func _pick_target() -> Enemy:
-	var best: Enemy = null
-	var best_progress: float = -INF
+## Living enemies in range, the furthest along the lane first.
+func _targets_in_range() -> Array[Enemy]:
+	var found: Array[Enemy] = []
 	for i: int in range(_in_range.size() - 1, -1, -1):
 		var body: Node2D = _in_range[i]
 		if not is_instance_valid(body):
 			_in_range.remove_at(i)
 			continue
 		var enemy: Enemy = body as Enemy
-		if enemy == null or not enemy.is_alive() or not is_in_range(enemy.global_position):
-			continue
-		var progress: float = enemy.get_lane_progress()
-		if progress > best_progress:
-			best_progress = progress
-			best = enemy
-	return best
+		if enemy != null and enemy.is_alive() and is_in_range(enemy.global_position):
+			found.append(enemy)
+	found.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.get_lane_progress() > b.get_lane_progress())
+	return found
 
 
+func _pick_target() -> Enemy:
+	var found: Array[Enemy] = _targets_in_range()
+	return found[0] if not found.is_empty() else null
+
+
+## One shot at the target, plus one at each next leading enemy for multi-target levels.
 func _fire() -> void:
-	_cooldown_left = data.fire_interval
-	var shot: Projectile = PROJECTILE_SCENE.instantiate()
-	if data.homing:
-		shot.launch(data, _target, global_position + data.muzzle_offset, global_position, get_attack_range())
-	else:
-		shot.launch_at_point(data, aim_point(_target), global_position, data.muzzle_offset)
-	add_child(shot)
-	_sprite.play(StringName("%s_fire" % data.id))
+	var stats: TowerTier = get_stats()
+	_cooldown_left = stats.fire_interval
+	var targets: Array[Enemy] = [_target]
+	if stats.targets > 1:
+		for enemy: Enemy in _targets_in_range():
+			if targets.size() >= stats.targets:
+				break
+			if enemy != _target:
+				targets.append(enemy)
+	for enemy: Enemy in targets:
+		var shot: Projectile = PROJECTILE_SCENE.instantiate()
+		if data.homing:
+			shot.launch(data, stats, enemy, global_position + data.muzzle_offset, global_position)
+		else:
+			shot.launch_at_point(data, stats, aim_point(enemy), global_position, data.muzzle_offset)
+		add_child(shot)
+	_sprite.play(_anim("fire"))
 
 
 func _on_range_body_entered(body: Node2D) -> void:
@@ -160,4 +218,4 @@ func _on_range_body_exited(body: Node2D) -> void:
 
 
 func _on_sprite_animation_finished() -> void:
-	_sprite.play(StringName("%s_idle" % data.id))
+	_sprite.play(_anim("idle"))

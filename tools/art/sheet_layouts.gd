@@ -114,7 +114,8 @@ const DUST: Dictionary = {
 
 ## The three towers (32x48 art = 64x96 world px; the base rests on art row 45, the sprite is placed so
 ## that is +4 world px below the slot centre). Per tower: idle, fire, build (rising in scaffolding)
-## and sell (dismantled into rubble, played by the TowerDismantle effect).
+## and sell (dismantled into rubble, played by the TowerDismantle effect); levels 2 and 3 add their
+## own idle and fire ("<id>_idle_2", ...).
 const TOWERS: Dictionary = {
 	"png": "res://assets/sprites/towers/towers.png",
 	"frames": "res://entities/towers/tower_frames.tres",
@@ -132,6 +133,19 @@ const TOWERS: Dictionary = {
 		["frost_fire", 9, 4, 12.0, false],
 		["frost_build", 10, 6, 10.0, false],
 		["frost_sell", 11, 6, 10.0, false],
+		# Upgraded levels (2 and 3): their own idle and fire.
+		["archer_idle_2", 12, 4, 5.0, true],
+		["archer_fire_2", 13, 4, 12.0, false],
+		["archer_idle_3", 14, 4, 5.0, true],
+		["archer_fire_3", 15, 4, 12.0, false],
+		["cannon_idle_2", 16, 4, 5.0, true],
+		["cannon_fire_2", 17, 5, 12.0, false],
+		["cannon_idle_3", 18, 4, 5.0, true],
+		["cannon_fire_3", 19, 5, 12.0, false],
+		["frost_idle_2", 20, 4, 6.0, true],
+		["frost_fire_2", 21, 4, 12.0, false],
+		["frost_idle_3", 22, 4, 6.0, true],
+		["frost_fire_3", 23, 4, 12.0, false],
 	],
 }
 
@@ -151,6 +165,7 @@ const PROJECTILES: Dictionary = {
 		["arrow_7", 7, 1, 1.0, false],
 		["cannonball", 8, 2, 10.0, true],
 		["frost_bolt", 9, 4, 12.0, true],
+		["cannonball_heavy", 10, 2, 10.0, true],
 	],
 }
 
@@ -161,6 +176,22 @@ const EXPLOSION: Dictionary = {
 	"anims": [["explosion", 0, 7, 16.0, false]],
 }
 
+## The big shells' blast (cannon level 3): 72x72 art = a 144 px blast.
+const EXPLOSION_LARGE: Dictionary = {
+	"png": "res://assets/sprites/effects/explosion_large.png",
+	"frames": "res://entities/effects/explosion_large_frames.tres",
+	"size": Vector2i(72, 72),
+	"anims": [["explosion_large", 0, 7, 16.0, false]],
+}
+
+## The frost nova (frost level 3): 48x48 art = a 96 px ring.
+const FROST_NOVA: Dictionary = {
+	"png": "res://assets/sprites/effects/frost_nova.png",
+	"frames": "res://entities/effects/frost_nova_frames.tres",
+	"size": Vector2i(48, 48),
+	"anims": [["frost_nova", 0, 6, 16.0, false]],
+}
+
 const FROST_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/frost.png",
 	"frames": "res://entities/effects/frost_frames.tres",
@@ -169,7 +200,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, GHOUL, HOUND, BRUTE, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, FROST_FX, FORTRESS_FX]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

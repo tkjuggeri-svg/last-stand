@@ -1,16 +1,22 @@
 class_name TowerBuilder
 extends Node
-## Owns the rules for building and selling towers on the level's BuildSlots: one tower per slot,
-## pay the full cost to build (never below 0 gold), get sell_refund_ratio of that cost back when
-## selling. Also tracks which slot the hero is standing at. Never pauses the game.
+## Owns the rules for building, upgrading and selling towers on the level's BuildSlots: one tower per
+## slot, pay the full cost to build or to upgrade a level (never below 0 gold), get sell_refund_ratio
+## of everything spent on that tower (build + upgrades) back when selling. Also tracks which slot the
+## hero is standing at. Never pauses the game.
 
 signal active_slot_changed(slot: BuildSlot)
 signal tower_built(slot: BuildSlot, tower: Tower)
 signal tower_sold(slot: BuildSlot, refund: int)
 signal build_failed(slot: BuildSlot, data: TowerData, reason: String)
+signal tower_upgraded(slot: BuildSlot, tower: Tower, level: int)
+signal upgrade_failed(slot: BuildSlot, reason: String)
 
 const NOT_ENOUGH_GOLD: String = "Not enough gold"
 const SLOT_OCCUPIED: String = "This slot already has a tower"
+const MAX_LEVEL: String = "Already at the highest level"
+const NO_TOWER: String = "No tower here"
+const UNDER_CONSTRUCTION: String = "Still under construction"
 
 @export var economy: Economy
 ## Parent node of the level's BuildSlots.
@@ -48,9 +54,43 @@ func get_active_slot() -> BuildSlot:
 	return _nearby.back() if not _nearby.is_empty() else null
 
 
-## What selling a tower of this type gives back (based on its original build price).
+## What selling a freshly built tower of this type gives back (based on its build price).
 func refund_for(data: TowerData) -> int:
 	return floori(data.cost * sell_refund_ratio)
+
+
+## What selling this tower gives back: the share of everything spent on it (build + upgrades).
+func refund_for_tower(tower: Tower) -> int:
+	return floori(tower.invested * sell_refund_ratio)
+
+
+## Gold to take the slot's tower one level up, or -1 if there is no tower or it is at its highest level.
+func upgrade_cost(slot: BuildSlot) -> int:
+	if slot == null or slot.is_empty() or slot.tower.is_max_level():
+		return -1
+	return slot.tower.data.upgrade_cost(slot.tower.get_level() + 1)
+
+
+## Upgrades the slot's tower one level if the gold allows. Returns false (and changes nothing) otherwise.
+func upgrade(slot: BuildSlot) -> bool:
+	if slot == null or slot.is_empty():
+		upgrade_failed.emit(slot, NO_TOWER)
+		return false
+	var tower: Tower = slot.tower
+	if tower.is_max_level():
+		upgrade_failed.emit(slot, MAX_LEVEL)
+		return false
+	if tower.is_building():
+		upgrade_failed.emit(slot, UNDER_CONSTRUCTION)
+		return false
+	var cost: int = upgrade_cost(slot)
+	if not economy.try_spend(cost):
+		upgrade_failed.emit(slot, NOT_ENOUGH_GOLD)
+		return false
+	tower.invested += cost
+	tower.set_level(tower.get_level() + 1)
+	tower_upgraded.emit(slot, tower, tower.get_level())
+	return true
 
 
 func build(slot: BuildSlot, data: TowerData) -> bool:
@@ -64,6 +104,7 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 		return false
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
+	tower.invested = data.cost
 	slot.place(tower)
 	tower_built.emit(slot, tower)
 	return true
@@ -77,7 +118,7 @@ func sell(slot: BuildSlot) -> int:
 	var tower: Tower = slot.remove_tower()
 	if tower == null:
 		return 0
-	var refund: int = refund_for(tower.data)
+	var refund: int = refund_for_tower(tower)
 	tower.queue_free()
 	economy.earn(refund, Economy.Source.REFUND)
 	tower_sold.emit(slot, refund)

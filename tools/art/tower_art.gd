@@ -1,7 +1,8 @@
 extends RefCounted
 ## The three towers and their shots (dev-time art generator), 3/4 view, 32x48 art px frames with the
 ## base resting on y = BASE. Every tower has idle, fire, build (rising inside scaffolding) and sell
-## (dismantled into rubble) animations.
+## (dismantled into rubble) animations; upgraded levels 2 and 3 have their own idle and fire
+## animations that add to the base look (banner, bronze, a second archer, bigger crystal, ...).
 ##   Archer: stone keep with a timber fighting platform, a hooded archer with a longbow, a pennant.
 ##   Cannon: squat round drum tower with an iron cannon on a wooden carriage.
 ##   Frost:  a dark rune-carved obelisk crowned by a floating, turning ice crystal.
@@ -16,6 +17,9 @@ const FROST_STONE: Array[Color] = [Color("14162a"), Color("1f243b"), Color("2c33
 const PROJECTILE_SIZE: Vector2i = Vector2i(12, 12)
 const EXPLOSION_SIZE: Vector2i = Vector2i(56, 56)
 const FROST_FX_SIZE: Vector2i = Vector2i(20, 20)
+## The big-shell blast (cannon level 3) and the frost nova (frost level 3).
+const EXPLOSION_LARGE_SIZE: Vector2i = Vector2i(72, 72)
+const FROST_NOVA_SIZE: Vector2i = Vector2i(48, 48)
 
 const IDLE_FRAMES: int = 4
 const FIRE_FRAMES: Dictionary = {"archer": 4, "cannon": 5, "frost": 4}
@@ -23,7 +27,8 @@ const BUILD_FRAMES: int = 6
 const SELL_FRAMES: int = 6
 
 
-## Rows in the order of sheet_layouts.TOWERS: per kind idle, fire, build, sell.
+## Rows in the order of sheet_layouts.TOWERS: per kind idle, fire, build, sell; then per kind the
+## upgraded levels' idle and fire (level 2, then 3).
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
 	for kind: String in KINDS:
@@ -37,18 +42,25 @@ func sheet_rows() -> Array[Array]:
 		rows.append(fire)
 		rows.append(_build_frames(kind))
 		rows.append(_sell_frames(kind))
+	for kind: String in KINDS:
+		for level: int in [2, 3]:
+			for state: String in ["idle", "fire"]:
+				var frames: Array[Image] = []
+				for i: int in (IDLE_FRAMES if state == "idle" else int(FIRE_FRAMES[kind])):
+					frames.append(tower(kind, state, i, level))
+				rows.append(frames)
 	return rows
 
 
-func tower(kind: String, state: String, frame: int) -> Image:
+func tower(kind: String, state: String, frame: int, level: int = 1) -> Image:
 	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
 	match kind:
 		"archer":
-			_archer(c, state, frame)
+			_archer(c, state, frame, level)
 		"cannon":
-			_cannon(c, state, frame)
+			_cannon(c, state, frame, level)
 		_:
-			_frost(c, state, frame)
+			_frost(c, state, frame, level)
 	c.finish()
 	c.ground_shadow(Vector2(17.5, BASE), Vector2(13, 3.2))
 	return c.image
@@ -56,7 +68,7 @@ func tower(kind: String, state: String, frame: int) -> Image:
 
 # ---------------------------------------------------------------- archer
 
-func _archer(c: Canvas, state: String, frame: int) -> void:
+func _archer(c: Canvas, state: String, frame: int, level: int) -> void:
 	var firing: bool = state == "fire"
 	# Stone keep.
 	c.part()
@@ -65,16 +77,26 @@ func _archer(c: Canvas, state: String, frame: int) -> void:
 	c.rect(Rect2i(15, 36, 2, 4), P.OUTLINE)  # arrow slit
 	c.rect(Rect2i(15, 41, 2, 4), P.WOOD[1])  # door
 	c.px(15, 41, P.OUTLINE)
+	if level >= 2:
+		# The order's banner hangs down the keep's front, gold tower on red.
+		c.part()
+		c.polygon(PackedVector2Array([Vector2(12, 32), Vector2(20, 32), Vector2(20, 39), Vector2(16, 41), Vector2(12, 39)]), P.BANNER, Vector3(0, 0.1, 1))
+		c.rect(Rect2i(15, 34, 2, 4), P.GOLD[3])
+		c.px(14, 34, P.GOLD[2])
+		c.px(17, 34, P.GOLD[2])
+		c.line(Vector2(12, 32), Vector2(19, 32), P.GOLD[2] if level >= 3 else P.WOOD[3])
 	# Back railing and the pennant pole (behind the archer).
 	c.part()
 	for x: int in [6, 11, 21, 26]:
 		c.rect(Rect2i(x, 16, 1, 6), P.WOOD[2])
 	c.line(Vector2(6, 16), Vector2(26, 16), P.WOOD[3])
 	c.part()
-	c.rect(Rect2i(26, 4, 1, 18), P.WOOD[2])
-	c.px(26, 3, P.GOLD[3])
+	var pole_top: int = 4 if level < 3 else 1
+	c.rect(Rect2i(26, pole_top, 1, 22 - pole_top), P.WOOD[2])
+	c.px(26, pole_top - 1, P.GOLD[3])
 	var wave: int = [0, 1, 1, 0][frame % 4] if not firing else 1
-	c.polygon(PackedVector2Array([Vector2(27, 4), Vector2(31, 5.5 + wave), Vector2(27, 8)]), P.BANNER, Vector3(0.3, 0.3, 1))
+	var flag: Array = P.BANNER if level < 3 else P.GOLD
+	c.polygon(PackedVector2Array([Vector2(27, pole_top), Vector2(31, pole_top + 1.5 + wave), Vector2(27, pole_top + 4)]), flag, Vector3(0.3, 0.3, 1))
 	# Timber fighting platform overhanging the keep, with braces.
 	c.part()
 	c.block(Rect2(5, 21, 22, 6), 3.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)
@@ -83,17 +105,27 @@ func _archer(c: Canvas, state: String, frame: int) -> void:
 		c.px(x, 28, P.WOOD[0])
 	c.line(Vector2(6, 30), Vector2(9, 33), P.WOOD[1])
 	c.line(Vector2(26, 30), Vector2(23, 33), P.WOOD[1])
+	if level >= 3:
+		# A second archer at the back of the platform (the volley's second arrow).
+		_archer_figure(c, state, frame, Vector2i(-7, -1))
 	_archer_figure(c, state, frame)
 	# Front railing (in front of the archer's legs).
 	c.part()
 	for x: int in [5, 10, 22, 27]:
 		c.rect(Rect2i(x, 24, 1, 3), P.WOOD[3])
-	c.line(Vector2(5, 24), Vector2(27, 24), P.WOOD[4])
-	c.line(Vector2(5, 25), Vector2(27, 25), P.WOOD[2])
+	c.line(Vector2(5, 24), Vector2(27, 24), P.WOOD[4] if level < 3 else P.GOLD[3])
+	c.line(Vector2(5, 25), Vector2(27, 25), P.WOOD[2] if level < 3 else P.GOLD[1])
+	if level >= 2:
+		# Iron-capped corner posts.
+		for x: int in [5, 27]:
+			c.rect(Rect2i(x, 23, 1, 2), P.IRON[3])
+			c.px(x, 22, P.IRON[4])
 
 
 ## The hooded archer. Idle: glances left and right. Fire: nock, full draw, release, recover.
-func _archer_figure(c: Canvas, state: String, frame: int) -> void:
+## `shift` moves the whole figure (the second archer of level 3).
+func _archer_figure(c: Canvas, state: String, frame: int, shift: Vector2i = Vector2i.ZERO) -> void:
+	c.offset = shift
 	var firing: bool = state == "fire"
 	var look: int = [0, -1, 0, 1][frame] if not firing else 1
 	c.part()
@@ -135,12 +167,15 @@ func _archer_figure(c: Canvas, state: String, frame: int) -> void:
 		c.line(hand, Vector2(bow_x + 2.5, 18.5), P.WOOD[4])
 		c.px(int(bow_x) + 3, 18, P.STEEL[4])
 		c.px(int(hand.x), 17, P.BANNER[3])
+	c.offset = Vector2i.ZERO
 
 
 # ---------------------------------------------------------------- cannon
 
-func _cannon(c: Canvas, state: String, frame: int) -> void:
+func _cannon(c: Canvas, state: String, frame: int, level: int) -> void:
 	var firing: bool = state == "fire"
+	var barrel_ramp: Array = P.IRON if level < 2 else P.BRONZE
+	var bore: float = 2.4 if level < 3 else 3.2
 	var recoil: float = [1.0, 2.0, 2.0, 1.0, 0.0][frame] if firing else 0.0
 	# Drum tower with a ring of merlons; the back ones first.
 	c.part()
@@ -151,13 +186,27 @@ func _cannon(c: Canvas, state: String, frame: int) -> void:
 			if c.is_filled(x, y):
 				c.px(x, y + 1 if absi(x - 16) > 8 else y, P.IRON[2])
 	c.rect(Rect2i(15, 38, 2, 3), P.OUTLINE)
+	if level >= 2:
+		# An iron band around the parapet.
+		for x: int in range(5, 28):
+			if c.is_filled(x, 33):
+				c.px(x, 33 if absi(x - 16) < 9 else 32, P.IRON[3] if x < 16 else P.IRON[2])
+	if level >= 3:
+		# A war banner on a pole behind the gun.
+		c.part()
+		c.rect(Rect2i(24, 12, 1, 18), P.WOOD[2])
+		c.px(24, 11, P.GOLD[3])
+		var wave: int = [0, 1, 1, 0][frame % 4] if not firing else 1
+		c.polygon(PackedVector2Array([Vector2(25, 12), Vector2(30, 13.5 + wave), Vector2(29, 16.5 + wave), Vector2(25, 18)]), P.BANNER, Vector3(0.3, 0.3, 1))
+		c.px(26, 14, P.GOLD[3])
 	c.part()
 	c.ellipse(Vector2(16, 30), Vector2(9.5, 3.4), P.STONE.slice(0, 3), 1.0)
 	_merlon_ring(c, Vector2(16, 30), 11.0, 4.3, false)
 	# Ammunition: a stack of balls and a powder keg.
+	var ball: float = 1.4 if level < 3 else 1.9
 	for p: Vector2 in [Vector2(8, 31), Vector2(10.5, 31), Vector2(9.2, 29.7)]:
 		c.part()
-		c.ellipse(p, Vector2(1.4, 1.3), P.IRON, 0.0, 0.1)
+		c.ellipse(p, Vector2(ball, ball * 0.93), P.IRON, 0.0, 0.1)
 	c.part()
 	c.cylinder(24.5, 27.5, 30.5, 1.9, 0.8, P.WOOD, P.WOOD.slice(1, 4), false)
 	c.px(24, 28, P.IRON[3])
@@ -172,14 +221,14 @@ func _cannon(c: Canvas, state: String, frame: int) -> void:
 	var breech: Vector2 = Vector2(12.5, 25.5) + back
 	var muzzle: Vector2 = Vector2(22.5, 30.5) + back
 	c.part()
-	c.ellipse(breech - dir * 1.8, Vector2(1.3, 1.3), P.IRON, 0.0, 0.1)
-	c.capsule(breech, muzzle, 2.4, P.IRON, 0.05)
+	c.ellipse(breech - dir * 1.8, Vector2(1.3, 1.3), barrel_ramp, 0.0, 0.1)
+	c.capsule(breech, muzzle, bore, barrel_ramp, 0.05)
 	var across: Vector2 = Vector2(-dir.y, dir.x)
-	for t: float in [0.25, 0.9]:
+	for t: float in ([0.25, 0.9] if level < 3 else [0.2, 0.55, 0.92]):
 		var p: Vector2 = breech.lerp(muzzle, t)
-		c.line(p - across * 2.2, p + across * 2.2, P.GOLD[1])
+		c.line(p - across * (bore - 0.2), p + across * (bore - 0.2), P.GOLD[1] if level < 2 else P.IRON[1])
 	c.part()
-	c.ellipse(muzzle + dir * 1.2, Vector2(1.5, 1.5), [P.OUTLINE, P.IRON[0]], 0.0)
+	c.ellipse(muzzle + dir * 1.2, Vector2(bore - 0.9, bore - 0.9), [P.OUTLINE, P.IRON[0]], 0.0)
 	# Effects: a smouldering touch-hole when idle, flash, blast and smoke when firing.
 	if not firing:
 		c.px(int(breech.x), int(breech.y) - 2, P.FIRE[3] if frame % 2 == 0 else P.FIRE[2])
@@ -212,8 +261,9 @@ func _cannon(c: Canvas, state: String, frame: int) -> void:
 
 # ---------------------------------------------------------------- frost
 
-func _frost(c: Canvas, state: String, frame: int) -> void:
+func _frost(c: Canvas, state: String, frame: int, level: int) -> void:
 	var firing: bool = state == "fire"
+	var size: float = 1.0 if level < 3 else 1.3
 	var phase: float = TAU * frame / (IDLE_FRAMES if not firing else 4)
 	var bob: float = roundf(sin(phase)) if not firing else -1.0
 	var pulse: float = 0.5 + 0.5 * sin(phase)
@@ -222,6 +272,14 @@ func _frost(c: Canvas, state: String, frame: int) -> void:
 	# Plinth.
 	c.part()
 	c.block(Rect2(7, 38, 18, 4), BASE - 42.0, FROST_STONE.slice(1, 6), FROST_STONE.slice(0, 5))
+	if level >= 2:
+		# Ice spikes growing from the plinth's corners.
+		for spike: Vector2 in [Vector2(7.5, 38), Vector2(24.5, 38)]:
+			c.part()
+			c.polygon(PackedVector2Array([spike + Vector2(-1.2, 1), spike + Vector2(0, -3.5 - level), spike + Vector2(1.2, 1)]), P.ICE, Vector3(-0.4, -0.5, 0.8))
+	if level >= 3:
+		for x: int in range(8, 24, 2):
+			c.px(x, 38, P.ICE[5] if x % 4 == 0 else P.ICE[4])  # rime on the plinth
 	# Obelisk: a lit left face and a shadowed right face, tapering up.
 	c.part()
 	c.polygon(PackedVector2Array([Vector2(10, 40.5), Vector2(16, 41.5), Vector2(16, 19), Vector2(12.5, 20)]), FROST_STONE, Vector3(-0.8, -0.2, 0.7))
@@ -241,12 +299,12 @@ func _frost(c: Canvas, state: String, frame: int) -> void:
 	c.capsule(Vector2(12.5, 18), Vector2(10.5, 13.5), 0.9, FROST_STONE)
 	c.capsule(Vector2(19.5, 18), Vector2(21.5, 13.5), 0.9, FROST_STONE)
 	# The crystal: a turning double pyramid (its front ridge moves), floating above the cradle.
-	var center: Vector2 = Vector2(16, 9.5 + bob)
-	var ridge: float = 16.0 + 1.6 * sin(phase * (1.0 if not firing else 0.5))
-	var top: Vector2 = center + Vector2(0, -6)
-	var bottom: Vector2 = center + Vector2(0, 5.5)
-	var left: Vector2 = center + Vector2(-3.4, 0)
-	var right: Vector2 = center + Vector2(3.4, 0)
+	var center: Vector2 = Vector2(16, 9.5 + bob - (1.5 if level >= 3 else 0.0))
+	var ridge: float = 16.0 + 1.6 * size * sin(phase * (1.0 if not firing else 0.5))
+	var top: Vector2 = center + Vector2(0, -6) * size
+	var bottom: Vector2 = center + Vector2(0, 5.5) * size
+	var left: Vector2 = center + Vector2(-3.4, 0) * size
+	var right: Vector2 = center + Vector2(3.4, 0) * size
 	var front: Vector2 = Vector2(ridge, center.y + 0.5)
 	var ramp: Array = P.ICE if not (firing and frame < 2) else P.ARCANE_ICE
 	c.part()
@@ -256,6 +314,13 @@ func _frost(c: Canvas, state: String, frame: int) -> void:
 	c.polygon(PackedVector2Array([front, bottom, right]), ramp, Vector3(0.7, 0.7, 0.4))
 	c.line(top, front, P.ICE[5])
 	c.px(int(ridge) - 1, int(center.y) - 2, Color("ffffff"))
+	if level >= 2:
+		# Small shards orbiting the crystal (three for the crown of level 3).
+		for k: int in (2 if level < 3 else 3):
+			var a: float = phase + k * TAU / (2.0 if level < 3 else 3.0)
+			var shard: Vector2 = center + Vector2(cos(a) * 6.5 * size, sin(a) * 2.5 - 1.0)
+			c.part()
+			c.polygon(PackedVector2Array([shard + Vector2(0, -2), shard + Vector2(-1, 0), shard + Vector2(0, 1.5), shard + Vector2(1, 0)]), ramp, Vector3(-0.5, -0.5, 0.7))
 	# Cold glow and orbiting motes (soft: no outline).
 	c.part(true)
 	var reach: float = 7.0 if not firing else [7.5, 9.5, 11.5, 12.5][frame]
@@ -451,7 +516,8 @@ func _dither_region(c: Canvas, area: Rect2i, amount: float) -> void:
 
 # ---------------------------------------------------------------- projectiles
 
-## Rows: arrow_0..7 (1 frame each), cannonball (2 frames, spinning), frost_bolt (4 frames).
+## Rows: arrow_0..7 (1 frame each), cannonball (2 frames, spinning), frost_bolt (4 frames),
+## cannonball_heavy (2 frames: the level-3 shell, bigger, with a bronze band).
 func projectile_rows() -> Array[Array]:
 	var rows: Array[Array] = []
 	for direction: int in 8:
@@ -483,6 +549,17 @@ func projectile_rows() -> Array[Array]:
 		c2.image.set_pixelv(spark, P.ICE[5])
 		bolts.append(c2.image)
 	rows.append(bolts)
+	var heavy: Array[Image] = []
+	for frame: int in 2:
+		var c3: Canvas = Canvas.new(PROJECTILE_SIZE.x, PROJECTILE_SIZE.y)
+		c3.part()
+		c3.ellipse(Vector2(6, 6), Vector2(4.4, 4.4), P.IRON, 0.0, 0.1)
+		c3.line(Vector2(2, 6 if frame == 0 else 5), Vector2(10, 6 if frame == 0 else 7), P.BRONZE[3])  # bronze band
+		c3.px(4 if frame == 0 else 7, 4 if frame == 0 else 8, P.IRON[1])
+		c3.finish()
+		c3.image.set_pixel(11 if frame == 0 else 10, 0 if frame == 0 else 1, P.FIRE[4])
+		heavy.append(c3.image)
+	rows.append(heavy)
 	return rows
 
 
@@ -506,15 +583,17 @@ func _arrow(direction: int) -> Image:
 
 # ---------------------------------------------------------------- explosion and frost
 
-## Flash, fireball, burning cloud with flying debris, smoke ring, fading smoke (56x56 = the 112 px blast).
-func explosion_frames() -> Array[Image]:
+## Flash, fireball, burning cloud with flying debris, smoke ring, fading smoke (56x56 = the 112 px
+## blast; pass EXPLOSION_LARGE_SIZE for the big shells' blast, scaled to fit).
+func explosion_frames(frame_size: Vector2i = EXPLOSION_SIZE) -> Array[Image]:
 	var frames: Array[Image] = []
-	var center: Vector2 = Vector2(EXPLOSION_SIZE) / 2.0 + Vector2(0, 2)
+	var center: Vector2 = Vector2(frame_size) / 2.0 + Vector2(0, 2)
+	var grow: float = frame_size.x / float(EXPLOSION_SIZE.x)
 	for frame: int in 7:
-		var img: Image = Image.create_empty(EXPLOSION_SIZE.x, EXPLOSION_SIZE.y, false, Image.FORMAT_RGBA8)
-		var radius: float = [8.0, 16.0, 22.0, 25.0, 26.5, 27.0, 27.0][frame]
-		for y: int in EXPLOSION_SIZE.y:
-			for x: int in EXPLOSION_SIZE.x:
+		var img: Image = Image.create_empty(frame_size.x, frame_size.y, false, Image.FORMAT_RGBA8)
+		var radius: float = [8.0, 16.0, 22.0, 25.0, 26.5, 27.0, 27.0][frame] * grow
+		for y: int in frame_size.y:
+			for x: int in frame_size.x:
 				var v: Vector2 = Vector2(x + 0.5, y + 0.5) - center
 				var wobble: float = sin(v.angle() * 7.0 + frame * 1.3) * 1.6 + sin(v.angle() * 3.0 - frame) * 1.2
 				var d: float = v.length()
@@ -554,8 +633,37 @@ func explosion_frames() -> Array[Image]:
 			for k: int in 10:
 				var a: float = k * TAU / 10.0 + 0.3
 				var p: Vector2 = center + Vector2.from_angle(a) * (radius + 2.0 + (k % 3)) + Vector2(0, -frame + (frame - 2) * 1.5)
-				if Rect2(Vector2.ZERO, Vector2(EXPLOSION_SIZE) - Vector2.ONE).has_point(p):
+				if Rect2(Vector2.ZERO, Vector2(frame_size) - Vector2.ONE).has_point(p):
 					img.set_pixel(int(p.x), int(p.y), P.FIRE[4] if frame == 2 else (P.STONE[3] if k % 2 == 0 else P.FIRE[2]))
+		frames.append(img)
+	return frames
+
+
+## The frost nova (frost level 3): a ring of frost racing out to the slow area (48x48 = 96 px across),
+## shards riding it, then fading with dither.
+func frost_nova_frames() -> Array[Image]:
+	var frames: Array[Image] = []
+	var center: Vector2 = Vector2(FROST_NOVA_SIZE) / 2.0
+	for frame: int in 6:
+		var img: Image = Image.create_empty(FROST_NOVA_SIZE.x, FROST_NOVA_SIZE.y, false, Image.FORMAT_RGBA8)
+		var reach: float = [5.0, 10.0, 15.0, 19.0, 21.5, 22.5][frame]
+		for y: int in FROST_NOVA_SIZE.y:
+			for x: int in FROST_NOVA_SIZE.x:
+				var v: Vector2 = Vector2(x + 0.5, y + 0.5) - center
+				var d: float = Vector2(v.x, v.y * 1.25).length()  # a little flattened: lying on the ground
+				var threshold: float = Canvas.BAYER_4[(y % 4) * 4 + (x % 4)] / 16.0
+				var color: Color = Color(0, 0, 0, 0)
+				var spoke: float = absf(sin(v.angle() * 6.0))
+				if absf(d - reach) < 1.2:
+					color = P.ICE[5] if spoke < 0.3 else P.ICE[4]
+				elif d < reach and d > reach - 4.0 and spoke < 0.18:
+					color = P.ICE[3]
+				elif d < reach - 2.0 and threshold < 0.25 - frame * 0.04:
+					color = P.ICE[2]
+				elif d < 2.5 and frame < 2:
+					color = Color("ffffff")
+				if color.a > 0.0 and threshold >= maxf(frame - 3, 0) * 0.32:
+					img.set_pixel(x, y, color)
 		frames.append(img)
 	return frames
 

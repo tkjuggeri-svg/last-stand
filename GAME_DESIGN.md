@@ -90,7 +90,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Frost  | 70   | Crowd control | 4 / 1.1 s | 180 | Slows to 50% for 2 s; strongest slow wins, never stacks, always expires |
   | Cannon | 100  | Slow, heavy area damage | 30 / 2.0 s | 190 | Ground-targeted shell (not homing): lands where the target should be (simple lead), explodes on every enemy within 56 px; can miss fast or turning enemies |
 - Future ideas: Brazier (burning AoE), Bone Ballista (piercing).
-- Tower **upgrades** (2 tiers per tower) arrive with the roguelite layer; selling always refunds 50% of the original build price, not upgrades.
+- **Tower upgrades** (pulled forward from M5 after the M4 playtest; the rest of M5 stays later): every tower has 2 upgrade tiers (level 1 → 2 → 3), bought from the tower's build-menu view, which shows the next level's price and what changes ("Damage 10 → 14, Range 210 → 225"). Data: `TowerTier` resources in `TowerData.tiers` (price + full stats per level); `TowerBuilder.upgrade()` owns the rules (gold, top level, not during construction). Level 3 specials: Archer looses a volley at 2 targets, Cannon fires heavy shells with a bigger blast, Frost slows every enemy near the impact (frost nova). Each level has its own look (Archer: the order's banner, then a second archer and a gold pennant; Cannon: bronze barrel and iron band, then a heavy mortar barrel and war banner; Frost: ice spikes and orbiting shards, then a bigger crystal with a crown of shards). Upgrading is instant with a bright flash.
+- Selling refunds **50% of everything spent on that tower** (build + upgrades).
 
 ### 4.5 Economy
 - **Gold** (in-run): starts at 100. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul: 10); an enemy that reaches the fortress pays nothing. Spent on towers (later: upgrades). Never negative. Resets every run.

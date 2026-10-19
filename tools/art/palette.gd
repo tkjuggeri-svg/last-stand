@@ -33,6 +33,8 @@ const STONE_WARM: Array[Color] = [Color("231e22"), Color("372f33"), Color("4d434
 const SLATE: Array[Color] = [Color("16141f"), Color("221f30"), Color("302c45"), Color("423d5c"), Color("595372")]
 const WOOD: Array[Color] = [Color("1d130e"), Color("33221a"), Color("4c3324"), Color("6a4a31"), Color("8a6542")]
 const DEAD_WOOD: Array[Color] = [Color("181416"), Color("2a2324"), Color("3f3634"), Color("564b45"), Color("71655b")]
+## Bronze: upgraded cannon barrels.
+const BRONZE: Array[Color] = [Color("2e1d10"), Color("5a3a1c"), Color("8a5e2c"), Color("b88a45"), Color("e2bd76")]
 const IRON: Array[Color] = [Color("15141b"), Color("25242e"), Color("3a3946"), Color("575766"), Color("82838f")]
 const BANNER: Array[Color] = [Color("2c0d14"), Color("531721"), Color("7e232b"), Color("a83632"), Color("c95341")]
 const HOOD: Array[Color] = [Color("16200f"), Color("26381f"), Color("3a5530"), Color("557547"), Color("7a9a5c")]

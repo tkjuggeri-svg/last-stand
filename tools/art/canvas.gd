@@ -18,6 +18,8 @@ var image: Image
 var size: Vector2i
 ## How much brighter (+) or darker (-) shading comes out, applied before picking a ramp colour.
 var exposure: float = 0.0
+## Shifts everything drawn from now on (e.g. a second copy of a figure). Reset it to ZERO after use.
+var offset: Vector2i = Vector2i.ZERO
 
 ## Draw order of the part that owns each pixel (0 = empty).
 var _owner: PackedInt32Array
@@ -251,6 +253,8 @@ func _draw_outline(outline_color: Color) -> void:
 
 
 func _put(x: int, y: int, color: Color) -> void:
+	x += offset.x
+	y += offset.y
 	if not _inside(x, y):
 		return
 	if color.a < 1.0:

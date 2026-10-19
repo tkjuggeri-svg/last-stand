@@ -48,6 +48,8 @@ func _initialize() -> void:
 		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
 		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
+		"explosion_large": func() -> void: _save(_sheet([TowerArt.new().explosion_frames(TowerArt.EXPLOSION_LARGE_SIZE)], Layouts.EXPLOSION_LARGE["size"]), Layouts.EXPLOSION_LARGE["png"]),
+		"frost_nova": func() -> void: _save(_sheet([TowerArt.new().frost_nova_frames()], Layouts.FROST_NOVA["size"]), Layouts.FROST_NOVA["png"]),
 		"frost": func() -> void: _save(_sheet(TowerArt.new().frost_rows(), Layouts.FROST_FX["size"]), Layouts.FROST_FX["png"]),
 		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
 	}

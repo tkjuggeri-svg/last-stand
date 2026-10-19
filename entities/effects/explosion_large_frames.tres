@@ -1,0 +1,60 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/explosion_large.png" id="1_q4thv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbla5"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(0, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0w2h1"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(72, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rl6pt"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(144, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6l2a4"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(216, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l0afj"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(288, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_klqt4"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(360, 0, 72, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4uej1"]
+atlas = ExtResource("1_q4thv")
+region = Rect2(432, 0, 72, 72)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbla5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0w2h1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rl6pt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6l2a4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l0afj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_klqt4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4uej1")
+}],
+"loop": 0,
+"name": &"explosion_large",
+"speed": 16.0
+}]

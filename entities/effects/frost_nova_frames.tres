@@ -1,0 +1,53 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/frost_nova.png" id="1_cmfsu"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8bftv"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yl28e"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dubcc"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ct854"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2n5vt"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(192, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_etsis"]
+atlas = ExtResource("1_cmfsu")
+region = Rect2(240, 0, 48, 48)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8bftv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yl28e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dubcc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ct854")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2n5vt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_etsis")
+}],
+"loop": 0,
+"name": &"frost_nova",
+"speed": 16.0
+}]

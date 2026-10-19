@@ -23,8 +23,13 @@ const SHADOW_COLOR: Color = Color(0, 0, 0, 0.34)
 const LANDING_MARKER_SCENE: PackedScene = preload("res://entities/towers/landing_marker.tscn")
 const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
 const FROST_BURST_SCENE: PackedScene = preload("res://entities/effects/frost_burst.tscn")
+const FROST_NOVA_SCENE: PackedScene = preload("res://entities/effects/frost_nova.tscn")
+## Physics layer 3 ("enemies"), as a bit value: what a frost nova's area query looks for.
+const ENEMY_BODY_MASK: int = 4
 
 var data: TowerData
+## The firing tower's stats at its level (damage, blast, slow, look).
+var stats: TowerTier
 var target: Enemy
 
 var _destination: Vector2
@@ -44,20 +49,22 @@ var _marker: Node2D
 
 
 ## Call before adding it to the tree. Shots are top-level, so they fly free of the tower.
-## `anchor` is the tower's base and `attack_range` its range: the shot never chases beyond them.
-func launch(tower_data: TowerData, enemy: Enemy, from: Vector2, anchor: Vector2, attack_range: float) -> void:
+## `anchor` is the tower's base: the shot never chases beyond its range (from `level_stats`).
+func launch(tower_data: TowerData, level_stats: TowerTier, enemy: Enemy, from: Vector2, anchor: Vector2) -> void:
 	data = tower_data
+	stats = level_stats
 	target = enemy
 	top_level = true
 	position = from
 	_destination = enemy.global_position
 	_anchor = anchor
-	_reach = attack_range + RANGE_SLACK
+	_reach = level_stats.attack_range + RANGE_SLACK
 
 
 ## A shell (see the class doc): call before adding it to the tree. It lands on `point` and explodes.
-func launch_at_point(tower_data: TowerData, point: Vector2, base: Vector2, muzzle_offset: Vector2) -> void:
+func launch_at_point(tower_data: TowerData, level_stats: TowerTier, point: Vector2, base: Vector2, muzzle_offset: Vector2) -> void:
 	data = tower_data
+	stats = level_stats
 	target = null
 	top_level = true
 	position = base
@@ -81,13 +88,13 @@ func _ready() -> void:
 		queue_free()  # opened on its own, never launched: nothing to fly at
 		set_physics_process(false)
 		return
-	_hitbox.damage = data.damage
+	_hitbox.damage = stats.damage
 	_update_look(_destination - position)
 	if _shell:
 		_marker = LANDING_MARKER_SCENE.instantiate()
 		_marker.top_level = true
 		_marker.position = _destination
-		(_marker as LandingMarker).setup(data.splash_radius)
+		(_marker as LandingMarker).setup(stats.splash_radius)
 		add_child(_marker)
 		_update_arc()
 
@@ -140,19 +147,37 @@ func _draw() -> void:
 func _impact() -> void:
 	if _marker != null:
 		_marker.hide()
-	if data.splash_radius > 0.0:
+	if stats.splash_radius > 0.0:
 		var explosion: Explosion = EXPLOSION_SCENE.instantiate()
-		explosion.setup(data.damage, data.splash_radius)
+		explosion.setup(stats.damage, stats.splash_radius, stats.large_blast)
 		_finish_with(explosion)
 		return
 	if _target_alive() and not _lost:
 		target.receive_hit(_hitbox)
-		if data.slow_factor < 1.0:
-			target.apply_slow(data.slow_factor, data.slow_duration)
-			_finish_with(FROST_BURST_SCENE.instantiate())
+		if stats.slow_factor < 1.0:
+			target.apply_slow(stats.slow_factor, stats.slow_duration)
+			if stats.slow_area > 0.0:
+				_slow_area()
+				_finish_with(FROST_NOVA_SCENE.instantiate())
+			else:
+				_finish_with(FROST_BURST_SCENE.instantiate())
 			return
 	# An arrow that hit, or a shot whose target is already gone, just disappears.
 	queue_free()
+
+
+## Frost nova: every living enemy whose body is within slow_area of the impact is slowed too.
+func _slow_area() -> void:
+	var circle: CircleShape2D = CircleShape2D.new()
+	circle.radius = stats.slow_area
+	var query: PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	query.shape = circle
+	query.transform = Transform2D(0.0, global_position)
+	query.collision_mask = ENEMY_BODY_MASK
+	for hit: Dictionary in get_world_2d().direct_space_state.intersect_shape(query, 32):
+		var enemy: Enemy = hit["collider"] as Enemy
+		if enemy != null and enemy.is_alive():
+			enemy.apply_slow(stats.slow_factor, stats.slow_duration)
 
 
 ## Stops here and shows an impact effect; the shot removes itself once the effect is done.
@@ -166,8 +191,9 @@ func _finish_with(effect: Node2D) -> void:
 
 ## Arrows point where they fly (8 pre-drawn directions, never rotated); other shots just play.
 func _update_look(direction: Vector2) -> void:
-	if data.projectile_look == &"arrow":
+	var look: StringName = stats.projectile_look if stats.projectile_look != &"" else data.projectile_look
+	if look == &"arrow":
 		if not direction.is_zero_approx():
 			_sprite.play(StringName("arrow_%d" % posmod(roundi(direction.angle() / (PI / 4.0)), 8)))
-	elif _sprite.animation != data.projectile_look:
-		_sprite.play(data.projectile_look)
+	elif _sprite.animation != look:
+		_sprite.play(look)

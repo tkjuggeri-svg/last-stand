@@ -91,7 +91,7 @@ Tick items as they're finished.
 - [ ] `UpgradeData` + stat modifier system
 - [ ] Upgrade choice screen (1 of 3) after each wave
 - [ ] ~15 upgrades across Hero / Tower / Fortress / Economy
-- [ ] Tower upgrades (2 tiers per tower)
+- [x] Tower upgrades (2 tiers per tower) — pulled forward into M4 after the playtest
 - [ ] Towers: Brazier, Frost Obelisk, Bone Ballista
 
 **Done when:** two runs feel meaningfully different because of choices made.

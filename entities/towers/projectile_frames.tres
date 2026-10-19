@@ -44,17 +44,25 @@ region = Rect2(12, 96, 12, 12)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ch56o"]
 atlas = ExtResource("1_b4hny")
-region = Rect2(0, 108, 12, 12)
+region = Rect2(0, 120, 12, 12)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_41h5t"]
 atlas = ExtResource("1_b4hny")
-region = Rect2(12, 108, 12, 12)
+region = Rect2(12, 120, 12, 12)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_w4lji"]
 atlas = ExtResource("1_b4hny")
-region = Rect2(24, 108, 12, 12)
+region = Rect2(0, 108, 12, 12)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_73p6d"]
+atlas = ExtResource("1_b4hny")
+region = Rect2(12, 108, 12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ceitk"]
+atlas = ExtResource("1_b4hny")
+region = Rect2(24, 108, 12, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7f6qj"]
 atlas = ExtResource("1_b4hny")
 region = Rect2(36, 108, 12, 12)
 
@@ -141,12 +149,23 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_41h5t")
+}],
+"loop": 1,
+"name": &"cannonball_heavy",
+"speed": 10.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_w4lji")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_73p6d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ceitk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7f6qj")
 }],
 "loop": 1,
 "name": &"frost_bolt",
