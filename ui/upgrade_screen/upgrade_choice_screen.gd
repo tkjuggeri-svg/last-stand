@@ -1,0 +1,124 @@
+class_name UpgradeChoiceScreen
+extends CanvasLayer
+## The upgrade choice after a wave: shows the open offer as cards (icon, name, rarity and category,
+## what it does) and pauses the game until one is taken. Mouse or keyboard (arrows to move, Enter to
+## take). One reroll per offer for gold. Display and intents only: UpgradeOffers decides.
+
+const RARE_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
+const COMMON_COLOR: Color = Color(0.88, 0.86, 0.92, 1)
+const DIM_COLOR: Color = Color(0.72, 0.7, 0.78, 1)
+const CATEGORY_NAMES: Dictionary = {
+	UpgradeData.Category.HERO: "Hero",
+	UpgradeData.Category.TOWERS: "Towers",
+	UpgradeData.Category.FORTRESS: "Fortress",
+	UpgradeData.Category.ECONOMY: "Economy",
+}
+const CARD_SIZE: Vector2 = Vector2(300, 320)
+
+@export var offers: UpgradeOffers
+@export var economy: Economy
+
+## True while this screen holds the game paused (so it only ever unpauses its own pause).
+var _paused_by_us: bool = false
+
+@onready var _cards: HBoxContainer = %Cards
+@onready var _reroll_button: Button = %RerollButton
+@onready var _gold_label: Label = %GoldLabel
+
+
+func _ready() -> void:
+	hide()
+	_reroll_button.pressed.connect(_on_reroll_pressed)
+	if offers != null:
+		offers.offer_made.connect(_open)
+		offers.picked.connect(func(_data: UpgradeData) -> void: _close())
+	if economy != null:
+		economy.gold_changed.connect(func(_gold: int) -> void: _update_reroll())
+
+
+func _exit_tree() -> void:
+	if _paused_by_us:
+		get_tree().paused = false
+
+
+func is_open() -> bool:
+	return visible
+
+
+## The Take buttons, in card order (for the keyboard and tests).
+func get_take_buttons() -> Array[Button]:
+	var buttons: Array[Button] = []
+	for card: Node in _cards.get_children():
+		if not card.is_queued_for_deletion():
+			buttons.append(card.find_child("Take", true, false) as Button)
+	return buttons
+
+
+func _open(cards: Array[UpgradeData]) -> void:
+	for child: Node in _cards.get_children():
+		child.queue_free()
+	for i: int in cards.size():
+		_cards.add_child(_make_card(cards[i], i))
+	_update_reroll()
+	show()
+	if not get_tree().paused:
+		get_tree().paused = true
+		_paused_by_us = true
+	var first: Button = _cards.get_child(_cards.get_child_count() - cards.size()).find_child("Take", true, false)
+	first.grab_focus.call_deferred()
+
+
+func _close() -> void:
+	hide()
+	if _paused_by_us:
+		get_tree().paused = false
+		_paused_by_us = false
+
+
+func _make_card(data: UpgradeData, index: int) -> Control:
+	var card: PanelContainer = PanelContainer.new()
+	card.theme_type_variation = &"CardPanel"
+	card.custom_minimum_size = CARD_SIZE
+	var column: VBoxContainer = VBoxContainer.new()
+	column.add_theme_constant_override("separation", 8)
+	card.add_child(column)
+	var icon: TextureRect = TextureRect.new()
+	icon.texture = data.icon
+	icon.custom_minimum_size = Vector2(0, 40)
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	column.add_child(icon)
+	var title: Label = Label.new()
+	title.text = data.display_name
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_color_override("font_color", RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else COMMON_COLOR)
+	column.add_child(title)
+	var kind: Label = Label.new()
+	kind.text = "%s  -  %s%s" % ["Rare" if data.rarity == UpgradeData.Rarity.RARE else "Common", CATEGORY_NAMES[data.category],
+		"" if data.stackable else "  -  once"]
+	kind.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	kind.add_theme_color_override("font_color", DIM_COLOR)
+	column.add_child(kind)
+	var text: Label = Label.new()
+	text.text = data.description
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	column.add_child(text)
+	var take: Button = Button.new()
+	take.name = "Take"
+	take.text = "Take"
+	take.pressed.connect(func() -> void: offers.pick(index))
+	column.add_child(take)
+	return card
+
+
+func _update_reroll() -> void:
+	if offers == null:
+		_reroll_button.hide()
+		return
+	_reroll_button.text = "Reroll   -%d gold" % offers.get_reroll_cost() if not offers.is_rerolled() else "Rerolled"
+	_reroll_button.disabled = not offers.can_reroll()
+	_gold_label.text = str(economy.get_gold()) if economy != null else ""
+
+
+func _on_reroll_pressed() -> void:
+	offers.reroll()

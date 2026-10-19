@@ -13,11 +13,13 @@ const LIFE_SPENT_TINT: Color = Color(0.25, 0.22, 0.28, 1)
 const PHASE_COLORS: Dictionary = {
 	RunCycle.Phase.BUILD: Color(0.72, 0.84, 0.62, 1),
 	RunCycle.Phase.COMBAT: Color(1.0, 0.5, 0.38, 1),
+	RunCycle.Phase.CHOOSE: Color(0.94, 0.82, 0.48, 1),
 	RunCycle.Phase.FINISHED: Color(0.94, 0.82, 0.48, 1),
 }
 const PHASE_TEXTS: Dictionary = {
 	RunCycle.Phase.BUILD: "Build phase",
 	RunCycle.Phase.COMBAT: "Combat",
+	RunCycle.Phase.CHOOSE: "Choose an upgrade",
 	RunCycle.Phase.FINISHED: "All waves cleared",
 }
 
@@ -29,6 +31,8 @@ const PHASE_TEXTS: Dictionary = {
 @export var builder: TowerBuilder
 @export var run_cycle: RunCycle
 @export var hero_lives: HeroLives
+## The run's upgrades: one icon each (with a stack count) under the wave panel.
+@export var modifiers: RunModifiers
 
 @onready var _fortress_bar: HealthBar = %FortressBar
 @onready var _hero_bar: HealthBar = %HeroBar
@@ -45,6 +49,7 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _start_wave_button: Button = %StartWaveButton
 @onready var _lives_icons: HBoxContainer = %LivesIcons
 @onready var _lives_status: Label = %LivesStatus
+@onready var _upgrade_icons: HFlowContainer = %UpgradeIcons
 
 
 func _ready() -> void:
@@ -67,6 +72,9 @@ func _ready() -> void:
 		builder.tower_sold.connect(_on_tower_sold)
 		_update_slots()
 	_wave_margin.visible = run_cycle != null
+	_upgrade_icons.visible = modifiers != null
+	if modifiers != null:
+		modifiers.upgrade_added.connect(_on_upgrade_added)
 	_lives_icons.visible = hero_lives != null
 	set_process(hero_lives != null)
 	if hero_lives != null:
@@ -127,6 +135,26 @@ func _update_wave() -> void:
 		_enemy_stats_label.text = "Next wave: %d enemies" % spawner.get_next_wave_enemy_total()
 	else:
 		_enemy_stats_label.text = "Enemies left: 0"
+
+
+## An icon per upgrade taken (hover: its name and description); a stacked one shows "xN".
+func _on_upgrade_added(data: UpgradeData, stacks: int) -> void:
+	var existing: Node = _upgrade_icons.get_node_or_null(NodePath(String(data.id)))
+	if existing != null:
+		(existing.get_node("Count") as Label).text = "x%d" % stacks
+		return
+	var icon: TextureRect = TextureRect.new()
+	icon.name = String(data.id)
+	icon.texture = data.icon
+	icon.custom_minimum_size = Vector2(32, 32)
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	icon.tooltip_text = "%s\n%s" % [data.display_name, data.description]
+	var count: Label = Label.new()
+	count.name = "Count"
+	count.position = Vector2(14, 10)
+	icon.add_child(count)
+	_upgrade_icons.add_child(icon)
+	_feed.push("Upgrade: %s" % data.display_name, GOLD_COLOR)
 
 
 ## One helm per life next to the hero's HP bar (spent ones dark).

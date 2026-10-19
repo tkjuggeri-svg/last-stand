@@ -100,11 +100,11 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Keep it to these two currencies. More resources only if a system clearly needs them.
 
 ### 4.6 Upgrades (roguelite layer)
-- After each wave: choose **1 of 3** random upgrades from a weighted pool.
+- After each wave (except the last), before the build phase: choose **1 of 3** random upgrades (`UpgradeOffers` + `UpgradeChoiceScreen`; `RunCycle` phase CHOOSE). The game is paused while the screen is open; mouse or keyboard (arrows, Enter). No duplicate cards in an offer; non-stackable upgrades never come back once taken; commons are drawn 3× as often as rares. One reroll per offer for gold (25, then +25 each reroll used in the run). The run's RNG is seeded (`UpgradeOffers.seed_value`, -1 = random), so tests and the balance tool are reproducible. The HUD shows a row of the run's upgrade icons (stack counts, hover for details) under the wave panel.
 - Defined by `UpgradeData` (`data/upgrades/*.tres`): id, name, description, icon, category (Hero / Towers / Fortress / Economy), rarity (common / rare), stackable or once per run, a list of `StatModifier`s and an optional instant effect (e.g. repair the fortress now).
 - **Run modifier store** (`RunModifiers`, per level under Systems, no autoload; Restart = fresh level = empty store): flat and percent modifiers on named stats, final = (base + flats) × (1 + percents), percents add up. Systems read their final values through it, so an empty store changes nothing: hero damage, move speed, max HP, attack cooldown, reach, lives; tower damage, fire interval, range, build time, slow duration, pierce, burn (all towers via `tower.<stat>`, one type via `tower.<id>.<stat>`); fortress max HP and thorns; kill gold, interest on unspent gold (capped), tower upgrade prices. Max HP changes move current HP by the same amount.
 - Examples: *Bloodthirst* (hero heals on kill), *Volley* (arrow towers fire 2 arrows), *Tithe* (+gold per wave), *Iron Walls* (+fortress max HP), *Frostbite* (slowed enemies take +damage).
-- Rerolls cost gold (later).
+- Rerolls cost gold (see above).
 
 ### 4.7 Waves
 - Defined by `WaveData` (`data/waves/wave_NN.tres`): a list of `SpawnGroup`s `{enemy: EnemyData, count, interval, lane, delay}`. The groups of a wave run in parallel: a group's k-th enemy appears at `delay + k × interval` seconds after the wave starts, on the level lane with index `lane`.

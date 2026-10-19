@@ -140,34 +140,49 @@ theme = ExtResource("4_theme")
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
 
-[node name="WavePanel" type="PanelContainer" parent="WaveMargin"]
+[node name="WaveColumn" type="VBoxContainer" parent="WaveMargin"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="WavePanel" type="PanelContainer" parent="WaveMargin/WaveColumn"]
 custom_minimum_size = Vector2(232, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 2
 
-[node name="WaveBox" type="VBoxContainer" parent="WaveMargin/WavePanel"]
+[node name="WaveBox" type="VBoxContainer" parent="WaveMargin/WaveColumn/WavePanel"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="WaveLabel" type="Label" parent="WaveMargin/WavePanel/WaveBox"]
+[node name="WaveLabel" type="Label" parent="WaveMargin/WaveColumn/WavePanel/WaveBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
 text = "Wave 1 / 1"
 
-[node name="PhaseLabel" type="Label" parent="WaveMargin/WavePanel/WaveBox"]
+[node name="PhaseLabel" type="Label" parent="WaveMargin/WaveColumn/WavePanel/WaveBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Build phase"
 
-[node name="StartWaveButton" type="Button" parent="WaveMargin/WavePanel/WaveBox"]
+[node name="StartWaveButton" type="Button" parent="WaveMargin/WaveColumn/WavePanel/WaveBox"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Start wave  [Enter]"
+
+[node name="UpgradeIcons" type="HFlowContainer" parent="WaveMargin/WaveColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(232, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
 
 [node name="NotificationFeed" parent="." instance=ExtResource("3_feed")]
 unique_name_in_owner = true
