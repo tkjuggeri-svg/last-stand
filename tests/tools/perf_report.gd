@@ -2,6 +2,9 @@ extends SceneTree
 ## Plays the run's last wave (165 enemies and the Lich Warden) with every slot built and upgraded and reports the frame
 ## rate and frame times. Run it in a real window (not headless), at real speed:
 ##   godot --path . --resolution 1280x720 --script res://tests/tools/perf_report.gd [-- --seconds=60] [--no-towers]
+##     [--chapter-2] [--evolved]
+## --chapter-2 plays chapter 2's last wave (223 enemies and the Tollkeeper, with the chapter's fight HP
+## scale) instead; --evolved evolves every tower (alternating branches) so their effects are on screen.
 ## Vsync is switched off so the numbers show the real headroom. --no-towers leaves the whole wave
 ## alive (the worst case for enemies on screen); --empty measures the scene without a wave.
 ## Prints FPS (average, 1% low), process and physics time per frame, and the most enemies and shots
@@ -15,6 +18,8 @@ var _towers: bool = true
 var _empty: bool = false
 ## Experiment: every PointLight2D off (to see what the lights cost).
 var _lights: bool = true
+var _chapter_2: bool = false
+var _evolved: bool = false
 
 
 func _initialize() -> void:
@@ -27,10 +32,19 @@ func _initialize() -> void:
 			_empty = true
 		elif arg == "--no-lights":
 			_lights = false
+		elif arg == "--chapter-2":
+			_chapter_2 = true
+		elif arg == "--evolved":
+			_evolved = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = [spawner.waves.back(), WaveData.new()]
+	if _chapter_2:
+		var chapter: ChapterData = (load("res://data/run/run.tres") as RunData).chapters[1]
+		var finale: WaveData = (load("res://data/waves/chapter_2/wave_15.tres") as WaveData).duplicate()
+		finale.health_multiplier *= chapter.fight_health_scale
+		spawner.waves = [finale, WaveData.new()]
 	WaveFixtures.no_upgrades(level)
 	root.add_child(level)
 	for _i: int in 3:
@@ -45,6 +59,8 @@ func _initialize() -> void:
 	for slot: BuildSlot in builder.get_slots():
 		builder.upgrade(slot)
 		builder.upgrade(slot)
+		if _evolved:
+			builder.evolve(slot, slot.get_index() % 2)
 	if not _lights:
 		for light: Node in level.find_children("*", "PointLight2D", true, false):
 			(light as PointLight2D).enabled = false

@@ -227,6 +227,21 @@ choose (no hidden cost), except the gamble, which says it is one.
 - **Balance tool:** map runs with a path policy (combat-heavy, balanced, event-heavy) and results
   per chapter.
 
+## 7.1 As built (M7)
+
+- Everything above is implemented (`systems/run_map.gd`, `main/main.gd`, `systems/merchant.gd`,
+  `systems/event_resolver.gd`, `ui/map/`, `data/run/`, `data/events/`, `data/affixes/`). Tested by
+  `test_run_map`, `test_run_flow`, `test_events` and `test_chapters`.
+- Rows 1–6 are the combat rows (row 7 is all merchants), so a chapter's battles play waves 1–12 and the
+  boss fight waves 13–15.
+- **Tuning (different from the proposal's tables):**
+  - One upgrade choice per battle gives about 5–6 upgrades a chapter instead of 14. So the fights are
+    scaled per chapter (`ChapterData.fight_health_scale`): chapter 1 ×0.75, which keeps the M6.5
+    difficulty (the bot clears chapter 1 in 4% of runs), and chapter 2 ×1.8.
+  - Chapter 2's kill gold is 220–300 a wave, not 350–450: with the towers' full refund, more made gold
+    meaningless (the bot evolved almost every tower).
+  - Results: `GAME_DESIGN.md` 3. (M7 tuning).
+
 ## 8. Decisions
 
 | # | Question | Decision | From |

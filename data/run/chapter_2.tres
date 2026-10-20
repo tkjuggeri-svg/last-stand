@@ -42,5 +42,7 @@ elites = Array[ExtResource("s_enc")]([ExtResource("e3"), ExtResource("e4"), ExtR
 affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_warded"), ExtResource("a_swarming"), ExtResource("a_siege"), ExtResource("a_ironclad")])
 boss = ExtResource("boss")
 elite_weight = 18.0
+fight_health_scale = 1.8
+
 events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog")])
 shrines = Array[ExtResource("s_event")]([ExtResource("ev_shrine_blood"), ExtResource("ev_shrine_ash"), ExtResource("ev_shrine_coins"), ExtResource("ev_shrine_hollow_walls"), ExtResource("ev_shrine_whispers")])

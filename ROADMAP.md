@@ -128,14 +128,16 @@ The Steam release is postponed to focus on depth and replayability (M7–M12); r
 ---
 
 ## M7 — Run Map
-A Slay the Spire–style node map per run, instead of one fixed sequence of waves.
-- [ ] Design: map shape (rows, branching, node count), node types and their odds, how a node maps to waves on a level, how the run's length and difficulty curve survive the branching (decide with the user before building). Proposal: `docs/M7_RUN_MAP.md` (waiting for approval)
-- [ ] `RunMap` data (seeded generation, run-wide state between nodes) and a map screen: pick the next reachable node, see the path so far
-- [ ] Node types: battle (one or a few waves), elite battle (harder, better reward), merchant (spend gold: upgrades, repairs, towers or relics later), shrine (a risky deal: a gain with a price or a gamble), random event (text + choice), boss (ends an act / the run)
-- [ ] What carries between nodes: gold, fortress HP, hero lives, run upgrades, towers (decide: kept, partly refunded or rebuilt per battle)
-- [ ] Run flow: Main owns the map ↔ level switching; Restart / Game Over / Victory work across the whole map run
-- [ ] Optional small early SFX pass (hits, deaths, UI clicks) if it helps playtesting
-- [ ] Tests (generation, reachability, node outcomes, run state carried over) and balance tool support for map runs
+A Slay the Spire–style node map per run, instead of one fixed sequence of waves. Design and decisions: `docs/M7_RUN_MAP.md`.
+- [x] Design: map shape, node types and odds, waves per row, carry-over, the ramp per chapter, 5 events and 5 shrines, open questions (approved with the user's answers)
+- [x] `RunState` autoload, `RunData` / `ChapterData` / `EncounterData` / `AffixData`, seeded `RunMap` (8 rows, rules) and `MapScreen` (node icons, path, choices)
+- [x] Node types: battle (2 waves, one upgrade choice after), elite (mini-boss + twist; 2 rare cards + 100 gold), merchant (cards, repair, reroll), event and shrine (5 + 5, `EventResolver`), boss
+- [x] Carry-over: towers, gold and damage stay within a chapter; between chapters towers are packed up for a full refund, gold, upgrades and lives carry, the fortress +50%
+- [x] Two chapters (the count is data): chapter 2 ramps up from chapter 1 with its own boss, the Tollkeeper (its toll silences towers)
+- [x] Run flow: Main owns the map ↔ level switching; Restart / Game Over / Victory work across the whole run (no checkpoints)
+- [ ] Optional small early SFX pass (not done; still possible in M8)
+- [x] Tests (map rules, flow, rewards, merchant, events, chapters, the toll) and `tests/tools/map_balance.gd` (bot runs through the map); playtest build `m7-playtest`
+- [ ] Hands-on playtest of `m7-playtest`
 
 **Done when:** two runs take visibly different paths through the map, and the path chosen changes how the run goes.
 
@@ -198,4 +200,4 @@ Release build pipeline (signing, store builds; the playtest presets and script e
 ---
 
 ## Current focus
-**M6.5 done** (tag `m6.5-done`; last playtest build `m6-playtest-4`): economy, difficulty and tower evolutions; the playtest found the difficulty right for a first chapter. **M7** started with the design step only: the proposal is in `docs/M7_RUN_MAP.md`, waiting for approval. Nothing is implemented yet.
+**M7** (run map) is implemented and built as `m7-playtest`; waiting for hands-on playtest feedback. Don't start M8 yet.

@@ -150,8 +150,11 @@ func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightRewar
 		affixes.append(affix)
 	if _level.events != null:
 		affixes.append_array(_level.events.take_fight_affixes())
+	var waves: Array[WaveData] = encounter.build_waves(affixes)
+	for wave: WaveData in waves:
+		wave.health_multiplier *= _run.get_chapter().fight_health_scale
 	_level.set_active(true)
-	_level.start_encounter(encounter.build_waves(affixes), reward)
+	_level.start_encounter(waves, reward)
 
 
 func _on_event_choice(index: int) -> void:

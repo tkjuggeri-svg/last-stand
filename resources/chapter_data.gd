@@ -35,6 +35,10 @@ extends Resource
 ## Affixes an elite can get (one each).
 @export var affixes: Array[AffixData] = []
 @export var boss: EncounterData
+## The regulars' HP in this chapter's fights is multiplied by this (on top of each wave's own): the run
+## map gives fewer upgrades than a straight 15-wave run (one choice per battle, not per wave), so its
+## fights are tuned to keep the chapter's difficulty (balance: tests/tools/map_balance.gd).
+@export var fight_health_scale: float = 1.0
 @export_group("Events")
 ## Events and shrines drawn for the map's event and shrine nodes (each at most once per map, while
 ## the pool lasts).

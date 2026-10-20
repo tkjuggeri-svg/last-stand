@@ -47,6 +47,6 @@ delay = 10.0
 [resource]
 script = ExtResource("9_wave")
 health_multiplier = 2.1
-gold_multiplier = 0.7
+gold_multiplier = 0.44
 speed_multiplier = 1.05
 groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4")])
