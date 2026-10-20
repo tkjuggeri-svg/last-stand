@@ -4,6 +4,7 @@
 [ext_resource type="SpriteFrames" path="res://entities/towers/tower_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="4_status"]
+[ext_resource type="Script" path="res://entities/towers/tower_silence.gd" id="5_silence"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 14.0
@@ -52,3 +53,18 @@ scale = Vector2(2, 2)
 sprite_frames = ExtResource("4_status")
 animation = &"beacon_ember"
 autoplay = "beacon_ember"
+
+[node name="SilenceMark" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+position = Vector2(-16, -80)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("4_status")
+animation = &"silenced"
+
+[node name="Silence" type="Node" parent="." node_paths=PackedStringArray("sprite", "mark")]
+unique_name_in_owner = true
+script = ExtResource("5_silence")
+sprite = NodePath("../Sprite")
+mark = NodePath("../SilenceMark")

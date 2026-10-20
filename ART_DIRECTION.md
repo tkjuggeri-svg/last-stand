@@ -160,7 +160,7 @@ godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 
 - `canvas.gd` — shaded primitives (ellipse, capsule, cylinder, block, polygon), contours, outline.
 - `palette.gd` — the ramps above.
-- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `cultist_art.gd`, `gravelord_art.gd` / `colossus_art.gd` / `lich_art.gd` (on `boss_art_kit.gd`), `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
+- `hero_art.gd`, `ghoul_art.gd`, `hound_art.gd`, `brute_art.gd`, `cultist_art.gd`, `gravelord_art.gd` / `colossus_art.gd` / `lich_art.gd` / `tollkeeper_art.gd` (on `boss_art_kit.gd`), `evolution_art.gd` (the 10 evolved towers, their shots and status marks), `map_art.gd` (run map node icons), `effects_art.gd`, … — one file per asset family, posed in code (`undead_fx.gd`: the shared crumble/soul death effect).
 - Review: `tools/art/preview_art.gd` (enlarged contact sheet) and the `gallery` scenario of
   `tests/tools/capture_screenshots.gd` (every animation at real game scale over the real level).
 

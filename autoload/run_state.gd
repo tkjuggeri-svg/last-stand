@@ -4,13 +4,16 @@ extends Node
 ## reach it as `get_node("/root/RunState") as RunStateNode` where the autoload's name isn't known at
 ## compile time (the script check, tests and tools run with --script). It holds what must cross from
 ## one level to the next: the run's data and seed, the chapter and its node map (with where the player
-## stands). State only: Main runs the flow, RunMap the map's rules.
+## stands), and what the next chapter starts with (carry: gold with the towers packed up, the run's
+## upgrades, the hero's lives, the fortress's HP). State only: Main runs the flow, RunMap the map's rules.
 
 var run_data: RunData
 var seed_value: int = 0
 ## 0-based index into run_data.chapters.
 var chapter_index: int = 0
 var map: RunMap
+## What the next chapter's level starts with (null in chapter 1).
+var carry: ChapterCarry
 
 
 ## A fresh run: chapter 1 and its map.
@@ -18,6 +21,7 @@ func start_run(data: RunData, run_seed: int) -> void:
 	run_data = data
 	seed_value = run_seed
 	chapter_index = 0
+	carry = null
 	_make_map()
 
 

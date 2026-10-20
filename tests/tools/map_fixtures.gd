@@ -39,3 +39,13 @@ static func encounter(waves: int, count: int) -> EncounterData:
 	for _i: int in waves:
 		data.waves.append(WaveFixtures.make_wave(count, 0.5))
 	return data
+
+
+## A run of `count` chapters, each only its boss fight (`boss`), all on `level_scene`.
+static func boss_only_run(count: int, boss: EncounterData, level_scene: PackedScene) -> RunData:
+	var run: RunData = RunData.new()
+	for i: int in count:
+		var chapter: RunData = tiny_run(null, boss, level_scene)
+		chapter.chapters[0].display_name = "Test chapter %d" % (i + 1)
+		run.chapters.append(chapter.chapters[0])
+	return run

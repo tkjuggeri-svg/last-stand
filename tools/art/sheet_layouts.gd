@@ -241,6 +241,28 @@ const LICH: Dictionary = {
 	],
 }
 
+## The Tollkeeper (chapter 2's boss, M7): the toll heaves the bell up and swings it.
+const TOLLKEEPER: Dictionary = {
+	"png": "res://assets/sprites/enemies/tollkeeper.png",
+	"frames": "res://entities/enemies/bosses/tollkeeper_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["idle_down", 0, 4, 4.0, true],
+		["idle_up", 1, 4, 4.0, true],
+		["idle_side", 2, 4, 4.0, true],
+		["walk_down", 3, 6, 6.0, true],
+		["walk_up", 4, 6, 6.0, true],
+		["walk_side", 5, 6, 6.0, true],
+		["death", 6, 8, 10.0, false],
+		["attack_down", 7, 8, 10.0, false],
+		["attack_up", 8, 8, 10.0, false],
+		["attack_side", 9, 8, 10.0, false],
+		["toll_down", 10, 6, 6.0, false],
+		["toll_up", 11, 6, 6.0, false],
+		["toll_side", 12, 6, 6.0, false],
+	],
+}
+
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
@@ -439,7 +461,8 @@ const STATUS: Dictionary = {
 	"png": "res://assets/sprites/effects/status.png",
 	"frames": "res://entities/effects/status_frames.tres",
 	"size": Vector2i(24, 28),
-	"anims": [["frozen", 0, 2, 3.0, true], ["shattered", 1, 4, 8.0, true], ["beacon_ember", 2, 4, 8.0, true]],
+	"anims": [["frozen", 0, 2, 3.0, true], ["shattered", 1, 4, 8.0, true], ["beacon_ember", 2, 4, 8.0, true],
+		["silenced", 3, 4, 6.0, true]],
 }
 
 const FROST_FX: Dictionary = {
@@ -450,7 +473,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

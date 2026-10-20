@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://entities/effects/one_shot_effect.gd" id="1_effect"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/tollkeeper_frames.tres" id="2_body"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/dust_frames.tres" id="3_dust"]
+
+[node name="TollkeeperDeathEffect" type="Node2D"]
+script = ExtResource("1_effect")
+
+[node name="Body" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -30)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("2_body")
+animation = &"death"
+
+[node name="Dust" type="AnimatedSprite2D" parent="."]
+position = Vector2(-28, 16)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("3_dust")
+animation = &"dust"
+
+[node name="Dust2" type="AnimatedSprite2D" parent="."]
+position = Vector2(30, 18)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("3_dust")
+animation = &"dust"
+frame = 1

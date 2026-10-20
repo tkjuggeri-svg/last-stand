@@ -541,7 +541,8 @@ func grapeshot_frames(direction: int) -> Array[Image]:
 
 
 ## Status marks (24x28): "frozen" (an ice block around the body, 2 frames), "shattered" (a cracked
-## violet rune over the head, 4 frames) and "beacon_ember" (the ember over a boosted tower, 4 frames).
+## violet rune over the head, 4 frames), "beacon_ember" (the ember over a boosted tower, 4 frames) and
+## "silenced" (a cracked bell over a silenced tower, 4 frames).
 func status_rows() -> Array[Array]:
 	var frozen: Array[Image] = []
 	for frame: int in 2:
@@ -571,4 +572,17 @@ func status_rows() -> Array[Array]:
 		c3.polygon(PackedVector2Array([Vector2(10, 20), Vector2(12, 13 - flick), Vector2(14, 20)]), [P.FIRE[5]], Vector3(0, 0, 1))
 		c3.rect(Rect2i(9, 20, 7, 2), P.GOLD[2])
 		ember.append(c3.finish())
-	return [frozen, shattered, ember]
+	# "silenced": a cracked bronze bell over a tower the Tollkeeper's toll silenced.
+	var silenced: Array[Image] = []
+	for frame: int in 4:
+		var c4: Canvas = Canvas.new(STATUS_SIZE.x, STATUS_SIZE.y)
+		var swing: float = [0.0, 1.0, 0.0, -1.0][frame]
+		c4.part()
+		c4.polygon(PackedVector2Array([Vector2(9 + swing, 8), Vector2(15 + swing, 8), Vector2(18 + swing, 18), Vector2(6 + swing, 18)]),
+			P.BRONZE, Vector3(-0.4, -0.3, 1))
+		c4.ellipse(Vector2(12 + swing, 8), Vector2(3.0, 1.8), P.BRONZE, 0.0, 0.1)
+		c4.line(Vector2(13 + swing, 10), Vector2(11 + swing, 16), P.OUTLINE)
+		c4.part()
+		c4.ellipse(Vector2(12 + swing, 19.5), Vector2(1.4, 1.4), P.IRON, 0.0, 0.1)
+		silenced.append(c4.finish())
+	return [frozen, shattered, ember, silenced]

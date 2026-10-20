@@ -44,6 +44,17 @@ func fire(tower: Tower, targets: Array[Enemy], stats: TowerTier) -> void:
 		tower.add_child(shot)
 
 
+## Where a shell from `tower` fired now must land to meet `enemy`, if it keeps its current velocity
+## (simple lead: the flight time is measured along the ground from the tower's base). Never beyond the
+## range.
+static func lead_point(tower: Tower, enemy: Enemy) -> Vector2:
+	var aim: Vector2 = enemy.global_position
+	for _i: int in 2:
+		var flight: float = tower.global_position.distance_to(aim) / tower.get_stats().shot_speed(tower.data.projectile_speed)
+		aim = enemy.global_position + enemy.velocity * flight
+	return tower.global_position + (aim - tower.global_position).limit_length(tower.get_attack_range())
+
+
 ## Counts a volley toward the next freeze; true when this one freezes.
 func _count_freeze(every: int) -> bool:
 	_shots_since_freeze += 1

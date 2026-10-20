@@ -18,6 +18,7 @@ const CultistArt: GDScript = preload("res://tools/art/cultist_art.gd")
 const GravelordArt: GDScript = preload("res://tools/art/gravelord_art.gd")
 const ColossusArt: GDScript = preload("res://tools/art/colossus_art.gd")
 const LichArt: GDScript = preload("res://tools/art/lich_art.gd")
+const TollkeeperArt: GDScript = preload("res://tools/art/tollkeeper_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
@@ -47,6 +48,7 @@ func _initialize() -> void:
 		"gravelord": func() -> void: _save(_sheet(GravelordArt.new().sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
 		"colossus": func() -> void: _save(_sheet(ColossusArt.new().sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
 		"lich": func() -> void: _save(_sheet(LichArt.new().sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
+		"tollkeeper": func() -> void: _save(_sheet(TollkeeperArt.new().sheet_rows(), Layouts.TOLLKEEPER["size"]), Layouts.TOLLKEEPER["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),
 		"fortress": func() -> void: _save(_sheet([FortressArt.new().sheet_frames()], Layouts.FORTRESS["size"]), Layouts.FORTRESS["png"]),

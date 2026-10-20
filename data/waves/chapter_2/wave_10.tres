@@ -1,0 +1,72 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="5_hound"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
+
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 40
+interval = 0.65
+
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 30
+interval = 0.7
+lane = 1
+
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_hound")
+count = 34
+interval = 0.35
+lane = 2
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_hound")
+count = 18
+interval = 0.35
+delay = 22.0
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 10
+interval = 3.5
+lane = 2
+delay = 4.0
+
+[sub_resource type="Resource" id="Resource_g5"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 6
+interval = 4.5
+delay = 16.0
+
+[sub_resource type="Resource" id="Resource_g6"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 8
+interval = 1.5
+delay = 6.0
+
+[sub_resource type="Resource" id="Resource_g7"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 6
+interval = 1.6
+lane = 1
+delay = 14.0
+
+[resource]
+script = ExtResource("9_wave")
+health_multiplier = 3.0
+gold_multiplier = 0.36
+speed_multiplier = 1.13
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7")])

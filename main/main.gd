@@ -16,6 +16,8 @@ const LOSS_TEXT: Dictionary = {
 }
 const VICTORY_TEXT: String = "The fortress stands. Every chapter held."
 const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
+## Share of the fortress's max HP repaired between two chapters.
+const CHAPTER_REPAIR: float = 0.5
 
 ## The run: its chapters, each with its map and its level.
 @export var run_data: RunData
@@ -35,6 +37,7 @@ var _pending_choices: Array[FightReward] = []
 @onready var _map_screen: MapScreen = %MapScreen
 @onready var _merchant_screen: MerchantScreen = %MerchantScreen
 @onready var _event_screen: EventScreen = %EventScreen
+@onready var _chapter_screen: ChapterScreen = %ChapterScreen
 
 
 func _ready() -> void:
@@ -48,6 +51,7 @@ func _ready() -> void:
 	_merchant_screen.left.connect(_show_map)
 	_event_screen.choice_picked.connect(_on_event_choice)
 	_event_screen.continued.connect(_next_follow_up)
+	_chapter_screen.continued.connect(_start_chapter)
 	start_run()
 
 
@@ -83,6 +87,7 @@ func start_run() -> void:
 	_victory_screen.hide()
 	_merchant_screen.hide()
 	_event_screen.hide()
+	_chapter_screen.hide()
 	_pending_choices.clear()
 	_run.start_run(run_data, run_seed if run_seed >= 0 else randi())
 	_start_chapter()
@@ -98,6 +103,9 @@ func _start_chapter() -> void:
 	_level.run_lost.connect(_on_level_run_lost)
 	_level.encounter_cleared.connect(_on_encounter_cleared)
 	add_child(_level)
+	if _run.carry != null:
+		_level.carry_in(_run.carry, CHAPTER_REPAIR)
+		_run.carry = null
 	var offers: UpgradeOffers = _level.offers
 	if offers != null:
 		offers.set_seed(_run.chapter_seed())
@@ -207,8 +215,15 @@ func _on_chapter_cleared() -> void:
 		_level.end_run_won()
 		_victory_screen.open(VICTORY_TEXT)
 		return
+	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
+	var carry: ChapterCarry = _level.carry_out()
+	var cleared: String = _run.get_chapter().display_name
+	_run.carry = carry
 	_run.next_chapter()
-	_start_chapter()  # M7 phase C: carry gold, lives, upgrades and the fortress across
+	_level.set_active(false)
+	var max_health: int = _level.fortress.health.max_health
+	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, CHAPTER_REPAIR,
+		mini(carry.fortress_health + roundi(max_health * CHAPTER_REPAIR), max_health), max_health)
 
 
 func _on_level_run_lost(reason: Level.LossReason) -> void:

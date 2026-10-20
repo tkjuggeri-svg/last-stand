@@ -13,7 +13,8 @@ extends StaticBody2D
 ## data.stats_for(level). At the highest level TowerBuilder can evolve it once (evolve(): level 4, one
 ## of data.evolutions, for good), which may change its targeting (strongest, densest, a dead zone) and
 ## its attack (arrow rain, a cone blast, freezing, dragging, soul fire: see TowerEvolution).
-## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder).
+## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder); a
+## Tollkeeper's toll silences it for a while (get_silence(): no firing).
 ## deactivate() (called when it is sold) stops it for good.
 
 signal construction_finished
@@ -49,6 +50,7 @@ var _in_range: Array[Node2D] = []
 @onready var _glow: PointLight2D = %Glow
 @onready var _range_shape: CollisionShape2D = %RangeShape
 @onready var _boost_mark: AnimatedSprite2D = %BoostMark
+@onready var _silence: TowerSilence = %Silence
 
 
 func _ready() -> void:
@@ -87,7 +89,7 @@ func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	if not _is_valid_target(_target):
 		_target = _pick_target()  # also forgets a target that died, left range or reached the fortress
-	if _target != null and _cooldown_left <= 0.0:
+	if _target != null and _cooldown_left <= 0.0 and not _silence.is_silenced():
 		_fire()
 
 
@@ -145,6 +147,11 @@ func evolve(evolution: TowerEvolution) -> void:
 		add_child(aura)
 
 
+## Its silence (a Tollkeeper's toll stops it firing).
+func get_silence() -> TowerSilence:
+	return _silence
+
+
 ## Fire-rate bonus from a Beacon Flame (TowerBuilder keeps it up to date; never stacking).
 func set_fire_rate_boost(bonus: float) -> void:
 	if is_equal_approx(bonus, _boost):
@@ -190,14 +197,10 @@ func is_in_range(point: Vector2) -> bool:
 	return distance <= get_attack_range() and distance >= get_min_range()
 
 
-## Where a shell fired now must land to meet `enemy`, if it keeps its current velocity (simple lead:
-## the flight time is measured along the ground from the tower's base). Never beyond the range.
+## Where a shell fired now must land to meet `enemy` (TowerWeapon.lead_point: simple lead, never
+## beyond the range).
 func aim_point(enemy: Enemy) -> Vector2:
-	var aim: Vector2 = enemy.global_position
-	for _i: int in 2:
-		var flight: float = global_position.distance_to(aim) / get_stats().shot_speed(data.projectile_speed)
-		aim = enemy.global_position + enemy.velocity * flight
-	return global_position + (aim - global_position).limit_length(get_attack_range())
+	return TowerWeapon.lead_point(self, enemy)
 
 
 ## "<id>_<state>" for level 1, "<id>_<state>_<level>" above, "<evolution id>_<state>" once evolved

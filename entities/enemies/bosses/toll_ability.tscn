@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/bosses/toll_ability.gd" id="1_ability"]
+
+[node name="TollAbility" type="Node2D"]
+script = ExtResource("1_ability")
+first_delay = 4.0
+interval = 9.0
+telegraph_time = 1.5

@@ -146,7 +146,7 @@ func _is_spawning() -> bool:
 func _spawn_enemy(group: SpawnGroup) -> void:
 	assert(group.enemy != null, "SpawnGroup without an enemy in wave %d" % get_wave_number())
 	var lane: Path2D = lanes[clampi(group.lane, 0, lanes.size() - 1)]
-	_add_enemy(group.enemy, lane, lane.to_global(lane.curve.sample_baked(0.0)))
+	_add_enemy(group.enemy, lane, lane.to_global(lane.curve.sample_baked(0.0)), group.health_scale)
 
 
 ## A boss calls up a minion: it joins this wave at `at`, on the boss's lane.
@@ -157,12 +157,12 @@ func _on_summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2) -> vo
 	summoner.adopt_minion(_add_enemy(minion, summoner.lane, at))
 
 
-func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2) -> Enemy:
+func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2, health_scale: float = 1.0) -> Enemy:
 	var enemy: Enemy = enemy_scene.instantiate()
 	enemy.data = data
 	enemy.lane = lane
 	# A boss's HP, gold and speed are authored directly: the wave's scales don't apply.
-	enemy.health_multiplier = 1.0 if data.is_boss else waves[_wave_index].health_multiplier
+	enemy.health_multiplier = (1.0 if data.is_boss else waves[_wave_index].health_multiplier) * health_scale
 	enemy.gold_multiplier = 1.0 if data.is_boss else waves[_wave_index].gold_multiplier
 	enemy.speed_multiplier = 1.0 if data.is_boss else waves[_wave_index].speed_multiplier
 	enemy.died.connect(_on_enemy_died)

@@ -77,6 +77,13 @@ func _on_modifiers_changed() -> void:
 	lives_changed.emit(_lives_left)
 
 
+## Starts with `count` lives left (carried from the previous chapter; never more than the max, at
+## least 1).
+func set_lives_left(count: int) -> void:
+	_lives_left = clampi(count, 1, _max_lives)
+	lives_changed.emit(_lives_left)
+
+
 ## Takes one life away without a fall (a shrine's price); never the last one. Returns false if only
 ## one is left.
 func lose_life() -> bool:

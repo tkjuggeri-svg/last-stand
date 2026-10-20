@@ -36,9 +36,12 @@ const BOSS_SHAKE_TIME: float = 0.6
 @export var merchant: Merchant
 ## Applies the run map's events and shrines to this level.
 @export var events: EventResolver
+@export var builder: TowerBuilder
 
 var _run_over: bool = false
 var _encounter_mode: bool = false
+## True while a previous chapter's upgrades are put back (their instant effects already happened).
+var _carrying_in: bool = false
 var _reward: FightReward
 ## Canvas layers that were showing when the level was set inactive (shown again on activation).
 var _hidden_layers: Array[CanvasLayer] = []
@@ -65,6 +68,35 @@ func _exit_tree() -> void:
 
 func is_run_over() -> bool:
 	return _run_over
+
+
+## What this chapter hands to the next: its gold plus a full refund of every tower (packed up for all
+## it cost), the run's upgrades, the hero's lives and the fortress's HP.
+func carry_out() -> ChapterCarry:
+	var carry: ChapterCarry = ChapterCarry.new()
+	for slot: BuildSlot in builder.get_slots():
+		if not slot.is_empty():
+			carry.refund += slot.tower.invested
+	carry.gold = economy.get_gold() + carry.refund
+	carry.upgrades = modifiers.get_taken()
+	carry.lives_left = hero_lives.get_lives_left()
+	carry.fortress_health = fortress.health.current_health
+	return carry
+
+
+## Starts this chapter from the previous one's `carry`: its gold, its upgrades (their instant effects
+## not again), its lives, and the fortress at its HP plus `repair` of the max. Call once it is ready.
+func carry_in(carry: ChapterCarry, repair: float) -> void:
+	economy.earn(carry.gold - economy.get_gold(), Economy.Source.REFUND)
+	if economy.get_gold() > carry.gold:
+		economy.try_spend(economy.get_gold() - carry.gold)
+	_carrying_in = true
+	for data: UpgradeData in carry.upgrades:
+		modifiers.add_upgrade(data)
+	_carrying_in = false
+	hero_lives.set_lives_left(carry.lives_left)
+	var health: HealthComponent = fortress.health
+	health.set_current_health(carry.fortress_health + roundi(health.max_health * repair))
 
 
 ## Stops the level as won (the run map's last boss fell): everything freezes, like at Game Over.
@@ -116,6 +148,8 @@ func _on_fortress_destroyed() -> void:
 
 ## Upgrades that do something once when picked.
 func _on_upgrade_added(data: UpgradeData, _stacks: int) -> void:
+	if _carrying_in:
+		return
 	if data.instant_effect == RunModifiers.INSTANT_REPAIR_FORTRESS:
 		fortress.repair(data.effect_amount)
 

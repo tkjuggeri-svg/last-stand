@@ -12,6 +12,8 @@ extends Resource
 ## Seconds after the first wave starts that the leader arrives, and on which lane.
 @export var leader_delay: float = 6.0
 @export var leader_lane: int = 0
+## The leader's HP multiplier (a later chapter's tougher elites).
+@export var leader_health_scale: float = 1.0
 ## Leave out the waves' own boss groups (true for battles and elites; the boss fight keeps its own).
 @export var strip_bosses: bool = true
 
@@ -32,6 +34,7 @@ func build_waves(affixes: Array[AffixData] = []) -> Array[WaveData]:
 			lead.count = 1
 			lead.lane = leader_lane
 			lead.delay = leader_delay
+			lead.health_scale = leader_health_scale
 			wave.groups.append(lead)
 		for affix: AffixData in affixes:
 			wave = affix.apply(wave)

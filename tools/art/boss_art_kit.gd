@@ -2,7 +2,7 @@ extends RefCounted
 ## Shared helpers for the three bosses' art (dev-time art generator): 64x64 art px frames (feet on
 ## FEET), the sheet's row order, a shaded flared robe, and the big undead death (pale flash, collapse,
 ## crumbling to ash, a large soul escaping). Each boss file (gravelord_art.gd, colossus_art.gd,
-## lich_art.gd) poses and draws its own figure through pose() and frame().
+## lich_art.gd, tollkeeper_art.gd) poses and draws its own figure through pose() and frame().
 
 const Canvas: GDScript = preload("res://tools/art/canvas.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
@@ -12,7 +12,7 @@ const SIZE: Vector2i = Vector2i(64, 64)
 const FEET: Vector2 = Vector2(32, 58)
 const FACINGS: Array[String] = ["down", "up", "side"]
 ## Frames per state (the attack's blow lands on frame 6 at 10 fps = a 0.6 s wind-up).
-const FRAMES: Dictionary = {"idle": 4, "walk": 6, "attack": 8, "cast": 6, "brace": 4, "charge": 4, "stun": 4}
+const FRAMES: Dictionary = {"idle": 4, "walk": 6, "attack": 8, "cast": 6, "brace": 4, "charge": 4, "stun": 4, "toll": 6}
 
 
 ## Rows in the order of the boss layouts in sheet_layouts.gd: idle, walk (per facing), death, attack

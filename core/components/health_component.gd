@@ -64,6 +64,13 @@ func set_max_health(new_max: int) -> void:
 	health_changed.emit(current_health, max_health)
 
 
+## Sets the current HP directly (clamped to 1..max: a living owner stays alive), e.g. carried over from
+## a previous level.
+func set_current_health(value: int) -> void:
+	current_health = clampi(value, 1, max_health)
+	health_changed.emit(current_health, max_health)
+
+
 ## Heals by `amount` (never above max, never a dead owner).
 func heal(amount: int) -> void:
 	if is_dead() or amount <= 0 or current_health >= max_health:

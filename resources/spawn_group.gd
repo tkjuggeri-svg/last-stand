@@ -11,6 +11,9 @@ extends Resource
 @export var lane: int = 0
 ## Seconds after the wave starts before this group's first enemy appears.
 @export var delay: float = 0.0
+## This group's enemies get this many times their HP, on top of the wave's (bosses too: a later
+## chapter's elite leader).
+@export var health_scale: float = 1.0
 
 
 ## Seconds after the wave start at which this group's `index`-th enemy (0-based) appears.

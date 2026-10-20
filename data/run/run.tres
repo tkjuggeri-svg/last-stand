@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" path="res://resources/run_data.gd" id="1_run"]
 [ext_resource type="Resource" path="res://data/run/chapter_1.tres" id="2_ch1"]
+[ext_resource type="Resource" path="res://data/run/chapter_2.tres" id="3_ch2"]
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
 
 [resource]
 script = ExtResource("1_run")
-chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1")])
+chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1"), ExtResource("3_ch2")])
