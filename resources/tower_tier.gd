@@ -30,6 +30,13 @@ extends Resource
 @export var burn_dps: float = 0.0
 @export var burn_radius: float = 40.0
 @export var burn_duration: float = 3.0
+## Shot speed at this level in px/s (0 = the TowerData's projectile_speed).
+@export var projectile_speed: float = 0.0
+
+
+## How fast this level's shots fly: projectile_speed, or `fallback` (the TowerData's) when it is 0.
+func shot_speed(fallback: float) -> float:
+	return projectile_speed if projectile_speed > 0.0 else fallback
 
 
 ## A short "what changes" line from `before` to this level, e.g. "Damage 10 → 14, Range 210 → 225".

@@ -13,6 +13,9 @@ var _damage: int = 20
 var _radius: float = 56.0
 var _frames_left: int = ACTIVE_FRAMES
 var _large: bool = false
+## Another look (a soul burst): its frames and animation.
+var _look_frames: SpriteFrames = null
+var _look: StringName = &""
 
 @onready var _hitbox: Hitbox = %Hitbox
 @onready var _shape: CollisionShape2D = %BlastShape
@@ -26,11 +29,20 @@ func setup(damage: int, radius: float, large: bool = false) -> void:
 	_large = large
 
 
+## Plays `animation` from `frames` instead of the fireball. Call before adding it to the tree.
+func set_look(frames: SpriteFrames, animation: StringName) -> void:
+	_look_frames = frames
+	_look = animation
+
+
 func _ready() -> void:
 	_hitbox.damage = _damage
 	(_shape.shape as CircleShape2D).radius = _radius
 	_sprite.animation_finished.connect(queue_free)
-	if _large:
+	if _look_frames != null:
+		_sprite.sprite_frames = _look_frames
+		_sprite.play(_look)
+	elif _large:
 		_sprite.sprite_frames = LARGE_FRAMES
 		_sprite.play(&"explosion_large")
 	else:

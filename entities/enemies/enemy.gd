@@ -7,7 +7,9 @@ extends CharacterBody2D
 ## needed), and stops data.siege_distance before its lane's end to shoot the fortress, unless the
 ## hero is in range: then the hero is its target. A boss has an EnemyAbility (EnemyData.ability)
 ## that runs beside this and may take the enemy over for a while (is_busy).
-## Towers can slow it (apply_slow): the strongest slow wins and it always wears off.
+## Towers can slow it (apply_slow: the strongest slow wins, it always wears off), freeze it (no moving
+## or attacking), make it vulnerable (more damage taken) and drag it back along its lane: EnemyStatus
+## keeps those effects.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
 ## Stats, body size and animations come from an EnemyData resource (one scene for every enemy type).
 ## Visuals only follow the gameplay state.
@@ -54,9 +56,6 @@ var _windup_left: float = -1.0
 var _strike_left: float = 0.0
 ## The target's AttackerLimit while this enemy holds one of its slots.
 var _claimed_limit: AttackerLimit = null
-## Current speed multiplier from slows (1 = normal) and how long it still lasts.
-var _slow_factor: float = 1.0
-var _slow_left: float = 0.0
 ## Where on its lane the enemy is (curve offset), worked out once per physics frame: finding the
 ## closest point on the curve is the costliest thing an enemy does, and towers ask for it too.
 var _lane_offset: float = 0.0
@@ -72,6 +71,7 @@ var _ability: EnemyAbility
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _look: EnemyLook = %Look
+@onready var _status: EnemyStatus = %Status
 
 
 func _ready() -> void:
@@ -82,6 +82,8 @@ func _ready() -> void:
 	_apply_body(data.body_radius)
 	_look.setup(data)
 	_health.shield_changed.connect(_look.show_shield)
+	_status.setup(_health)
+	_status.status_changed.connect(func() -> void: _look.show_status(_status))
 	if data.ability != null:
 		_ability = data.ability.instantiate()
 		_ability.setup(self)
@@ -95,7 +97,14 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
-	_update_slow(delta)
+	_status.tick(delta)
+	if _status.is_dragged():
+		velocity = Vector2.ZERO
+		global_position += _status.drag_step(lane, global_position, delta)
+		return
+	if _status.is_frozen():
+		velocity = Vector2.ZERO
+		return  # frozen solid: no step, no strike (a wind-up waits)
 	if is_busy():
 		return  # the ability moves and animates it
 	_update_attack(delta)
@@ -182,11 +191,22 @@ func get_lane_progress() -> float:
 
 
 func get_move_speed() -> float:
-	return data.move_speed * speed_multiplier * _slow_factor
+	return data.move_speed * speed_multiplier * _status.get_slow_factor()
 
 
 func is_slowed() -> bool:
-	return _slow_left > 0.0
+	return _status.is_slowed()
+
+
+## Its slows, freeze, vulnerability and drag (towers apply them here).
+func get_status() -> EnemyStatus:
+	return _status
+
+
+## Pulled back `distance` px along its lane (Harpoon), quickly; it walks on afterwards.
+func drag_back(distance: float) -> void:
+	if is_alive() and lane != null and distance > 0.0:
+		_status.drag_to(get_lane_progress() - distance)
 
 
 ## Takes a hit from a projectile that already knows its target (same path as an overlapping hitbox).
@@ -197,21 +217,9 @@ func receive_hit(hitbox: Hitbox) -> bool:
 ## Slows movement to `factor` of normal speed for `duration` seconds. Slows never stack: the strongest
 ## factor applies and the longest remaining time is kept; when it runs out, speed is normal again.
 func apply_slow(factor: float, duration: float) -> void:
-	if duration <= 0.0 or factor >= 1.0:
-		return
-	_slow_factor = minf(_slow_factor, factor) if is_slowed() else factor
-	_slow_left = maxf(_slow_left, duration)
-	_look.show_slowed(true)
+	_status.apply_slow(factor, duration)
 
 
-func _update_slow(delta: float) -> void:
-	if _slow_left <= 0.0:
-		return
-	_slow_left -= delta
-	if _slow_left <= 0.0:
-		_slow_left = 0.0
-		_slow_factor = 1.0
-		_look.show_slowed(false)
 
 
 ## True when it could start an attack right now if the target's AttackerLimit gave it a slot.

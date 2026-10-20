@@ -2,10 +2,14 @@ class_name EnemyLook
 extends Node
 ## The enemy's display-only reactions (a component of Enemy, which calls it): its animations and
 ## glow from the data, the hit flash, jolt and spark and the health bar on damage, the frost tint and
-## aura while slowed, the ward bubble while shielded. It never changes gameplay state.
+## aura while slowed, an ice block while frozen, a cracked rune over the head while vulnerable
+## (Shatter Shrine), the ward bubble while shielded. It never changes gameplay state.
 
-## Tint while slowed by frost.
+## Tint while slowed by frost, and while frozen solid.
 const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
+const FROZEN_TINT: Color = Color(0.55, 0.75, 1.0, 1)
+## The vulnerability rune floats this far above the health bar.
+const MARK_ABOVE_BAR: float = 10.0
 ## Hit recoil of the sprite: how far it jolts, in world px, and for how long.
 const HIT_JOLT: float = 2.0
 const HIT_JOLT_TIME: float = 0.12
@@ -23,6 +27,8 @@ var _small_bar: bool = true
 @onready var _health_bar: EnemyHealthBar = %HealthBar
 @onready var _glow: PointLight2D = %Glow
 @onready var _shield_bubble: Node2D = %ShieldBubble
+@onready var _frozen_mark: AnimatedSprite2D = %FrozenMark
+@onready var _shatter_mark: AnimatedSprite2D = %ShatterMark
 
 
 func _ready() -> void:
@@ -42,6 +48,8 @@ func setup(data: EnemyData) -> void:
 	_glow.color = data.glow_color
 	_glow.position = data.sprite_offset
 	_shield_bubble.position = data.sprite_offset
+	_frozen_mark.position = Vector2(0, data.sprite_offset.y * 0.5)
+	_shatter_mark.position = Vector2(0, data.health_bar_y - MARK_ABOVE_BAR)
 	_shield_bubble.scale = Vector2.ONE * maxf(data.body_radius / 12.0, 1.0)
 
 
@@ -64,11 +72,18 @@ func show_hit(current_health: int, max_health: int) -> void:
 	_hit_spark.play(&"spark")
 
 
-func show_slowed(slowed: bool) -> void:
-	_sprite.self_modulate = SLOWED_TINT if slowed else Color.WHITE
-	_frost_aura.visible = slowed
-	if slowed:
-		_frost_aura.play(&"frost_aura")
+## Slowed (frost tint and aura), frozen (ice block) and vulnerable (the cracked rune) as they are now.
+func show_status(status: EnemyStatus) -> void:
+	_sprite.self_modulate = FROZEN_TINT if status.is_frozen() else (SLOWED_TINT if status.is_slowed() else Color.WHITE)
+	_show_mark(_frost_aura, &"frost_aura", status.is_slowed() and not status.is_frozen())
+	_show_mark(_frozen_mark, &"frozen", status.is_frozen())
+	_show_mark(_shatter_mark, &"shattered", status.is_vulnerable())
+
+
+func _show_mark(mark: AnimatedSprite2D, animation: StringName, shown: bool) -> void:
+	if shown and not mark.visible:
+		mark.play(animation)
+	mark.visible = shown
 
 
 ## The ward bubble shows while a shield (absorbing `amount` more damage) is up.

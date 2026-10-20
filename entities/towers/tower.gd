@@ -10,11 +10,16 @@ extends StaticBody2D
 ## After placing it is under construction for data.build_time seconds (shown by its "<id>_build"
 ## animation, stretched to that time): it tracks enemies entering its range but can't target or fire.
 ## Levels: it starts at 1; TowerBuilder upgrades it (set_level) and the stats come from
-## data.stats_for(level). deactivate() (called when it is sold) stops it for good.
+## data.stats_for(level). At the highest level TowerBuilder can evolve it once (evolve(): level 4, one
+## of data.evolutions, for good), which may change its targeting (strongest, densest, a dead zone) and
+## its attack (arrow rain, a cone blast, freezing, dragging, soul fire: see TowerEvolution).
+## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder).
+## deactivate() (called when it is sold) stops it for good.
 
 signal construction_finished
 
-const PROJECTILE_SCENE: PackedScene = preload("res://entities/towers/projectile.tscn")
+## Loaded when needed: the aura's script refers back to Tower, so a preload would be a cycle.
+const SHATTER_AURA_PATH: String = "res://entities/towers/shatter_aura.tscn"
 ## Upgrade feedback (display only): a bright flash that fades over this many seconds.
 const UPGRADE_FLASH_TIME: float = 0.35
 
@@ -26,6 +31,11 @@ var modifiers: RunModifiers
 var invested: int = 0
 
 var _level: int = 1
+## The level-4 branch, once chosen (null before).
+var _evolution: TowerEvolution = null
+## Fire-rate bonus from a Beacon Flame in reach (0 = none; 0.25 = 25% more shots).
+var _boost: float = 0.0
+var _weapon: TowerWeapon = TowerWeapon.new()
 var _stats: TowerTier
 var _build_left: float = 0.0
 var _active: bool = true
@@ -38,6 +48,7 @@ var _in_range: Array[Node2D] = []
 @onready var _range_area: Area2D = %RangeArea
 @onready var _glow: PointLight2D = %Glow
 @onready var _range_shape: CollisionShape2D = %RangeShape
+@onready var _boost_mark: AnimatedSprite2D = %BoostMark
 
 
 func _ready() -> void:
@@ -110,8 +121,41 @@ func get_level() -> int:
 	return _level
 
 
+## True at the highest regular level (3) or above: no more upgrades (an evolution may still come).
 func is_max_level() -> bool:
 	return data == null or _level >= data.max_level()
+
+
+func is_evolved() -> bool:
+	return _evolution != null
+
+
+func get_evolution() -> TowerEvolution:
+	return _evolution
+
+
+## Takes the level-4 branch (TowerBuilder does the paying and the checks): for good.
+func evolve(evolution: TowerEvolution) -> void:
+	assert(_evolution == null, "A tower evolves only once")
+	_evolution = evolution
+	set_level(data.max_level() + 1)
+	if evolution.shatter_bonus > 0.0:
+		var aura: ShatterAura = (load(SHATTER_AURA_PATH) as PackedScene).instantiate()
+		aura.setup(self)
+		add_child(aura)
+
+
+## Fire-rate bonus from a Beacon Flame (TowerBuilder keeps it up to date; never stacking).
+func set_fire_rate_boost(bonus: float) -> void:
+	if is_equal_approx(bonus, _boost):
+		return
+	_boost = bonus
+	_stats = _effective_stats()
+	_boost_mark.visible = _boost > 0.0  # the beacon's ember over every tower it speeds up
+
+
+func get_fire_rate_boost() -> float:
+	return _boost
 
 
 ## The stats at the current level, with the run's upgrades applied.
@@ -121,7 +165,7 @@ func get_stats() -> TowerTier:
 
 ## Switches to `level` (TowerBuilder does the paying): new stats, range and look, with a flash.
 func set_level(level: int) -> void:
-	_level = clampi(level, 1, data.max_level())
+	_level = clampi(level, 1, data.max_level() + (1 if _evolution != null else 0))
 	_stats = _effective_stats()
 	_apply_range()
 	if not is_building():
@@ -135,9 +179,15 @@ func get_attack_range() -> float:
 	return get_stats().attack_range if data != null else 0.0
 
 
-## True if `point` is within attack range of the tower's base.
+## The dead zone around the base (Siege Mortar), in px: closer enemies can't be targeted.
+func get_min_range() -> float:
+	return _evolution.min_range if _evolution != null else 0.0
+
+
+## True if `point` is within attack range of the tower's base (and outside its dead zone).
 func is_in_range(point: Vector2) -> bool:
-	return global_position.distance_to(point) <= get_attack_range()
+	var distance: float = global_position.distance_to(point)
+	return distance <= get_attack_range() and distance >= get_min_range()
 
 
 ## Where a shell fired now must land to meet `enemy`, if it keeps its current velocity (simple lead:
@@ -145,13 +195,16 @@ func is_in_range(point: Vector2) -> bool:
 func aim_point(enemy: Enemy) -> Vector2:
 	var aim: Vector2 = enemy.global_position
 	for _i: int in 2:
-		var flight: float = global_position.distance_to(aim) / data.projectile_speed
+		var flight: float = global_position.distance_to(aim) / get_stats().shot_speed(data.projectile_speed)
 		aim = enemy.global_position + enemy.velocity * flight
 	return global_position + (aim - global_position).limit_length(get_attack_range())
 
 
-## "<id>_<state>" for level 1, "<id>_<state>_<level>" above (falls back to level 1 art if missing).
+## "<id>_<state>" for level 1, "<id>_<state>_<level>" above, "<evolution id>_<state>" once evolved
+## (each falls back to the level below's art if missing).
 func _anim(state: String) -> StringName:
+	if _evolution != null and _sprite.sprite_frames.has_animation(StringName("%s_%s" % [_evolution.id, state])):
+		return StringName("%s_%s" % [_evolution.id, state])
 	var name_at_level: StringName = StringName("%s_%s_%d" % [data.id, state, _level])
 	if _level > 1 and _sprite.sprite_frames.has_animation(name_at_level):
 		return name_at_level
@@ -160,12 +213,13 @@ func _anim(state: String) -> StringName:
 
 ## The level's stats with the run's modifiers applied (a copy: the data stays untouched).
 func _effective_stats() -> TowerTier:
-	var base: TowerTier = data.stats_for(_level)
-	if modifiers == null:
-		return base
+	var base: TowerTier = _evolution if _evolution != null else data.stats_for(_level)
 	var stats: TowerTier = base.duplicate() as TowerTier
+	stats.fire_interval = base.fire_interval / (1.0 + _boost)
+	if modifiers == null:
+		return stats
 	stats.damage = modifiers.apply_int(base.damage, RunModifiers.tower_stats(RunModifiers.TOWER_DAMAGE, data.id))
-	stats.fire_interval = maxf(modifiers.apply(base.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
+	stats.fire_interval = maxf(modifiers.apply(stats.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
 	stats.attack_range = modifiers.apply(base.attack_range, RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
 	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
@@ -208,10 +262,18 @@ func _targets_in_range() -> Array[Enemy]:
 
 func _pick_target() -> Enemy:
 	var found: Array[Enemy] = _targets_in_range()
-	return found[0] if not found.is_empty() else null
+	if found.is_empty():
+		return null
+	match _evolution.targeting if _evolution != null else TowerEvolution.Targeting.FIRST:
+		TowerEvolution.Targeting.STRONGEST:
+			return TowerTargeting.strongest(found)
+		TowerEvolution.Targeting.DENSEST:
+			return TowerTargeting.densest(found, get_stats().splash_radius)
+	return found[0]
 
 
-## One shot at the target, plus one at each next leading enemy for multi-target levels.
+## One volley at the target (plus the next leading enemies for multi-target levels): TowerWeapon
+## delivers it.
 func _fire() -> void:
 	var stats: TowerTier = get_stats()
 	_cooldown_left = stats.fire_interval
@@ -222,15 +284,7 @@ func _fire() -> void:
 				break
 			if enemy != _target:
 				targets.append(enemy)
-	for enemy: Enemy in targets:
-		var shot: Projectile = PROJECTILE_SCENE.instantiate()
-		if data.line_shot:
-			shot.launch_line(data, stats, aim_point(enemy), global_position, data.muzzle_offset)
-		elif data.homing:
-			shot.launch(data, stats, enemy, global_position + data.muzzle_offset, global_position)
-		else:
-			shot.launch_at_point(data, stats, aim_point(enemy), global_position, data.muzzle_offset)
-		add_child(shot)
+	_weapon.fire(self, targets, stats)
 	_sprite.play(_anim("fire"))
 
 

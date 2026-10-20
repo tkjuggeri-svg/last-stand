@@ -3,17 +3,26 @@ extends Node2D
 ## Burning ground left by a shot (hellfire shells, the brazier): for `duration` seconds every enemy
 ## on it takes `dps` damage per second, in ticks, through its Hurtbox like any other hit. Then the
 ## flames die down. The flames are display only.
+## Soul fire (Pyre of Souls, set_death_burst): an enemy that dies while on it (by any hand) bursts:
+## damage to every enemy around it and plain burning ground there (no chain of bursts).
 
 ## Seconds between two damage ticks.
 const TICK: float = 0.25
 const FADE_TIME: float = 0.4
+const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
+const SOUL_FRAMES: SpriteFrames = preload("res://entities/effects/soul_burst_frames.tres")
 
 var _dps: float = 6.0
 var _radius: float = 40.0
 var _duration: float = 3.0
+var _duration_full: float = 3.0
 var _tick_left: float = 0.0
 ## Damage owed but not dealt yet (ticks deal whole points).
 var _pending: float = 0.0
+var _burst_damage: int = 0
+var _burst_radius: float = 0.0
+## Enemies on the soul fire whose death is watched.
+var _watched: Array[Enemy] = []
 
 @onready var _hitbox: Hitbox = %Hitbox
 @onready var _sprite: AnimatedSprite2D = %Sprite
@@ -24,10 +33,21 @@ func setup(dps: float, radius: float, duration: float) -> void:
 	_dps = dps
 	_radius = radius
 	_duration = duration
+	_duration_full = duration
+
+
+## Makes it soul fire: deaths on it burst for `damage` within `radius`. Call before adding it.
+func set_death_burst(damage: int, radius: float) -> void:
+	_burst_damage = damage
+	_burst_radius = radius
+
+
+func is_soul_fire() -> bool:
+	return _burst_damage > 0
 
 
 func _ready() -> void:
-	_sprite.play(&"burn")
+	_sprite.play(&"soul_burn" if is_soul_fire() else &"burn")
 
 
 func _physics_process(delta: float) -> void:
@@ -37,20 +57,54 @@ func _physics_process(delta: float) -> void:
 		var fade: Tween = create_tween()
 		fade.tween_property(self, "modulate:a", 0.0, FADE_TIME)
 		fade.tween_callback(queue_free)
+		_watch([])
 		return
 	_tick_left -= delta
 	if _tick_left > 0.0:
 		return
 	_tick_left += TICK
+	var on_fire: Array[Enemy] = EnemyQuery.in_circle(get_world_2d(), global_position, _radius)
+	if is_soul_fire():
+		_watch(on_fire)
 	_pending += _dps * TICK
 	var damage: int = floori(_pending)
 	if damage <= 0:
 		return
 	_pending -= damage
 	_hitbox.damage = damage
-	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, _radius):
+	for enemy: Enemy in on_fire:
 		enemy.receive_hit(_hitbox)
 
 
 func get_radius() -> float:
 	return _radius
+
+
+## Watches exactly `enemies` for a death on the soul fire (those that walked off are let go).
+func _watch(enemies: Array[Enemy]) -> void:
+	for i: int in range(_watched.size() - 1, -1, -1):
+		var watched: Variant = _watched[i]
+		if not is_instance_valid(watched) or not enemies.has(watched):
+			if is_instance_valid(watched) and (watched as Enemy).died.is_connected(_on_watched_died):
+				(watched as Enemy).died.disconnect(_on_watched_died)
+			_watched.remove_at(i)
+	for enemy: Enemy in enemies:
+		if not _watched.has(enemy):
+			_watched.append(enemy)
+			enemy.died.connect(_on_watched_died)
+
+
+## A soul-fire death: a burst around the corpse and plain burning ground where it fell.
+func _on_watched_died(enemy: Enemy) -> void:
+	var at: Vector2 = enemy.global_position
+	var burst: Explosion = EXPLOSION_SCENE.instantiate()
+	burst.setup(_burst_damage, _burst_radius)
+	burst.set_look(SOUL_FRAMES, &"soul_burst")
+	burst.top_level = true
+	burst.position = at
+	get_parent().add_child(burst)
+	var spread: BurnZone = (load(scene_file_path) as PackedScene).instantiate()
+	spread.setup(_dps, _radius, _duration_full)
+	spread.top_level = true
+	spread.position = at
+	get_parent().add_child(spread)

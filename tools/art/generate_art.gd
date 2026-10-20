@@ -21,6 +21,7 @@ const LichArt: GDScript = preload("res://tools/art/lich_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
+const EvolutionArt: GDScript = preload("res://tools/art/evolution_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
 const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
@@ -56,12 +57,16 @@ func _initialize() -> void:
 		"mote": func() -> void: _save(EnvironmentArt.new().mote(), Layouts.MOTE_PNG),
 		"coin": func() -> void: _save(UiArt.new().icon("coin"), Layouts.COIN_PNG),
 		"ui": _ui,
-		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
-		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
+		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows() + EvolutionArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
+		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows() + _evolution_shots(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
 		"explosion_large": func() -> void: _save(_sheet([TowerArt.new().explosion_frames(TowerArt.EXPLOSION_LARGE_SIZE)], Layouts.EXPLOSION_LARGE["size"]), Layouts.EXPLOSION_LARGE["png"]),
 		"frost_nova": func() -> void: _save(_sheet([TowerArt.new().frost_nova_frames()], Layouts.FROST_NOVA["size"]), Layouts.FROST_NOVA["png"]),
-		"burn": func() -> void: _save(_sheet([TowerArt.new().burn_frames()], Layouts.BURN["size"]), Layouts.BURN["png"]),
+		"burn": func() -> void: _save(_sheet([TowerArt.new().burn_frames(), EvolutionArt.new().soul_burn_frames()], Layouts.BURN["size"]), Layouts.BURN["png"]),
+		"soul_burst": func() -> void: _save(_sheet([EvolutionArt.new().soul_burst_frames()], Layouts.SOUL_BURST["size"]), Layouts.SOUL_BURST["png"]),
+		"evolution_fx": func() -> void: _save(_sheet([EvolutionArt.new().arrow_rain_frames()], Layouts.EVOLUTION_FX["size"]), Layouts.EVOLUTION_FX["png"]),
+		"grapeshot": func() -> void: _save(_sheet(_grapeshot_rows(), Layouts.GRAPESHOT["size"]), Layouts.GRAPESHOT["png"]),
+		"status": func() -> void: _save(_sheet(EvolutionArt.new().status_rows(), Layouts.STATUS["size"]), Layouts.STATUS["png"]),
 		"upgrade_icons": _upgrade_icons,
 		"frost": func() -> void: _save(_sheet(TowerArt.new().frost_rows(), Layouts.FROST_FX["size"]), Layouts.FROST_FX["png"]),
 		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
@@ -121,6 +126,26 @@ func _ground() -> Image:
 	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
 
 # ---------------------------------------------------------------- image helpers
+
+## The evolution shots, after the base towers' rows: sniper shot and harpoon (8 directions each),
+## the mortar shell.
+func _evolution_shots() -> Array[Array]:
+	var art: RefCounted = EvolutionArt.new()
+	var rows: Array[Array] = []
+	for direction: int in 8:
+		rows.append([art.sniper_shot(direction)])
+	for direction: int in 8:
+		rows.append([art.harpoon(direction)])
+	rows.append(art.mortar_shell_frames())
+	return rows
+
+
+func _grapeshot_rows() -> Array[Array]:
+	var rows: Array[Array] = []
+	for direction: int in 8:
+		rows.append(EvolutionArt.new().grapeshot_frames(direction))
+	return rows
+
 
 func _blank(size: Vector2i) -> Image:
 	return Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)

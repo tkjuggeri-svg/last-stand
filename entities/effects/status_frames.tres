@@ -1,0 +1,91 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/status.png" id="1_ris6h"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2aeol"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(0, 56, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d0m6o"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(24, 56, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lxhko"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(48, 56, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0038l"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(72, 56, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ooela"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(0, 0, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_glnpy"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(24, 0, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dg3wy"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(0, 28, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4sg0s"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(24, 28, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hflax"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(48, 28, 24, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7fgy7"]
+atlas = ExtResource("1_ris6h")
+region = Rect2(72, 28, 24, 28)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2aeol")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d0m6o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lxhko")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0038l")
+}],
+"loop": 1,
+"name": &"beacon_ember",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ooela")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_glnpy")
+}],
+"loop": 1,
+"name": &"frozen",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dg3wy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4sg0s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hflax")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7fgy7")
+}],
+"loop": 1,
+"name": &"shattered",
+"speed": 8.0
+}]

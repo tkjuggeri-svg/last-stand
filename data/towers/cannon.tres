@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="1_data"]
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_yxcx4"]
+[ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
 
 [sub_resource type="Resource" id="Resource_yxcx4"]
 script = ExtResource("3_yxcx4")
@@ -22,6 +23,33 @@ splash_radius = 50.0
 projectile_look = &"cannonball_heavy"
 large_blast = true
 
+[sub_resource type="Resource" id="Resource_evo_siege_mortar"]
+script = ExtResource("9_evolution")
+id = &"siege_mortar"
+display_name = "Siege Mortar"
+description = "Reaches the whole field with huge, very slow blasts, but can't hit anything close."
+cost = 480
+damage = 90
+fire_interval = 4.5
+attack_range = 1400.0
+splash_radius = 80.0
+large_blast = true
+projectile_speed = 380.0
+projectile_look = &"mortar_shell"
+min_range = 220.0
+
+[sub_resource type="Resource" id="Resource_evo_grapeshot_battery"]
+script = ExtResource("9_evolution")
+id = &"grapeshot_battery"
+display_name = "Grapeshot Battery"
+description = "Sprays grapeshot at close range: everything in the cone is hit, fast."
+cost = 480
+damage = 22
+fire_interval = 0.9
+attack_range = 150.0
+attack = 2
+cone_angle = 70.0
+
 [resource]
 script = ExtResource("1_data")
 id = &"cannon"
@@ -38,3 +66,4 @@ splash_radius = 40.0
 homing = false
 muzzle_offset = Vector2(14, -22)
 tiers = Array[ExtResource("3_yxcx4")]([SubResource("Resource_yxcx4"), SubResource("Resource_tojmg")])
+evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_siege_mortar"), SubResource("Resource_evo_grapeshot_battery")])

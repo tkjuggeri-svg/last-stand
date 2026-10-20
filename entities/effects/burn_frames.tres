@@ -18,6 +18,22 @@ region = Rect2(96, 0, 48, 32)
 atlas = ExtResource("1_357at")
 region = Rect2(144, 0, 48, 32)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_qt3su"]
+atlas = ExtResource("1_357at")
+region = Rect2(0, 32, 48, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wclff"]
+atlas = ExtResource("1_357at")
+region = Rect2(48, 32, 48, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c657e"]
+atlas = ExtResource("1_357at")
+region = Rect2(96, 32, 48, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qd6al"]
+atlas = ExtResource("1_357at")
+region = Rect2(144, 32, 48, 32)
+
 [resource]
 animations = [{
 "frames": [{
@@ -35,5 +51,22 @@ animations = [{
 }],
 "loop": 1,
 "name": &"burn",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qt3su")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wclff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c657e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qd6al")
+}],
+"loop": 1,
+"name": &"soul_burn",
 "speed": 10.0
 }]

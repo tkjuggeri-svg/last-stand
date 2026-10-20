@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/build_menu/build_menu.gd" id="1_menu"]
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://ui/build_menu/evolution_choice.gd" id="9_evolutions"]
 
 [node name="BuildMenu" type="CanvasLayer"]
 layer = 5
@@ -102,6 +103,13 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
 text = "Sell   +25 gold"
+
+[node name="Evolutions" type="HBoxContainer" parent="Panel/Content"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+script = ExtResource("9_evolutions")
 
 [node name="Details" type="Label" parent="Panel/Content"]
 unique_name_in_owner = true

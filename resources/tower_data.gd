@@ -55,6 +55,8 @@ extends Resource
 @export_group("Upgrades")
 ## Level 2, 3, ... in order.
 @export var tiers: Array[TowerTier] = []
+## The two level-4 branches offered at the highest level (TowerEvolution); the choice is permanent.
+@export var evolutions: Array[TowerEvolution] = []
 
 var _level_one: TowerTier
 

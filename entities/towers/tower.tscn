@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://entities/towers/tower.gd" id="1_tower"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/tower_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="4_status"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 14.0
@@ -41,3 +42,13 @@ monitorable = false
 [node name="RangeShape" type="CollisionShape2D" parent="RangeArea"]
 unique_name_in_owner = true
 shape = SubResource("CircleShape2D_range")
+
+[node name="BoostMark" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+position = Vector2(18, -76)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("4_status")
+animation = &"beacon_ember"
+autoplay = "beacon_ember"

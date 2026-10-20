@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://entities/towers/arrow_rain.gd" id="1_rain"]
+[ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
+[ext_resource type="PackedScene" path="res://entities/towers/landing_marker.tscn" id="3_marker"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/evolution_fx_frames.tres" id="4_frames"]
+
+[node name="ArrowRain" type="Node2D"]
+script = ExtResource("1_rain")
+
+[node name="Marker" parent="." instance=ExtResource("3_marker")]
+unique_name_in_owner = true
+z_index = -1
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -20)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("4_frames")
+animation = &"arrow_rain"
+
+[node name="Hitbox" type="Area2D" parent="."]
+unique_name_in_owner = true
+collision_layer = 0
+collision_mask = 0
+monitorable = false
+script = ExtResource("2_hitbox")

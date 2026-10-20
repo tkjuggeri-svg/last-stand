@@ -1,0 +1,60 @@
+[gd_resource type="SpriteFrames" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/soul_burst.png" id="1_fbc06"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nnxxm"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(0, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwvcr"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(56, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_018lc"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(112, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t7jxc"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(168, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xegj4"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(224, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lvyiv"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(280, 0, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d28yg"]
+atlas = ExtResource("1_fbc06")
+region = Rect2(336, 0, 56, 56)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nnxxm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rwvcr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_018lc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t7jxc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xegj4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lvyiv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d28yg")
+}],
+"loop": 0,
+"name": &"soul_burst",
+"speed": 16.0
+}]

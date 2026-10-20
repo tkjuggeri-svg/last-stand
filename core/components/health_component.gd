@@ -11,6 +11,8 @@ signal shield_changed(amount: int)
 @export var max_health: int = 100
 
 var current_health: int
+## Incoming damage is multiplied by this (a vulnerable enemy takes more), before any shield.
+var damage_taken_multiplier: float = 1.0
 var _shield: int = 0
 var _shield_left: float = 0.0
 
@@ -36,6 +38,8 @@ func take_damage(amount: int) -> void:
 	# Dead things can't die twice, so ignore hits after death.
 	if is_dead() or amount <= 0:
 		return
+	if damage_taken_multiplier != 1.0:
+		amount = maxi(roundi(amount * damage_taken_multiplier), 1)
 	if _shield > 0:
 		var absorbed: int = mini(_shield, amount)
 		_set_shield(_shield - absorbed)

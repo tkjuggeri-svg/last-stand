@@ -2,8 +2,10 @@ class_name TowerBuilder
 extends Node
 ## Owns the rules for building, upgrading and selling towers on the level's BuildSlots: one tower per
 ## slot, pay the full cost to build or to upgrade a level (never below 0 gold), get sell_refund_ratio
-## of everything spent on that tower (build + upgrades) back when selling. Also tracks which slot the
-## hero is standing at. Never pauses the game.
+## of everything spent on that tower (build + upgrades + evolution) back when selling. At level 3 a
+## tower can evolve once into one of its two TowerData.evolutions (level 4, for good). Keeps the
+## Beacon Flames' fire-rate boost on the towers in their reach up to date (one boost per tower, never
+## stacking). Also tracks which slot the hero is standing at. Never pauses the game.
 
 signal active_slot_changed(slot: BuildSlot)
 signal tower_built(slot: BuildSlot, tower: Tower)
@@ -11,12 +13,15 @@ signal tower_sold(slot: BuildSlot, refund: int)
 signal build_failed(slot: BuildSlot, data: TowerData, reason: String)
 signal tower_upgraded(slot: BuildSlot, tower: Tower, level: int)
 signal upgrade_failed(slot: BuildSlot, reason: String)
+signal tower_evolved(slot: BuildSlot, tower: Tower, evolution: TowerEvolution)
 
 const NOT_ENOUGH_GOLD: String = "Not enough gold"
 const SLOT_OCCUPIED: String = "This slot already has a tower"
 const MAX_LEVEL: String = "Already at the highest level"
 const NO_TOWER: String = "No tower here"
 const UNDER_CONSTRUCTION: String = "Still under construction"
+const NOT_YET: String = "Evolves at level 3"
+const ALREADY_EVOLVED: String = "Already evolved"
 
 @export var economy: Economy
 ## The run's upgrades: handed to every tower, and they can make tower upgrades cheaper.
@@ -36,6 +41,8 @@ func _ready() -> void:
 	for slot: BuildSlot in get_slots():
 		slot.hero_entered.connect(_on_slot_hero_entered)
 		slot.hero_exited.connect(_on_slot_hero_exited)
+	if modifiers != null:
+		modifiers.changed.connect(refresh_boosts)  # a range upgrade can reach more towers
 
 
 func get_slots() -> Array[BuildSlot]:
@@ -92,8 +99,64 @@ func upgrade(slot: BuildSlot) -> bool:
 		return false
 	tower.invested += cost
 	tower.set_level(tower.get_level() + 1)
+	refresh_boosts()
 	tower_upgraded.emit(slot, tower, tower.get_level())
 	return true
+
+
+## The two branches the slot's tower can take now (empty: no tower, below level 3, or evolved).
+func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
+	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level():
+		return []
+	return slot.tower.data.evolutions.duplicate()
+
+
+## Gold for an evolution (tower-upgrade discounts apply).
+func evolution_cost(evolution: TowerEvolution) -> int:
+	return RunModifiers.value_int(modifiers, evolution.cost, [RunModifiers.TOWER_UPGRADE_COST])
+
+
+## Evolves the slot's tower into its `index`-th branch if allowed and paid. Permanent.
+func evolve(slot: BuildSlot, index: int) -> bool:
+	if slot == null or slot.is_empty():
+		upgrade_failed.emit(slot, NO_TOWER)
+		return false
+	var tower: Tower = slot.tower
+	if tower.is_evolved():
+		upgrade_failed.emit(slot, ALREADY_EVOLVED)
+		return false
+	if not tower.is_max_level() or index < 0 or index >= tower.data.evolutions.size():
+		upgrade_failed.emit(slot, NOT_YET)
+		return false
+	if tower.is_building():
+		upgrade_failed.emit(slot, UNDER_CONSTRUCTION)
+		return false
+	var evolution: TowerEvolution = tower.data.evolutions[index]
+	var cost: int = evolution_cost(evolution)
+	if not economy.try_spend(cost):
+		upgrade_failed.emit(slot, NOT_ENOUGH_GOLD)
+		return false
+	tower.invested += cost
+	tower.evolve(evolution)
+	refresh_boosts()
+	tower_evolved.emit(slot, tower, evolution)
+	return true
+
+
+## Gives every tower the best Beacon Flame boost that reaches it (none for the beacons themselves).
+func refresh_boosts() -> void:
+	var towers: Array[Tower] = []
+	for slot: BuildSlot in get_slots():
+		if not slot.is_empty():
+			towers.append(slot.tower)
+	for tower: Tower in towers:
+		var boost: float = 0.0
+		for beacon: Tower in towers:
+			var evolution: TowerEvolution = beacon.get_evolution()
+			if beacon != tower and evolution != null and evolution.boost_fire_rate > 0.0 \
+					and beacon.global_position.distance_to(tower.global_position) <= beacon.get_attack_range():
+				boost = maxf(boost, evolution.boost_fire_rate)
+		tower.set_fire_rate_boost(boost)
 
 
 func build(slot: BuildSlot, data: TowerData) -> bool:
@@ -110,6 +173,7 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 	tower.modifiers = modifiers
 	tower.invested = data.cost
 	slot.place(tower)
+	refresh_boosts()
 	tower_built.emit(slot, tower)
 	return true
 
@@ -124,6 +188,7 @@ func sell(slot: BuildSlot) -> int:
 		return 0
 	var refund: int = refund_for_tower(tower)
 	tower.queue_free()
+	refresh_boosts()
 	economy.earn(refund, Economy.Source.REFUND)
 	tower_sold.emit(slot, refund)
 	return refund

@@ -1,8 +1,9 @@
 class_name BuildSlot
 extends Node2D
 ## A fixed place where exactly one tower can stand. Shows a stone pad, glows while the hero is close
-## (with an "E" prompt) and draws a range ring: the one the build menu asks for, or its tower's range
-## while the mouse is over the slot. Building and selling rules live in TowerBuilder.
+## (with an "E" prompt) and draws range rings: the ones the build menu asks for (one, or two side by
+## side for an evolution choice, each with its own colour and dead zone), or its tower's range while
+## the mouse is over the slot. Building and selling rules live in TowerBuilder.
 
 signal hero_entered(slot: BuildSlot)
 signal hero_exited(slot: BuildSlot)
@@ -16,8 +17,8 @@ const HOVER_RECT: Rect2 = Rect2(-30, -96, 60, 116)
 ## The tower standing here, or null.
 var tower: Tower = null
 
-## Range ring requested by the build menu (0 = none).
-var _menu_range: float = 0.0
+## Rings requested by the build menu: [outer radius, inner radius (dead zone, 0 = none), colour].
+var _menu_rings: Array = []
 var _hovered: bool = false
 
 @onready var _pad: Sprite2D = %Pad
@@ -66,7 +67,12 @@ func set_highlighted(highlighted: bool) -> void:
 
 ## Draws a range ring (0 hides it) while the build menu is open here.
 func show_range(radius: float) -> void:
-	_menu_range = radius
+	show_rings([[radius, 0.0, RANGE_COLOR]] if radius > 0.0 else [])
+
+
+## Draws several rings at once ([outer, inner, colour] each; empty hides them).
+func show_rings(rings: Array) -> void:
+	_menu_rings = rings
 	queue_redraw()
 
 
@@ -82,11 +88,20 @@ func is_hovered() -> bool:
 	return _hovered
 
 
-## The radius of the ring being drawn (0 = none).
+## The radius of the (first) ring being drawn (0 = none).
 func get_shown_range() -> float:
-	if _menu_range > 0.0:
-		return _menu_range
+	if not _menu_rings.is_empty():
+		return _menu_rings[0][0]
 	return tower.get_attack_range() if _hovered and tower != null else 0.0
+
+
+## Every ring being drawn: the menu's, else the hovered tower's (with its dead zone).
+func get_shown_rings() -> Array:
+	if not _menu_rings.is_empty():
+		return _menu_rings
+	if _hovered and tower != null:
+		return [[tower.get_attack_range(), tower.get_min_range(), RANGE_COLOR]]
+	return []
 
 
 ## A dust cloud when a tower goes up or comes down (display only).
@@ -120,14 +135,18 @@ func _update_prompt() -> void:
 
 
 func _draw() -> void:
-	var radius: float = get_shown_range()
+	for ring: Array in get_shown_rings():
+		_draw_ring(ring[0], ring[2])
+		if ring[1] > 0.0:
+			_draw_ring(ring[1], Color(ring[2], ring[2].a * 0.6))
+
+
+## A dashed ring, drawn in 2 px segments so it matches the pixel art (more dashes for big rings).
+func _draw_ring(radius: float, color: Color) -> void:
 	if radius <= 0.0:
 		return
-	# A dashed ring, drawn in 2 px segments so it matches the pixel art.
-	var segments: int = 64
-	for i: int in segments:
-		if i % 2 == 1:
-			continue
+	var segments: int = maxi(64, roundi(radius / 6.0) * 2)
+	for i: int in range(0, segments, 2):
 		var a: float = TAU * i / segments
 		var b: float = TAU * (i + 1) / segments
-		draw_line(Vector2.from_angle(a) * radius, Vector2.from_angle(b) * radius, RANGE_COLOR, 2.0)
+		draw_line(Vector2.from_angle(a) * radius, Vector2.from_angle(b) * radius, color, 2.0)

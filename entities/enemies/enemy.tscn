@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="12_light"]
 [ext_resource type="Script" path="res://entities/enemies/enemy_look.gd" id="13_look"]
 [ext_resource type="Script" path="res://entities/enemies/shield_bubble.gd" id="14_bubble"]
+[ext_resource type="Script" path="res://entities/enemies/enemy_status.gd" id="15_status"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="16_status_fx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -85,6 +87,22 @@ scale = Vector2(2, 2)
 sprite_frames = ExtResource("10_frost")
 animation = &"frost_aura"
 
+[node name="FrozenMark" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 1
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("16_status_fx")
+animation = &"frozen"
+
+[node name="ShatterMark" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 2
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("16_status_fx")
+animation = &"shattered"
+
 [node name="HealthBar" type="Node2D" parent="."]
 unique_name_in_owner = true
 z_index = 2
@@ -99,6 +117,10 @@ script = ExtResource("14_bubble")
 [node name="Look" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("13_look")
+
+[node name="Status" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("15_status")
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true

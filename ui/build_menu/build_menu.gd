@@ -2,17 +2,14 @@ extends CanvasLayer
 ## Build / upgrade / sell panel for the slot the hero is standing at. Opens with E (interact); closes
 ## with E, Esc or by walking away. Shows a card per tower (icon, name, price, Build) with the focused
 ## or hovered tower's description and stats underneath, or the built tower's level and stats, what
-## the next level changes and costs (Upgrade), and its sell refund.
+## the next level changes and costs (Upgrade), its two evolutions at level 3 (EvolutionChoice: side
+## by side, permanent), and its sell refund.
 ## Display and intents only: TowerBuilder decides. Never pauses the game.
 
-const TOWER_FRAMES: SpriteFrames = preload("res://entities/towers/tower_frames.tres")
 const COIN: Texture2D = preload("res://assets/sprites/ui/coin.png")
 const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
 const OK_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
-## Part of a tower frame used as its menu icon (art px): skip the empty sky above the tallest tower.
-const ICON_TOP: float = 4.0
-const ICON_SIZE: Vector2 = Vector2(32, 40)
 
 @export var builder: TowerBuilder
 @export var economy: Economy
@@ -34,6 +31,7 @@ var _cost_labels: Dictionary = {}
 @onready var _upgrade_button: Button = %UpgradeButton
 @onready var _upgrade_info: Label = %UpgradeInfo
 @onready var _details: Label = %Details
+@onready var _evolutions: EvolutionChoice = %Evolutions
 
 
 func _ready() -> void:
@@ -50,6 +48,7 @@ func _ready() -> void:
 		builder.tower_sold.connect(_on_tower_sold)
 		builder.tower_upgraded.connect(_on_tower_upgraded)
 		builder.upgrade_failed.connect(_on_upgrade_failed)
+		builder.tower_evolved.connect(_on_tower_evolved)
 	if economy != null:
 		economy.gold_changed.connect(_on_gold_changed)
 
@@ -105,6 +104,7 @@ func _rebuild() -> void:
 	_options.visible = empty
 	_details.visible = empty
 	_tower_info.visible = not empty
+	_evolutions.visible = false
 	if empty:
 		_title.text = "Build a tower"
 		for data: TowerData in builder.catalog:
@@ -118,14 +118,17 @@ func _rebuild() -> void:
 	else:
 		var tower: Tower = _slot.tower
 		var data: TowerData = tower.data
-		_title.text = "%s   Level %d" % [data.display_name, tower.get_level()]
-		_info_icon.texture = _icon_for(data, tower.get_level())
-		_info_name.text = data.description
-		_info_text.text = _stats_text(tower.get_stats())
+		var evolution: TowerEvolution = tower.get_evolution()
+		_title.text = "%s   Level %d" % [data.display_name if evolution == null else "%s (%s)" % [evolution.display_name, data.display_name], tower.get_level()]
+		_info_icon.texture = TowerIcons.for_level(data, tower.get_level()) if evolution == null else TowerIcons.for_evolution(data, evolution)
+		_info_name.text = data.description if evolution == null else evolution.description
+		_info_text.text = _stats_text(tower.get_stats()) if evolution == null else (tower.get_stats() as TowerEvolution).key_numbers()
 		_sell_button.text = "Sell   +%d gold" % builder.refund_for_tower(tower)
 		_update_upgrade()
 		_details.text = ""
-		_slot.show_range(_slot.tower.get_attack_range())
+		_slot.show_rings([[tower.get_attack_range(), tower.get_min_range(), BuildSlot.RANGE_COLOR]])
+		if _evolutions.show_for(builder, _slot):
+			_evolutions.refresh_gold(economy.get_gold() if economy != null else 0)
 		(_upgrade_button if not _upgrade_button.disabled else _sell_button).grab_focus.call_deferred()
 	_fit_panel()
 
@@ -145,7 +148,7 @@ func _make_card(data: TowerData) -> Control:
 	row.add_theme_constant_override("separation", 10)
 	card.add_child(row)
 	var icon: TextureRect = TextureRect.new()
-	icon.texture = _icon_for(data)
+	icon.texture = TowerIcons.for_level(data)
 	icon.custom_minimum_size = Vector2(64, 80)
 	icon.stretch_mode = TextureRect.STRETCH_KEEP
 	row.add_child(icon)
@@ -193,19 +196,6 @@ func _preview_range(data: TowerData) -> void:
 		_slot.show_range(data.attack_range)
 
 
-## The upper part of the tower's first idle frame at `level` (32x40 art px), shown at the 2x art scale.
-func _icon_for(data: TowerData, level: int = 1) -> Texture2D:
-	var anim: StringName = StringName("%s_idle" % data.id if level <= 1 else "%s_idle_%d" % [data.id, level])
-	if not TOWER_FRAMES.has_animation(anim):
-		anim = StringName("%s_idle" % data.id)
-	var frame: AtlasTexture = TOWER_FRAMES.get_frame_texture(anim, 0) as AtlasTexture
-	if frame == null:
-		return null
-	var image: Image = frame.atlas.get_image().get_region(Rect2i(Rect2(frame.region.position + Vector2(0, ICON_TOP), ICON_SIZE)))
-	image.resize(image.get_width() * 2, image.get_height() * 2, Image.INTERPOLATE_NEAREST)
-	return ImageTexture.create_from_image(image)
-
-
 func _stats_text(stats: TowerTier) -> String:
 	var lines: Array[String] = ["Damage %d every %s s, range %d" % [stats.damage, String.num(stats.fire_interval, 2), roundi(stats.attack_range)]]
 	if stats.damage <= 0:
@@ -231,8 +221,8 @@ func _update_upgrade() -> void:
 	var tower: Tower = _slot.tower
 	var cost: int = builder.upgrade_cost(_slot)
 	if cost < 0:
-		_upgrade_info.text = "Highest level."
-		_upgrade_button.text = "Max level"
+		_upgrade_info.text = "Choose an evolution below: it is for good." if not builder.evolution_options(_slot).is_empty() else "Highest level."
+		_upgrade_button.text = "Evolved" if tower.is_evolved() else "Max level"
 		_upgrade_button.disabled = true
 		return
 	var next: TowerTier = tower.data.stats_for(tower.get_level() + 1)
@@ -243,6 +233,8 @@ func _update_upgrade() -> void:
 
 func _on_gold_changed(gold: int) -> void:
 	_update_upgrade()
+	if _evolutions.visible:
+		_evolutions.refresh_gold(gold)
 	for data: TowerData in _cost_labels:
 		var label: Label = _cost_labels[data]
 		if is_instance_valid(label):
@@ -259,6 +251,12 @@ func _on_tower_upgraded(slot: BuildSlot, tower: Tower, level: int) -> void:
 		_rebuild()
 		_show_message("Upgraded to level %d." % level, OK_COLOR)
 		_slot.show_range(tower.get_attack_range())
+
+
+func _on_tower_evolved(slot: BuildSlot, _tower: Tower, evolution: TowerEvolution) -> void:
+	if slot == _slot:
+		_rebuild()
+		_show_message("Evolved into %s." % evolution.display_name, OK_COLOR)
 
 
 func _on_upgrade_failed(slot: BuildSlot, reason: String) -> void:

@@ -306,6 +306,27 @@ const TOWERS: Dictionary = {
 		["ballista_fire_2", 37, 4, 12.0, false],
 		["ballista_idle_3", 38, 4, 5.0, true],
 		["ballista_fire_3", 39, 4, 12.0, false],
+		# Evolutions (level 4, evolution_art.gd): idle and fire, named by the evolution's id.
+		["sniper_nest_idle", 40, 4, 5.0, true],
+		["sniper_nest_fire", 41, 4, 12.0, false],
+		["volley_tower_idle", 42, 4, 5.0, true],
+		["volley_tower_fire", 43, 4, 12.0, false],
+		["siege_mortar_idle", 44, 4, 5.0, true],
+		["siege_mortar_fire", 45, 4, 12.0, false],
+		["grapeshot_battery_idle", 46, 4, 5.0, true],
+		["grapeshot_battery_fire", 47, 4, 12.0, false],
+		["glacier_spire_idle", 48, 4, 6.0, true],
+		["glacier_spire_fire", 49, 4, 12.0, false],
+		["shatter_shrine_idle", 50, 4, 6.0, true],
+		["shatter_shrine_fire", 51, 4, 12.0, false],
+		["pyre_of_souls_idle", 52, 4, 8.0, true],
+		["pyre_of_souls_fire", 53, 4, 12.0, false],
+		["beacon_flame_idle", 54, 4, 8.0, true],
+		["beacon_flame_fire", 55, 4, 12.0, false],
+		["harpoon_idle", 56, 4, 5.0, true],
+		["harpoon_fire", 57, 4, 12.0, false],
+		["repeater_idle", 58, 4, 5.0, true],
+		["repeater_fire", 59, 4, 12.0, false],
 	],
 }
 
@@ -335,6 +356,24 @@ const PROJECTILES: Dictionary = {
 		["bolt_5", 17, 1, 1.0, false],
 		["bolt_6", 18, 1, 1.0, false],
 		["bolt_7", 19, 1, 1.0, false],
+		# Evolution shots (evolution_art.gd).
+		["sniper_shot_0", 20, 1, 1.0, false],
+		["sniper_shot_1", 21, 1, 1.0, false],
+		["sniper_shot_2", 22, 1, 1.0, false],
+		["sniper_shot_3", 23, 1, 1.0, false],
+		["sniper_shot_4", 24, 1, 1.0, false],
+		["sniper_shot_5", 25, 1, 1.0, false],
+		["sniper_shot_6", 26, 1, 1.0, false],
+		["sniper_shot_7", 27, 1, 1.0, false],
+		["harpoon_0", 28, 1, 1.0, false],
+		["harpoon_1", 29, 1, 1.0, false],
+		["harpoon_2", 30, 1, 1.0, false],
+		["harpoon_3", 31, 1, 1.0, false],
+		["harpoon_4", 32, 1, 1.0, false],
+		["harpoon_5", 33, 1, 1.0, false],
+		["harpoon_6", 34, 1, 1.0, false],
+		["harpoon_7", 35, 1, 1.0, false],
+		["mortar_shell", 36, 2, 10.0, true],
 	],
 }
 
@@ -366,7 +405,41 @@ const BURN: Dictionary = {
 	"png": "res://assets/sprites/effects/burn.png",
 	"frames": "res://entities/effects/burn_frames.tres",
 	"size": Vector2i(48, 32),
-	"anims": [["burn", 0, 4, 10.0, true]],
+	"anims": [["burn", 0, 4, 10.0, true], ["soul_burn", 1, 4, 10.0, true]],
+}
+
+## Evolution effects (evolution_art.gd). The soul burst (Pyre of Souls): 56x56 art.
+const SOUL_BURST: Dictionary = {
+	"png": "res://assets/sprites/effects/soul_burst.png",
+	"frames": "res://entities/effects/soul_burst_frames.tres",
+	"size": Vector2i(56, 56),
+	"anims": [["soul_burst", 0, 7, 16.0, false]],
+}
+
+## Arrow rain (Volley Tower): 64x64 art = a 128 px shower.
+const EVOLUTION_FX: Dictionary = {
+	"png": "res://assets/sprites/effects/evolution_fx.png",
+	"frames": "res://entities/effects/evolution_fx_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [["arrow_rain", 0, 5, 16.0, false]],
+}
+
+## The grapeshot blast (Grapeshot Battery) in 8 directions (grapeshot_0 right, then clockwise).
+const GRAPESHOT: Dictionary = {
+	"png": "res://assets/sprites/effects/grapeshot.png",
+	"frames": "res://entities/effects/grapeshot_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [["grapeshot_0", 0, 4, 18.0, false], ["grapeshot_1", 1, 4, 18.0, false], ["grapeshot_2", 2, 4, 18.0, false],
+		["grapeshot_3", 3, 4, 18.0, false], ["grapeshot_4", 4, 4, 18.0, false], ["grapeshot_5", 5, 4, 18.0, false],
+		["grapeshot_6", 6, 4, 18.0, false], ["grapeshot_7", 7, 4, 18.0, false]],
+}
+
+## Status marks: an enemy frozen solid, a vulnerable enemy's cracked rune, a boosted tower's ember.
+const STATUS: Dictionary = {
+	"png": "res://assets/sprites/effects/status.png",
+	"frames": "res://entities/effects/status_frames.tres",
+	"size": Vector2i(24, 28),
+	"anims": [["frozen", 0, 2, 3.0, true], ["shattered", 1, 4, 8.0, true], ["beacon_ember", 2, 4, 8.0, true]],
 }
 
 const FROST_FX: Dictionary = {
@@ -377,7 +450,7 @@ const FROST_FX: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX]
+const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

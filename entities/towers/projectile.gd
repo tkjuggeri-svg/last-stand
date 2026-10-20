@@ -9,11 +9,13 @@ extends Node2D
 ## They travel along the ground from the tower's base while the sprite rises from the muzzle in an
 ## arc (with a shadow below it), a LandingMarker shows the blast area, and they explode on the point:
 ## whatever stands there is hit, an enemy that got away is not.
+## An evolved tower's shot can also freeze (Glacier Spire: `freezes`), drag its enemy back along the
+## lane (Harpoon) or leave soul fire (Pyre of Souls): see TowerEvolution.
 
 ## Close enough to count as arrived, in pixels.
 const ARRIVE_DISTANCE: float = 8.0
 ## Safety net: a shot never lives longer than this.
-const MAX_LIFETIME: float = 3.0
+const MAX_LIFETIME: float = 5.0
 ## How far past the tower's range a shot still follows its target (the target keeps walking while
 ## the shot is in the air).
 const RANGE_SLACK: float = 32.0
@@ -30,12 +32,15 @@ const BURN_ZONE_SCENE: PackedScene = preload("res://entities/towers/burn_zone.ts
 const PIERCE_REACH: float = 160.0
 const PIERCE_HIT_RADIUS: float = 10.0
 ## Looks drawn in 8 directions ("arrow_0".."arrow_7"), never rotated.
-const DIRECTIONAL_LOOKS: Array[StringName] = [&"arrow", &"bolt"]
+const DIRECTIONAL_LOOKS: Array[StringName] = [&"arrow", &"bolt", &"sniper_shot", &"harpoon"]
 
 var data: TowerData
 ## The firing tower's stats at its level (damage, blast, slow, look).
 var stats: TowerTier
 var target: Enemy
+## The firing tower's evolution (null = none) and whether this shot is one of its freezing ones.
+var evolution: TowerEvolution
+var freezes: bool = false
 
 var _destination: Vector2
 var _life: float = 0.0
@@ -132,7 +137,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		return
 	if _line:
-		_fly_line(data.projectile_speed * delta)
+		_fly_line(stats.shot_speed(data.projectile_speed) * delta)
 		return
 	if not _lost and _target_alive():
 		if target.global_position.distance_to(_anchor) <= _reach:
@@ -140,7 +145,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			_lost = true  # out of reach: fly on to the last aim point and fizzle there
 	var to_destination: Vector2 = _destination - global_position
-	var step: float = data.projectile_speed * delta
+	var step: float = stats.shot_speed(data.projectile_speed) * delta
 	if to_destination.length() <= maxf(step, ARRIVE_DISTANCE):
 		global_position = _destination
 		_impact()
@@ -191,7 +196,7 @@ func _impact() -> void:
 	if _target_alive() and not _lost:
 		target.receive_hit(_hitbox)
 		if stats.slow_factor < 1.0:
-			target.apply_slow(stats.slow_factor, stats.slow_duration)
+			_chill(target)
 			if stats.slow_area > 0.0:
 				_slow_area()
 				_finish_with(FROST_NOVA_SCENE.instantiate())
@@ -228,6 +233,8 @@ func _fly_line(step: float) -> void:
 			continue
 		_pierced.append(enemy)
 		enemy.receive_hit(_hitbox)
+		if _pierced.size() == 1 and evolution != null and evolution.drag_distance > 0.0:
+			enemy.drag_back(evolution.drag_distance * (evolution.boss_drag_factor if enemy.data.is_boss else 1.0))
 		_pierce_left -= 1
 	if _pierce_left <= 0 or _line_left <= 0.0:
 		queue_free()
@@ -240,6 +247,8 @@ func _leave_burn() -> void:
 		return
 	var zone: BurnZone = BURN_ZONE_SCENE.instantiate()
 	zone.setup(stats.burn_dps, stats.burn_radius, stats.burn_duration)
+	if evolution != null and evolution.death_burst_damage > 0:
+		zone.set_death_burst(evolution.death_burst_damage, evolution.death_burst_radius)
 	zone.top_level = true
 	zone.position = global_position
 	get_parent().add_child(zone)
@@ -248,7 +257,14 @@ func _leave_burn() -> void:
 ## Frost nova: every living enemy whose body is within slow_area of the impact is slowed too.
 func _slow_area() -> void:
 	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, stats.slow_area):
-		enemy.apply_slow(stats.slow_factor, stats.slow_duration)
+		_chill(enemy)
+
+
+## Slows the enemy; a freezing shot freezes it instead (a boss only gets the slow).
+func _chill(enemy: Enemy) -> void:
+	enemy.apply_slow(stats.slow_factor, stats.slow_duration)
+	if freezes and not enemy.data.is_boss:
+		enemy.get_status().freeze(evolution.freeze_time)
 
 
 ## Stops here and shows an impact effect; the shot removes itself once the effect is done.
