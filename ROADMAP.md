@@ -113,34 +113,88 @@ Tick items as they're finished.
 
 ---
 
-## M7 — Meta Progression & Persistence
-- [ ] Soul Shards, run summary screen
-- [ ] Meta hub: unlocks for towers/upgrades/hero bonuses
-- [ ] `SaveManager` (`user://` save, versioned)
-- [ ] Second hero (optional)
+## M6.5 — Economy, Difficulty & Tower Evolutions *(depth before release)*
+The Steam release is postponed to focus on depth and replayability (M7–M12); release prep moves to M14.
+
+- [x] Gold breakdown in the balance tool (`--gold`); snowballing removed (Bounty Hunters once per run)
+- [x] Scarce gold: kill gold per wave stays flat from wave 6 (`WaveData.gold_multiplier`); maxing every tower by wave 15 is out of reach without economy upgrades
+- [x] Gold sinks between waves (`Quartermaster`): fortress repairs (rising price), buy back a lost life (once per run)
+- [x] Difficulty for a good player: waves 10–15 press every lane at once, Cultist groups on several lanes, faster regulars (`WaveData.speed_multiplier`), harder bosses; the bot hero is the floor (idle never wins, the bot rarely). Playtest build `m6-playtest-2`
+- [ ] Hands-on playtest of `m6-playtest-2`; tune from the feedback
+- [ ] Tower evolutions (scope to be agreed before implementation)
+
+**Done when:** a good player wins narrowly, gold is a real choice every wave, and towers grow in ways that change how a run plays.
+
+---
+
+## M7 — Run Map
+A Slay the Spire–style node map per run, instead of one fixed sequence of waves.
+- [ ] Design: map shape (rows, branching, node count), node types and their odds, how a node maps to waves on a level, how the run's length and difficulty curve survive the branching (decide with the user before building)
+- [ ] `RunMap` data (seeded generation, run-wide state between nodes) and a map screen: pick the next reachable node, see the path so far
+- [ ] Node types: battle (one or a few waves), elite battle (harder, better reward), merchant (spend gold: upgrades, repairs, towers or relics later), shrine (a risky deal: a gain with a price or a gamble), random event (text + choice), boss (ends an act / the run)
+- [ ] What carries between nodes: gold, fortress HP, hero lives, run upgrades, towers (decide: kept, partly refunded or rebuilt per battle)
+- [ ] Run flow: Main owns the map ↔ level switching; Restart / Game Over / Victory work across the whole map run
+- [ ] Optional small early SFX pass (hits, deaths, UI clicks) if it helps playtesting
+- [ ] Tests (generation, reachability, node outcomes, run state carried over) and balance tool support for map runs
+
+**Done when:** two runs take visibly different paths through the map, and the path chosen changes how the run goes.
+
+---
+
+## M8 — Meta Progression & Persistence
+- [ ] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
+- [ ] Hub between runs: spend Soul Shards on unlocks (towers, upgrades into the pool, hero bonuses)
+- [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)
+- [ ] Unlock pacing: what is available on the first run, what comes later
+- [ ] Main flow: start → hub → run → summary → hub
+- [ ] Optional small early SFX pass (if not done in M7)
+- [ ] Tests: save/load round trip, version migration, unlocks applied to a run
 
 **Done when:** there's a reason to start another run after dying.
 
 ---
 
-## M8 — Audio, Feel & Presentation
-- [ ] Art pass for whatever M5–M7 add (new towers, Cultist, bosses, upgrade/meta UI) in the M3.5 style — the M2–M4 content (towers, Hound, Brute, UI frames) already has final-style art
-- [ ] SFX + music
-- [ ] Juice: screen shake, damage numbers, particles (hit flash done in M2)
-- [ ] Main menu, title, credits
+## M9 — Heroes & Relics
+2–3 heroes with distinct playstyles (e.g. the knight, a ranged hero, a summoner) and relics: rare items that change the rules of a run rather than add stats.
+
+**Done when:** picking a different hero or finding a key relic changes how you play the run.
+
+---
+
+## M10 — Maps & Biomes
+2–3 new maps with their own lane layouts, enemies and bosses, in their own visual biome.
+
+**Done when:** each map asks for a different defence plan.
+
+---
+
+## M11 — World & Story
+Lore, characters, event texts for the run map, and an ending.
+
+**Done when:** a player knows why they fight and gets an ending for winning.
+
+---
+
+## M12 — Longevity
+Endless mode and unlockable difficulty levels (ascension-style modifiers).
+
+**Done when:** a player who has won keeps finding a harder reason to play.
+
+---
+
+## M13 — Audio & Presentation
+SFX and music, juice (screen shake, particles, hit feedback), main menu, title and credits, and an art pass over everything added since M6 in the `ART_DIRECTION.md` style. A small early SFX pass can come in M7–M8.
 
 **Done when:** a stranger can watch a 30 s clip and understand + want the game. → **Steam page / trailer / demo.**
 
 ---
 
-## M9 — Steam Release Prep
-- [ ] Release build pipeline (the Linux/Windows presets and the playtest build script exist since M6): signing, store builds
-- [ ] Steam integration (achievements, cloud saves) — decide approach (GodotSteam is an external dependency → needs explicit approval)
-- [ ] Controller support
-- [ ] Performance pass (many enemies/projectiles on screen)
-- [ ] Bug bash, Early Access / 1.0 decision
+## M14 — Steam Release Prep
+Release build pipeline (signing, store builds; the playtest presets and script exist since M6), Steam integration (achievements, cloud saves; GodotSteam is an external dependency and needs explicit approval), controller support, a performance pass, a bug bash and the Early Access / 1.0 decision.
+
+**Done when:** the game is on Steam.
 
 ---
 
 ## Current focus
-**M6 complete** (dash, Cultist, three bosses, 15-wave run tuned with a hero bot, pause menu and settings, playtest build tooling). Awaiting hands-on playtest feedback before M7.
+**M6.5** (economy, difficulty, tower evolutions): economy and difficulty are done and built as `m6-playtest-2`; waiting for hands-on playtest feedback. Tower evolutions are next, once their scope is agreed. Don't start M7 yet.
