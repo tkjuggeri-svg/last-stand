@@ -1,6 +1,6 @@
 extends SceneTree
-## Automated check for the HUD and the HealthBar widget, and the bottom-left panel turning see-through
-## while the hero is behind it (SeeThrough).
+## Automated check for the HUD and the HealthBar widget, and the HUD's panels (bottom-left stats, wave,
+## Quartermaster) turning see-through while the hero is behind them (SeeThrough).
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 var _failures: int = 0
@@ -78,6 +78,19 @@ func _test_see_through() -> void:
 	hero.global_position = floor_rect.get_center()
 	await _frames(60)
 	_check("...and solid again when the hero leaves (alpha %.2f)" % panel.modulate.a, not see_through.is_covering() and panel.modulate.a > 0.95)
+	# Top-left: the wave panel, and the Quartermaster panel under it (shown: the walls are damaged).
+	var hud: Node = level.get_node("HUD")
+	var wave_panel: Control = hud.get_node("%WaveSeeThrough").get_parent()
+	var services: Control = hud.get_node("%ServicesPanel")
+	(level.get_node("Fortress") as Fortress).health.take_damage(30)
+	hero.global_position = floor_rect.position + Vector2(60, 40)
+	await _frames(60)
+	_check("hero behind the wave panel: it turns see-through (alpha %.2f), the Quartermaster's doesn't" % wave_panel.modulate.a,
+		wave_panel.modulate.a < 0.35 and services.visible and services.modulate.a > 0.95)
+	hero.global_position = floor_rect.position + Vector2(60, 200)
+	await _frames(60)
+	_check("hero behind the Quartermaster panel: it turns see-through (alpha %.2f), the wave panel is solid again" % services.modulate.a,
+		services.modulate.a < 0.35 and wave_panel.modulate.a > 0.95)
 	level.queue_free()
 	await _frames(2)
 

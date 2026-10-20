@@ -3,7 +3,8 @@ extends CanvasLayer
 ## banners when a boss arrives or falls, gold, enemy counts, the wave and phase (with the "Start
 ## wave" button and key during the build phase, and the Quartermaster's repairs / life buy-back), and
 ## short event notifications.
-## The bottom-left panel turns see-through while the hero is behind it (SeeThrough).
+## The bottom-left panel, the wave panel and the Quartermaster panel turn see-through while the hero
+## is behind them (SeeThrough).
 ## Assign its targets in the level scene. Parts whose target is not assigned are hidden, so the HUD
 ## also runs on its own. It only displays and sends the start-wave intent; RunCycle decides.
 
@@ -124,7 +125,8 @@ func _ready() -> void:
 			await fortress.ready
 		_fortress_bar.track(fortress.health)
 	if hero != null:
-		(%SeeThrough as SeeThrough).track(hero)
+		for fade: SeeThrough in [%SeeThrough, %WaveSeeThrough, _services.get_node("%SeeThrough")]:
+			fade.track(hero)
 		if not hero.is_node_ready():
 			await hero.ready
 		_hero_bar.track(hero.health)
