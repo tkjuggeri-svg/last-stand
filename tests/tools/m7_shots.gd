@@ -1,11 +1,11 @@
 extends RefCounted
 ## The "m7" screenshot scenario of capture_screenshots.gd: the run map at the start, a battle's reward
 ## (one choice per battle), the map after it (the path taken marked), an elite node described (its
-## mini-boss and twist), and a merchant's shop. `--only=map,merchant` runs just some parts.
+## mini-boss and twist), a merchant's shop, an event and a shrine.
 
 ## The capture tool (a SceneTree script): its _shot() and _frames().
 var _tool: SceneTree
-var _only: PackedStringArray
+var _only: PackedStringArray  # unused: the scenario is one sequence
 
 
 func _init(tool: SceneTree, only: PackedStringArray) -> void:
@@ -46,3 +46,10 @@ func run(main: Node) -> void:
 	(main.get_node("%MerchantScreen") as MerchantScreen).open(level.merchant)
 	await _tool.call("_frames", 10)
 	await _tool.call("_shot", "m7_05_merchant")
+	(main.get_node("%MerchantScreen") as MerchantScreen).hide()
+	var events: EventScreen = main.get_node("%EventScreen")
+	for id: String in ["wounded_knight", "shrine_whispers"]:
+		var scene: EventData = load("res://data/events/%s.tres" % id)
+		events.open(scene, level.events)
+		await _tool.call("_frames", 10)
+		await _tool.call("_shot", "m7_06_event" if not scene.shrine else "m7_07_shrine")

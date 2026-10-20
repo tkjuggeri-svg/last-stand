@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/events/knights_oath.tres" id="r0"]
+[ext_resource type="Resource" path="res://data/events/knights_sword.tres" id="r1"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("2_choice")
+label = "Tend his wounds"
+outcome = "Costs 60 gold. He joins the walls: fortress max HP +15 for the run."
+need = 1
+gold_cost = 60
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1")])
+result_text = "He stands, and takes his place on the walls. Knight's Oath: fortress max HP +15."
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r1")
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("2_choice")
+label = "Take his sword"
+outcome = "Sword damage +4, but hero max HP -15 for the run (his ghost haunts you)."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_3")])
+result_text = "The blade is light in your hand. Something cold follows you now."
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("2_choice")
+label = "Leave him"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You walk on. Behind you, the crows gather."
+
+[resource]
+script = ExtResource("1_event")
+id = &"wounded_knight"
+title = "The Wounded Knight"
+text = "A knight of your order lies by the road, his shield split, his sword still in his hand."
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_2"), SubResource("Resource_4"), SubResource("Resource_5")])

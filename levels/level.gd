@@ -34,6 +34,8 @@ const BOSS_SHAKE_TIME: float = 0.6
 @export var economy: Economy
 ## The run map's shop on this level (null on a level without one).
 @export var merchant: Merchant
+## Applies the run map's events and shrines to this level.
+@export var events: EventResolver
 
 var _run_over: bool = false
 var _encounter_mode: bool = false

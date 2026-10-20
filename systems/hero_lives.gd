@@ -77,6 +77,16 @@ func _on_modifiers_changed() -> void:
 	lives_changed.emit(_lives_left)
 
 
+## Takes one life away without a fall (a shrine's price); never the last one. Returns false if only
+## one is left.
+func lose_life() -> bool:
+	if _lives_left <= 1:
+		return false
+	_lives_left -= 1
+	lives_changed.emit(_lives_left)
+	return true
+
+
 ## Gives back one lost life (never above the max). Returns false if none was lost.
 func restore_life() -> bool:
 	if _lives_left >= _max_lives:

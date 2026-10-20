@@ -10,6 +10,8 @@ extends Node
 signal changed
 ## An upgrade was taken (`stacks` = how many times now).
 signal upgrade_added(data: UpgradeData, stacks: int)
+## An upgrade was lost again (an event's trade); `stacks` = how many are left.
+signal upgrade_removed(data: UpgradeData, stacks: int)
 
 # Stat names. Tower stats also exist per tower type: "tower.<id>.<stat>" (see tower_stats()).
 const HERO_DAMAGE: StringName = &"hero.damage"
@@ -69,6 +71,20 @@ func add_upgrade(data: UpgradeData) -> void:
 		_add(modifier)
 	upgrade_added.emit(data, get_stacks(data.id))
 	changed.emit()
+
+
+## Loses the most recent upgrade taken (its modifiers stop; an instant effect stays done). Returns it,
+## or null if none was taken.
+func remove_last_upgrade() -> UpgradeData:
+	if _taken.is_empty():
+		return null
+	var data: UpgradeData = _taken.pop_back()
+	for modifier: StatModifier in data.modifiers:
+		_flat[modifier.stat] = float(_flat.get(modifier.stat, 0.0)) - modifier.flat
+		_percent[modifier.stat] = float(_percent.get(modifier.stat, 0.0)) - modifier.percent
+	upgrade_removed.emit(data, get_stacks(data.id))
+	changed.emit()
+	return data
 
 
 ## A single modifier without an upgrade (tests, debugging).

@@ -98,6 +98,7 @@ func _ready() -> void:
 	_upgrade_icons.visible = modifiers != null
 	if modifiers != null:
 		modifiers.upgrade_added.connect(_on_upgrade_added)
+		modifiers.upgrade_removed.connect(_on_upgrade_removed)
 	_lives_icons.visible = hero_lives != null
 	_dash_row.visible = hero != null
 	set_process(hero_lives != null or hero != null)
@@ -197,6 +198,15 @@ func _on_upgrade_added(data: UpgradeData, stacks: int) -> void:
 	icon.add_child(count)
 	_upgrade_icons.add_child(icon)
 	_feed.push("Upgrade: %s" % data.display_name, GOLD_COLOR)
+
+
+func _on_upgrade_removed(data: UpgradeData, stacks: int) -> void:
+	var existing: Node = _upgrade_icons.get_node_or_null(NodePath(String(data.id)))
+	if existing != null:
+		if stacks <= 0:
+			existing.queue_free()
+		else:
+			(existing.get_node("Count") as Label).text = "x%d" % stacks if stacks > 1 else ""
 
 
 ## One helm per life next to the hero's HP bar (spent ones dark).

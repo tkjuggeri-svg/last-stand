@@ -32,6 +32,9 @@ const ALREADY_EVOLVED: String = "Already evolved"
 @export var catalog: Array[TowerData] = []
 @export_range(0.0, 1.0) var sell_refund_ratio: float = 0.5
 
+## Evolutions that cost nothing (a shrine's boon), used by the next ones.
+var free_evolutions: int = 0
+
 ## Slots the hero is currently inside, most recent last.
 var _nearby: Array[BuildSlot] = []
 
@@ -111,8 +114,10 @@ func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
 	return slot.tower.data.evolutions.duplicate()
 
 
-## Gold for an evolution (tower-upgrade discounts apply).
+## Gold for an evolution (tower-upgrade discounts apply; 0 while a free one is owed).
 func evolution_cost(evolution: TowerEvolution) -> int:
+	if free_evolutions > 0:
+		return 0
 	return RunModifiers.value_int(modifiers, evolution.cost, [RunModifiers.TOWER_UPGRADE_COST])
 
 
@@ -136,6 +141,8 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 	if not economy.try_spend(cost):
 		upgrade_failed.emit(slot, NOT_ENOUGH_GOLD)
 		return false
+	if free_evolutions > 0:
+		free_evolutions -= 1
 	tower.invested += cost
 	tower.evolve(evolution)
 	refresh_boosts()
@@ -175,6 +182,29 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 	slot.place(tower)
 	refresh_boosts()
 	tower_built.emit(slot, tower)
+	return true
+
+
+## Takes the slot's tower up a level without paying (an event's gift). Returns false if it can't go up.
+func free_upgrade(slot: BuildSlot) -> bool:
+	if slot == null or slot.is_empty() or slot.tower.is_max_level() or slot.tower.is_building():
+		return false
+	slot.tower.set_level(slot.tower.get_level() + 1)
+	refresh_boosts()
+	tower_upgraded.emit(slot, slot.tower, slot.tower.get_level())
+	return true
+
+
+## Removes the slot's tower with no refund (a shrine's price). Returns false if the slot is empty.
+func demolish(slot: BuildSlot) -> bool:
+	if slot == null:
+		return false
+	var tower: Tower = slot.remove_tower()
+	if tower == null:
+		return false
+	tower.queue_free()
+	refresh_boosts()
+	tower_sold.emit(slot, 0)
 	return true
 
 

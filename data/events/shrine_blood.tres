@@ -1,0 +1,44 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 5
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("3_effect")
+type = 4
+amount = 3
+rare_only = true
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("3_effect")
+type = 4
+amount = 3
+rare_only = true
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("2_choice")
+label = "Offer a life"
+outcome = "The hero loses a life (never the last). Choose 2 rare upgrades, one after the other."
+need = 5
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
+result_text = "The basin drinks. Two gifts rise from it."
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("2_choice")
+label = "Walk away"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You keep your blood."
+
+[resource]
+script = ExtResource("1_event")
+id = &"shrine_blood"
+title = "Shrine of Blood"
+text = "A stone basin, stained dark. A voice asks for a life."
+shrine = true
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_4"), SubResource("Resource_5")])

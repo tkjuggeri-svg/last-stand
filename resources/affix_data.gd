@@ -20,6 +20,11 @@ extends Resource
 ## Groups of `extra_of` send this many times as many (Ironclad's Brutes).
 @export var extra_of: EnemyData
 @export var extra_multiplier: float = 1.0
+## Every wave also sends `added_count` of `added_enemy` (an event's curse: extra Ghouls).
+@export var added_enemy: EnemyData
+@export var added_count: int = 0
+## The kill gold of the wave's regulars is multiplied by this.
+@export var gold_multiplier: float = 1.0
 
 
 ## A copy of `wave` with the twist applied.
@@ -28,7 +33,15 @@ func apply(wave: WaveData) -> WaveData:
 	result.speed_multiplier = wave.speed_multiplier * speed_multiplier
 	result.health_multiplier = wave.health_multiplier * health_multiplier
 	result.spawn_shield = maxi(wave.spawn_shield, spawn_shield)
+	result.gold_multiplier = wave.gold_multiplier * gold_multiplier
 	result.groups = []
+	if added_enemy != null and added_count > 0:
+		var added: SpawnGroup = SpawnGroup.new()
+		added.enemy = added_enemy
+		added.count = added_count
+		added.interval = 1.5
+		added.delay = 2.0
+		result.groups.append(added)
 	for group: SpawnGroup in wave.groups:
 		var copy: SpawnGroup = group.duplicate()
 		if copy.enemy != null and copy.enemy.is_boss:

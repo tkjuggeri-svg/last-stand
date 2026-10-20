@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/knights_oath.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_up"]
+
+[sub_resource type="Resource" id="Resource_m0"]
+script = ExtResource("2_mod")
+stat = &"fortress.max_health"
+flat = 15.0
+
+[resource]
+script = ExtResource("3_up")
+id = &"knights_oath"
+display_name = "Knight's Oath"
+description = "Fortress max HP +15 (the wounded knight joined the walls)."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_m0")])

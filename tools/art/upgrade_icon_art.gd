@@ -8,7 +8,8 @@ const P: GDScript = preload("res://tools/art/palette.gd")
 const SIZE: int = 16
 const IDS: Array[String] = ["honed_blade", "long_reach", "battle_rhythm", "iron_body", "second_wind", "berserker",
 	"fletching", "eagle_eye", "quick_masons", "overcharge", "piercing", "hellfire", "deep_freeze",
-	"masonry", "repairs", "thorns", "bounty", "treasury", "guild", "war_tax", "fleet_step", "cinder_dash"]
+	"masonry", "repairs", "thorns", "bounty", "treasury", "guild", "war_tax", "fleet_step", "cinder_dash",
+	"knights_oath", "knights_sword", "hollow_walls"]
 
 
 func icon(id: String) -> Image:
@@ -213,6 +214,35 @@ func _deep_freeze(c: Canvas) -> void:
 		var tip: Vector2 = Vector2(8, 8) + Vector2.from_angle(k * PI / 3.0) * 6.0
 		c.px(roundi(tip.x), roundi(tip.y), P.ICE[5])
 	c.px(8, 8, Color("ffffff"))
+
+
+# ---------------------------------------------------------------- event boons and curses (M7)
+
+## The Wounded Knight's oath: a kite shield with the order's red cross.
+func _knights_oath(c: Canvas) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(3, 2), Vector2(13, 2), Vector2(13, 8), Vector2(8, 14.5), Vector2(3, 8)]), P.STEEL, Vector3(-0.4, -0.4, 1))
+	c.rect(Rect2i(7, 3, 2, 9), P.TABARD[3])
+	c.rect(Rect2i(4, 6, 8, 2), P.TABARD[3])
+	c.line(Vector2(3, 2), Vector2(13, 2), P.GOLD[3])
+
+
+## The fallen knight's sword, a ghostly wisp curling from its hilt.
+func _knights_sword(c: Canvas) -> void:
+	_sword(c, Vector2(4, 12), Vector2(13, 3))
+	c.part(true)
+	for p: Vector2i in [Vector2i(2, 13), Vector2i(1, 11), Vector2i(2, 9), Vector2i(4, 8)]:
+		c.px(p.x, p.y, P.SOUL[3])
+
+
+## Hollow walls: a cracked stone block with a red arrow (stronger towers, weaker walls).
+func _hollow_walls(c: Canvas) -> void:
+	c.part()
+	c.block(Rect2(1, 6, 10, 2), 7.0, P.STONE.slice(3, 7), P.STONE.slice(2, 6), false)
+	c.line(Vector2(5, 7), Vector2(4, 10), P.OUTLINE)
+	c.line(Vector2(4, 10), Vector2(6, 13), P.OUTLINE)
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(12, 1), Vector2(15, 5), Vector2(13, 5), Vector2(13, 9), Vector2(11, 9), Vector2(11, 5), Vector2(9, 5)]), P.BANNER, Vector3(-0.3, -0.5, 1))
 
 
 # ---------------------------------------------------------------- fortress

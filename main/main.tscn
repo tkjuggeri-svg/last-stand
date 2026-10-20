@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://ui/menus/pause_menu.tscn" id="5_pause"]
 [ext_resource type="PackedScene" path="res://ui/map/map_screen.tscn" id="6_map"]
 [ext_resource type="PackedScene" path="res://ui/map/merchant_screen.tscn" id="7_merchant"]
+[ext_resource type="PackedScene" path="res://ui/map/event_screen.tscn" id="8_event"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -16,6 +17,9 @@ run_data = ExtResource("2_run")
 unique_name_in_owner = true
 
 [node name="MerchantScreen" parent="." instance=ExtResource("7_merchant")]
+unique_name_in_owner = true
+
+[node name="EventScreen" parent="." instance=ExtResource("8_event")]
 unique_name_in_owner = true
 
 [node name="GameOverScreen" parent="." instance=ExtResource("3_game_over")]

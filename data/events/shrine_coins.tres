@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/events/lean_purse.tres" id="r0"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 1
+factor = 2.0
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("3_effect")
+type = 10
+affix = ExtResource("r0")
+amount = 2
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("2_choice")
+label = "Take"
+outcome = "Double your gold now. The next 2 fights pay 50% less gold."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1"), SubResource("Resource_2")])
+result_text = "Your purse is twice as heavy. For now."
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("2_choice")
+label = "Walk away"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave the coins where they lie."
+
+[resource]
+script = ExtResource("1_event")
+id = &"shrine_coins"
+title = "Shrine of Coins"
+text = "A shrine heaped with old coins. Take, and it will take back."
+shrine = true
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_3"), SubResource("Resource_4")])

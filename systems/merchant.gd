@@ -24,6 +24,10 @@ const WALLS_WHOLE: String = "The walls are whole"
 @export var repair_price: int = 60
 @export var reroll_price: int = 25
 
+## The next visit's prices are multiplied by this (an event's price), then it's back to 1.
+var next_price_factor: float = 1.0
+
+var _price_factor: float = 1.0
 var _cards: Array[UpgradeData] = []
 var _sold: Array[bool] = []
 var _repaired: bool = false
@@ -31,6 +35,8 @@ var _repaired: bool = false
 
 ## A new visit: fresh cards, the repair available again.
 func open() -> void:
+	_price_factor = next_price_factor
+	next_price_factor = 1.0
 	_cards = offers.draw_cards(card_count)
 	_sold.clear()
 	_sold.resize(_cards.size())
@@ -44,7 +50,15 @@ func get_cards() -> Array[UpgradeData]:
 
 
 func price_of(data: UpgradeData) -> int:
-	return rare_price if data.rarity == UpgradeData.Rarity.RARE else common_price
+	return roundi((rare_price if data.rarity == UpgradeData.Rarity.RARE else common_price) * _price_factor)
+
+
+func get_repair_price() -> int:
+	return roundi(repair_price * _price_factor)
+
+
+func get_reroll_price() -> int:
+	return roundi(reroll_price * _price_factor)
 
 
 func is_sold(index: int) -> bool:
@@ -82,13 +96,13 @@ func repair_blocker() -> String:
 		return SOLD_OUT
 	if repair_amount() <= 0:
 		return WALLS_WHOLE
-	if not economy.can_afford(repair_price):
+	if not economy.can_afford(get_repair_price()):
 		return NOT_ENOUGH_GOLD
 	return ""
 
 
 func buy_repair() -> bool:
-	if not repair_blocker().is_empty() or not economy.try_spend(repair_price):
+	if not repair_blocker().is_empty() or not economy.try_spend(get_repair_price()):
 		return false
 	fortress.health.heal(repair_amount())
 	_repaired = true
@@ -97,12 +111,12 @@ func buy_repair() -> bool:
 
 
 func can_reroll() -> bool:
-	return economy.can_afford(reroll_price) and not _cards.is_empty()
+	return economy.can_afford(get_reroll_price()) and not _cards.is_empty()
 
 
 ## New cards in place of the unsold ones.
 func reroll() -> bool:
-	if not can_reroll() or not economy.try_spend(reroll_price):
+	if not can_reroll() or not economy.try_spend(get_reroll_price()):
 		return false
 	var fresh: Array[UpgradeData] = offers.draw_cards(card_count)
 	for i: int in _cards.size():

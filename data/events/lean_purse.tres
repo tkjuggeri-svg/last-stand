@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"lean_purse"
+display_name = "Lean Purse"
+description = "Kills pay 50% less gold."
+gold_multiplier = 0.5

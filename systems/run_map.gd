@@ -193,8 +193,11 @@ func _is_mixed_row(row: int) -> bool:
 	return row < chapter.rows and not chapter.battle_rows.has(row) and row != chapter.merchant_row
 
 
-## Gives every battle and elite its fight (one of its row's encounters) and every elite an affix.
+## Gives every battle and elite its fight (one of its row's encounters), every elite an affix, and
+## every event and shrine its scene (no repeats on a map while the pool lasts).
 func _assign_fights(rng: RandomNumberGenerator) -> void:
+	var events: Array[EventData] = chapter.events.duplicate()
+	var shrines: Array[EventData] = chapter.shrines.duplicate()
 	for node: MapNode in nodes:
 		match node.kind:
 			Kind.BATTLE:
@@ -205,6 +208,19 @@ func _assign_fights(rng: RandomNumberGenerator) -> void:
 					node.affix = chapter.affixes[rng.randi_range(0, chapter.affixes.size() - 1)]
 			Kind.BOSS:
 				node.encounter = chapter.boss
+			Kind.EVENT:
+				node.event = _draw_scene(events, chapter.events, rng)
+			Kind.SHRINE:
+				node.event = _draw_scene(shrines, chapter.shrines, rng)
+
+
+## One scene from `left` (refilled from `pool` once used up), removed so it doesn't come twice.
+func _draw_scene(left: Array[EventData], pool: Array[EventData], rng: RandomNumberGenerator) -> EventData:
+	if left.is_empty():
+		left.append_array(pool)
+	if left.is_empty():
+		return null
+	return left.pop_at(rng.randi_range(0, left.size() - 1))
 
 
 func _pick(pool: Array[EncounterData], rng: RandomNumberGenerator) -> EncounterData:

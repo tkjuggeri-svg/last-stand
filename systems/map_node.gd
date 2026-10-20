@@ -1,8 +1,8 @@
 class_name MapNode
 extends RefCounted
 ## One node of a RunMap: its place (row, column, x from 0 to 1 across the row), what it is (RunMap.Kind),
-## its fight (battles, elites, the boss: an EncounterData; elites also an affix), and the indices of
-## the nodes it leads to in the next row.
+## its fight (battles, elites, the boss: an EncounterData; elites also an affix) or scene (events and
+## shrines: an EventData), and the indices of the nodes it leads to in the next row.
 
 var index: int = 0
 var row: int = 1
@@ -12,6 +12,8 @@ var kind: RunMap.Kind = RunMap.Kind.BATTLE
 var links: Array[int] = []
 var encounter: EncounterData
 var affix: AffixData
+## An event's or a shrine's scene.
+var event: EventData
 
 
 func is_combat() -> bool:

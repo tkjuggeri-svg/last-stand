@@ -76,9 +76,9 @@ func _refresh() -> void:
 		_cards.add_child(_card(cards[i], i))
 	_gold_label.text = "Gold: %d" % _merchant.economy.get_gold()
 	var repair: String = _merchant.repair_blocker()
-	_repair_button.text = "Repair walls +%d   -%d gold" % [_merchant.repair_amount(), _merchant.repair_price] if repair.is_empty() or repair == Merchant.NOT_ENOUGH_GOLD else "Repair: %s" % repair.to_lower()
+	_repair_button.text = "Repair walls +%d   -%d gold" % [_merchant.repair_amount(), _merchant.get_repair_price()] if repair.is_empty() or repair == Merchant.NOT_ENOUGH_GOLD else "Repair: %s" % repair.to_lower()
 	_repair_button.disabled = not repair.is_empty()
-	_reroll_button.text = "New cards   -%d gold" % _merchant.reroll_price
+	_reroll_button.text = "New cards   -%d gold" % _merchant.get_reroll_price()
 	_reroll_button.disabled = not _merchant.can_reroll()
 
 

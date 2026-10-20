@@ -1,0 +1,49 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 12
+amount = 3
+rare_only = true
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("2_choice")
+label = "Open it"
+outcome = "Fight one wave of what's ahead, now. Reward: a choice of 3 rare upgrades."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1")])
+result_text = ""
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("3_effect")
+type = 2
+amount = 10
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("3_effect")
+type = 0
+amount = 80
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("2_choice")
+label = "Seal it with stones from your walls"
+outcome = "The fortress takes 10 damage; behind a loose stone you find 80 gold."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_3"), SubResource("Resource_4")])
+result_text = "The door is sealed. The walls are a little thinner: -10 fortress HP, +80 gold."
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("2_choice")
+label = "Walk past"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "The knocking fades behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"flooded_crypt"
+title = "The Flooded Crypt"
+text = "Black water runs from a crypt door. Something knocks from inside."
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_2"), SubResource("Resource_5"), SubResource("Resource_6")])

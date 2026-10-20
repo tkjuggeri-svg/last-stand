@@ -16,9 +16,9 @@ extends Resource
 @export var strip_bosses: bool = true
 
 
-## The waves to play: copies with the bosses stripped, the leader added and `affix` applied (null =
-## none). The data itself is never changed.
-func build_waves(affix: AffixData = null) -> Array[WaveData]:
+## The waves to play: copies with the bosses stripped, the leader added and every one of `affixes`
+## applied (an elite's twist, an event's lasting curse). The data itself is never changed.
+func build_waves(affixes: Array[AffixData] = []) -> Array[WaveData]:
 	var built: Array[WaveData] = []
 	for i: int in waves.size():
 		var wave: WaveData = waves[i].duplicate()
@@ -33,5 +33,7 @@ func build_waves(affix: AffixData = null) -> Array[WaveData]:
 			lead.lane = leader_lane
 			lead.delay = leader_delay
 			wave.groups.append(lead)
-		built.append(affix.apply(wave) if affix != null else wave)
+		for affix: AffixData in affixes:
+			wave = affix.apply(wave)
+		built.append(wave)
 	return built

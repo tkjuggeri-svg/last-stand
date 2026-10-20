@@ -3,7 +3,9 @@ extends Node
 ## starts a run in RunState (its chapters from run_data, each with a node map), and plays the map.
 ## A chapter's level is made when the chapter starts and stays (with its towers, gold and damage)
 ## while the map is shown between nodes; a battle, an elite or the boss is played on it as a fight
-## (Level.start_encounter, with its reward), a merchant opens the shop. Beating the last chapter's
+## (Level.start_encounter, with its reward), a merchant opens the shop, an event or a shrine its
+## scene (EventScreen; the level's EventResolver applies the answer, and Main plays what it leaves: an
+## extra fight, upgrade choices one after another). Beating the last chapter's
 ## boss wins the run; losing anywhere loses it (Game Over); Restart starts a fresh run. The pause
 ## action opens the pause menu, unless something else holds the game (the upgrade choice) or the run
 ## is over; a menu that is open in the level (the build menu) takes Esc first.
@@ -23,6 +25,8 @@ const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
 var _level: Level
 ## The map node being played.
 var _node: MapNode
+## Upgrade choices an event left to make, one after another, before the map comes back.
+var _pending_choices: Array[FightReward] = []
 
 @onready var _run: RunStateNode = get_node("/root/RunState")
 @onready var _game_over_screen: GameOverScreen = %GameOverScreen
@@ -30,6 +34,7 @@ var _node: MapNode
 @onready var _pause_menu: PauseMenu = %PauseMenu
 @onready var _map_screen: MapScreen = %MapScreen
 @onready var _merchant_screen: MerchantScreen = %MerchantScreen
+@onready var _event_screen: EventScreen = %EventScreen
 
 
 func _ready() -> void:
@@ -41,6 +46,8 @@ func _ready() -> void:
 	_pause_menu.quit_requested.connect(quit_game)
 	_map_screen.node_chosen.connect(_on_node_chosen)
 	_merchant_screen.left.connect(_show_map)
+	_event_screen.choice_picked.connect(_on_event_choice)
+	_event_screen.continued.connect(_next_follow_up)
 	start_run()
 
 
@@ -75,6 +82,8 @@ func start_run() -> void:
 	_game_over_screen.hide()
 	_victory_screen.hide()
 	_merchant_screen.hide()
+	_event_screen.hide()
+	_pending_choices.clear()
 	_run.start_run(run_data, run_seed if run_seed >= 0 else randi())
 	_start_chapter()
 
@@ -92,6 +101,8 @@ func _start_chapter() -> void:
 	var offers: UpgradeOffers = _level.offers
 	if offers != null:
 		offers.set_seed(_run.chapter_seed())
+	if _level.events != null:
+		_level.events.set_seed(_run.chapter_seed())
 	_show_map()
 
 
@@ -103,7 +114,10 @@ func _show_map() -> void:
 func _status() -> String:
 	var health: HealthComponent = _level.fortress.health
 	var lives: int = _level.hero_lives.get_lives_left() if _level.hero_lives != null else 0
-	return STATUS_TEXT % [_level.economy.get_gold(), health.current_health, health.max_health, lives]
+	var text: String = STATUS_TEXT % [_level.economy.get_gold(), health.current_health, health.max_health, lives]
+	if _level.events != null and not _level.events.get_pending_affixes().is_empty():
+		text = "Next fight: %s    " % ", ".join(_level.events.get_pending_affixes().map(func(a: AffixData) -> String: return a.display_name)) + text
+	return text
 
 
 func _on_node_chosen(node: MapNode) -> void:
@@ -113,13 +127,61 @@ func _on_node_chosen(node: MapNode) -> void:
 	_map_screen.close()
 	match node.kind:
 		RunMap.Kind.BATTLE, RunMap.Kind.ELITE, RunMap.Kind.BOSS:
-			_level.set_active(true)
-			_level.start_encounter(node.encounter.build_waves(node.affix), _reward_for(node))
+			_start_fight(node.encounter, node.affix, _reward_for(node))
 		RunMap.Kind.MERCHANT:
 			_level.merchant.open()
 			_merchant_screen.open(_level.merchant)
-		_:
-			_show_map()  # events and shrines come in M7 phase B
+		RunMap.Kind.EVENT, RunMap.Kind.SHRINE:
+			_event_screen.open(node.event, _level.events)
+
+
+## Plays `encounter` on the level with its own twist (an elite's) and any an event left for it.
+func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightReward) -> void:
+	var affixes: Array[AffixData] = []
+	if affix != null:
+		affixes.append(affix)
+	if _level.events != null:
+		affixes.append_array(_level.events.take_fight_affixes())
+	_level.set_active(true)
+	_level.start_encounter(encounter.build_waves(affixes), reward)
+
+
+func _on_event_choice(index: int) -> void:
+	var outcome: EventOutcome = _level.events.apply(_node.event.choices[index])
+	if outcome == null:
+		return
+	_pending_choices = outcome.choices.duplicate()
+	if outcome.extra_fight != null:
+		_event_screen.hide()
+		_start_fight(_extra_fight_encounter(), null, outcome.extra_fight)  # its reward, then the choices
+		return
+	_event_screen.show_result(outcome.text if not outcome.text.is_empty() else "So be it.")
+
+
+## An event's extra fight: the first wave of the next row's battle.
+func _extra_fight_encounter() -> EncounterData:
+	var chapter: ChapterData = _run.get_chapter()
+	var row: int = _node.row + 1
+	var pool: Array[EncounterData] = chapter.encounters_for(chapter.battles, row)
+	while pool.is_empty() and row > 1:
+		row -= 1
+		pool = chapter.encounters_for(chapter.battles, row)
+	var fight: EncounterData = pool[0].duplicate()
+	fight.waves = pool[0].waves.slice(0, 1)
+	return fight
+
+
+## The next upgrade choice an event left (over the level, like a fight's reward), else the map.
+func _next_follow_up() -> void:
+	if _pending_choices.is_empty():
+		_show_map()
+		return
+	var reward: FightReward = _pending_choices.pop_front()
+	_level.set_active(true)
+	if _level.offers.make_offer(reward.cards, reward.rare_only).is_empty():
+		_next_follow_up()
+		return
+	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _next_follow_up(), CONNECT_ONE_SHOT)
 
 
 ## What winning the node's fight gives, from the chapter's data.
@@ -137,7 +199,7 @@ func _on_encounter_cleared() -> void:
 	if _node != null and _node.kind == RunMap.Kind.BOSS:
 		_on_chapter_cleared()
 	else:
-		_show_map()
+		_next_follow_up()
 
 
 func _on_chapter_cleared() -> void:

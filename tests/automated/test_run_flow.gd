@@ -118,12 +118,12 @@ func _test_merchant(main: Node) -> void:
 	_check("...and it can't be bought twice", not shop.buy_card(0) and shop.card_blocker(0) == Merchant.SOLD_OUT)
 	var hp: int = level.fortress.health.current_health
 	screen.get_repair_button().pressed.emit()
-	_check("the repair: +%d for %d gold, once per visit" % [shop.repair_amount(), shop.repair_price], level.fortress.health.current_health > hp
+	_check("the repair: +%d for %d gold, once per visit" % [shop.repair_amount(), shop.get_repair_price()], level.fortress.health.current_health > hp
 		and not shop.buy_repair() and shop.repair_blocker() == Merchant.SOLD_OUT)
 	var unsold: Array[UpgradeData] = shop.get_cards()
 	var gold: int = economy.get_gold()
 	screen.get_reroll_button().pressed.emit()
-	_check("a reroll costs %d and keeps what was sold" % shop.reroll_price, economy.get_gold() == gold - shop.reroll_price and shop.get_cards()[0] == unsold[0])
+	_check("a reroll costs %d and keeps what was sold" % shop.get_reroll_price(), economy.get_gold() == gold - shop.get_reroll_price() and shop.get_cards()[0] == unsold[0])
 	economy.try_spend(economy.get_gold())
 	_check("without the gold: no card, no reroll, the buttons disabled", not shop.buy_card(1) and not shop.reroll()
 		and screen.get_buy_button(1).disabled and screen.get_reroll_button().disabled)

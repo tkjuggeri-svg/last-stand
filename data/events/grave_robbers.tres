@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_ghoul"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"grave_robbers"
+display_name = "Grave Robbers' Curse"
+description = "4 extra Ghouls in every wave."
+added_enemy = ExtResource("2_ghoul")
+added_count = 4

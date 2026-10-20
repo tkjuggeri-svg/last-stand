@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/events/grave_robbers.tres" id="r0"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 0
+amount = 60
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("2_choice")
+label = "Push it free"
+outcome = "+60 gold (the driver left a purse on the seat)."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1")])
+result_text = "The cart rolls free. The purse on the seat is yours: +60 gold."
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("3_effect")
+type = 0
+amount = 150
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("3_effect")
+type = 10
+affix = ExtResource("r0")
+amount = 1
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("2_choice")
+label = "Pry the coffins open"
+outcome = "+150 gold, but the next fight sends 4 extra Ghouls in every wave."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_3"), SubResource("Resource_4")])
+result_text = "Grave goods: +150 gold. Something in the coffins woke up angry."
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("2_choice")
+label = "Leave it"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave the dead to their cart."
+
+[resource]
+script = ExtResource("1_event")
+id = &"gravediggers_cart"
+title = "The Gravedigger's Cart"
+text = "A cart piled with coffins is stuck in the mud of the west road. Its driver is nowhere to be seen."
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_2"), SubResource("Resource_5"), SubResource("Resource_6")])

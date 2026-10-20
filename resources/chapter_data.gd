@@ -35,6 +35,11 @@ extends Resource
 ## Affixes an elite can get (one each).
 @export var affixes: Array[AffixData] = []
 @export var boss: EncounterData
+@export_group("Events")
+## Events and shrines drawn for the map's event and shrine nodes (each at most once per map, while
+## the pool lasts).
+@export var events: Array[EventData] = []
+@export var shrines: Array[EventData] = []
 @export_group("Rewards")
 ## Upgrade choice after a battle: cards offered (1 of n).
 @export var battle_cards: int = 3

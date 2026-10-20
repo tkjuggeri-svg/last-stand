@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 7
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("2_choice")
+label = "Let him work"
+outcome = "Your cheapest tower goes up a level, free."
+need = 3
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1")])
+result_text = "Sparks fly. One of your towers stands a little taller."
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("3_effect")
+type = 6
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("3_effect")
+type = 0
+amount = 120
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("2_choice")
+label = "Sell him your latest trick"
+outcome = "Lose your most recent upgrade; gain 120 gold."
+need = 4
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_3"), SubResource("Resource_4")])
+result_text = "He pays well for secrets: +120 gold."
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("2_choice")
+label = "Decline"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "He shrugs and moves on."
+
+[resource]
+script = ExtResource("1_event")
+id = &"the_tinker"
+title = "The Tinker"
+text = "A travelling engineer sets down his tool chest by your towers."
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_2"), SubResource("Resource_5"), SubResource("Resource_6")])
