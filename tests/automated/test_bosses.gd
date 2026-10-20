@@ -188,7 +188,7 @@ func _test_lich() -> void:
 	near.get_health().take_damage(20)
 	_check("the ward absorbs damage first (HP %d -> %d, ward %d)" % [hp, near.get_health().current_health, near.get_health().get_shield()],
 		near.get_health().current_health == hp and near.get_health().get_shield() == ward.shield - 20)
-	near.get_health().take_damage(50)
+	near.get_health().take_damage(ward.shield - 10)  # 10 more than the ward has left
 	_check("what gets through the ward hurts (HP %d)" % near.get_health().current_health, near.get_health().current_health == hp - 10 and near.get_health().get_shield() == 0)
 	_check("a broken ward's bubble is gone", not (near.get_node("%ShieldBubble") as CanvasItem).visible)
 	# A ward expires.

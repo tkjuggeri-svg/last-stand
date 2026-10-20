@@ -18,6 +18,8 @@ func _initialize() -> void:
 	await _test_wave_cycle_and_rewards()
 	await _test_empty_wave()
 	await _test_health_multiplier()
+	await _test_speed_multiplier()
+	_test_late_waves_pressure()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -123,6 +125,56 @@ func _test_health_multiplier() -> void:
 	for i: int in range(1, multipliers.size()):
 		rising = rising and multipliers[i] >= multipliers[i - 1]
 	_check("the level's waves get tougher towards the end (%s)" % [multipliers], rising and multipliers.back() > 1.5 and multipliers[0] == 1.0)
+	real.free()
+
+
+## A wave's speed_multiplier makes its regulars faster, never its boss.
+func _test_speed_multiplier() -> void:
+	var fast: WaveData = WaveFixtures.make_wave(1, 1.0)
+	fast.groups.append(WaveFixtures.make_wave(1, 1.0, load("res://data/enemies/colossus.tres") as EnemyData).groups[0])
+	fast.speed_multiplier = 1.2
+	var level: Level = _make_level([fast, WaveData.new()])
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	await _frames(2)
+	spawner.start_next_wave()
+	await _frames(3)
+	var ghoul: Enemy = null
+	var boss: Enemy = null
+	for child: Node in spawner.get_children():
+		if child is Enemy:
+			if (child as Enemy).data.is_boss:
+				boss = child
+			else:
+				ghoul = child
+	_check("a wave with speed x1.2 moves its ghoul at %.1f" % ghoul.get_move_speed(), is_equal_approx(ghoul.get_move_speed(), WaveFixtures.GHOUL.move_speed * 1.2))
+	_check("...but its boss at its own speed (%.1f)" % boss.get_move_speed(), is_equal_approx(boss.get_move_speed(), boss.data.move_speed))
+	await _free(level)
+
+
+## Waves 10-15 press on every lane at once, with Cultists on at least two lanes, and their regulars
+## get faster; waves 1-5 stay as they were (normal speed).
+func _test_late_waves_pressure() -> void:
+	var real: Level = (load(ARENA) as PackedScene).instantiate()
+	var waves: Array[WaveData] = (real.get_node("WaveSpawner") as WaveSpawner).waves
+	var lanes_ok: bool = true
+	var cultists_ok: bool = true
+	for i: int in range(9, waves.size()):
+		var lanes: Dictionary = {}
+		var cultist_lanes: Dictionary = {}
+		for group: SpawnGroup in waves[i].groups:
+			if not group.enemy.is_boss and group.count >= 4:
+				lanes[group.lane] = true
+			if group.enemy.resource_path.ends_with("cultist.tres"):
+				cultist_lanes[group.lane] = true
+		lanes_ok = lanes_ok and lanes.size() == 3
+		cultists_ok = cultists_ok and cultist_lanes.size() >= 2
+	_check("waves 10-15 send real groups down all three lanes", lanes_ok)
+	_check("waves 10-15 send Cultists down at least two lanes", cultists_ok)
+	var speeds: Array = waves.map(func(w: WaveData) -> float: return w.speed_multiplier)
+	var rising: bool = true
+	for i: int in range(1, speeds.size()):
+		rising = rising and speeds[i] >= speeds[i - 1]
+	_check("regulars get faster in the late waves, not early (%s)" % [speeds], rising and speeds[4] == 1.0 and speeds.back() > 1.0)
 	real.free()
 
 

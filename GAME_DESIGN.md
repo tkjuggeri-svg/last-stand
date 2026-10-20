@@ -66,8 +66,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - **Cultist** (M6, ranged; `EnemyData.bolt_speed > 0`): walks its lane like the others but stops **170 px before the lane's end** (`siege_distance`) and shoots the fortress from there (4 damage per shot, every 2 s). When the hero comes within **150 px** (`attack_range` + body) it stops wherever it is and shoots the hero instead (8 damage), and goes back to the fortress (or walks on) once the hero leaves. Every shot is telegraphed by a 0.5 s cast (the witchfire swells over its head) and is a straight, non-homing bolt (230 px/s) aimed where the target stood at the release, so stepping aside or dashing through it avoids it. Ranged enemies take no `AttackerLimit` slot (the limit keeps melee crowds readable). Its shots (`EnemyBolt`, a moving `Hitbox`) sit on `enemy_hitbox` (at the hero) or `fortress_hitbox` (at the fortress), never both; they die with the caster. With 20 HP it falls to 2 sword swings or 2 arrows, so towers near the fortress or the hero should hunt it down.
 - **Bosses** (M6; `EnemyData.is_boss`, `EnemyData.ability`): one per boss wave (5, 10, 15), walking a lane like the others with one clear mechanic each, every use announced by a telegraph on the ground (`TelegraphMarker`, filling up until the moment comes). The mechanic is an `EnemyAbility` component (a scene with its tunables exported) that runs beside the enemy and may take it over (`is_busy`: no walking, no attacks of its own):
   - **The Gravelord — Summon** (`SummonAbility`): first after 4 s, then every 9 s, it stops for 1.2 s while three green grave rings open 60 px around it, then 3 Ghouls climb out (dust) and walk its lane. They join the wave (`WaveSpawner` counts them in the wave's totals; the wave isn't over until they are gone); never more than 9 of its own alive.
-  - **The Bone Colossus — Charge** (`ChargeAbility`): when the hero is within 300 px (first after 2 s, then every 6 s) it braces for 1.0 s while a red arrow on the ground shows the path; the direction is locked when the telegraph starts, so stepping aside dodges it. Then it charges at 560 px/s, through enemies, up to 90 px past where the hero stood (at most 380 px) and never through walls or the fortress (a raycast stops it 14 px short). The hero hit takes 35 damage (once per charge; a dashing hero is immune). Then it stands **stunned for 1.6 s**: the moment to punish it. Afterwards it walks back to its lane.
-  - **The Lich Warden — Ward** (`WardAbility`): first after 3 s, then every 7 s, it stops for 1.2 s inside a blue rune circle of 200 px, then every other enemy in it gets a ward absorbing 60 damage for 8 s (a shimmering bubble; never stacking; `HealthComponent.add_shield`). It never wards itself, so killing it stops the wards.
+  - **The Bone Colossus — Charge** (`ChargeAbility`): when the hero is within 300 px (first after 2 s, then every 5 s; 6 s before the M6 playtest 2) it braces for 1.0 s while a red arrow on the ground shows the path; the direction is locked when the telegraph starts, so stepping aside dodges it. Then it charges at 560 px/s, through enemies, up to 90 px past where the hero stood (at most 380 px) and never through walls or the fortress (a raycast stops it 14 px short). The hero hit takes 40 damage (35 before the M6 playtest 2) (once per charge; a dashing hero is immune). Then it stands **stunned for 1.6 s**: the moment to punish it. Afterwards it walks back to its lane.
+  - **The Lich Warden — Ward** (`WardAbility`): first after 3 s, then every 6 s, it stops for 1.2 s inside a blue rune circle of 240 px, then every other enemy in it gets a ward absorbing 90 damage for 8 s (every 7 s, 200 px and 60 before the M6 playtest 2) (a shimmering bubble; never stacking; `HealthComponent.add_shield`). It never wards itself, so killing it stops the wards.
   - The HUD shows a boss's name and HP in a big bar at the top centre while it lives (no small bar over its head), and banners as it arrives ("... approaches!") and falls ("... is slain!"). A boss's death is a big moment: its own large death effect (flash, collapse, crumbling, a big soul), half a second of slow motion (time scale 0.25) and a camera shake.
 - Enemies show a small pixel-art health bar above the head (`EnemyHealthBar`, height `EnemyData.health_bar_y`, width from the body) only after they first take damage.
 - All enemy types share one scene (`entities/enemies/enemy.tscn`); `EnemyData` also holds the body radius (hurtbox, fortress contact and reach scale with it), the SpriteFrames and the sprite offset, like towers and `TowerData`.
@@ -79,8 +79,8 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Brute  | Slow, tanky, hits the fortress hard | 150 | 32 | 30 | 22 | 0.6 / 2.2 s | 20 | r 18 |
   | Cultist (M6) | Ranged caster, fragile: hunt it down | 20 | 52 | 4 per shot (siege) | 8 per shot | 0.5 / 2.0 s | 10 | r 10 |
   | The Gravelord (M6, wave 5) | Boss: raises the dead | 900 | 26 | 40 | 20 | 0.6 / 2.4 s | 120 | r 24 |
-  | The Bone Colossus (M6, wave 10) | Boss: charges the hero | 2000 | 30 | 50 | 25 | 0.6 / 2.4 s | 200 | r 28 |
-  | The Lich Warden (M6, wave 15) | Boss: wards nearby enemies | 2600 | 28 | 60 | 18 | 0.6 / 2.4 s | 250 | r 22 |
+  | The Bone Colossus (M6, wave 10) | Boss: charges the hero | 2200 | 30 | 50 | 25 | 0.6 / 2.4 s | 120 | r 28 |
+  | The Lich Warden (M6, wave 15) | Boss: wards nearby enemies | 3600 | 28 | 60 | 18 | 0.6 / 2.4 s | 150 | r 22 |
 
 ### 4.4 Towers
 - Built on **predefined build slots** placed in the level.
@@ -105,7 +105,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 
 ### 4.5 Economy
 - **Gold** (in-run): starts at 150. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` × its wave's `gold_multiplier` exactly once, at least 1 (Ghoul 8, Hound 4, Brute 20, Cultist 10; bosses pay theirs as authored: Gravelord 120, Bone Colossus 120, Lich Warden 150); an enemy that reaches the fortress pays nothing.
-- **Gold is scarce (M6 playtest 2):** the first playtest ended wave 14 with 6,420 unspent gold and every tower maxed. Later waves send many more enemies, so kill gold grew with them; now each wave's `gold_multiplier` (`tools/make_waves.py`, `GOLD_TARGET`) keeps the regulars' kill gold per wave about flat from wave 6: waves 1–5 pay in full (64–164 a wave), waves 6–15 pay 210–290 a wave (×0.70 in wave 6 down to ×0.20 in wave 14). A whole run now brings about 3,000–3,800 gold (it was 9,000–12,000) against 3,800–4,250 to take all 10 towers to level 3, so a player can't max everything and has to choose (towers, upgrades, repairs, a bought-back life). Spent on towers and their upgrades. Never negative. Resets every run.
+- **Gold is scarce (M6 playtest 2):** the first playtest ended wave 14 with 6,420 unspent gold and every tower maxed. Later waves send many more enemies, so kill gold grew with them; now each wave's `gold_multiplier` (`tools/make_waves.py`, `GOLD_TARGET`) keeps the regulars' kill gold per wave about flat from wave 6: waves 1–5 pay in full (64–164 a wave), waves 6–15 pay 250–350 a wave (×0.83 in wave 6 down to ×0.23 in wave 15). A won run now brings about 4,000–4,500 gold over all 15 waves (it was 9,000–12,000); by the start of wave 15 that is ~3,600 without economy upgrades, against 3,800–4,250 to take all 10 towers to level 3. So a player can't max everything without Guild Discount and Bounty Hunters (and then only by wave 13–14, with nothing left for repairs), and usually starts a wave with little gold left. Spend choices: towers, tower upgrades, repairs, a bought-back life, rerolls. Spent on towers and their upgrades. Never negative. Resets every run.
 - **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. A wave is one `WaveSpawner` wave (`wave_started` .. `wave_cleared`).
 - **Where the gold comes from** (`balance_report.gd --gold`: per wave, kill gold per enemy type, each kill-gold upgrade's extra, perfect defense, interest, refunds; spending by category; the bank at the next wave's start). Before the M6 playtest-2 changes (seed 1, bot hero): 9,100–12,300 gold per won run; kill gold is ~85% of it and grows with the waves (wave 1: 70, wave 9: 720, wave 14: 1,870), stacked Bounty Hunters added up to 2,260, perfect defense 5–8%, interest (capped at 40 a wave, so it never compounds) was never taken. All 10 towers at level 3 cost 3,800–4,250 and were bought by wave 10–11; the bank then grew to 5,000–11,000 unspent.
 - **Gold sinks between waves (M6 playtest 2)** (`Quartermaster`, per level under Systems; the HUD's Quartermaster panel under the wave panel, shown in the build phase while an offer applies; buttons are disabled while the price can't be paid). They compete with tower upgrades for the same gold:
@@ -151,30 +151,29 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 - Hand-authored for the first version; later add a difficulty scaler (HP/count multipliers) for endless mode.
 - `WaveSpawner` (per level, no autoload) holds the level's lanes and waves, starts one wave at a time (`start_next_wave()`), gives each spawned enemy its group's `EnemyData`, and emits `wave_started(n)` / `wave_cleared(n)` (every enemy of the wave spawned and gone: killed or used up at the fortress) plus per-enemy signals. Other systems (WaveRewards, HUD, Level) connect to it through exported node references, so no `Events` autoload is needed yet.
 
-- **M6 waves** (`data/waves/wave_01..15.tres`, hand-authored; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Cultists in wave 4, Brutes in wave 5; a **boss** leads waves 5, 10 and 15. Every wave brings more regular-enemy HP than the last (a boss comes on top, and its HP is authored directly: the wave's toughness doesn't scale it); `health_multiplier` scales the regulars:
-  | Wave | Ghouls | Hounds | Brutes | Cultists | Boss | Total | Regular HP | × toughness |
-  |------|--------|--------|--------|----------|------|-------|------------|-------------|
-  | 1  | 8  | –  | –  | –  | – | 8   | 240  | 1.0 |
-  | 2  | 13 | –  | –  | –  | – | 13  | 390  | 1.0 |
-  | 3  | 11 | 6  | –  | –  | – | 17  | 420  | 1.0 |
-  | 4  | 14 | 8  | –  | 2  | – | 24  | 580  | 1.0 |
-  | 5  | 10 | 8  | 1  | 2  | Gravelord (900) | 22 | 610 | 1.1 |
-  | 6  | 24 | 10 | 2  | 3  | – | 39  | 1230 | 1.15 |
-  | 7  | 22 | 24 | 3  | 4  | – | 53  | 1550 | 1.25 |
-  | 8  | 30 | 18 | 5  | 8  | – | 61  | 2080 | 1.35 |
-  | 9  | 36 | 24 | 9  | 9  | – | 78  | 2970 | 1.5 |
-  | 10 | 42 | 26 | 9  | 6  | Bone Colossus (2000) | 84 | 3120 | 1.6 |
-  | 11 | 44 | 44 | 12 | 8  | – | 108 | 3940 | 1.85 |
-  | 12 | 52 | 30 | 14 | 14 | – | 110 | 4390 | 2.0 |
-  | 13 | 60 | 56 | 17 | 12 | – | 145 | 5430 | 2.15 |
-  | 14 | 66 | 64 | 20 | 20 | – | 170 | 6340 | 2.3 |
-  | 15 | 68 | 60 | 22 | 14 | Lich Warden (2600) | 165 | 6520 | 2.45 |
+- **M6 waves** (`data/waves/wave_01..15.tres`, hand-authored; lanes: W = west crypt road, NE = north-east road, the short one, S = south road). Hounds arrive in wave 3, Cultists in wave 4, Brutes in wave 5; a **boss** leads waves 5, 10 and 15. Every wave brings more regular-enemy HP than the last (a boss comes on top, and its HP is authored directly: the wave's toughness doesn't scale it); `health_multiplier` scales the regulars' HP, `speed_multiplier` their speed (waves 11–15). Since the M6 playtest 2, **waves 10–15 press every lane at once** (each lane gets real groups at the same time, Cultists come in groups of 2–7 on two or three lanes), so one strong spot can't hold a wave:
+  | Wave | Ghouls | Hounds | Brutes | Cultists | Boss | Total | Regular HP | × toughness | × speed |
+  |------|--------|--------|--------|----------|------|-------|------------|-------------|---------|
+  | 1  | 8 | – | – | – | – | 8 | 240 | 1.0 | 1.0 |
+  | 2  | 13 | – | – | – | – | 13 | 390 | 1.0 | 1.0 |
+  | 3  | 11 | 6 | – | – | – | 17 | 420 | 1.0 | 1.0 |
+  | 4  | 14 | 8 | – | 2 | – | 24 | 580 | 1.0 | 1.0 |
+  | 5  | 10 | 8 | 1 | 2 | Gravelord (900) | 22 | 610 | 1.1 | 1.0 |
+  | 6  | 24 | 10 | 2 | 3 | – | 39 | 1230 | 1.15 | 1.0 |
+  | 7  | 22 | 24 | 3 | 4 | – | 53 | 1550 | 1.25 | 1.0 |
+  | 8  | 30 | 18 | 5 | 8 | – | 61 | 2080 | 1.35 | 1.0 |
+  | 9  | 36 | 24 | 9 | 9 | – | 78 | 2970 | 1.5 | 1.0 |
+  | 10 | 40 | 28 | 8 | 8 | Bone Colossus (2200) | 85 | 2980 | 1.6 | 1.0 |
+  | 11 | 40 | 34 | 13 | 11 | – | 98 | 3880 | 1.85 | 1.03 |
+  | 12 | 46 | 38 | 15 | 14 | – | 113 | 4480 | 2.0 | 1.05 |
+  | 13 | 66 | 48 | 18 | 16 | – | 148 | 5720 | 2.15 | 1.07 |
+  | 14 | 78 | 54 | 21 | 23 | – | 176 | 6760 | 2.2 | 1.08 |
+  | 15 | 80 | 50 | 22 | 21 | Lich Warden (3600) | 174 | 6870 | 2.35 | 1.1 |
 - **Hero healing (M6 tuning, needs a playtest decision):** when a wave is cleared, a living hero gets its HP back (`HeroLives.heal_between_waves`, 1.0 = full). Without it a hero who fights wears down over 15 waves with no way back but dying, and a fighting hero did worse than an idle one in the balance tool. Lives still never come back.
-- **M6 tuning** (balance report, seed 1–4, 5 s build phases; the "bot" hero is `tests/tools/hero_bot.gd`: it walks to the nearest enemy on the busiest lane, swings, and at low HP dashes away and falls back to the fortress):
-  - **Idle hero: never wins** (seed 1: best runs fall in wave 15, typical ones in waves 8–13; no upgrades: wave 5–6).
-  - **Bot hero: a sensible build can win, rarely comfortably.** Seed 1: the mixed build wins with 15 fortress HP (tower or economy picks), or with more when the picks stacked fortress HP (150–171); all five towers win once (26). Across seeds 2–4, 15 of 39 bot runs win, most with 1–42 fortress HP; the rest fall in wave 6–15, the boss waves being the walls. Archers + cannons never quite win (wave 14–15). The hero alone is worth about 2–3 waves over the same build idle. Hero-only picks lose early (wave 6–10): towers carry the defence, the hero closes the gaps.
-  - **Length:** a won run is about 11–12 minutes of fighting; with a player's ~30 s per build phase and upgrade choice that is about 19–20 minutes, more for a player who fights slower than the bot.
-  - Performance: wave 15 runs at 600 fps average (271 fps 1% low) on the dev machine.
+- **M6 playtest-2 tuning** (the first playtest won easily: wave 14 with 6,420 gold unspent, every slot maxed, all lives, fortress 65/75). A human plays far better than the bot, so the bot is now a **floor**: idle never wins, the bot rarely, only with a strong build; a good player should win narrowly. Balance report, seeds 1–4, 5 s build phases, the bot using the Quartermaster (`tests/tools/hero_bot.gd`: it walks to the nearest enemy on the busiest lane, swings, and at low HP dashes away and falls back):
+  - **Before** (M6 as shipped): idle hero 0 of 15 runs won; bot hero 18 of 72 (25%), most with 1–42 fortress HP or 140–175 with fortress picks; won runs ended with 5,000–11,000 gold unspent.
+  - **After:** idle hero 0 of 15 (best: wave 11); bot hero **2 of 72 (3%)**, both the mixed build with tower/economy picks (all 30 tower levels by wave 13, 18 fortress HP left). Where the other bot runs end: wave 6–9 (24, mostly runs without upgrades or with hero-only picks), wave 10 (15: the Colossus wave is the mid-run wall), 12–13 (7), **14–15 (24: the late waves are now the run's real test)**. The bot's hero sometimes falls for good now (4 runs lost by the hero, to Colossus charges and late Cultists).
+  - **Length:** a won run is about 10.5 minutes of fighting, about 18 minutes with a player's ~30 s per build phase and upgrade choice; more for a player who fights slower than the bot.
 - Earlier tuning (M4, M5: 10 waves, no bosses) is in git history.
 
 ### 4.8 Meta progression (later milestone)

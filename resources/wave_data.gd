@@ -11,6 +11,9 @@ extends Resource
 ## theirs as authored). Later waves send far more enemies: below 1 it keeps the income per wave from
 ## growing with the horde, so gold stays scarce.
 @export var gold_multiplier: float = 1.0
+## Every regular enemy of this wave moves this many times its move_speed (bosses as authored): late
+## waves press harder, so a held line has less time per enemy.
+@export var speed_multiplier: float = 1.0
 
 
 ## How many enemies the whole wave sends.

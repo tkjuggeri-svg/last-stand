@@ -42,6 +42,8 @@ var lane: Path2D
 var health_multiplier: float = 1.0
 ## Its wave's kill-gold scale: the kill pays data.gold_reward x this (WaveRewards). Set by the spawner.
 var gold_multiplier: float = 1.0
+## Its wave's pace: move speed = data.move_speed x this (before slows). Set by the spawner.
+var speed_multiplier: float = 1.0
 
 var _is_finished: bool = false
 ## The body (the hero) currently inside attack range, if any.
@@ -180,7 +182,7 @@ func get_lane_progress() -> float:
 
 
 func get_move_speed() -> float:
-	return data.move_speed * _slow_factor
+	return data.move_speed * speed_multiplier * _slow_factor
 
 
 func is_slowed() -> bool:

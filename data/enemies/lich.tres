@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1_data")
 display_name = "The Lich Warden"
-max_health = 2600
+max_health = 3600
 move_speed = 28.0
 gold_reward = 150
 fortress_damage = 60
