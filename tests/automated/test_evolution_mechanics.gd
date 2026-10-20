@@ -17,6 +17,8 @@ const BRAZIER: TowerData = preload("res://data/towers/brazier.tres")
 const BALLISTA: TowerData = preload("res://data/towers/ballista.tres")
 const GHOUL: EnemyData = preload("res://data/enemies/ghoul.tres")
 const COLOSSUS: EnemyData = preload("res://data/enemies/colossus.tres")
+const PIERCING: UpgradeData = preload("res://data/upgrades/piercing.tres")
+const HELLFIRE: UpgradeData = preload("res://data/upgrades/hellfire.tres")
 ## Slots (level BuildSlots order): 3 at (-380, -90); 2 is 175 px from it, 4 is 240 px, 8 is 253 px.
 const SLOT: int = 3
 
@@ -34,6 +36,7 @@ func _initialize() -> void:
 	await _test_beacon()
 	await _test_harpoon()
 	await _test_repeater()
+	await _test_cards()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -222,6 +225,25 @@ func _test_repeater() -> void:
 	var hit: int = line.filter(func(e: Enemy) -> bool: return _hp(e) == 1000 - damage).size()
 	_check("Repeater: a bolt passes through 2 more enemies (hit %d of 4)" % hit, hit == 3 and _hp(line[3]) == 1000)
 	_check("...and fires fast (every %.2f s)" % tower.get_stats().fire_interval, tower.get_stats().fire_interval < BALLISTA.stats_for(3).fire_interval * 0.5)
+	await _free(level)
+
+
+## The run upgrades that would overlap an evolution still count: Piercing Arrows gives a Volley Tower
+## one more shower, Hellfire Shells sets a Grapeshot blast's far end on fire.
+func _test_cards() -> void:
+	var level: Level = await _level()
+	var volley: Tower = await _evolved(level, ARCHER, 1)
+	(level.get_node("%RunModifiers") as RunModifiers).add_upgrade(PIERCING)
+	var grape: Tower = await _evolved(level, CANNON, 1, 8)
+	(level.get_node("%RunModifiers") as RunModifiers).add_upgrade(HELLFIRE)
+	_stationary(level, volley.global_position + Vector2(150, 0), 5000)
+	_stationary(level, grape.global_position + Vector2(100, 0), 5000)
+	await _until(func() -> bool: return not volley.find_children("*", "ArrowRain", true, false).is_empty(), 60 * 4)
+	var rain: ArrowRain = volley.find_children("*", "ArrowRain", true, false)[0]
+	_check("Piercing Arrows: the Volley Tower rains %d showers (%d without)" % [rain.get_strikes_left(), volley.get_evolution().rain_strikes],
+		rain.get_strikes_left() == volley.get_evolution().rain_strikes + 1)
+	await _until(func() -> bool: return not grape.find_children("*", "BurnZone", true, false).is_empty(), 60 * 3)
+	_check("Hellfire Shells: a Grapeshot blast leaves burning ground", not grape.find_children("*", "BurnZone", true, false).is_empty())
 	await _free(level)
 
 
