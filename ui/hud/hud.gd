@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## In-game overlay: fortress and hero HP, the dash cooldown, a boss's big HP bar (top centre) and
 ## banners when a boss arrives or falls, gold, enemy counts, the wave and phase (with the "Start
-## wave" button and key during the build phase), and short event notifications.
+## wave" button and key during the build phase, and the Quartermaster's repairs / life buy-back), and
+## short event notifications.
 ## Assign its targets in the level scene. Parts whose target is not assigned are hidden, so the HUD
 ## also runs on its own. It only displays and sends the start-wave intent; RunCycle decides.
 
@@ -39,6 +40,8 @@ const PHASE_TEXTS: Dictionary = {
 @export var hero_lives: HeroLives
 ## The run's upgrades: one icon each (with a stack count) under the wave panel.
 @export var modifiers: RunModifiers
+## Between-waves repairs and life buy-back, offered under the wave panel.
+@export var quartermaster: Quartermaster
 
 @onready var _fortress_bar: HealthBar = %FortressBar
 @onready var _hero_bar: HealthBar = %HeroBar
@@ -63,6 +66,7 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _boss_name: Label = %BossName
 @onready var _boss_bar: ProgressBar = %BossBar
 @onready var _banner: Label = %Banner
+@onready var _services: ServicesPanel = %ServicesPanel
 
 ## The boss whose HP the top bar shows (null when none is alive).
 var _boss: Enemy
@@ -100,6 +104,10 @@ func _ready() -> void:
 		hero_lives.hero_respawned.connect(_on_hero_respawned)
 		_update_lives()
 	_start_wave_button.pressed.connect(_request_start_wave)
+	_services.setup(quartermaster)
+	if quartermaster != null:
+		quartermaster.fortress_repaired.connect(func(amount: int, _cost: int) -> void: _feed.push("Walls repaired: +%d" % amount, SLAIN_COLOR))
+		quartermaster.life_bought.connect(func(_cost: int) -> void: _feed.push("A life bought back!", SLAIN_COLOR))
 	if run_cycle != null:
 		run_cycle.phase_changed.connect(func(_phase: RunCycle.Phase) -> void: _update_wave())
 	if spawner != null:

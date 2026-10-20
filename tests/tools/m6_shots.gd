@@ -2,7 +2,8 @@ extends RefCounted
 ## The "m6" screenshot scenario of capture_screenshots.gd (kept apart so that script stays short):
 ## the dash (afterimages, the HUD cooldown row, the Cinder Dash trail), the Cultist (casting at the
 ## fortress, at the hero, beside the other enemies), the bosses (arrival with the HUD bar, telegraph,
-## mechanic, death), the pause menu and the settings.
+## mechanic, death), the pause menu and the settings, and the Quartermaster's panel (repair, buy back
+## a life) in a build phase.
 ## `--only=dash` (comma-separated) runs just some parts.
 
 const CINDER_DASH: UpgradeData = preload("res://data/upgrades/cinder_dash.tres")
@@ -32,6 +33,9 @@ func run(level: Level) -> void:
 	if _wants("pause"):
 		await _clear(level)
 		await _pause(level)
+	if _wants("shop"):
+		await _clear(level)
+		await _shop(level)
 
 
 func _wants(part: String) -> bool:
@@ -185,6 +189,16 @@ func _pause(level: Level) -> void:
 	await _tool.call("_shot", "m6_21_settings_rebinding")
 	settings.close()
 	menu.close()
+
+
+func _shop(level: Level) -> void:
+	var hero: Hero = level.get_node("Hero")
+	(level.get_node("Fortress") as Fortress).health.take_damage(45)
+	hero.health.take_damage(hero.health.current_health)
+	await _tool.call("_frames", 60 * 5)  # the respawn
+	(level.get_node("%Economy") as Economy).earn(260, Economy.Source.KILL)
+	await _tool.call("_frames", 10)
+	await _tool.call("_shot", "m6_22_quartermaster")
 
 
 ## Ends whatever wave an earlier part left running, so each part starts in a build phase.

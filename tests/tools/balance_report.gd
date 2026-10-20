@@ -7,7 +7,9 @@ extends SceneTree
 ## --hero: "idle" parks the hero out of every fight; "bot" plays it with HeroBot (hero_bot.gd: walks
 ## to the nearest enemy on the busiest lane, swings, dashes away at low HP); "both" (default) runs each.
 ## The bot buys the plan's towers and tower upgrades in order as soon as the gold allows (any phase),
-## starts each wave after BUILD_SECONDS of build phase, and takes run upgrades by a policy:
+## starts each wave after BUILD_SECONDS of build phase, and takes run upgrades by a policy. In the
+## build phase it first buys back a lost life, and repairs the fortress while it is below
+## REPAIR_BELOW of its max HP (the Quartermaster's gold sinks), when the gold allows. Upgrade policies:
 ##   none: no run upgrades at all (the offers are switched off) - the baseline;
 ##   towers / economy / fortress / hero: the first card of that category, else by POLICY_FALLBACK;
 ##   random: any card (seeded). The "hero" policy only runs with the bot hero.
@@ -40,6 +42,8 @@ const PLANS: Dictionary = {
 		["frost", 6], ["ballista", 0], ["archer", 3], ["cannon", 1]],
 }
 const EARLY_BUILDS: int = 6
+## Repair the fortress (between waves) while its HP is below this share of the max.
+const REPAIR_BELOW: float = 0.5
 const POLICIES: Array[String] = ["none", "towers", "economy", "fortress", "hero", "random"]
 const POLICY_CATEGORY: Dictionary = {
 	"towers": UpgradeData.Category.TOWERS,
@@ -135,6 +139,7 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	var cycle: RunCycle = level.get_node("%RunCycle")
 	var fortress: Fortress = level.get_node("Fortress")
 	var mods: RunModifiers = level.get_node("%RunModifiers")
+	var shop: Quartermaster = level.get_node("%Quartermaster")
 	if only != null:
 		mods.add_upgrade(only)
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -173,6 +178,8 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 			bot.call("step", mods)
 		if cycle.get_phase() == RunCycle.Phase.COMBAT:
 			stats["combat"] += 1.0 / 60.0
+		if cycle.get_phase() == RunCycle.Phase.BUILD:
+			_use_sinks(shop, fortress, ledger)
 		if next < plan.size():
 			var step: Array = plan[next]
 			var slot: BuildSlot = builder.get_slots()[step[1]]
@@ -222,6 +229,15 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	for _i: int in 2:
 		await physics_frame
 	return line
+
+
+func _use_sinks(shop: Quartermaster, fortress: Fortress, ledger: RefCounted) -> void:
+	var cost: int = shop.life_cost()
+	if shop.buy_life():
+		ledger.call("spend", "lives", cost)
+	cost = shop.repair_cost()
+	if fortress.health.current_health < fortress.health.max_health * REPAIR_BELOW and shop.repair():
+		ledger.call("spend", "repairs", cost)
 
 
 ## The card index the policy takes.

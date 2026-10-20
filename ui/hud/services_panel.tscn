@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://ui/hud/services_panel.gd" id="1_panel"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_keep.png" id="2_keep"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_helm.png" id="3_helm"]
+
+[node name="ServicesPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(232, 0)
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_panel")
+
+[node name="Box" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="Box"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
+text = "Quartermaster"
+
+[node name="RepairButton" type="Button" parent="Box"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Repair walls +19  (100 g)"
+icon = ExtResource("2_keep")
+alignment = 0
+
+[node name="LifeButton" type="Button" parent="Box"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+text = "Buy back a life  (300 g)"
+icon = ExtResource("3_helm")
+alignment = 0

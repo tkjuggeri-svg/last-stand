@@ -1,6 +1,7 @@
 class_name HeroLives
 extends Node
-## The hero's lives for one run (they don't come back between waves). Each fall costs a life; while
+## The hero's lives for one run (they don't come back between waves; the Quartermaster can sell one
+## back once, restore_life()). Each fall costs a life; while
 ## lives remain, the hero respawns at the respawn point (in front of the fortress) after respawn_delay
 ## seconds, with a visible countdown, and is protected for respawn_invulnerability seconds. The towers
 ## keep fighting meanwhile. Losing the last life ends the run (out_of_lives; the Level turns it into
@@ -74,6 +75,15 @@ func _on_modifiers_changed() -> void:
 	_lives_left = maxi(_lives_left + new_max - _max_lives, 0)
 	_max_lives = new_max
 	lives_changed.emit(_lives_left)
+
+
+## Gives back one lost life (never above the max). Returns false if none was lost.
+func restore_life() -> bool:
+	if _lives_left >= _max_lives:
+		return false
+	_lives_left += 1
+	lives_changed.emit(_lives_left)
+	return true
 
 
 func is_respawning() -> bool:

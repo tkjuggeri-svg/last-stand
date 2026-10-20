@@ -56,6 +56,7 @@
 [ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
 [ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
 [ext_resource type="Script" path="res://systems/tower_builder.gd" id="10_builder"]
+[ext_resource type="Script" path="res://systems/quartermaster.gd" id="40_quartermaster"]
 [ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
 [ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
 [ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
@@ -787,6 +788,14 @@ slots_root = NodePath("../../BuildSlots")
 modifiers = NodePath("../RunModifiers")
 catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon"), ExtResource("34_brazier"), ExtResource("35_ballista")])
 
+[node name="Quartermaster" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "fortress", "hero_lives", "run_cycle")]
+unique_name_in_owner = true
+script = ExtResource("40_quartermaster")
+economy = NodePath("../Economy")
+fortress = NodePath("../../Fortress")
+hero_lives = NodePath("../HeroLives")
+run_cycle = NodePath("../RunCycle")
+
 [node name="BuildSlots" type="Node2D" parent="."]
 y_sort_enabled = true
 
@@ -857,7 +866,7 @@ mouse_filter = 2
 texture = SubResource("GradientTexture2D_vignette")
 expand_mode = 1
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers") instance=ExtResource("6_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers", "quartermaster") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
 spawner = NodePath("../WaveSpawner")
@@ -867,6 +876,7 @@ builder = NodePath("../Systems/TowerBuilder")
 run_cycle = NodePath("../Systems/RunCycle")
 hero_lives = NodePath("../Systems/HeroLives")
 modifiers = NodePath("../Systems/RunModifiers")
+quartermaster = NodePath("../Systems/Quartermaster")
 
 [node name="BuildMenu" parent="." node_paths=PackedStringArray("builder", "economy") instance=ExtResource("15_menu")]
 builder = NodePath("../Systems/TowerBuilder")
