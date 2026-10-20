@@ -6,6 +6,8 @@ extends Node
 ## choice screen pauses the game until one card is taken) before the next build phase.
 ## After the last wave the run is FINISHED (all_waves_cleared). Building and selling are allowed in
 ## the build and combat phases; this node only decides when a wave may start.
+## On a run map (choose_between_waves off) a fight's waves follow each other without upgrade choices
+## (the fight's reward comes after it), and restart() begins the next fight's build phase.
 
 signal phase_changed(phase: Phase)
 ## The last wave has been cleared.
@@ -16,6 +18,8 @@ enum Phase { BUILD, COMBAT, CHOOSE, FINISHED }
 @export var spawner: WaveSpawner
 ## Optional: without it (or with nothing left to offer) a cleared wave goes straight to BUILD.
 @export var offers: UpgradeOffers
+## Offer an upgrade after every cleared wave (off on the run map: one choice per fight).
+@export var choose_between_waves: bool = true
 
 var _phase: Phase = Phase.BUILD
 
@@ -57,13 +61,18 @@ func start_wave() -> bool:
 	return spawner.start_next_wave()
 
 
+## Back to the build phase for the spawner's freshly loaded waves (after FINISHED, a new fight).
+func restart() -> void:
+	_set_phase(Phase.BUILD)
+
+
 func _on_wave_started(_wave_number: int) -> void:
 	_set_phase(Phase.COMBAT)
 
 
 func _on_wave_cleared(_wave_number: int) -> void:
 	if spawner.has_next_wave():
-		if offers != null and offers.has_cards():
+		if choose_between_waves and offers != null and offers.has_cards():
 			_set_phase(Phase.CHOOSE)
 			offers.make_offer()
 		else:

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"warded"
+display_name = "Warded"
+description = "Every enemy comes with a ward that absorbs 30 damage."
+spawn_shield = 30

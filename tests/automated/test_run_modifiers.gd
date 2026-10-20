@@ -154,6 +154,8 @@ func _test_restart_resets() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(2)
+	await MapFixtures.enter_first_battle(main)  # every run starts on the map
+	await _frames(2)
 	var level: Level = _level_of(main)
 	var mods: RunModifiers = level.get_node("%RunModifiers")
 	mods.add_upgrade(_upgrade(&"big", false, [_mod(RunModifiers.HERO_MAX_HEALTH, 50.0, 0.0), _mod(&"tower.damage", 0.0, 1.0)]))

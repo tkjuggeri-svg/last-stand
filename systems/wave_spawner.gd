@@ -17,6 +17,9 @@ signal enemy_reached_fortress(enemy: Enemy)
 ## The number of living enemies or the number spawned in this wave changed.
 signal enemy_counts_changed(living_count: int, spawned_count: int)
 
+## How long a wave's spawn ward (WaveData.spawn_shield) lasts: the whole fight.
+const SPAWN_SHIELD_TIME: float = 600.0
+
 ## The enemy scene every group instantiates (its EnemyData decides what it is).
 @export var enemy_scene: PackedScene
 ## The level's lanes; a SpawnGroup picks one by index.
@@ -102,6 +105,20 @@ func get_remaining_count() -> int:
 	return get_wave_enemy_total() - _finished_count if _wave_open else 0
 
 
+## Replaces the waves with `new_waves` and starts over from the first (a run map's next fight on the same
+## level). Returns false (and changes nothing) while a wave is running.
+func load_waves(new_waves: Array[WaveData]) -> bool:
+	if _wave_open:
+		return false
+	waves = new_waves
+	_wave_index = -1
+	_spawned_count = 0
+	_finished_count = 0
+	_summoned_count = 0
+	enemy_counts_changed.emit(_living_count, _spawned_count)
+	return true
+
+
 ## Starts the next wave. Returns false (and does nothing) while a wave is running or after the last one.
 func start_next_wave() -> bool:
 	if _wave_open or not has_next_wave():
@@ -153,6 +170,8 @@ func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2) -> Enemy:
 	enemy.summon_requested.connect(_on_summon_requested)
 	add_child(enemy)
 	enemy.global_position = at
+	if waves[_wave_index].spawn_shield > 0:
+		enemy.add_shield(waves[_wave_index].spawn_shield, SPAWN_SHIELD_TIME)
 	_spawned_count += 1
 	_living_count += 1
 	enemy_spawned.emit(enemy)

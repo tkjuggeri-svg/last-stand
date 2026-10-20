@@ -28,10 +28,14 @@ var _offer: Array[UpgradeData] = []
 var _rerolled: bool = false
 var _rerolls_used: int = 0
 var _seeded: bool = false
+## Size and rarity rule of the open offer (a reroll keeps them).
+var _size: int = 3
+var _rare_only: bool = false
 
 
 func _ready() -> void:
 	assert(modifiers != null, "UpgradeOffers needs RunModifiers: %s" % get_path())
+	_size = offer_size
 	_ensure_seeded()
 
 
@@ -55,12 +59,26 @@ func get_offer() -> Array[UpgradeData]:
 	return _offer.duplicate()
 
 
-## Draws a new offer (replacing any open one) and reports it.
-func make_offer() -> Array[UpgradeData]:
+## Draws a new offer (replacing any open one) and reports it: `size` cards (-1 = offer_size), only
+## rare ones if `rare_only` (the reward of an elite or a boss).
+func make_offer(size: int = -1, rare_only: bool = false) -> Array[UpgradeData]:
+	_size = offer_size if size < 0 else size
+	_rare_only = rare_only
 	_offer = _draw()
 	_rerolled = false
 	offer_made.emit(get_offer())
 	return get_offer()
+
+
+## Draws `count` cards for a shop (a merchant's stock): weighted like an offer, but no offer is opened.
+func draw_cards(count: int) -> Array[UpgradeData]:
+	var keep: Array = [_size, _rare_only]
+	_size = count
+	_rare_only = false
+	var cards: Array[UpgradeData] = _draw()
+	_size = keep[0]
+	_rare_only = keep[1]
+	return cards
 
 
 ## Takes card `index` of the open offer. Returns false if there is no such card.
@@ -109,16 +127,21 @@ func _ensure_seeded() -> void:
 		_rng.randomize()
 
 
-func _candidates() -> Array[UpgradeData]:
-	return pool.filter(func(d: UpgradeData) -> bool: return d != null and modifiers.can_take(d))
+## The cards that may be drawn (only rare ones if `rare_only`).
+func _candidates(rare_only: bool = false) -> Array[UpgradeData]:
+	var found: Array[UpgradeData] = []
+	for data: UpgradeData in pool:
+		if data != null and modifiers.can_take(data) and (not rare_only or data.rarity == UpgradeData.Rarity.RARE):
+			found.append(data)
+	return found
 
 
 ## offer_size different cards, weighted by rarity.
 func _draw() -> Array[UpgradeData]:
 	_ensure_seeded()
-	var left: Array[UpgradeData] = _candidates()
+	var left: Array[UpgradeData] = _candidates(_rare_only)
 	var cards: Array[UpgradeData] = []
-	while cards.size() < offer_size and not left.is_empty():
+	while cards.size() < _size and not left.is_empty():
 		var weights: PackedFloat32Array = PackedFloat32Array()
 		for data: UpgradeData in left:
 			weights.append(rare_weight if data.rarity == UpgradeData.Rarity.RARE else common_weight)

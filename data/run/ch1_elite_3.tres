@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EncounterData" format=3]
+
+[ext_resource type="Script" path="res://resources/encounter_data.gd" id="1_enc"]
+[ext_resource type="Resource" path="res://data/waves/wave_05.tres" id="w0"]
+[ext_resource type="Resource" path="res://data/waves/wave_06.tres" id="w1"]
+[ext_resource type="Resource" path="res://data/enemies/gravelord.tres" id="l_leader"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="s_wave"]
+
+[resource]
+script = ExtResource("1_enc")
+row = 3
+waves = Array[ExtResource("s_wave")]([ExtResource("w0"), ExtResource("w1")])
+leader = ExtResource("l_leader")
+leader_delay = 6.0

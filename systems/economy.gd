@@ -6,7 +6,7 @@ extends Node
 signal gold_changed(gold: int)
 signal gold_earned(amount: int, source: Source)
 
-enum Source { KILL, PERFECT_DEFENSE, REFUND, INTEREST }
+enum Source { KILL, PERFECT_DEFENSE, REFUND, INTEREST, REWARD }
 
 @export var starting_gold: int = 100
 

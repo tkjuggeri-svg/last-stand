@@ -1,8 +1,9 @@
 extends SceneTree
-## Automated check for the full run: the level's 10 hand-authored waves (rising curve, Hounds and
-## Brutes introduced gradually, all 3 lanes used), Victory after the last wave through the real
-## main.tscn (frozen level, own screen, Play again starts a fresh run), and that a run lost in the
-## same moment as the last wave ends is a loss, not a win.
+## Automated check for the full run: the level's 15 hand-authored waves (rising curve, Hounds and
+## Brutes introduced gradually, all 3 lanes used), and through the real main.tscn with a tiny run map
+## (a battle, then the boss): a won battle gives its reward and returns to the map, beating the last
+## chapter's boss wins the run (frozen level, own screen, Play again starts a fresh run on its map), and
+## a run lost in the same moment as the boss fight ends is a loss, not a win.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
@@ -52,13 +53,13 @@ func _test_wave_curve() -> void:
 
 func _test_victory_and_restart() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
+	main.set("run_data", MapFixtures.tiny_run(MapFixtures.encounter(1, 2), MapFixtures.encounter(2, 2), load(ARENA)))
+	main.set("run_seed", 1)
 	root.add_child(main)
 	await _frames(2)
-	var level: Level = _level_of(main)
+	var level: Level = await MapFixtures.enter_first_battle(main)
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	var cycle: RunCycle = level.get_node("%RunCycle")
-	spawner.waves = [WaveFixtures.make_wave(2, 0.2), WaveFixtures.make_wave(2, 0.2)]  # a short run
-	WaveFixtures.no_upgrades(level)
 	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
 		(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(1000))
 	var won: Array[int] = [0]
@@ -67,15 +68,25 @@ func _test_victory_and_restart() -> void:
 	level.run_lost.connect(func(_r: Level.LossReason) -> void: lost[0] += 1)
 	var victory: VictoryScreen = main.get_node("%VictoryScreen")
 	var game_over: GameOverScreen = main.get_node("%GameOverScreen")
+	var map_screen: MapScreen = main.get_node("%MapScreen")
 	cycle.start_wave()
-	await _until(func() -> bool: return cycle.get_phase() == RunCycle.Phase.BUILD and spawner.get_wave_number() == 1, 200)
-	_check("after wave 1 of 2: no victory yet", won[0] == 0 and not victory.visible)
-	cycle.start_wave()
-	await _until(func() -> bool: return won[0] > 0, 200)
+	var offers: UpgradeOffers = level.get_node("%UpgradeOffers")
+	await _until(func() -> bool: return offers.is_offer_open(), 300)
+	_check("a won battle is not the run: its reward comes, no victory", won[0] == 0 and not victory.visible and offers.get_offer().size() == 3)
+	offers.pick(0)
 	await _frames(2)
-	_check("clearing the last wave wins the run, once", won[0] == 1 and lost[0] == 0)
+	_check("after the reward, the map again", map_screen.visible and not level.is_active())
+	map_screen.node_chosen.emit((main.call("get_map") as RunMap).get_choices()[0])
+	await _frames(2)
+	cycle.start_wave()
+	await _until(func() -> bool: return cycle.get_phase() == RunCycle.Phase.BUILD and spawner.get_wave_number() == 1, 300)
+	_check("after the boss fight's wave 1 of 2: no victory yet", won[0] == 0 and not victory.visible)
+	cycle.start_wave()
+	await _until(func() -> bool: return won[0] > 0, 300)
+	await _frames(2)
+	_check("beating the last chapter's boss wins the run, once", won[0] == 1 and lost[0] == 0)
 	_check("the Victory screen shows (%s)" % (victory.get_node("%Subtitle") as Label).text, victory.visible and not game_over.visible
-		and (victory.get_node("%Subtitle") as Label).text == "The fortress stands. All 2 waves held.")
+		and (victory.get_node("%Subtitle") as Label).text == "The fortress stands. Every chapter held.")
 	_check("...with keyboard focus on its button", (victory.get_node("%RestartButton") as Button).has_focus())
 	_check("the level is frozen", not level.can_process() and level.is_run_over())
 	(level.get_node("Fortress") as Fortress).destroyed.emit()
@@ -85,23 +96,20 @@ func _test_victory_and_restart() -> void:
 	(victory.get_node("%RestartButton") as Button).pressed.emit()
 	await _frames(2)
 	var fresh: Level = _level_of(main)
-	_check("Play again: a fresh run, screen hidden, wave 1 / 15 in the build phase",
-		fresh != level and not victory.visible and fresh.can_process()
-		and (fresh.get_node("%RunCycle") as RunCycle).get_phase() == RunCycle.Phase.BUILD
-		and (fresh.get_node("%RunCycle") as RunCycle).get_current_wave_number() == 1
-		and (fresh.get_node("WaveSpawner") as WaveSpawner).get_wave_count() == 15)
+	_check("Play again: a fresh run on its map, screen hidden", fresh != level and not victory.visible and map_screen.visible
+		and (main.call("get_map") as RunMap).path.is_empty())
 	main.queue_free()
 	await _frames(2)
 
 
-## The last enemy of the last wave walks into a fortress at 10 HP: the fortress falls and the wave is
-## over in the same moment. That is Game Over.
+## The last enemy of the boss fight walks into a fortress at 10 HP: the fortress falls and the fight
+## is over in the same moment. That is Game Over.
 func _test_loss_beats_victory() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
+	main.set("run_data", MapFixtures.tiny_run(null, MapFixtures.encounter(1, 1), load(ARENA)))
 	root.add_child(main)
 	await _frames(2)
-	var level: Level = _level_of(main)
-	(level.get_node("WaveSpawner") as WaveSpawner).waves = [WaveFixtures.make_wave(1, 1.0)]
+	var level: Level = await MapFixtures.enter_first_battle(main)  # the boss is the only node
 	(level.get_node("Hero") as Node2D).position = Vector2(-750, 330)
 	var fortress: Fortress = level.get_node("Fortress")
 	fortress.health.take_damage(90)
@@ -119,7 +127,7 @@ func _test_loss_beats_victory() -> void:
 
 func _level_of(main: Node) -> Level:
 	for child: Node in main.get_children():
-		if child is Level:
+		if child is Level and not child.is_queued_for_deletion():
 			return child
 	return null
 

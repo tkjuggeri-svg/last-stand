@@ -17,6 +17,8 @@ func _initialize() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(2)
+	await MapFixtures.enter_first_battle(main)  # every run starts on the map
+	await _frames(2)
 	var screen: GameOverScreen = main.get_node("%GameOverScreen")
 	var subtitle: Label = screen.get_node("%Subtitle")
 	var level: Level = _level_of(main)

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="ChapterData" format=3]
+
+[ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="PackedScene" path="res://levels/prototype_arena.tscn" id="2_level"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_1.tres" id="b1"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_2.tres" id="b2"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_3.tres" id="b3"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_4.tres" id="b4"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_5.tres" id="b5"]
+[ext_resource type="Resource" path="res://data/run/ch1_battle_6.tres" id="b6"]
+[ext_resource type="Resource" path="res://data/run/ch1_elite_3.tres" id="e3"]
+[ext_resource type="Resource" path="res://data/run/ch1_elite_4.tres" id="e4"]
+[ext_resource type="Resource" path="res://data/run/ch1_elite_5.tres" id="e5"]
+[ext_resource type="Resource" path="res://data/run/ch1_elite_6.tres" id="e6"]
+[ext_resource type="Resource" path="res://data/affixes/swift.tres" id="a_swift"]
+[ext_resource type="Resource" path="res://data/affixes/warded.tres" id="a_warded"]
+[ext_resource type="Resource" path="res://data/affixes/swarming.tres" id="a_swarming"]
+[ext_resource type="Resource" path="res://data/affixes/siege.tres" id="a_siege"]
+[ext_resource type="Resource" path="res://data/affixes/ironclad.tres" id="a_ironclad"]
+[ext_resource type="Resource" path="res://data/run/ch1_boss.tres" id="boss"]
+[ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
+
+[resource]
+script = ExtResource("1_chapter")
+id = &"crypt_road"
+display_name = "Chapter 1: The Crypt Road"
+level_scene = ExtResource("2_level")
+battles = Array[ExtResource("s_enc")]([ExtResource("b1"), ExtResource("b2"), ExtResource("b3"), ExtResource("b4"), ExtResource("b5"), ExtResource("b6")])
+elites = Array[ExtResource("s_enc")]([ExtResource("e3"), ExtResource("e4"), ExtResource("e5"), ExtResource("e6")])
+affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_warded"), ExtResource("a_swarming"), ExtResource("a_siege"), ExtResource("a_ironclad")])
+boss = ExtResource("boss")
+event_weight = 0.0
+shrine_weight = 0.0

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"swarming"
+display_name = "Swarming"
+description = "50% more enemies, each with 35% less HP."
+count_multiplier = 1.5
+health_multiplier = 0.65

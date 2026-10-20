@@ -9,6 +9,8 @@ func _initialize() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(2)
+	await MapFixtures.enter_first_battle(main)  # every run starts on the map
+	await _frames(2)
 	var screen: GameOverScreen = main.get_node("%GameOverScreen")
 	var button: Button = screen.get_node("%RestartButton")
 
@@ -68,6 +70,9 @@ func _initialize() -> void:
 	var old_level: Level = level
 	button.pressed.emit()
 	await _frames(2)
+	_check("restart opens a fresh run's map", (main.get_node("%MapScreen") as CanvasLayer).visible and (main.call("get_map") as RunMap).path.is_empty())
+	await MapFixtures.enter_first_battle(main)
+	await _frames(2)
 	level = _current_level(main)
 	_check("restart hides game over", not screen.visible)
 	_check("old level removed", not is_instance_valid(old_level))
@@ -107,13 +112,13 @@ func _initialize() -> void:
 
 func _current_level(main: Node) -> Level:
 	for child: Node in main.get_children():
-		if child is Level:
+		if child is Level and not child.is_queued_for_deletion():
 			return child
 	return null
 
 
 func _level_count(main: Node) -> int:
-	return main.get_children().filter(func(c: Node) -> bool: return c is Level).size()
+	return main.get_children().filter(func(c: Node) -> bool: return c is Level and not c.is_queued_for_deletion()).size()
 
 
 func _in_build_phase(level: Level) -> bool:

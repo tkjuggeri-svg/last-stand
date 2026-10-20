@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"siege"
+display_name = "Siege"
+description = "Cultists take the place of half the Ghouls."
+swap_from = ExtResource("2_ghoul")
+swap_to = ExtResource("3_cultist")
+swap_share = 0.5

@@ -13,6 +13,7 @@ extends SceneTree
 ## "m6" (M6 content, see m6_shots.gd; --only=dash,... picks parts).
 
 const M6Shots: GDScript = preload("res://tests/tools/m6_shots.gd")
+const M7Shots: GDScript = preload("res://tests/tools/m7_shots.gd")
 
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
@@ -31,10 +32,13 @@ func _initialize() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(60)
-	var level: Level = null
-	for child: Node in main.get_children():
-		if child is Level:
-			level = child
+	if _scenario == "m7":
+		await M7Shots.new(self, _only).run(main)
+		quit()
+		return
+	# Every run starts on the map: the scenarios below play the first battle's level.
+	var level: Level = await MapFixtures.enter_first_battle(main)
+	await _frames(2)
 	if _scenario == "run":
 		await _run(level)
 		quit()
@@ -318,15 +322,9 @@ func _run(level: Level) -> void:
 	await _frames(3)
 	await _shot("run_wave8_battlefield")
 	level.get_node("HUD").set(&"visible", true)
-	# Victory: clear what is left.
-	for enemy: Node in spawner.get_children():
-		(enemy.get_node("%HealthComponent") as HealthComponent).take_damage(10000)
-	spawner.enemy_spawned.connect(func(e: Enemy) -> void:
-		(e.get_node("%HealthComponent") as HealthComponent).take_damage.call_deferred(10000))
-	for _i: int in 3600:
-		await _frames(1)
-		if level.is_run_over():
-			break
+	# Victory (a run is won by its last boss; here the screen is shown on the frozen level).
+	level.end_run_won()
+	(level.get_parent().get_node("%VictoryScreen") as VictoryScreen).open("The fortress stands. Every chapter held.")
 	_frame_camera(camera, Vector2.ZERO, 1.0, false)
 	await _frames(30)
 	await _shot("run_victory")

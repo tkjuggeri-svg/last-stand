@@ -14,6 +14,8 @@ extends Resource
 ## Every regular enemy of this wave moves this many times its move_speed (bosses as authored): late
 ## waves press harder, so a held line has less time per enemy.
 @export var speed_multiplier: float = 1.0
+## Every enemy of this wave spawns with a ward absorbing this much damage (an elite's Warded twist).
+@export var spawn_shield: int = 0
 
 
 ## How many enemies the whole wave sends.

@@ -57,6 +57,7 @@
 [ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
 [ext_resource type="Script" path="res://systems/tower_builder.gd" id="10_builder"]
 [ext_resource type="Script" path="res://systems/quartermaster.gd" id="40_quartermaster"]
+[ext_resource type="Script" path="res://systems/merchant.gd" id="41_merchant"]
 [ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
 [ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
 [ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
@@ -137,7 +138,7 @@ size = Vector2(1500, 100)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(100, 1100)
 
-[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers")]
+[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers", "offers", "economy", "merchant")]
 y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
@@ -145,6 +146,9 @@ spawner = NodePath("WaveSpawner")
 hero_lives = NodePath("Systems/HeroLives")
 run_cycle = NodePath("Systems/RunCycle")
 modifiers = NodePath("Systems/RunModifiers")
+offers = NodePath("Systems/UpgradeOffers")
+economy = NodePath("Systems/Economy")
+merchant = NodePath("Systems/Merchant")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 light_mask = 0
@@ -795,6 +799,14 @@ economy = NodePath("../Economy")
 fortress = NodePath("../../Fortress")
 hero_lives = NodePath("../HeroLives")
 run_cycle = NodePath("../RunCycle")
+
+[node name="Merchant" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "offers", "modifiers", "fortress")]
+unique_name_in_owner = true
+script = ExtResource("41_merchant")
+economy = NodePath("../Economy")
+offers = NodePath("../UpgradeOffers")
+modifiers = NodePath("../RunModifiers")
+fortress = NodePath("../../Fortress")
 
 [node name="BuildSlots" type="Node2D" parent="."]
 y_sort_enabled = true

@@ -5,9 +5,15 @@ extends Node2D
 ## level stops, and run_lost / run_won (once, never both) tells the owner (Main) which screen to show.
 ## It also places one-shot visuals (an enemy's death effect and the "+gold" it was worth) in its
 ## Effects layer. A boss's death is a big moment: a brief slow-motion hit-stop and a camera shake.
+## On a run map (encounter mode) the level stays for a whole chapter and plays one fight at a time:
+## start_encounter() loads the fight's waves (towers, gold and damage stay), and when they are cleared
+## it gives the fight's reward (gold, a repair, an upgrade choice) and reports encounter_cleared
+## instead of run_won. set_active() hides and freezes it while the map is shown.
 
 signal run_lost(reason: LossReason)
 signal run_won
+## A run map fight was won and its reward taken.
+signal encounter_cleared
 
 enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
 
@@ -24,8 +30,16 @@ const BOSS_SHAKE_TIME: float = 0.6
 @export var hero_lives: HeroLives
 @export var run_cycle: RunCycle
 @export var modifiers: RunModifiers
+@export var offers: UpgradeOffers
+@export var economy: Economy
+## The run map's shop on this level (null on a level without one).
+@export var merchant: Merchant
 
 var _run_over: bool = false
+var _encounter_mode: bool = false
+var _reward: FightReward
+## Canvas layers that were showing when the level was set inactive (shown again on activation).
+var _hidden_layers: Array[CanvasLayer] = []
 
 @onready var _effects: Node2D = %Effects
 
@@ -51,6 +65,49 @@ func is_run_over() -> bool:
 	return _run_over
 
 
+## Stops the level as won (the run map's last boss fell): everything freezes, like at Game Over.
+func end_run_won() -> void:
+	if _stop():
+		run_won.emit()
+
+
+func is_encounter_mode() -> bool:
+	return _encounter_mode
+
+
+## Plays a run map fight next on this level: its waves (each with a build phase before it, no upgrade
+## choice between them), then `reward`. Returns false while a wave is still running.
+func start_encounter(waves: Array[WaveData], reward: FightReward) -> bool:
+	if not spawner.load_waves(waves):
+		return false
+	_encounter_mode = true
+	_reward = reward
+	run_cycle.choose_between_waves = false
+	run_cycle.restart()
+	return true
+
+
+## Shows and runs the level, or hides and freezes it (with its HUD and menus) while the map is shown.
+func set_active(active: bool) -> void:
+	if active:
+		for layer: CanvasLayer in _hidden_layers:
+			layer.visible = true
+		_hidden_layers.clear()
+	else:
+		for child: Node in get_children():
+			var layer: CanvasLayer = child as CanvasLayer
+			if layer != null and layer.visible:
+				layer.visible = false
+				_hidden_layers.append(layer)
+	visible = active
+	if not _run_over:
+		process_mode = PROCESS_MODE_INHERIT if active else PROCESS_MODE_DISABLED
+
+
+func is_active() -> bool:
+	return visible
+
+
 func _on_fortress_destroyed() -> void:
 	_end_run(LossReason.FORTRESS_DESTROYED)
 
@@ -62,8 +119,27 @@ func _on_upgrade_added(data: UpgradeData, _stacks: int) -> void:
 
 
 func _on_all_waves_cleared() -> void:
-	if _stop():
+	if _encounter_mode:
+		_give_reward()
+	elif _stop():
 		run_won.emit()
+
+
+## The fight's gold and repair at once, then its upgrade choice (if any); encounter_cleared once taken.
+func _give_reward() -> void:
+	if _run_over:
+		return
+	if _reward == null:
+		encounter_cleared.emit()
+		return
+	if _reward.gold > 0 and economy != null:
+		economy.earn(_reward.gold, Economy.Source.REWARD)
+	if _reward.repair > 0.0:
+		fortress.repair(_reward.repair)
+	if _reward.cards > 0 and offers != null and not offers.make_offer(_reward.cards, _reward.rare_only).is_empty():
+		offers.picked.connect(func(_data: UpgradeData) -> void: encounter_cleared.emit(), CONNECT_ONE_SHOT)
+		return
+	encounter_cleared.emit()
 
 
 func _end_run(reason: LossReason) -> void:

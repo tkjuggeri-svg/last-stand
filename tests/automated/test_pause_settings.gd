@@ -18,6 +18,8 @@ func _initialize() -> void:
 	var main: Node = (load(MAIN) as PackedScene).instantiate()
 	root.add_child(main)
 	await _frames(3)
+	await MapFixtures.enter_first_battle(main)  # every run starts on the map
+	await _frames(2)
 	var menu: PauseMenu = main.get_node("%PauseMenu")
 	await _test_freeze(main, menu)
 	await _test_esc_rules(main, menu)

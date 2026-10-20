@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AffixData" format=3]
+
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="1_affix"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+
+[resource]
+script = ExtResource("1_affix")
+id = &"ironclad"
+display_name = "Ironclad"
+description = "Twice the Brutes, and every enemy has 30% more HP."
+extra_of = ExtResource("2_brute")
+extra_multiplier = 2.0
+health_multiplier = 1.3
