@@ -129,7 +129,7 @@ The Steam release is postponed to focus on depth and replayability (M7–M12); r
 
 ## M7 — Run Map
 A Slay the Spire–style node map per run, instead of one fixed sequence of waves.
-- [ ] Design: map shape (rows, branching, node count), node types and their odds, how a node maps to waves on a level, how the run's length and difficulty curve survive the branching (decide with the user before building)
+- [ ] Design: map shape (rows, branching, node count), node types and their odds, how a node maps to waves on a level, how the run's length and difficulty curve survive the branching (decide with the user before building). Proposal: `docs/M7_RUN_MAP.md` (waiting for approval)
 - [ ] `RunMap` data (seeded generation, run-wide state between nodes) and a map screen: pick the next reachable node, see the path so far
 - [ ] Node types: battle (one or a few waves), elite battle (harder, better reward), merchant (spend gold: upgrades, repairs, towers or relics later), shrine (a risky deal: a gain with a price or a gamble), random event (text + choice), boss (ends an act / the run)
 - [ ] What carries between nodes: gold, fortress HP, hero lives, run upgrades, towers (decide: kept, partly refunded or rebuilt per battle)
@@ -198,4 +198,4 @@ Release build pipeline (signing, store builds; the playtest presets and script e
 ---
 
 ## Current focus
-**M6.5 done** (tag `m6.5-done`; last playtest build `m6-playtest-4`): economy, difficulty and tower evolutions; the playtest found the difficulty right for a first chapter. Next: **M7**, starting with the design step only.
+**M6.5 done** (tag `m6.5-done`; last playtest build `m6-playtest-4`): economy, difficulty and tower evolutions; the playtest found the difficulty right for a first chapter. **M7** started with the design step only: the proposal is in `docs/M7_RUN_MAP.md`, waiting for approval. Nothing is implemented yet.
