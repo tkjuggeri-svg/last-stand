@@ -1,20 +1,22 @@
-# M7 — Run Map: design proposal
+# M7 — Run Map: design
 
-> Status: **proposal, waiting for approval.** Nothing here is implemented. Numbers are starting points
-> to be tuned with the balance tool, like everything else in `GAME_DESIGN.md`.
+> Status: **approved** with the decisions in section 8 (the user's answers, plus the proposal's
+> recommendations for the rest). Being implemented in M7. Numbers are starting points to be tuned with
+> the balance tool, like everything else in `GAME_DESIGN.md`.
 
 ## 0. Summary
 
-- A run becomes **3 chapters**. Each chapter is a Slay the Spire–style map of **8 rows** (7 rows of
-  choices, then the chapter boss), about **18 nodes**, of which a run visits **8 per chapter**.
+- A run becomes **2 chapters for now**. The chapter count is data: a third chapter comes with M10's
+  new maps. Each chapter is a Slay the Spire–style map of **8 rows** (7 rows of choices, then the
+  chapter boss), about **18 nodes**, of which a run visits **8 per chapter**.
 - **Chapter 1 is today's game.** Its battles use today's 15 waves, split into 2-wave encounters by
   row, so a typical chapter 1 path plays 12–15 of those waves and keeps the M6.5 balance (the
   decided first-chapter target).
 - **Inside a chapter, the map and the defence stay.** Towers stay built between battles, the
   fortress keeps its damage, and gold and upgrades carry over. **Between chapters,** the towers are
   packed up for gold and the next chapter starts on a fresh field.
-- Chapters 2 and 3 **ramp up from the chapter 1 baseline** (HP, speed, enemy mixes, elite affixes).
-  Until M10 brings new maps, they reuse the current arena with different lane pressure.
+- Chapter 2 **ramps up from the chapter 1 baseline** (HP, speed, enemy mixes, elite affixes), on the
+  current arena until M10 brings new maps, with its own new boss, **the Tollkeeper** (section 4.1).
 - **Node types:** battle, elite, merchant, shrine (a risky deal), event (text + choice) and boss.
 
 ## 1. Map shape and run length
@@ -53,17 +55,14 @@ row 1         [battle]           [battle]                       (start: pick one
 | Chapter (combat-heavy path) | 8 | 14–15 | ~20 min |
 | Chapter (balanced path) | 8 | 12–13 | ~17 min |
 | Chapter (event-heavy path) | 8 | 10–11 | ~14 min |
-| **Full run (3 chapters)** | 24 | ~38 | **~50–60 min** |
+| **Full run (2 chapters)** | 16 | ~26 | **~35–40 min** |
 
 - A chapter stays close to today's 15-wave run (18 minutes).
-- A death in chapter 1 still costs about 15 minutes, as today. A full win is a ~1-hour run, the
-  normal length for the genre.
-- **M7 scope suggestion:**
-  - build all 3 chapters, so the carry-over and the ramp are real;
-  - only chapter 1 gets polished content;
-  - chapters 2–3 reuse the arena and the current enemies and bosses, with ramped numbers and elite
-    affixes;
-  - M10 later replaces them with new maps, enemies and bosses.
+- A death in chapter 1 still costs about 15 minutes, as today. A full win is a ~40-minute run; a
+  third chapter (M10) makes it about an hour.
+- **M7 scope:** both chapters, so the carry-over and the ramp are real. Chapter 2 reuses the arena
+  and the current enemies with ramped numbers, elite affixes and its new boss; M10 later gives it
+  its own map and enemies.
 
 ## 2. Node types and odds
 
@@ -71,8 +70,8 @@ Odds for the mixed rows (3–6):
 
 | Node | Share | What happens |
 |---|---|---|
-| **Battle** | ~45% | 2 waves of the row's tier. Kill gold as today, and the upgrade choice after each wave as today. |
-| **Elite** | ~15% | 2 waves of the row's tier plus an **affix** (below) and a mini-boss: the Gravelord in rows 3–4, the Bone Colossus in rows 5–6. Reward: a **rare-only** upgrade choice and +100 gold. |
+| **Battle** | ~45% | 2 waves of the row's tier. Kill gold as today. Reward: **one upgrade choice** (1 of 3) after the battle (not after each wave). |
+| **Elite** | ~15% | 2 waves of the row's tier plus an **affix** (below) and a mini-boss: the Gravelord in rows 3–4, the Bone Colossus in rows 5–6. Reward: **a choice of 2 rare cards** and +100 gold. |
 | **Event** | ~20% | A short scene with 2–3 choices (section 5). No fighting, unless a choice brings one. |
 | **Shrine** | ~12% | One risky deal: accept or walk away (section 6). |
 | **Merchant** | ~8% (+ all of row 7) | Spend gold: 3 upgrade cards (common 90 g, rare 160 g), a cheap repair (+25% of the fortress, 60 g, once per visit), a reroll of the cards (25 g). Relics join the stock in M9. |
@@ -86,12 +85,15 @@ Odds for the mixed rows (3–6):
 - *Ironclad*: Brutes ×2, +30% HP.
 
 **How waves map to rows (chapter 1):**
-- Each row has a **wave tier**: row *r* plays today's waves 2*r*−1 and 2*r*.
+- Each combat row has a **wave tier**: row *r* (1–6) plays today's waves 2*r*−1 and 2*r*.
   - row 1: waves 1–2;
   - row 2: waves 3–4;
   - …
-  - row 7: waves 13–14;
-  - the boss: waves 13–15 at the boss's rule, with the Lich in the last.
+  - row 6: waves 11–12;
+  - row 7 is merchants;
+  - the boss (row 8): waves 13–15, with the Lich Warden in the last.
+- The Gravelord and the Bone Colossus leave waves 5 and 10: they lead the elites instead, and the
+  Lich Warden is chapter 1's only boss.
 - Difficulty follows **depth, not the number of battles fought** (as in Slay the Spire). Skipping a
   battle means less gold and fewer upgrade picks before harder tiers. That trade is what makes
   events and shrines a real choice.
@@ -130,7 +132,7 @@ Chapter 1 = the M6.5 baseline, unchanged. Later chapters continue its curve:
 | Enemy mix | today | more Brutes and Cultists from row 1; Hounds in bigger packs | every lane pressed every wave; two Cultist groups per wave |
 | Kill gold per wave (regulars) | 64 → 350 (today) | ~350 → 450 | ~450 → 550 |
 | Elite share / affixes | 15%, 1 affix | 18%, 1 affix | 20%, 2 affixes |
-| Chapter boss (until M10) | Lich Warden 3,600 HP | the Colossus and Lich together, ×1.4 HP | all three bosses in the last wave, ×1.8 HP |
+| Chapter boss | Lich Warden 3,600 HP | **the Tollkeeper** (new, section 4.1) | with M10 |
 
 - **Gold rises per chapter** because the player rebuilds a bigger defence each chapter (the
   refund helps). Evolutions are the main source of power growth in chapters 2–3.
@@ -142,6 +144,26 @@ Chapter 1 = the M6.5 baseline, unchanged. Later chapters continue its curve:
   - Playtests set the final numbers.
 - **M12 difficulty levels** multiply on top of these per-chapter numbers, never change chapter 1's
   baseline (`GAME_DESIGN.md` 3.).
+
+### 4.1 Chapter 2 boss: the Tollkeeper
+
+- **Look:** a hulking drowned bell-ringer in a sodden monk's habit, stooped under a wooden yoke. On
+  its back hangs a cracked bronze bell, green with verdigris. Its face is a hollow hood with two cold
+  eyes. Silhouette: a broad hunched mass with the bell rising above it. It reads apart from the
+  thin Lich, the tall Gravelord and the horned Colossus. The look follows `ART_DIRECTION.md`
+  (64x64 frames, 1 px outline, top-left light).
+- **One mechanic, the Toll:**
+  - first after 4 s, then every 9 s, it plants itself and heaves the bell up;
+  - **telegraph:** a bronze ring grows on the ground around it for 1.5 s to its full radius (220 px);
+  - **effect:** it rings, and every tower inside the ring is **silenced for 4 s**. A silenced tower
+    doesn't fire, is darkened, and shows a cracked-bell mark.
+  - The hero isn't affected.
+- **Counterplay:**
+  - spread the defence, so one toll can't silence it all;
+  - keep the hero on it, because it stands still while ringing;
+  - kill it before the second ring.
+- **Numbers** (start): 6,000 HP, speed 24, fortress damage 70, 300 gold. They come from data like
+  every boss's, and its ability scene holds the timings.
 
 ## 5. Example events (5)
 
@@ -205,27 +227,22 @@ choose (no hidden cost), except the gamble, which says it is one.
 - **Balance tool:** map runs with a path policy (combat-heavy, balanced, event-heavy) and results
   per chapter.
 
-## 8. Open questions for you
+## 8. Decisions
 
-1. **Run length:** 3 chapters (~1 hour for a full win), or 2 chapters for now and the third with
-   M10's maps?
-2. **Towers between chapters:**
-   - full refund (proposed);
-   - 50% refund;
-   - "tower charters" (rebuild the same tower types and levels for free).
-3. **Upgrade choice cadence:** keep a choice after every wave (proposed; it keeps the chapter 1
-   balance), or one per battle node plus elites, events and merchants (fewer, weightier picks,
-   more like Slay the Spire)?
-4. **Elites:** do the Gravelord and the Bone Colossus become elite mini-bosses (proposed), leaving
-   the Lich as the only chapter-1 boss? Or does the boss node keep all three?
-5. **Merchant stock:** upgrades, repairs and rerolls now; relics in M9. Should merchants also sell
-   a free tower build, or an evolution discount?
-6. **Event frequency:** ~20% of mixed nodes. More events means more story room (M11) but less
-   fighting. Is the balance right for you?
-7. **Fail state:** losing in chapter 2 ends the run as today (roguelite). Or a checkpoint at the
-   chapter start (more forgiving, but it weakens the stakes)?
-8. **Map visibility:** show the whole chapter map from the start (proposed: planning is half the
-   fun), or reveal it row by row?
-9. **Chapters 2–3 before M10:** acceptable to play them on the same arena with ramped numbers, or
-   build only chapter 1 in M7 and add chapters with the new maps?
-10. **Quartermaster buy-back:** once per chapter (proposed) or still once per run?
+| # | Question | Decision | From |
+|---|---|---|---|
+| 1 | Run length | **2 chapters for now**; the chapter count is data (`RunData.chapters`), and a third comes with M10's maps | user |
+| 2 | Towers between chapters | **Full refund** of everything spent on them | user |
+| 3 | Upgrade choice cadence | **One choice per battle node** (1 of 3), not per wave. Elites give a **choice of 2 rare cards**. Events and shrines can grant extra upgrades | user |
+| 4 | Elites | The Gravelord and the Bone Colossus become **elite mini-bosses**; the Lich Warden is chapter 1's boss; chapter 2 gets a **new boss** (the Tollkeeper) | user |
+| 5 | Merchant stock | Upgrade cards, a repair and a reroll; relics in M9. No free towers or evolution discounts | recommendation |
+| 6 | Event frequency | ~20% of the mixed rows | recommendation |
+| 7 | Fail state | **Losing in chapter 2 loses the whole run**; no checkpoints | user |
+| 8 | Map visibility | The whole chapter map is visible from the start | recommendation |
+| 9 | Chapter 2 before M10 | On the current arena, with ramped numbers, affixes and its own boss | recommendation (scoped by 1) |
+| 10 | Quartermaster buy-back | **Once per chapter** | recommendation |
+
+**`RunState` autoload:** approved, including the change to the "per-level systems" rule in
+`CLAUDE.md`. Run-wide state (the seed, the chapter and the map, gold, lives, upgrades and fortress
+HP between chapters) lives in `RunState`. The level's systems still own the rules while a chapter is
+played.
