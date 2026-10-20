@@ -106,6 +106,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ### 4.5 Economy
 - **Gold** (in-run): starts at 150. Every enemy **killed** (by the hero or a tower) pays its `EnemyData.gold_reward` exactly once (Ghoul 8, Hound 4, Brute 20; lowered after the M4 playtest so gold stays tight); an enemy that reaches the fortress pays nothing. Spent on towers and their upgrades. Never negative. Resets every run.
 - **Perfect-defense bonus:** when a wave ends and no enemy reached the fortress, +10% of that wave's kill gold (10 Ghouls x 10 = 100 → +10). One leak cancels it; paid at most once per wave. A wave is one `WaveSpawner` wave (`wave_started` .. `wave_cleared`).
+- **Where the gold comes from** (`balance_report.gd --gold`: per wave, kill gold per enemy type, each kill-gold upgrade's extra, perfect defense, interest, refunds; spending by category; the bank at the next wave's start). Before the M6 playtest-2 changes (seed 1, bot hero): 9,100–12,300 gold per won run; kill gold is ~85% of it and grows with the waves (wave 1: 70, wave 9: 720, wave 14: 1,870), stacked Bounty Hunters added up to 2,260, perfect defense 5–8%, interest (capped at 40 a wave, so it never compounds) was never taken. All 10 towers at level 3 cost 3,800–4,250 and were bought by wave 10–11; the bank then grew to 5,000–11,000 unspent.
 - **Soul Shards** (meta): earned at run end based on waves survived. Spent in the meta hub on permanent unlocks.
 - Keep it to these two currencies. More resources only if a system clearly needs them.
 
@@ -132,7 +133,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Stout Masonry | Fortress | common | Fortress max HP +25 |
   | Emergency Repairs | Fortress | common | Repair 30% of the fortress's max HP now |
   | Thorned Walls | Fortress | rare, once | Enemies at the walls (92 px) take 12 damage/s |
-  | Bounty Hunters | Economy | common | Kills pay 20% more gold |
+  | Bounty Hunters | Economy | common, once | Kills pay 20% more gold (once since the M6 playtest 2: stacked, it snowballed with the growing waves) |
   | Treasury | Economy | rare, once | End of each wave: +10% of unspent gold, up to 40 |
   | Guild Discount | Economy | common, once | Tower upgrades cost 20% less |
   | War Tax | Economy | rare, once | Kills pay 30% more gold, fortress max HP −25 (trade-off) |

@@ -62,8 +62,18 @@ func is_wave_perfect_so_far() -> bool:
 	return _wave_active and not _wave_leaked
 
 
+## The gold a kill of this enemy pays, upgrades included.
+func kill_reward(enemy: Enemy) -> int:
+	return RunModifiers.value_int(modifiers, base_kill_reward(enemy), [RunModifiers.KILL_GOLD])
+
+
+## The gold a kill of this enemy pays before the run's upgrades.
+func base_kill_reward(enemy: Enemy) -> int:
+	return enemy.data.gold_reward
+
+
 func _on_enemy_killed(enemy: Enemy) -> void:
-	var reward: int = RunModifiers.value_int(modifiers, enemy.data.gold_reward, [RunModifiers.KILL_GOLD])
+	var reward: int = kill_reward(enemy)
 	economy.earn(reward, Economy.Source.KILL)
 	if _wave_active:
 		_wave_kill_gold += reward

@@ -3,7 +3,7 @@ extends SceneTree
 ## leaks, fortress HP, gold, hero falls, the upgrades taken and the run's length. A tuning aid, not a
 ## pass/fail test.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd
-##     [-- --plan=mixed] [--policy=towers] [--seed=1] [--hero=idle|bot|both] [--sweep] [--quiet]
+##     [-- --plan=mixed] [--policy=towers] [--seed=1] [--hero=idle|bot|both] [--sweep] [--quiet] [--gold]
 ## --hero: "idle" parks the hero out of every fight; "bot" plays it with HeroBot (hero_bot.gd: walks
 ## to the nearest enemy on the busiest lane, swings, dashes away at low HP); "both" (default) runs each.
 ## The bot buys the plan's towers and tower upgrades in order as soon as the gold allows (any phase),
@@ -13,12 +13,15 @@ extends SceneTree
 ##   random: any card (seeded). The "hero" policy only runs with the bot hero.
 ## --sweep: the "mixed" plan once per upgrade, with only that upgrade (given before wave 1, no offers):
 ## how much each one is worth on its own (with the first --hero mode).
+## --gold: after each run, its gold ledger (gold_ledger.gd): income per wave by source (kills per enemy
+## type, each kill-gold upgrade, perfect defense, interest, refunds), spending by category, the bank.
 ## Slots: 0-5 along the west crypt road, 6-7 by the north-east road, 8 by the south road, 9 where the
 ## north-east and south roads reach the fortress.
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
 const UPGRADES_DIR: String = "res://data/upgrades"
 const HeroBot: GDScript = preload("res://tests/tools/hero_bot.gd")
+const GoldLedger: GDScript = preload("res://tests/tools/gold_ledger.gd")
 const BUILD_SECONDS: float = 5.0
 ## A player's build phase and upgrade choice take longer than the bot's: the run length is also
 ## estimated with this many seconds per wave between the waves.
@@ -50,6 +53,7 @@ const POLICY_FALLBACK: Array[int] = [UpgradeData.Category.TOWERS, UpgradeData.Ca
 
 var _seed: int = 1
 var _quiet: bool = false
+var _gold: bool = false
 var _heroes: Array[String] = ["idle", "bot"]
 
 
@@ -68,6 +72,8 @@ func _initialize() -> void:
 			sweep = true
 		elif arg == "--quiet":
 			_quiet = true
+		elif arg == "--gold":
+			_gold = true
 		elif arg.begins_with("--hero="):
 			var hero_mode: String = arg.trim_prefix("--hero=")
 			_heroes.clear()
@@ -89,8 +95,8 @@ func _initialize() -> void:
 						continue
 					if only_policy.is_empty() or only_policy == policy:
 						summary.append(await _play(plan_name, PLANS[plan_name], policy, null, hero_mode))
-	print("\n%-18s %-5s %-14s %-24s %8s %5s %5s %5s %6s %5s %6s %7s  %s" % ["plan", "hero", "upgrades", "result", "fortress",
-		"falls", "kills", "leaks", "levels", "gold", "fights", "w/break", "taken"])
+	print("\n%-18s %-5s %-14s %-24s %8s %5s %5s %5s %6s %5s %6s %6s %7s  %s" % ["plan", "hero", "upgrades", "result", "fortress",
+		"falls", "kills", "leaks", "levels", "gold", "income", "fights", "w/break", "taken"])
 	for line: String in summary:
 		print(line)
 	quit()
@@ -135,6 +141,7 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	rng.seed = _seed
 	var hero: Hero = level.get_node("Hero")
 	var bot: RefCounted = HeroBot.new(hero, spawner) if hero_mode == "bot" else null
+	var ledger: RefCounted = GoldLedger.new(level)
 	var stats: Dictionary = {"kills": 0, "leaks": 0, "wave_kills": 0, "wave_leaks": 0, "won": false, "lost": false,
 		"falls": 0, "combat": 0.0, "reason": ""}
 	hero.died.connect(func() -> void: stats["falls"] += 1)
@@ -171,12 +178,19 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 			var slot: BuildSlot = builder.get_slots()[step[1]]
 			if step[0] == "up":
 				var cost: int = builder.upgrade_cost(slot)
-				if cost < 0 or (economy.can_afford(cost) and not slot.tower.is_building() and builder.upgrade(slot)):
+				if cost < 0:
 					next += 1
+				elif economy.can_afford(cost) and not slot.tower.is_building() and builder.upgrade(slot):
+					next += 1
+					ledger.call("spend", "upgrades", cost)
+					var full: int = slot.tower.data.upgrade_cost(slot.tower.get_level())
+					if full > cost:
+						ledger.call("saved", "guild", full - cost)
 			else:
 				var data: TowerData = catalog[step[0]]
 				if economy.can_afford(data.cost) and builder.build(slot, data):
 					next += 1
+					ledger.call("spend", "towers", data.cost)
 		if cycle.get_phase() == RunCycle.Phase.CHOOSE:
 			offers.pick(_choose(offers.get_offer(), policy, rng))
 		if cycle.get_phase() == RunCycle.Phase.BUILD:
@@ -197,9 +211,13 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	for data: UpgradeData in mods.get_taken():
 		taken.append(String(data.id))
 	var waves_played: int = spawner.get_wave_number()
-	var line: String = "%-18s %-5s %-14s %-24s %8d %5d %5d %5d %6d %5d %5.1fm %6.1fm  %s" % [plan_name, hero_mode, policy, result,
+	var line: String = "%-18s %-5s %-14s %-24s %8d %5d %5d %5d %6d %5d %6d %5.1fm %6.1fm  %s" % [plan_name, hero_mode, policy, result,
 		fortress.health.current_health, stats["falls"], stats["kills"], stats["leaks"], levels, economy.get_gold(),
+		economy.get_gold() + int(ledger.call("total", "spent:")) - economy.starting_gold,
 		stats["combat"] / 60.0, (stats["combat"] + waves_played * PLAYER_BREAK_SECONDS) / 60.0, ", ".join(taken)]
+	if _gold:
+		for ledger_line: String in ledger.call("report", "%s / %s / %s hero: %s" % [plan_name, policy, hero_mode, result]):
+			print(ledger_line)
 	level.queue_free()
 	for _i: int in 2:
 		await physics_frame

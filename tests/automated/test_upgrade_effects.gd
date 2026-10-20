@@ -141,7 +141,8 @@ func _test_upgrade(id: StringName) -> void:
 			ok = await _check_thorns(level, data)
 		"bounty":
 			mods.add_upgrade(data)
-			ok = mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * (1.0 + _percent(data, RunModifiers.KILL_GOLD)))
+			# Once per run: a stackable kill-gold bonus snowballed with the growing waves.
+			ok = not data.stackable and mods.apply_int(GHOUL.gold_reward, [RunModifiers.KILL_GOLD]) == roundi(GHOUL.gold_reward * (1.0 + _percent(data, RunModifiers.KILL_GOLD)))
 		"treasury":
 			mods.add_upgrade(data)
 			var rewards: WaveRewards = level.get_node("%WaveRewards")
