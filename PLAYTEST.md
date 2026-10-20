@@ -34,6 +34,8 @@ Every key can be changed in **Esc → Settings** (also fullscreen and volume).
 
 - **Between waves** you build towers and choose **1 of 3 upgrades**. You can also build during a wave.
 - **Gold** comes from kills. Towers can be upgraded twice; selling refunds half.
+- **Evolutions:** a level-3 tower can evolve once, into one of two forms (the tower menu shows both
+  side by side with their range). The choice is for good, and it's expensive: you won't afford many.
 - **Gold is tight:** you can't upgrade everything. Between waves the **Quartermaster** (panel under the
   wave panel) repairs the fortress (each repair costs more) and can buy back one lost life per run.
 - **You have 3 lives.** A fallen hero returns at the fortress after 4 s; you heal fully after each wave.
@@ -57,6 +59,8 @@ Play at least one full run (win or lose), more if you can. Then tell us:
 4. **The hero:** How does the dash feel (distance, cooldown, timing)? Did fighting feel worth it
    compared with just building towers?
 5. **Choices:** Did the upgrade choices feel meaningful? Any upgrade that felt useless or must-pick?
+   Which evolutions did you take, and why? Did one of a pair always feel like the obvious pick?
+   Could you tell what the Shatter Shrine and the Beacon Flame were doing?
    How did gold feel: always short, or did it pile up? Did you use the Quartermaster (repairs, a
    bought-back life), and was it worth the price?
 6. **The best and the worst moment** of your run, in one sentence each.

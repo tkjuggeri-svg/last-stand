@@ -19,7 +19,7 @@ const GHOUL: EnemyData = preload("res://data/enemies/ghoul.tres")
 const COLOSSUS: EnemyData = preload("res://data/enemies/colossus.tres")
 const PIERCING: UpgradeData = preload("res://data/upgrades/piercing.tres")
 const HELLFIRE: UpgradeData = preload("res://data/upgrades/hellfire.tres")
-## Slots (level BuildSlots order): 3 at (-380, -90); 2 is 175 px from it, 4 is 240 px, 8 is 253 px.
+## Slots (level BuildSlots order): 3 at (-380, -90); 2 is 175 px from it, 4 is 240 px, 6 is 590 px.
 const SLOT: int = 3
 
 var _failures: int = 0
@@ -179,7 +179,7 @@ func _test_beacon() -> void:
 	var level: Level = await _level()
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	var near: Tower = await _built(level, ARCHER, 2)
-	var far: Tower = await _built(level, ARCHER, 8)
+	var far: Tower = await _built(level, ARCHER, 6)  # 590 px away
 	var interval: float = near.get_stats().fire_interval
 	var beacon: Tower = await _evolved(level, BRAZIER, 1)
 	var boost: float = beacon.get_evolution().boost_fire_rate

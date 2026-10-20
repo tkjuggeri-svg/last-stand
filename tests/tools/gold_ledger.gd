@@ -7,7 +7,7 @@ extends RefCounted
 ## category. "bank" is the unspent gold when the next wave starts.
 
 const ENEMY_COLUMNS: Array[String] = ["ghoul", "hound", "brute", "cultist", "boss"]
-const SPEND_COLUMNS: Array[String] = ["towers", "upgrades", "repairs", "lives"]
+const SPEND_COLUMNS: Array[String] = ["towers", "upgrades", "evolutions", "repairs", "lives"]
 
 var _economy: Economy
 var _rewards: WaveRewards

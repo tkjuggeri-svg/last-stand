@@ -94,9 +94,15 @@ func _watch(enemies: Array[Enemy]) -> void:
 			enemy.died.connect(_on_watched_died)
 
 
-## A soul-fire death: a burst around the corpse and plain burning ground where it fell.
+## A soul-fire death: a burst around the corpse and plain burning ground where it fell. Deferred: the
+## death may come from a hit inside a physics callback, where new areas can't be added.
 func _on_watched_died(enemy: Enemy) -> void:
-	var at: Vector2 = enemy.global_position
+	_burst.call_deferred(enemy.global_position)
+
+
+func _burst(at: Vector2) -> void:
+	if not is_inside_tree():
+		return
 	var burst: Explosion = EXPLOSION_SCENE.instantiate()
 	burst.setup(_burst_damage, _burst_radius)
 	burst.set_look(SOUL_FRAMES, &"soul_burst")

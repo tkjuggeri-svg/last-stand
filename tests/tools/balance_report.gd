@@ -4,6 +4,7 @@ extends SceneTree
 ## pass/fail test.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/balance_report.gd
 ##     [-- --plan=mixed] [--policy=towers] [--seed=1] [--hero=idle|bot|both] [--sweep] [--quiet] [--gold]
+##     [--evolve=none|early|late] [--branch=a|b|random|only:<tower>:<a|b>]
 ## --hero: "idle" parks the hero out of every fight; "bot" plays it with HeroBot (hero_bot.gd: walks
 ## to the nearest enemy on the busiest lane, swings, dashes away at low HP); "both" (default) runs each.
 ## The bot buys the plan's towers and tower upgrades in order as soon as the gold allows (any phase),
@@ -15,6 +16,9 @@ extends SceneTree
 ##   random: any card (seeded). The "hero" policy only runs with the bot hero.
 ## --sweep: the "mixed" plan once per upgrade, with only that upgrade (given before wave 1, no offers):
 ## how much each one is worth on its own (with the first --hero mode).
+## --evolve=early: the bot evolves each tower right after taking it to level 3 (as soon as the gold
+## allows); late: only once every tower is at level 3, in build order. Into branch --branch (a = the first, b = the second, random = seeded per tower; only:<id>:<a|b>
+## evolves only the towers of that type, into that branch). The summary then counts the picks.
 ## --gold: after each run, its gold ledger (gold_ledger.gd): income per wave by source (kills per enemy
 ## type, each kill-gold upgrade, perfect defense, interest, refunds), spending by category, the bank.
 ## Slots: 0-5 along the west crypt road, 6-7 by the north-east road, 8 by the south road, 9 where the
@@ -58,6 +62,11 @@ const POLICY_FALLBACK: Array[int] = [UpgradeData.Category.TOWERS, UpgradeData.Ca
 var _seed: int = 1
 var _quiet: bool = false
 var _gold: bool = false
+var _evolve: String = "none"
+var _branch: String = "random"
+## Evolutions bought over all runs, by id; and in won runs.
+var _picks: Dictionary = {}
+var _won_picks: Dictionary = {}
 var _heroes: Array[String] = ["idle", "bot"]
 
 
@@ -78,6 +87,10 @@ func _initialize() -> void:
 			_quiet = true
 		elif arg == "--gold":
 			_gold = true
+		elif arg.begins_with("--evolve="):
+			_evolve = arg.trim_prefix("--evolve=")
+		elif arg.begins_with("--branch="):
+			_branch = arg.trim_prefix("--branch=")
 		elif arg.begins_with("--hero="):
 			var hero_mode: String = arg.trim_prefix("--hero=")
 			_heroes.clear()
@@ -103,6 +116,10 @@ func _initialize() -> void:
 		"falls", "kills", "leaks", "levels", "gold", "income", "fights", "w/break", "taken"])
 	for line: String in summary:
 		print(line)
+	if _evolve != "none":
+		print("\nevolutions bought (in all runs / in won runs):")
+		for id: String in _picks:
+			print("  %-18s %3d / %3d" % [id, _picks[id], int(_won_picks.get(id, 0))])
 	quit()
 
 
@@ -119,6 +136,11 @@ func _steps(builds: Array) -> Array:
 		steps.append(["up", build[1]])
 	for build: Array in builds:
 		steps.append(["up", build[1]])
+		if _evolve == "early":
+			steps.append(["evo", build[1], build[0]])
+	if _evolve == "late":
+		for build: Array in builds:
+			steps.append(["evo", build[1], build[0]])
 	return steps
 
 
@@ -172,6 +194,7 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 		catalog[String(data.id)] = data
 	var next: int = 0
 	var build_time: float = 0.0
+	var evolved: Array[String] = []
 	for _i: int in 60 * 60 * 45:
 		await physics_frame
 		if bot != null:
@@ -183,7 +206,13 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 		if next < plan.size():
 			var step: Array = plan[next]
 			var slot: BuildSlot = builder.get_slots()[step[1]]
-			if step[0] == "up":
+			if step[0] == "evo":
+				var picked: String = _try_evolve(builder, economy, slot, step[2], ledger)
+				if picked != "-":
+					next += 1
+					if not picked.is_empty():
+						evolved.append(picked)
+			elif step[0] == "up":
 				var cost: int = builder.upgrade_cost(slot)
 				if cost < 0:
 					next += 1
@@ -210,6 +239,10 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	if bot != null:
 		bot.call("release")
 	var result: String = "WON" if stats["won"] else "lost w%d (%s)" % [spawner.get_wave_number(), stats["reason"]]
+	for id: String in evolved:
+		_picks[id] = int(_picks.get(id, 0)) + 1
+		if stats["won"]:
+			_won_picks[id] = int(_won_picks.get(id, 0)) + 1
 	var levels: int = 0
 	for slot: BuildSlot in builder.get_slots():
 		if not slot.is_empty():
@@ -221,7 +254,8 @@ func _play(plan_name: String, builds: Array, policy: String, only: UpgradeData, 
 	var line: String = "%-18s %-5s %-14s %-24s %8d %5d %5d %5d %6d %5d %6d %5.1fm %6.1fm  %s" % [plan_name, hero_mode, policy, result,
 		fortress.health.current_health, stats["falls"], stats["kills"], stats["leaks"], levels, economy.get_gold(),
 		economy.get_gold() + int(ledger.call("total", "spent:")) - economy.starting_gold,
-		stats["combat"] / 60.0, (stats["combat"] + waves_played * PLAYER_BREAK_SECONDS) / 60.0, ", ".join(taken)]
+		stats["combat"] / 60.0, (stats["combat"] + waves_played * PLAYER_BREAK_SECONDS) / 60.0,
+		("evolved: %s | " % ", ".join(evolved) if not evolved.is_empty() else "") + ", ".join(taken)]
 	if _gold:
 		for ledger_line: String in ledger.call("report", "%s / %s / %s hero: %s" % [plan_name, policy, hero_mode, result]):
 			print(ledger_line)
@@ -238,6 +272,31 @@ func _use_sinks(shop: Quartermaster, fortress: Fortress, ledger: RefCounted) -> 
 	cost = shop.repair_cost()
 	if fortress.health.current_health < fortress.health.max_health * REPAIR_BELOW and shop.repair():
 		ledger.call("spend", "repairs", cost)
+
+
+## Evolves the slot's tower by the --branch rule once the gold allows. Returns the evolution's id,
+## "" when there is nothing to do (not this tower type, gone, already evolved), "-" to wait for gold.
+func _try_evolve(builder: TowerBuilder, economy: Economy, slot: BuildSlot, tower_id: String, ledger: RefCounted) -> String:
+	var options: Array[TowerEvolution] = builder.evolution_options(slot)
+	if options.is_empty():
+		return ""
+	var index: int = 0
+	if _branch == "b":
+		index = 1
+	elif _branch == "random":
+		var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		rng.seed = _seed * 31 + slot.get_index()
+		index = rng.randi_range(0, 1)
+	elif _branch.begins_with("only:"):
+		var parts: PackedStringArray = _branch.split(":")
+		if parts[1] != tower_id:
+			return ""
+		index = 0 if parts[2] == "a" else 1
+	var cost: int = builder.evolution_cost(options[index])
+	if not economy.can_afford(cost) or slot.tower.is_building() or not builder.evolve(slot, index):
+		return "-"
+	ledger.call("spend", "evolutions", cost)
+	return String(options[index].id)
 
 
 ## The card index the policy takes.

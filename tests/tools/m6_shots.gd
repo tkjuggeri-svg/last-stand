@@ -3,7 +3,7 @@ extends RefCounted
 ## the dash (afterimages, the HUD cooldown row, the Cinder Dash trail), the Cultist (casting at the
 ## fortress, at the hero, beside the other enemies), the bosses (arrival with the HUD bar, telegraph,
 ## mechanic, death), the pause menu and the settings, and the Quartermaster's panel (repair, buy back
-## a life) in a build phase.
+## a life) in a build phase, and tower evolutions (the choice with both rings, all 10 in a fight).
 ## `--only=dash` (comma-separated) runs just some parts.
 
 const CINDER_DASH: UpgradeData = preload("res://data/upgrades/cinder_dash.tres")
@@ -36,6 +36,9 @@ func run(level: Level) -> void:
 	if _wants("shop"):
 		await _clear(level)
 		await _shop(level)
+	if _wants("evolutions"):
+		await _clear(level)
+		await _evolutions(level)
 
 
 func _wants(part: String) -> bool:
@@ -199,6 +202,68 @@ func _shop(level: Level) -> void:
 	(level.get_node("%Economy") as Economy).earn(260, Economy.Source.KILL)
 	await _tool.call("_frames", 10)
 	await _tool.call("_shot", "m6_22_quartermaster")
+
+
+func _evolutions(level: Level) -> void:
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	var economy: Economy = level.get_node("%Economy")
+	var hero: Hero = level.get_node("Hero")
+	var camera: Camera2D = hero.get_node("Camera2D")
+	var towers: Array[TowerData] = []
+	for data: TowerData in builder.catalog:
+		towers.append(data)
+	economy.earn(50000, Economy.Source.REFUND)
+	# The choice: a level-3 cannon at slot 3, both branches and their rings.
+	var slots: Array[BuildSlot] = builder.get_slots()
+	builder.build(slots[3], towers[2])
+	await _tool.call("_frames", 60)
+	builder.upgrade(slots[3])
+	builder.upgrade(slots[3])
+	hero.global_position = slots[3].global_position + Vector2(0, 30)
+	await _tool.call("_frames", 10)
+	var menu: Node = level.get_node("BuildMenu")
+	menu.call("open", slots[3])
+	_tool.call("_frame_camera", camera, slots[3].global_position + Vector2(0, 60), 1.0, true)
+	await _tool.call("_frames", 10)
+	await _tool.call("_shot", "m6_23_evolution_choice")
+	menu.call("close")
+	builder.sell(slots[3])
+	await _tool.call("_frames", 30)
+	# All ten, two per tower type, in a fight.
+	var plan: Array = [[0, 0, 0], [1, 0, 1], [2, 2, 0], [3, 2, 1], [4, 1, 0], [5, 1, 1], [6, 3, 0], [7, 3, 1], [8, 4, 0], [9, 4, 1]]
+	for entry: Array in plan:
+		var slot: BuildSlot = slots[entry[0]]
+		builder.build(slot, towers[entry[1]])
+	await _tool.call("_frames", 60)
+	for entry: Array in plan:
+		var slot: BuildSlot = slots[entry[0]]
+		builder.upgrade(slot)
+		builder.upgrade(slot)
+		builder.evolve(slot, entry[2])
+	await _tool.call("_frames", 20)
+	hero.global_position = Vector2(380, 380)
+	_tool.call("_frame_camera", camera, Vector2(-150, -40), 1.0, true)
+	await _tool.call("_frames", 10)
+	await _tool.call("_shot", "m6_24_evolutions_all")
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	var wave: WaveData = WaveFixtures.make_wave(30, 0.5, GHOUL, 0)
+	wave.health_multiplier = 4.0
+	wave.groups.append(WaveFixtures.make_wave(20, 0.6, GHOUL, 1).groups[0])
+	wave.groups.append(WaveFixtures.make_wave(20, 0.6, GHOUL, 2).groups[0])
+	wave.groups.append(WaveFixtures.make_wave(4, 3.0, BRUTE, 0, 2.0).groups[0])
+	var waves: Array[WaveData] = []
+	for _i: int in spawner.get_wave_number():
+		waves.append(WaveData.new())
+	waves.append(wave)
+	waves.append(WaveData.new())
+	spawner.waves = waves
+	(level.get_node("%RunCycle") as RunCycle).start_wave()
+	for shot: Array in [[480, "m6_25_evolutions_fight_west", Vector2(-380, -150)], [180, "m6_26_evolutions_fight_center", Vector2(-120, 0)],
+			[180, "m6_27_evolutions_fight_east", Vector2(120, -60)]]:
+		await _tool.call("_frames", shot[0])
+		_tool.call("_frame_camera", camera, shot[2], 1.5, true)
+		await _tool.call("_frames", 2)
+		await _tool.call("_shot", shot[1])
 
 
 ## Ends whatever wave an earlier part left running, so each part starts in a build phase.

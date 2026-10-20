@@ -120,8 +120,8 @@ The Steam release is postponed to focus on depth and replayability (M7–M12); r
 - [x] Scarce gold: kill gold per wave stays flat from wave 6 (`WaveData.gold_multiplier`); maxing every tower by wave 15 is out of reach without economy upgrades
 - [x] Gold sinks between waves (`Quartermaster`): fortress repairs (rising price), buy back a lost life (once per run)
 - [x] Difficulty for a good player: waves 10–15 press every lane at once, Cultist groups on several lanes, faster regulars (`WaveData.speed_multiplier`), harder bosses; the bot hero is the floor (idle never wins, the bot rarely). Playtest build `m6-playtest-2`
-- [ ] Hands-on playtest of `m6-playtest-2`; tune from the feedback
-- [ ] Tower evolutions (scope to be agreed before implementation)
+- [ ] Hands-on playtest of `m6-playtest-3` (the `m6-playtest-2` notes are still to come); tune from the feedback
+- [x] Tower evolutions: two permanent level-4 branches per tower (10 mechanics, art, side-by-side choice with range rings), tuned with `evolution_duel.gd` and the balance bot. Playtest build `m6-playtest-3`
 
 **Done when:** a good player wins narrowly, gold is a real choice every wave, and towers grow in ways that change how a run plays.
 
@@ -197,4 +197,4 @@ Release build pipeline (signing, store builds; the playtest presets and script e
 ---
 
 ## Current focus
-**M6.5** (economy, difficulty, tower evolutions): economy and difficulty are done and built as `m6-playtest-2`; waiting for hands-on playtest feedback. Tower evolutions are next, once their scope is agreed. Don't start M7 yet.
+**M6.5** (economy, difficulty, tower evolutions): all three are done; the latest build is `m6-playtest-3`. Waiting for hands-on playtest feedback. Don't start M7 yet.
