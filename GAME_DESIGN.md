@@ -28,6 +28,7 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
 ## 3. Run structure
 
 - A run = **one map, ~15 waves**, with a **boss wave every 5th wave** (5, 10, 15). Target length 20–30 min.
+- **Difficulty target (decided after the `m6-playtest-4` playtest):** the current 15-wave balance (economy, waves and evolutions as of M6.5) is the difficulty of the **first chapter**: a tutorial-like opening where a good player wins narrowly. It is not the difficulty of the whole game. Later chapters (M7 run map), new maps (M10) and difficulty levels (M12) must **ramp up from here**, never re-tune this baseline down or up to fit them.
   **M6: 15 hand-authored waves** with bosses at 5, 10 and 15 on the prototype arena; beating wave 15 wins the run (Victory screen, "Play again" starts a fresh run, same pattern as Game Over).
 - Each wave has a **build phase** and a **combat phase** (`RunCycle`, per level). The build phase is untimed (optional timer later): no enemies come until the player presses **Start wave** (HUD button, top-left) or **Enter** (`start_wave`). The combat phase ends when the wave's last enemy is dead or has reached the fortress; then the next build phase begins. After the last wave the run is finished. Building and selling stay allowed in both phases.
 - HUD: a top-left wave panel ("Wave 3 / 10", the phase, the Start button in the build phase); the bottom-left panel shows "Enemies left: n / total" during a wave and "Next wave: n enemies" between waves.

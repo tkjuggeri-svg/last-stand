@@ -113,14 +113,14 @@ Tick items as they're finished.
 
 ---
 
-## M6.5 — Economy, Difficulty & Tower Evolutions *(depth before release)*
+## M6.5 — Economy, Difficulty & Tower Evolutions *(depth before release)* — done (`m6.5-done`)
 The Steam release is postponed to focus on depth and replayability (M7–M12); release prep moves to M14.
 
 - [x] Gold breakdown in the balance tool (`--gold`); snowballing removed (Bounty Hunters once per run)
 - [x] Scarce gold: kill gold per wave stays flat from wave 6 (`WaveData.gold_multiplier`); maxing every tower by wave 15 is out of reach without economy upgrades
 - [x] Gold sinks between waves (`Quartermaster`): fortress repairs (rising price), buy back a lost life (once per run)
 - [x] Difficulty for a good player: waves 10–15 press every lane at once, Cultist groups on several lanes, faster regulars (`WaveData.speed_multiplier`), harder bosses; the bot hero is the floor (idle never wins, the bot rarely). Playtest build `m6-playtest-2`
-- [ ] Hands-on playtest of `m6-playtest-3` (the `m6-playtest-2` notes are still to come); tune from the feedback
+- [x] Hands-on playtest (`m6-playtest-4`, with the see-through HUD panels): the difficulty is right for a first chapter, and is now the baseline later chapters ramp up from (`GAME_DESIGN.md` 3.)
 - [x] Tower evolutions: two permanent level-4 branches per tower (10 mechanics, art, side-by-side choice with range rings), tuned with `evolution_duel.gd` and the balance bot. Playtest build `m6-playtest-3`
 
 **Done when:** a good player wins narrowly, gold is a real choice every wave, and towers grow in ways that change how a run plays.
@@ -147,6 +147,7 @@ A Slay the Spire–style node map per run, instead of one fixed sequence of wave
 - [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)
 - [ ] Unlock pacing: what is available on the first run, what comes later
 - [ ] Main flow: start → hub → run → summary → hub
+- [ ] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
 - [ ] Optional small early SFX pass (if not done in M7)
 - [ ] Tests: save/load round trip, version migration, unlocks applied to a run
 
@@ -197,4 +198,4 @@ Release build pipeline (signing, store builds; the playtest presets and script e
 ---
 
 ## Current focus
-**M6.5** (economy, difficulty, tower evolutions): all three are done; the latest build is `m6-playtest-3`. Waiting for hands-on playtest feedback. Don't start M7 yet.
+**M6.5 done** (tag `m6.5-done`; last playtest build `m6-playtest-4`): economy, difficulty and tower evolutions; the playtest found the difficulty right for a first chapter. Next: **M7**, starting with the design step only.
