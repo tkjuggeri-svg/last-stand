@@ -1,5 +1,6 @@
 extends SceneTree
-## Automated check for the HUD and the HealthBar widget.
+## Automated check for the HUD and the HealthBar widget, and the bottom-left panel turning see-through
+## while the hero is behind it (SeeThrough).
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 var _failures: int = 0
@@ -8,6 +9,7 @@ var _failures: int = 0
 func _initialize() -> void:
 	await _test_hud_in_level()
 	await _test_hud_alone()
+	await _test_see_through()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -55,6 +57,28 @@ func _test_hud_alone() -> void:
 	_check("HUD alone: bars hidden when nothing is assigned",
 		not (hud.get_node("%FortressBar") as HealthBar).visible and not (hud.get_node("%HeroBar") as HealthBar).visible)
 	hud.queue_free()
+	await _frames(2)
+
+
+func _test_see_through() -> void:
+	root.size = Vector2i(1280, 720)  # headless runs start with another window size; the game's is 1280x720
+	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
+	(level.get_node("WaveSpawner") as WaveSpawner).waves = [WaveData.new()]
+	root.add_child(level)
+	await _frames(2)
+	var hero: Hero = level.get_node("Hero")
+	var panel: Control = level.get_node("HUD").get_node("%SeeThrough").get_parent()
+	var see_through: SeeThrough = level.get_node("HUD").get_node("%SeeThrough")
+	var floor_rect: Rect2 = (level.get_node("%Floor") as Control).get_rect()
+	# The camera stops at the arena's edge, so a hero in the bottom-left corner is under the panel.
+	hero.global_position = floor_rect.position + Vector2(60, floor_rect.size.y - 40)
+	await _frames(60)
+	_check("hero behind the bottom-left panel: it turns see-through (alpha %.2f)" % panel.modulate.a,
+		see_through.is_covering() and panel.modulate.a < see_through.faded_alpha + 0.05)
+	hero.global_position = floor_rect.get_center()
+	await _frames(60)
+	_check("...and solid again when the hero leaves (alpha %.2f)" % panel.modulate.a, not see_through.is_covering() and panel.modulate.a > 0.95)
+	level.queue_free()
 	await _frames(2)
 
 
