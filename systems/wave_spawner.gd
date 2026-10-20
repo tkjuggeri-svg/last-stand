@@ -144,8 +144,9 @@ func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2) -> Enemy:
 	var enemy: Enemy = enemy_scene.instantiate()
 	enemy.data = data
 	enemy.lane = lane
-	# A boss's HP is authored directly: the wave's toughness doesn't scale it.
+	# A boss's HP and gold are authored directly: the wave's scales don't apply.
 	enemy.health_multiplier = 1.0 if data.is_boss else waves[_wave_index].health_multiplier
+	enemy.gold_multiplier = 1.0 if data.is_boss else waves[_wave_index].gold_multiplier
 	enemy.died.connect(_on_enemy_died)
 	enemy.reached_fortress.connect(_on_enemy_reached_fortress)
 	enemy.summon_requested.connect(_on_summon_requested)

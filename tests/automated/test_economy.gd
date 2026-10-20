@@ -1,6 +1,8 @@
 extends SceneTree
 ## Automated check for the gold economy: Economy rules, kill rewards (once, never for fortress
-## arrivals), the 10% perfect-defense bonus and its HUD display.
+## arrivals), the 10% perfect-defense bonus and its HUD display, and the waves' gold scale (a wave's
+## regulars pay gold_reward x its gold_multiplier, at least 1; bosses as authored; the real waves keep
+## the income per wave from growing with the horde).
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
@@ -8,6 +10,8 @@ const OFF_LANE: Vector2 = Vector2(-200, 200)
 ## The test pins the level's starting gold, so the numbers below don't move with tuning.
 const START_GOLD: int = 100
 const GHOUL_DATA: EnemyData = preload("res://data/enemies/ghoul.tres")
+const HOUND_DATA: EnemyData = preload("res://data/enemies/hound.tres")
+const ENEMY_SCENE: PackedScene = preload("res://entities/enemies/enemy.tscn")
 
 var _failures: int = 0
 
@@ -19,6 +23,8 @@ func _initialize() -> void:
 	await _test_perfect_defense()
 	await _test_one_leak_cancels_bonus()
 	await _test_bonus_ratio_math()
+	await _test_wave_gold_scale()
+	_test_real_waves_gold()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -144,6 +150,57 @@ func _test_bonus_ratio_math() -> void:
 	economy.queue_free()
 	rewards.queue_free()
 	await _frames(1)
+
+
+func _test_wave_gold_scale() -> void:
+	var level: Level = (load(ARENA) as PackedScene).instantiate()
+	var spawner: WaveSpawner = level.get_node("WaveSpawner")
+	var wave: WaveData = WaveFixtures.make_wave(2, 3.0)
+	wave.gold_multiplier = 0.5
+	spawner.waves = [wave, WaveData.new()]
+	WaveFixtures.no_upgrades(level)
+	(level.get_node("%Economy") as Economy).starting_gold = START_GOLD
+	root.add_child(level)
+	await _frames(2)
+	await WaveFixtures.start_wave(level)
+	await _until(func() -> bool: return spawner.get_child_count() > 0, 30)
+	var ghoul: Enemy = spawner.get_child(0)
+	_check("the spawner hands the wave's gold scale to its enemies", is_equal_approx(ghoul.gold_multiplier, 0.5))
+	ghoul.get_health().take_damage(1000)
+	await _frames(2)
+	var economy: Economy = level.get_node("%Economy")
+	_check("a kill in a x0.5 wave pays half (%d)" % (economy.get_gold() - START_GOLD), economy.get_gold() - START_GOLD == roundi(GHOUL_DATA.gold_reward * 0.5))
+	var rewards: WaveRewards = level.get_node("%WaveRewards")
+	var hound: Enemy = ENEMY_SCENE.instantiate()
+	hound.data = HOUND_DATA
+	hound.gold_multiplier = 0.01
+	_check("a paying kill never pays less than 1", rewards.base_kill_reward(hound) == 1 and rewards.kill_reward(hound) == 1)
+	hound.free()
+	await _free(level)
+
+
+## The shipped waves: 1-5 pay full gold; later the regulars' kill gold per wave stays about flat
+## (the horde grows, the bounty per head shrinks), so gold stays scarce.
+func _test_real_waves_gold() -> void:
+	var level: Level = (load(ARENA) as PackedScene).instantiate()
+	var waves: Array[WaveData] = (level.get_node("WaveSpawner") as WaveSpawner).waves
+	var early_full: bool = true
+	var late: Array[float] = []
+	for i: int in waves.size():
+		early_full = early_full and (i >= 5 or is_equal_approx(waves[i].gold_multiplier, 1.0))
+		if i >= 5:
+			late.append(_regular_gold(waves[i]))
+	_check("waves 1-5 pay full kill gold", early_full)
+	_check("waves 6-15 pay 150-350 gold each in kills (%s)" % str(late), late.all(func(g: float) -> bool: return g >= 150.0 and g <= 350.0))
+	level.free()
+
+
+func _regular_gold(wave: WaveData) -> float:
+	var gold: float = 0.0
+	for group: SpawnGroup in wave.groups:
+		if not group.enemy.is_boss:
+			gold += group.count * group.enemy.gold_reward * wave.gold_multiplier
+	return gold
 
 
 func _make_level(count: int, interval: float) -> Level:

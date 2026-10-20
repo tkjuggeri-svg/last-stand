@@ -7,6 +7,10 @@ extends Resource
 ## Every enemy of this wave has this many times its normal HP (the late-wave difficulty curve: it
 ## makes enemies tougher without paying out more gold, unlike adding more of them).
 @export var health_multiplier: float = 1.0
+## Every regular enemy of this wave pays this many times its gold_reward when killed (bosses pay
+## theirs as authored). Later waves send far more enemies: below 1 it keeps the income per wave from
+## growing with the horde, so gold stays scarce.
+@export var gold_multiplier: float = 1.0
 
 
 ## How many enemies the whole wave sends.

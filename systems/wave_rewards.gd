@@ -1,7 +1,8 @@
 class_name WaveRewards
 extends Node
-## Turns enemy kills into gold (each enemy's EnemyData.gold_reward, once per enemy) and pays the
-## perfect-defense bonus when a wave ends without any enemy reaching the fortress.
+## Turns enemy kills into gold (each enemy's EnemyData.gold_reward x its wave's gold_multiplier, at
+## least 1, once per enemy) and pays the perfect-defense bonus when a wave ends without any enemy
+## reaching the fortress.
 ## A wave is the WaveSpawner's wave_started .. wave_cleared; begin_wave() / end_wave() can also be
 ## called directly.
 
@@ -64,12 +65,20 @@ func is_wave_perfect_so_far() -> bool:
 
 ## The gold a kill of this enemy pays, upgrades included.
 func kill_reward(enemy: Enemy) -> int:
-	return RunModifiers.value_int(modifiers, base_kill_reward(enemy), [RunModifiers.KILL_GOLD])
+	return roundi(RunModifiers.value(modifiers, _scaled_reward(enemy), [RunModifiers.KILL_GOLD]))
 
 
 ## The gold a kill of this enemy pays before the run's upgrades.
 func base_kill_reward(enemy: Enemy) -> int:
-	return enemy.data.gold_reward
+	return roundi(_scaled_reward(enemy))
+
+
+## The enemy's reward under its wave's gold scale (rounded only once, after the upgrades). A kill that
+## pays anything pays at least 1.
+func _scaled_reward(enemy: Enemy) -> float:
+	if enemy.data.gold_reward <= 0:
+		return 0.0
+	return maxf(enemy.data.gold_reward * enemy.gold_multiplier, 1.0)
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:

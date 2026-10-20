@@ -40,6 +40,8 @@ const CAST_HEIGHT: float = 14.0
 var lane: Path2D
 ## Its wave's toughness: max HP = data.max_health x this. Set by the spawner before it enters the tree.
 var health_multiplier: float = 1.0
+## Its wave's kill-gold scale: the kill pays data.gold_reward x this (WaveRewards). Set by the spawner.
+var gold_multiplier: float = 1.0
 
 var _is_finished: bool = false
 ## The body (the hero) currently inside attack range, if any.
