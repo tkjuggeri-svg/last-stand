@@ -8,6 +8,8 @@ extends CanvasLayer
 ## Assign its targets in the level scene. Parts whose target is not assigned are hidden, so the HUD
 ## also runs on its own. It only displays and sends the start-wave intent; RunCycle decides.
 
+const START_WAVE_TEXT: String = "Start wave  [Enter]"
+const EARLY_CALL_TEXT: String = "Next wave now +%d  [Enter]"
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
 const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
@@ -95,6 +97,7 @@ func _ready() -> void:
 		_on_gold_changed(economy.get_gold())
 	if rewards != null:
 		rewards.perfect_defense_awarded.connect(_on_perfect_defense_awarded)
+		rewards.early_call_paid.connect(func(bonus: int) -> void: _feed.push("Called early: +%d gold" % bonus, GOLD_COLOR))
 	_slots_label.visible = builder != null
 	_slots_row.visible = builder != null
 	if builder != null:
@@ -162,14 +165,15 @@ func _update_dash(dash: HeroDash) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("start_wave") and run_cycle != null and run_cycle.can_start_wave():
+	if event.is_action_pressed("start_wave") and run_cycle != null and (run_cycle.can_start_wave() or run_cycle.can_call_early()):
 		_request_start_wave()
 		get_viewport().set_input_as_handled()
 
 
+## Starts the wave in the build phase, or calls the next one early during a fight (M8).
 func _request_start_wave() -> void:
-	if run_cycle != null:
-		run_cycle.start_wave()
+	if run_cycle != null and not run_cycle.start_wave():
+		run_cycle.call_early()
 
 
 ## Wave number, phase, the Start button and the enemy count.
@@ -179,7 +183,9 @@ func _update_wave() -> void:
 		_wave_label.text = "Wave %d / %d" % [mini(run_cycle.get_current_wave_number(), run_cycle.get_wave_count()), run_cycle.get_wave_count()]
 		_phase_label.text = PHASE_TEXTS[phase]
 		_phase_label.add_theme_color_override(&"font_color", PHASE_COLORS[phase])
-		_start_wave_button.visible = run_cycle.can_start_wave()
+		var early: bool = run_cycle.can_call_early()
+		_start_wave_button.visible = run_cycle.can_start_wave() or early
+		_start_wave_button.text = EARLY_CALL_TEXT % (rewards.early_call_bonus() if rewards != null else 0) if early else START_WAVE_TEXT
 	if spawner == null:
 		return
 	if spawner.is_wave_active() or run_cycle == null:

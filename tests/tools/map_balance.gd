@@ -4,14 +4,15 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
 ## start (Hellfire Shells, Cinder Dash, Ember Heart); --fire=without takes them out of every offer
 ## and shop. --relics=<ids> grants those relics at the start and offers no other (none: no relics at
 ## all), to measure one relic against none. --profile=first plays with a fresh profile's kit (M8: the
-## starting towers, cards and relics only; the plan skips towers it doesn't have). The summary ends
+## starting towers, cards and relics only; the plan skips towers it doesn't have). --early calls every
+## next wave early as soon as it can (M8; the bonus gold counts in the income). The summary ends
 ## with the rows cleared per run (a won run:
 ## every row of both chapters).
 ## --protect-ch1 keeps the fortress and the lives full in chapter 1 only, so every run reaches chapter 2
@@ -79,6 +80,7 @@ var _protect_ch1: bool = false
 var _trace: bool = false
 ## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
 var _fire: String = ""
+var _early: bool = false
 ## --profile=first: a fresh profile (the first run's kit) instead of everything unlocked.
 var _first_kit: bool = false
 ## --relics: the only relics of the run (granted at the start); null = drawn as usual.
@@ -113,6 +115,8 @@ func _initialize() -> void:
 			_trace = true
 		elif arg.begins_with("--fire="):
 			_fire = arg.trim_prefix("--fire=")
+		elif arg == "--early":
+			_early = true
 		elif arg == "--profile=first":
 			_first_kit = true
 		elif arg.begins_with("--relics="):
@@ -224,6 +228,8 @@ func _play(seed_value: int) -> String:
 		if bot != null:
 			bot.call("step", level.get_node("%RunModifiers"))
 		next = _buy(level, plan, next, stats)
+		if _early and cycle.can_call_early():
+			cycle.call_early()
 		if cycle.get_phase() == RunCycle.Phase.BUILD:
 			_sinks(level)
 			build_time += 1.0 / 60.0

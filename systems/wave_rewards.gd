@@ -2,17 +2,21 @@ class_name WaveRewards
 extends Node
 ## Turns enemy kills into gold (each enemy's EnemyData.gold_reward x its wave's gold_multiplier, at
 ## least 1, once per enemy) and pays the perfect-defense bonus when a wave ends without any enemy
-## reaching the fortress.
+## reaching the fortress. Calling the next wave early (M8) pays early_call_ratio of the living
+## enemies' kill gold at once, instead of that wave's perfect-defense bonus.
 ## A wave is the WaveSpawner's wave_started .. wave_cleared; begin_wave() / end_wave() can also be
 ## called directly.
 
 signal perfect_defense_awarded(bonus: int)
 signal interest_paid(amount: int)
+signal early_call_paid(bonus: int)
 
 @export var economy: Economy
 @export var spawner: WaveSpawner
 ## Share of the wave's kill gold paid as a bonus when nothing reached the fortress.
 @export var perfect_defense_ratio: float = 0.1
+## Share of the still-living enemies' kill gold (before upgrades) paid for calling the next wave early.
+@export var early_call_ratio: float = 0.5
 ## The run's upgrades (kill gold, interest). Null = base.
 @export var modifiers: RunModifiers
 
@@ -27,6 +31,7 @@ func _ready() -> void:
 		spawner.wave_started.connect(func(_wave_number: int) -> void: begin_wave())
 		spawner.wave_cleared.connect(func(_wave_number: int) -> void: end_wave())
 		spawner.enemy_killed.connect(_on_enemy_killed)
+		spawner.wave_called_early.connect(func(_wave_number: int, living: Array[Enemy]) -> void: _pay_early_call(living))
 		spawner.enemy_reached_fortress.connect(_on_enemy_reached_fortress)
 		if spawner.is_wave_active():
 			begin_wave()  # the spawner started before we were ready (tree order)
@@ -55,6 +60,13 @@ func end_wave() -> int:
 	return bonus
 
 
+## What calling the next wave now would pay (0 if it can't be called).
+func early_call_bonus() -> int:
+	if spawner == null or not spawner.can_call_next_wave():
+		return 0
+	return _early_bonus(spawner.get_living_enemies())
+
+
 func get_wave_kill_gold() -> int:
 	return _wave_kill_gold
 
@@ -79,6 +91,21 @@ func _scaled_reward(enemy: Enemy) -> float:
 	if enemy.data.gold_reward <= 0:
 		return 0.0
 	return maxf(enemy.data.gold_reward * enemy.gold_multiplier, 1.0)
+
+
+func _early_bonus(living: Array[Enemy]) -> int:
+	var gold: float = 0.0
+	for enemy: Enemy in living:
+		gold += _scaled_reward(enemy)
+	return roundi(gold * early_call_ratio)
+
+
+func _pay_early_call(living: Array[Enemy]) -> void:
+	_wave_leaked = true  # the early bonus replaces this wave's perfect-defense bonus
+	var bonus: int = _early_bonus(living)
+	if bonus > 0:
+		economy.earn(bonus, Economy.Source.EARLY_CALL)
+		early_call_paid.emit(bonus)
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:

@@ -7,7 +7,9 @@ extends Node
 ## After the last wave the run is FINISHED (all_waves_cleared). Building and selling are allowed in
 ## the build and combat phases; this node only decides when a wave may start.
 ## On a run map (choose_between_waves off) a fight's waves follow each other without upgrade choices
-## (the fight's reward comes after it), and restart() begins the next fight's build phase.
+## (the fight's reward comes after it), and restart() begins the next fight's build phase. There the
+## next wave can also be called early, once the running one has sent all its enemies (M8: bonus gold,
+## WaveRewards); not between choices, since that would skip one.
 
 signal phase_changed(phase: Phase)
 ## The last wave has been cleared.
@@ -59,6 +61,16 @@ func start_wave() -> bool:
 	if not can_start_wave():
 		return false
 	return spawner.start_next_wave()
+
+
+## True in combat on a run map once the wave has sent everyone and another follows.
+func can_call_early() -> bool:
+	return _phase == Phase.COMBAT and not choose_between_waves and spawner.can_call_next_wave()
+
+
+## Calls the next wave now, the current one's last enemies still fighting. False if it can't be.
+func call_early() -> bool:
+	return can_call_early() and spawner.call_next_wave()
 
 
 ## Back to the build phase for the spawner's freshly loaded waves (after FINISHED, a new fight).

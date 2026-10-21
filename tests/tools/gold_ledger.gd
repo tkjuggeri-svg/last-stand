@@ -136,6 +136,8 @@ func _on_gold_earned(amount: int, source: Economy.Source) -> void:
 	match source:
 		Economy.Source.PERFECT_DEFENSE:
 			_add("perfect", amount)
+		Economy.Source.EARLY_CALL:
+			_add("early", amount)
 		Economy.Source.INTEREST:
 			_add("interest", amount)
 		Economy.Source.REFUND:

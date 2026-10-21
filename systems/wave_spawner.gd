@@ -5,10 +5,14 @@ extends Node2D
 ## every enemy it sends has been spawned and is gone again (killed or used up at the fortress):
 ## wave_started .. wave_cleared. Starting waves is up to the owner (or autostart for the first one).
 ## Enemies a boss summons join the current wave (they count in its totals) on the summoner's lane.
+## Once a wave has sent everyone, the next can be called early (call_next_wave): the wave counts as
+## cleared at once and its enemies still alive stay, counted in the next wave's remaining enemies.
 
 signal wave_started(wave_number: int)
-## Every enemy of the wave has been spawned and is gone again.
+## Every enemy of the wave has been spawned and is gone again (or the next wave was called early).
 signal wave_cleared(wave_number: int)
+## The next wave was called while `living` (this wave's last enemies) still fight; wave_cleared follows.
+signal wave_called_early(wave_number: int, living: Array[Enemy])
 signal enemy_spawned(enemy: Enemy)
 ## A spawned enemy was killed (not when it is used up at the fortress).
 signal enemy_killed(enemy: Enemy)
@@ -137,6 +141,36 @@ func start_next_wave() -> bool:
 	return true
 
 
+## True while a wave runs that has sent all its enemies, and another wave follows it.
+func can_call_next_wave() -> bool:
+	return _wave_open and not _is_spawning() and has_next_wave()
+
+
+## The current wave's enemies still alive.
+func get_living_enemies() -> Array[Enemy]:
+	var living: Array[Enemy] = []
+	for child: Node in get_children():
+		var enemy: Enemy = child as Enemy
+		if enemy != null and enemy.is_alive() and not enemy.is_queued_for_deletion():
+			living.append(enemy)
+	return living
+
+
+## Starts the next wave now, while this one's last enemies still live (call early): this wave counts
+## as cleared, and its living enemies count in the next one's remaining. False if it can't be called.
+func call_next_wave() -> bool:
+	if not can_call_next_wave():
+		return false
+	var carried: int = _living_count
+	wave_called_early.emit(get_wave_number(), get_living_enemies())
+	_wave_open = false
+	wave_cleared.emit(get_wave_number())
+	start_next_wave()
+	_finished_count = -carried  # so get_remaining_count() still counts them
+	enemy_counts_changed.emit(_living_count, _spawned_count)
+	return true
+
+
 ## Ends the current wave at once (the dev menu): the rest of its enemies never come, the living ones
 ## vanish without paying gold, and the wave counts as cleared.
 func end_wave() -> void:
@@ -189,8 +223,18 @@ func _spawn_enemy(group: SpawnGroup) -> void:
 func _on_summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2) -> void:
 	if not _wave_open:
 		return
+	# Counted now, so the wave waits for it; added at the end of the frame, because a summon can come
+	# from a death inside a physics callback (a Bloater killed by a hit), where no body may be added.
 	_summoned_count += 1
-	summoner.adopt_minion(_add_enemy(minion, summoner.lane, at))
+	_add_summon.call_deferred(weakref(summoner), minion, summoner.lane, at)
+
+
+## A summon's minion, now that bodies may be added (the summoner may be gone by then: a Bloater).
+func _add_summon(summoner_ref: WeakRef, minion: EnemyData, lane: Path2D, at: Vector2) -> void:
+	var minion_enemy: Enemy = _add_enemy(minion, lane, at)
+	var summoner: Enemy = summoner_ref.get_ref() as Enemy
+	if summoner != null:
+		summoner.adopt_minion(minion_enemy)
 
 
 func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2, health_scale: float = 1.0) -> Enemy:

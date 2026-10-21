@@ -159,7 +159,7 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 
 ## M8 — Meta Progression & Persistence
 Design: `docs/M8_META.md` (approved with Claude's recommendations; every decision in its section 10, to be overridden after playtesting).
-- [ ] *(Small, can come first, even before the rest of M8.)* **Call the next wave early:** a button (and key) in the build phase, or during a wave once its last group has spawned, that starts the next wave now for bonus gold (more the earlier it is called), like a classic tower defense "send next wave"
+- [x] *(Done as: the `start_wave` key and the wave button, in run map fights, once the wave has sent everyone; bonus 50% of the living enemies' kill gold, the perfect-defense bonus forfeited.)* **Call the next wave early:** a button (and key) in the build phase, or during a wave once its last group has spawned, that starts the next wave now for bonus gold (more the earlier it is called), like a classic tower defense "send next wave"
 - [x] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
 - [x] Hub between runs: spend Soul Shards on unlocks (towers, cards and relics into the pools, evolutions, an event, two small perks; no hero stat bonuses: the user's rule)
 - [x] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decided: runs resume from the map)

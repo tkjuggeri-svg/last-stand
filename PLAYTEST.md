@@ -1,7 +1,7 @@
 # LAST STAND — Internal Playtest
 
-Thanks for playing! This is an early build: the pixel art is in, but there is **no sound yet** and no
-main menu (the game starts straight in a run). A run is **two chapters** on a map of choices (about
+Thanks for playing! This is an early build: the pixel art is in, but there is **no sound yet**. The game
+opens on a title screen; **Play** leads to the War Room, where you start runs. A run is **two chapters** on a map of choices (about
 35–45 minutes if you win; the first chapter alone is about 15–20).
 
 ## Running the build
@@ -16,6 +16,24 @@ main menu (the game starts straight in a run). A run is **two chapters** on a ma
 **Building it (developers):** `tools/build_playtest.sh` runs the test suite, exports both platforms
 and zips them into `builds/`. It needs Godot 4.7.2's export templates (Editor → Manage Export
 Templates). `tools/build_playtest.sh --pack-check` checks the game data without the templates.
+
+## Between runs: the War Room (new in this build)
+
+Every run pays **Soul Shards**, lost ones too: for each battle won, elite and boss beaten, chapter
+cleared, a win, and a one-off reward the first time you beat each boss or reach a chapter. The run
+summary after Game Over / Victory (button **Continue**) shows them line by line.
+
+In the **War Room** you spend them on **unlocks**: the Brazier and Bone Ballista towers, each tower's
+evolutions, packs of upgrade cards and relics, a rare event, and two small perks (Muster: choose a
+starting card; Drill: one free card reroll per chapter). They add **options**, never raw power. Your
+**first run** has only the Archer, Cannon and Frost towers, 13 cards, 5 relics and no evolutions.
+
+- **Quitting mid-run is safe:** the run is saved every time the map shows. **Continue** on the title
+  screen takes you back to the map (a fight you quit is played again from its start).
+- **Esc → Abandon run** ends a run early (it still pays its shards).
+- **Tips** appear once each at the bottom right the first time something comes up; "Skip all tips"
+  turns them off (the War Room's Tips switch turns them back on, from the start).
+- **Reset progress** (War Room) starts your profile over.
 
 ## How to play
 
@@ -53,13 +71,17 @@ when it rings its bell.
 | Dash (short, through enemies, immune while dashing) | Space / Shift |
 | Build / upgrade / sell a tower (stand at a stone pad) | E |
 | Start the next wave | Enter, or the button top-left |
-| Pause menu (settings, restart, quit) | Esc |
+| Call the next wave early (bonus gold) | Enter / the same button, once a wave has sent all its dead |
+| Pause menu (settings, abandon run, quit) | Esc |
 
 Every key can be changed in **Esc → Settings** (also fullscreen and volume).
 
 - **Before each wave** you build towers (you can also build during a wave). Upgrades come after a
   battle, not after every wave.
 - **Gold** comes from kills. Towers can be upgraded twice; selling refunds half.
+- **Calling a wave early:** once a wave has sent all its dead, the wave button reads "Next wave now
+  +N": the next wave comes at once, with the survivors still on the field, and you get N gold now
+  (half their kill gold; more the more are still alive), but no perfect-defense bonus for that wave.
 - **Evolutions:** a level-3 tower can evolve once, into one of two forms (the tower menu shows both
   side by side with their range). The choice is for good, and it's expensive: you won't afford many.
 - **Gold is tight:** you can't upgrade everything. Between waves the **Quartermaster** (panel under the
@@ -97,6 +119,10 @@ happens that you want us to see, note the seed: the pause menu can also start a 
 
 Play at least one full run (win or lose), more if you can. Then tell us:
 
+0. **Progression (new):** Did earning Soul Shards after a lost run make you want to start another?
+   Which unlocks did you buy first, and why? Did your first run (3 towers, no evolutions) feel too
+   bare? Were the title, War Room and run summary clear? Did Continue bring you back where you left?
+   Were the tips helpful or in the way? Did you call waves early, and was the bonus worth the risk?
 1. **The run:** Did you win? If not, which chapter and stop, and how (fortress or hero)? How long did
    it take? Which towers and upgrades did you go for?
 2. **The map:** Did choosing your path feel meaningful? Which stops did you seek out or avoid, and
@@ -131,5 +157,7 @@ Settings and logs live in the game's data folder:
 - **Windows:** `%APPDATA%\Godot\app_userdata\The Last Stand\`
 - **Linux:** `~/.local/share/godot/app_userdata/The Last Stand/`
 
-`settings.cfg` holds your settings (delete it to reset them); `logs/godot.log` is the log of the
+`settings.cfg` holds your settings (delete it to reset them); `save.json` your progress (shards,
+unlocks, records, the saved run; `save.json.bak` is the previous save; the War Room's Reset progress
+starts over); `logs/godot.log` is the log of the
 last session. Please attach it to a bug report. `feedback/` holds your F8 reports.
