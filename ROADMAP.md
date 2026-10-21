@@ -195,9 +195,19 @@ Presentation work done early instead of all in M13, so a public demo looks and s
 ---
 
 ## M10 — Maps & Biomes
-2–3 new maps with their own lane layouts, enemies and bosses, in their own visual biome. (Chapter 2's map, the Drowned Marsh, and its enemies were pulled forward into M7.5.)
+At least **9 biomes in 3 tiers of 3**: tier 1 for chapter 1 (easy), tier 2 for chapter 2 (medium), tier 3 for a new chapter 3 (hard). Each run picks one biome per tier: at random, or the player chooses between two roads at the end of a chapter. The Graveyard is tier 1 and the Drowned Marsh tier 2 (pulled forward into M7.5).
+Every biome has:
+- its own map and lane layout;
+- an **environmental mechanic** (the Marsh's: pools the hero wades through; the Graveyard still needs one);
+- **1–2 unique enemies** (the others may be shared within the tier, like the Marsh's Bloater, Mire Priest and Shieldbearer);
+- **its own boss**.
 
-**Done when:** each map asks for a different defence plan.
+Built in stages:
+- [ ] **Stage 1: the tier system and a third chapter.** Chapters draw their biome from a tier (`RunData` / `ChapterData`); the choice of road at a chapter's end; chapter 3 (tier 3) with its first biome, its enemies and boss, and its difficulty ramp; the Graveyard gets its environmental mechanic.
+- [ ] **Stage 2: a second biome per tier** (3 new biomes).
+- [ ] **Stage 3: the third biome per tier** (3 new biomes): 9 in all.
+
+**Done when:** each map asks for a different defence plan, and two runs can cross different biomes.
 
 ---
 
