@@ -16,6 +16,7 @@ enum Type {
 	NEXT_FIGHTS_AFFIX,  ## `affix` applies to the next `amount` fights (99: the rest of the chapter)
 	MERCHANT_PRICES,  ## the next merchant's prices x `factor`
 	EXTRA_FIGHT,  ## fight one wave of the next row's tier now; its reward: a choice of `amount` cards (`rare_only`)
+	RELIC_CHOICE,  ## a relic choice of `amount` relics (M7.5)
 }
 
 @export var type: Type = Type.GOLD

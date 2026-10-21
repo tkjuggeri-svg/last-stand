@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/lantern_of_the_lost.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"lantern_of_the_lost"
+price = 220
+id = &"lantern_of_the_lost"
+display_name = "Lantern of the Lost"
+description = "Cultists and Mire Priests are marked: they take 50% more damage from everything."
+icon = ExtResource("1_icon")
+category = 1
+rarity = 1
+stackable = false

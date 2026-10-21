@@ -26,6 +26,7 @@
 [ext_resource type="Resource" path="res://data/events/flooded_crypt.tres" id="ev_flooded_crypt"]
 [ext_resource type="Resource" path="res://data/events/the_tinker.tres" id="ev_the_tinker"]
 [ext_resource type="Resource" path="res://data/events/night_fog.tres" id="ev_night_fog"]
+[ext_resource type="Resource" path="res://data/events/drowned_reliquary.tres" id="ev_drowned_reliquary"]
 [ext_resource type="Resource" path="res://data/events/shrine_blood.tres" id="ev_shrine_blood"]
 [ext_resource type="Resource" path="res://data/events/shrine_ash.tres" id="ev_shrine_ash"]
 [ext_resource type="Resource" path="res://data/events/shrine_coins.tres" id="ev_shrine_coins"]
@@ -43,5 +44,5 @@ affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_
 boss = ExtResource("boss")
 fight_health_scale = 0.75
 
-events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog")])
+events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary")])
 shrines = Array[ExtResource("s_event")]([ExtResource("ev_shrine_blood"), ExtResource("ev_shrine_ash"), ExtResource("ev_shrine_coins"), ExtResource("ev_shrine_hollow_walls"), ExtResource("ev_shrine_whispers")])

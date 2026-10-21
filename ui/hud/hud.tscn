@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_boss.png" id="14_fill_b"]
 [ext_resource type="PackedScene" path="res://ui/hud/services_panel.tscn" id="15_services"]
 [ext_resource type="Script" path="res://ui/widgets/see_through.gd" id="16_see_through"]
+[ext_resource type="Script" path="res://ui/hud/run_icons_row.gd" id="rw_row"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_boss"]
 texture = ExtResource("14_fill_b")
@@ -251,6 +252,17 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 2
+script = ExtResource("rw_row")
+
+[node name="RelicIcons" type="HFlowContainer" parent="WaveMargin/WaveColumn"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(232, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+script = ExtResource("rw_row")
+relics = true
 
 [node name="BossMargin" type="MarginContainer" parent="."]
 unique_name_in_owner = true

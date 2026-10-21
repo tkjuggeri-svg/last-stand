@@ -2,7 +2,8 @@ class_name UpgradeChoiceScreen
 extends CanvasLayer
 ## The upgrade choice after a wave: shows the open offer as cards (icon, name, rarity and category,
 ## what it does) and pauses the game until one is taken. Mouse or keyboard (arrows to move, Enter to
-## take). One reroll per offer for gold. Display and intents only: UpgradeOffers decides.
+## take). One reroll per offer for gold. Display and intents only: UpgradeOffers decides. A relic offer
+## (an elite's or a boss's reward) says so in its title and on each card.
 
 const RARE_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
 const COMMON_COLOR: Color = Color(0.88, 0.86, 0.92, 1)
@@ -14,6 +15,9 @@ const CATEGORY_NAMES: Dictionary = {
 	UpgradeData.Category.ECONOMY: "Economy",
 }
 const CARD_SIZE: Vector2 = Vector2(300, 320)
+const RELIC_COLOR: Color = Color(0.82, 0.66, 1.0, 1)
+const CARD_TITLE: String = "Choose an upgrade"
+const RELIC_TITLE: String = "Choose a relic"
 
 @export var offers: UpgradeOffers
 @export var economy: Economy
@@ -24,6 +28,7 @@ var _paused_by_us: bool = false
 @onready var _cards: HBoxContainer = %Cards
 @onready var _reroll_button: Button = %RerollButton
 @onready var _gold_label: Label = %GoldLabel
+@onready var _title: Label = %Title
 
 
 func _ready() -> void:
@@ -55,10 +60,13 @@ func get_take_buttons() -> Array[Button]:
 
 
 func _open(cards: Array[UpgradeData]) -> void:
+	if cards.is_empty():
+		return  # nothing left to offer: no choice to make
 	for child: Node in _cards.get_children():
 		child.queue_free()
 	for i: int in cards.size():
 		_cards.add_child(_make_card(cards[i], i))
+	_title.text = RELIC_TITLE if not cards.is_empty() and cards[0] is RelicData else CARD_TITLE
 	_update_reroll()
 	show()
 	if not get_tree().paused:
@@ -93,11 +101,15 @@ func _make_card(data: UpgradeData, index: int) -> Control:
 	var title: Label = Label.new()
 	title.text = data.display_name
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_color_override("font_color", RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else COMMON_COLOR)
+	var relic: bool = data is RelicData
+	title.add_theme_color_override("font_color", RELIC_COLOR if relic else (RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else COMMON_COLOR))
 	column.add_child(title)
 	var kind: Label = Label.new()
-	kind.text = "%s  -  %s%s" % ["Rare" if data.rarity == UpgradeData.Rarity.RARE else "Common", CATEGORY_NAMES[data.category],
-		"" if data.stackable else "  -  once"]
+	if relic:
+		kind.text = "Relic  -  %s" % CATEGORY_NAMES[data.category]
+	else:
+		kind.text = "%s  -  %s%s" % ["Rare" if data.rarity == UpgradeData.Rarity.RARE else "Common", CATEGORY_NAMES[data.category],
+			"" if data.stackable else "  -  once"]
 	kind.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	kind.add_theme_color_override("font_color", DIM_COLOR)
 	column.add_child(kind)

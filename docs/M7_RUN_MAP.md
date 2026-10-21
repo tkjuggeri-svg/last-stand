@@ -72,10 +72,10 @@ Odds for the mixed rows (3–6):
 | Node | Share | What happens |
 |---|---|---|
 | **Battle** | ~45% | 2 waves of the row's tier. Kill gold as today. Reward: **one upgrade choice** (1 of 3) after the battle (not after each wave). |
-| **Elite** | ~15% | 2 waves of the row's tier plus an **affix** (below) and a mini-boss: the Gravelord in rows 3–4, the Bone Colossus in rows 5–6. Reward: **a choice of 2 rare cards** and +100 gold. |
+| **Elite** | ~15% | 2 waves of the row's tier plus an **affix** (below) and a mini-boss: the Gravelord in rows 3–4, the Bone Colossus in rows 5–6. Reward: **a choice of 2 rare cards** and +100 gold (M7); since M7.5 **a choice of 1 of 3 relics**, and the fight is 25% tougher (`ChapterData.elite_health_scale`). |
 | **Event** | ~20% | A short scene with 2–3 choices (section 5). No fighting, unless a choice brings one. |
 | **Shrine** | ~12% | One risky deal: accept or walk away (section 6). |
-| **Merchant** | ~8% (+ all of row 7) | Spend gold: 3 upgrade cards (common 90 g, rare 160 g), a cheap repair (+25% of the fortress, 60 g, once per visit), a reroll of the cards (25 g). Relics join the stock in M9. |
+| **Merchant** | ~8% (+ all of row 7) | Spend gold: 3 upgrade cards (common 90 g, rare 160 g), a cheap repair (+25% of the fortress, 60 g, once per visit), a reroll of the cards (25 g). Since M7.5: 35% of visits also have **a relic** at its own high price (200–300 g). |
 | **Boss** | row 8 | 3 waves; the chapter boss leads the last one. Chapter 1: the Lich Warden on today's wave-13–15 content. Reward: 1 of 3 rare upgrades and +40% fortress repair. |
 
 **Elite affixes** (one per elite, shown on its map node):
@@ -255,9 +255,9 @@ choose (no hidden cost), except the gamble, which says it is one.
 |---|---|---|---|
 | 1 | Run length | **2 chapters for now**; the chapter count is data (`RunData.chapters`), and a third comes with M10's maps | user |
 | 2 | Towers between chapters | **Full refund** of everything spent on them (M7); **40%** since M7.5 (playtest: the full refund made chapter 2 easy) | user |
-| 3 | Upgrade choice cadence | **One choice per battle node** (1 of 3), not per wave. Elites give a **choice of 2 rare cards**. Events and shrines can grant extra upgrades | user |
+| 3 | Upgrade choice cadence | **One choice per battle node** (1 of 3), not per wave. Elites give a **choice of 2 rare cards** (M7; since M7.5 a choice of 3 relics). Events and shrines can grant extra upgrades | user |
 | 4 | Elites | The Gravelord and the Bone Colossus become **elite mini-bosses**; the Lich Warden is chapter 1's boss; chapter 2 gets a **new boss** (the Tollkeeper) | user |
-| 5 | Merchant stock | Upgrade cards, a repair and a reroll; relics in M9. No free towers or evolution discounts | recommendation |
+| 5 | Merchant stock | Upgrade cards, a repair and a reroll; relics in M9 (pulled forward: since M7.5 sometimes a relic). No free towers or evolution discounts | recommendation |
 | 6 | Event frequency | ~20% of the mixed rows | recommendation |
 | 7 | Fail state | **Losing in chapter 2 loses the whole run**; no checkpoints | user |
 | 8 | Map visibility | The whole chapter map is visible from the start | recommendation |

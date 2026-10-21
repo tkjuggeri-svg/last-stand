@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/merchants_seal.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[sub_resource type="Resource" id="Resource_m0"]
+script = ExtResource("2_mod")
+stat = &"economy.merchant_prices"
+percent = -0.35
+
+[sub_resource type="Resource" id="Resource_m1"]
+script = ExtResource("2_mod")
+stat = &"economy.quartermaster_prices"
+percent = 0.5
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"merchants_seal"
+price = 200
+id = &"merchants_seal"
+display_name = "Merchant's Seal"
+description = "Merchants charge 35% less; the Quartermaster charges 50% more."
+icon = ExtResource("1_icon")
+category = 3
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_m0"), SubResource("Resource_m1")])

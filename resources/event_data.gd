@@ -7,4 +7,6 @@ extends Resource
 @export var title: String = ""
 @export_multiline var text: String = ""
 @export var shrine: bool = false
+## A rare event (one that can give a relic): the map draws it only RunMap.RARE_EVENT_CHANCE of the time.
+@export var rare: bool = false
 @export var choices: Array[EventChoice] = []

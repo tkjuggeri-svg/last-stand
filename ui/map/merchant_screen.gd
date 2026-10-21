@@ -1,16 +1,19 @@
 class_name MerchantScreen
 extends CanvasLayer
 ## A merchant's shop on the run map: the stock's upgrade cards (name, rarity, what it does, price,
-## Buy), the fortress repair, a reroll of the cards and Leave. Prices turn red when the gold is short.
+## Buy), a relic when it has one (its own colour), the fortress repair, a reroll of the cards and
+## Leave. Prices turn red when the gold is short.
 ## Display and intents only: the Merchant decides.
 
 signal left
 
 const RARE_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
 const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
+const RELIC_COLOR: Color = Color(0.82, 0.66, 1.0, 1)
 
 var _merchant: Merchant
 var _buy_buttons: Array[Button] = []
+var _relic_button: Button = null
 
 @onready var _cards: HBoxContainer = %Cards
 @onready var _gold_label: Label = %GoldLabel
@@ -43,6 +46,11 @@ func get_buy_button(index: int) -> Button:
 	return _buy_buttons[index]
 
 
+## The relic's Buy button (null when the merchant has no relic this visit).
+func get_relic_button() -> Button:
+	return _relic_button
+
+
 func get_repair_button() -> Button:
 	return _repair_button
 
@@ -73,7 +81,15 @@ func _refresh() -> void:
 	_buy_buttons.clear()
 	var cards: Array[UpgradeData] = _merchant.get_cards()
 	for i: int in cards.size():
-		_cards.add_child(_card(cards[i], i))
+		var index: int = i
+		var card: Control = _card(cards[i], _merchant.card_blocker(i), func() -> void: _merchant.buy_card(index))
+		_buy_buttons.append(card.find_child("Buy", true, false) as Button)
+		_cards.add_child(card)
+	_relic_button = null
+	if _merchant.get_relic() != null:
+		var relic_card: Control = _card(_merchant.get_relic(), _merchant.relic_blocker(), func() -> void: _merchant.buy_relic())
+		_relic_button = relic_card.find_child("Buy", true, false) as Button
+		_cards.add_child(relic_card)
 	_gold_label.text = "Gold: %d" % _merchant.economy.get_gold()
 	var repair: String = _merchant.repair_blocker()
 	_repair_button.text = "Repair walls +%d   -%d gold" % [_merchant.repair_amount(), _merchant.get_repair_price()] if repair.is_empty() or repair == Merchant.NOT_ENOUGH_GOLD else "Repair: %s" % repair.to_lower()
@@ -82,7 +98,7 @@ func _refresh() -> void:
 	_reroll_button.disabled = not _merchant.can_reroll()
 
 
-func _card(data: UpgradeData, index: int) -> Control:
+func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	var card: PanelContainer = PanelContainer.new()
 	card.theme_type_variation = &"CardPanel"
 	card.custom_minimum_size = Vector2(300, 220)
@@ -98,8 +114,9 @@ func _card(data: UpgradeData, index: int) -> Control:
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 		header.add_child(icon)
 	var title: Label = Label.new()
-	title.text = data.display_name
-	title.add_theme_color_override("font_color", RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else Color.WHITE)
+	var relic: bool = data is RelicData
+	title.text = ("Relic: %s" if relic else "%s") % data.display_name
+	title.add_theme_color_override("font_color", RELIC_COLOR if relic else (RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else Color.WHITE))
 	header.add_child(title)
 	var text: Label = Label.new()
 	text.text = data.description
@@ -108,12 +125,11 @@ func _card(data: UpgradeData, index: int) -> Control:
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(text)
 	var button: Button = Button.new()
-	var blocker: String = _merchant.card_blocker(index)
+	button.name = "Buy"
 	button.text = "Sold" if blocker == Merchant.SOLD_OUT else "Buy   -%d gold" % _merchant.price_of(data)
 	button.disabled = not blocker.is_empty()
 	if blocker == Merchant.NOT_ENOUGH_GOLD:
 		button.add_theme_color_override("font_disabled_color", ERROR_COLOR)
-	button.pressed.connect(func() -> void: _merchant.buy_card(index))
+	button.pressed.connect(buy)
 	column.add_child(button)
-	_buy_buttons.append(button)
 	return card

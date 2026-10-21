@@ -604,6 +604,9 @@ const SMOKE_PNG: String = "res://assets/sprites/effects/smoke_puff.png"
 ## UI textures are saved pre-scaled to 2x (StyleBoxTexture/TextureRect draw texels 1:1).
 const COIN_PNG: String = "res://assets/sprites/ui/coin.png"
 const UI_DIR: String = "res://assets/sprites/ui/"
+## Relic icons, one PNG per relic id (32x32, pre-scaled 2x), and the Ossuary Bell's bone pickup.
+const RELIC_ICON_DIR: String = "res://assets/sprites/ui/relics/"
+const BONE_PNG: String = "res://assets/sprites/effects/bone_pickup.png"
 ## Run upgrade icons, one PNG per upgrade id (32x32, pre-scaled 2x).
 const UPGRADE_ICON_DIR: String = "res://assets/sprites/ui/upgrades/"
 ## The pixel font (bitmap FontFile, 12 px cell incl. outline; the theme draws it at 24 = 2x).

@@ -3,7 +3,7 @@ extends Node
 ## Applies run map events and shrines (EventData) to the chapter's level: whether an answer can be
 ## chosen (its need: gold, a tower, an upgrade, a spare life), and what it does (gold, damage to the
 ## fortress, boons and curses as upgrades, a lost life, tower gifts and prices, twists on the next
-## fights, merchant prices). Answers that need more play (an upgrade choice, an extra fight) come back
+## fights, merchant prices). Answers that need more play (an upgrade or relic choice, an extra fight) come back
 ## in the EventOutcome for Main to run. It also keeps the twists that events put on coming fights
 ## (take_fight_affixes, at each fight's start). Rules only: EventScreen shows the scene.
 
@@ -111,6 +111,8 @@ func _apply_effect(effect: EventEffect, outcome: EventOutcome) -> void:
 			merchant.next_price_factor *= effect.factor
 		EventEffect.Type.EXTRA_FIGHT:
 			outcome.extra_fight = FightReward.make(effect.amount, effect.rare_only)
+		EventEffect.Type.RELIC_CHOICE:
+			outcome.choices.append(FightReward.relic_choice(effect.amount))
 
 
 func _towers() -> Array[BuildSlot]:

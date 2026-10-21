@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/drowned_bell.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"drowned_bell"
+price = 280
+id = &"drowned_bell"
+display_name = "Drowned Bell"
+description = "Every 20 s of a wave a bell tolls (a ring warns you): every enemy freezes for 1.2 s (a boss 0.4 s)."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+stackable = false

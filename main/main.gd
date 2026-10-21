@@ -151,8 +151,10 @@ func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightRewar
 	if _level.events != null:
 		affixes.append_array(_level.events.take_fight_affixes())
 	var waves: Array[WaveData] = encounter.build_waves(affixes)
+	var chapter: ChapterData = _run.get_chapter()
+	var scale: float = chapter.fight_health_scale * (chapter.elite_health_scale if _node != null and _node.kind == RunMap.Kind.ELITE else 1.0)
 	for wave: WaveData in waves:
-		wave.health_multiplier *= _run.get_chapter().fight_health_scale
+		wave.health_multiplier *= scale
 	_level.set_active(true)
 	_level.start_encounter(waves, reward)
 
@@ -189,7 +191,9 @@ func _next_follow_up() -> void:
 		return
 	var reward: FightReward = _pending_choices.pop_front()
 	_level.set_active(true)
-	if _level.offers.make_offer(reward.cards, reward.rare_only).is_empty():
+	var offer: Array[UpgradeData] = _level.offers.make_relic_offer(reward.relics) if reward.relics > 0 \
+		else _level.offers.make_offer(reward.cards, reward.rare_only)
+	if offer.is_empty():
 		_next_follow_up()
 		return
 	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _next_follow_up(), CONNECT_ONE_SHOT)
@@ -200,9 +204,9 @@ func _reward_for(node: MapNode) -> FightReward:
 	var chapter: ChapterData = _run.get_chapter()
 	match node.kind:
 		RunMap.Kind.ELITE:
-			return FightReward.make(chapter.elite_cards, true, chapter.elite_gold)
+			return FightReward.relic_choice(chapter.elite_relics)
 		RunMap.Kind.BOSS:
-			return FightReward.make(chapter.boss_cards if not _run.is_last_chapter() else 0, true, 0, chapter.boss_repair)
+			return FightReward.relic_choice(chapter.boss_relics if not _run.is_last_chapter() else 0, chapter.boss_repair)
 	return FightReward.make(chapter.battle_cards)
 
 
@@ -226,8 +230,9 @@ func _on_chapter_cleared() -> void:
 	_run.next_chapter()
 	_level.set_active(false)
 	var max_health: int = _level.fortress.health.max_health
-	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, refund_ratio, CHAPTER_REPAIR,
-		mini(carry.fortress_health + roundi(max_health * CHAPTER_REPAIR), max_health), max_health)
+	var repair: float = CHAPTER_REPAIR if _level.fortress.can_repair() else 0.0  # none under Iron Tithe
+	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, refund_ratio, repair,
+		mini(carry.fortress_health + roundi(max_health * repair), max_health), max_health)
 
 
 func _on_level_run_lost(reason: Level.LossReason) -> void:

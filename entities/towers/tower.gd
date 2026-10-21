@@ -37,6 +37,8 @@ var _level: int = 1
 var _evolution: TowerEvolution = null
 ## Fire-rate bonus from a Beacon Flame in reach (0 = none; 0.25 = 25% more shots).
 var _boost: float = 0.0
+## Twin Banners: a same-type tower's level shared with this one (0 = none); the better one counts.
+var _shared_level: int = 0
 var _weapon: TowerWeapon = TowerWeapon.new()
 var _sight: TowerSight = TowerSight.new()
 var _stats: TowerTier
@@ -158,11 +160,26 @@ func set_fire_rate_boost(bonus: float) -> void:
 		return
 	_boost = bonus
 	_stats = _effective_stats()
-	_boost_mark.visible = _boost > 0.0  # the beacon's ember over every tower it speeds up
+	_update_boost_mark()
 
 
 func get_fire_rate_boost() -> float:
 	return _boost
+
+
+## Twin Banners (from TowerBuilder): fights with the stats of `level` if that is above its own.
+func set_shared_level(level: int) -> void:
+	if level == _shared_level:
+		return
+	_shared_level = level
+	_stats = _effective_stats()
+	_apply_range()
+	_update_boost_mark()
+
+
+## The level whose stats it fights with (its own, or a twin's higher one).
+func get_stats_level() -> int:
+	return _level if _evolution != null else maxi(_level, mini(_shared_level, data.max_level()))
 
 
 ## The stats at the current level, with the run's upgrades applied.
@@ -175,6 +192,7 @@ func set_level(level: int) -> void:
 	_level = clampi(level, 1, data.max_level() + (1 if _evolution != null else 0))
 	_stats = _effective_stats()
 	_apply_range()
+	_update_boost_mark()
 	if not is_building():
 		_sprite.play(_anim("idle"))
 	_sprite.modulate = Color(2.2, 2.2, 2.2, 1.0)  # overbright, then back to normal
@@ -216,7 +234,7 @@ func _anim(state: String) -> StringName:
 
 ## The level's stats with the run's modifiers applied (a copy: the data stays untouched).
 func _effective_stats() -> TowerTier:
-	var base: TowerTier = _evolution if _evolution != null else data.stats_for(_level)
+	var base: TowerTier = _evolution if _evolution != null else data.stats_for(get_stats_level())
 	var stats: TowerTier = base.duplicate() as TowerTier
 	stats.fire_interval = base.fire_interval / (1.0 + _boost)
 	if modifiers == null:
@@ -227,7 +245,13 @@ func _effective_stats() -> TowerTier:
 	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
 	stats.burn_dps = modifiers.apply(base.burn_dps, RunModifiers.tower_stats(RunModifiers.TOWER_BURN, data.id))
+	stats.burn_duration = modifiers.apply(base.burn_duration, RunModifiers.tower_stats(RunModifiers.TOWER_BURN_DURATION, data.id))
 	return stats
+
+
+## The ember over a tower something lifts: a Beacon Flame's speed, a twin's level (Twin Banners).
+func _update_boost_mark() -> void:
+	_boost_mark.visible = _boost > 0.0 or get_stats_level() > _level
 
 
 func _on_modifiers_changed() -> void:

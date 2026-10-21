@@ -5,6 +5,8 @@ extends Node
 ## (pick); once per offer they may reroll it for gold, and the reroll price rises each time it is
 ## used in the run. Draws come from a seeded RNG, so a run's offers are reproducible (tests, the
 ## balance tool); seed -1 = a random run. Rules only: the choice screen shows the offer.
+## It also offers relics (M7.5): a relic offer (an elite's or a boss's reward) draws from relic_pool,
+## never one the run has or one that works against a relic it has (RelicData.incompatible).
 
 signal offer_made(cards: Array[UpgradeData])
 signal picked(data: UpgradeData)
@@ -13,6 +15,8 @@ signal picked(data: UpgradeData)
 @export var economy: Economy
 ## Every upgrade that can be offered.
 @export var pool: Array[UpgradeData] = []
+## Every relic that can be offered or found.
+@export var relic_pool: Array[RelicData] = []
 @export var offer_size: int = 3
 ## Relative chance of a card being drawn, by rarity.
 @export var common_weight: float = 3.0
@@ -31,6 +35,8 @@ var _seeded: bool = false
 ## Size and rarity rule of the open offer (a reroll keeps them).
 var _size: int = 3
 var _rare_only: bool = false
+## The open offer is of relics (a reroll draws relics again).
+var _relics: bool = false
 
 
 func _ready() -> void:
@@ -64,20 +70,61 @@ func get_offer() -> Array[UpgradeData]:
 func make_offer(size: int = -1, rare_only: bool = false) -> Array[UpgradeData]:
 	_size = offer_size if size < 0 else size
 	_rare_only = rare_only
+	_relics = false
 	_offer = _draw()
 	_rerolled = false
 	offer_made.emit(get_offer())
 	return get_offer()
 
 
+## Draws a relic offer (replacing any open one): `size` relics the run may take. Empty if none is left.
+func make_relic_offer(size: int) -> Array[UpgradeData]:
+	_size = size
+	_rare_only = false
+	_relics = true
+	_offer = _draw()
+	_rerolled = false
+	if not _offer.is_empty():
+		offer_made.emit(get_offer())
+	return get_offer()
+
+
+## One relic the run may take, drawn without opening an offer (a merchant's, an event's); null if none.
+func draw_relic() -> RelicData:
+	_ensure_seeded()
+	var left: Array[RelicData] = relic_candidates()
+	return left[_rng.randi_range(0, left.size() - 1)] if not left.is_empty() else null
+
+
+## The relics the run may still get: not taken, not working against one it has.
+func relic_candidates() -> Array[RelicData]:
+	var owned: Array[StringName] = []
+	for relic: RelicData in modifiers.get_relics():
+		owned.append(relic.id)
+	var found: Array[RelicData] = []
+	for relic: RelicData in relic_pool:
+		if relic != null and not owned.has(relic.id) and not relic.incompatible.any(func(id: StringName) -> bool: return owned.has(id)) \
+				and not modifiers.get_relics().any(func(r: RelicData) -> bool: return r.incompatible.has(relic.id)):
+			found.append(relic)
+	return found
+
+
+## True with chance `p`, from the run's seeded RNG (whether a merchant has a relic).
+func roll(p: float) -> bool:
+	_ensure_seeded()
+	return _rng.randf() < p
+
+
 ## Draws `count` cards for a shop (a merchant's stock): weighted like an offer, but no offer is opened.
 func draw_cards(count: int) -> Array[UpgradeData]:
-	var keep: Array = [_size, _rare_only]
+	var keep: Array = [_size, _rare_only, _relics]
 	_size = count
 	_rare_only = false
+	_relics = false
 	var cards: Array[UpgradeData] = _draw()
 	_size = keep[0]
 	_rare_only = keep[1]
+	_relics = keep[2]
 	return cards
 
 
@@ -139,7 +186,11 @@ func _candidates(rare_only: bool = false) -> Array[UpgradeData]:
 ## offer_size different cards, weighted by rarity.
 func _draw() -> Array[UpgradeData]:
 	_ensure_seeded()
-	var left: Array[UpgradeData] = _candidates(_rare_only)
+	var left: Array[UpgradeData] = []
+	if _relics:
+		left.append_array(relic_candidates())
+	else:
+		left = _candidates(_rare_only)
 	var cards: Array[UpgradeData] = []
 	while cards.size() < _size and not left.is_empty():
 		var weights: PackedFloat32Array = PackedFloat32Array()

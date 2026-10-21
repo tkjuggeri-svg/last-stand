@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/iron_tithe.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[sub_resource type="Resource" id="Resource_m0"]
+script = ExtResource("2_mod")
+stat = &"fortress.max_health"
+percent = 0.5
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"iron_tithe"
+price = 240
+incompatible = Array[StringName]([&"soul_lantern"])
+id = &"iron_tithe"
+display_name = "Iron Tithe"
+description = "Fortress max HP +50%, but it can never be repaired: no Quartermaster, merchant, reward or chapter repairs."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_m0")])

@@ -98,7 +98,7 @@ func carry_in(carry: ChapterCarry, repair: float) -> void:
 	_carrying_in = false
 	hero_lives.set_lives_left(carry.lives_left)
 	var health: HealthComponent = fortress.health
-	health.set_current_health(carry.fortress_health + roundi(health.max_health * repair))
+	health.set_current_health(carry.fortress_health + (roundi(health.max_health * repair) if fortress.can_repair() else 0))
 
 
 ## Stops the level as won (the run map's last boss fell): everything freezes, like at Game Over.
@@ -163,7 +163,8 @@ func _on_all_waves_cleared() -> void:
 		run_won.emit()
 
 
-## The fight's gold and repair at once, then its upgrade choice (if any); encounter_cleared once taken.
+## The fight's gold and repair at once, then its upgrade or relic choice (if any); encounter_cleared
+## once taken (straight away if there is nothing left to offer).
 func _give_reward() -> void:
 	if _run_over:
 		return
@@ -174,7 +175,12 @@ func _give_reward() -> void:
 		economy.earn(_reward.gold, Economy.Source.REWARD)
 	if _reward.repair > 0.0:
 		fortress.repair(_reward.repair)
-	if _reward.cards > 0 and offers != null and not offers.make_offer(_reward.cards, _reward.rare_only).is_empty():
+	var offered: bool = false
+	if offers != null and _reward.relics > 0:
+		offered = not offers.make_relic_offer(_reward.relics).is_empty()
+	if offers != null and not offered and _reward.cards > 0:
+		offered = not offers.make_offer(_reward.cards, _reward.rare_only).is_empty()
+	if offered:
 		offers.picked.connect(func(_data: UpgradeData) -> void: encounter_cleared.emit(), CONNECT_ONE_SHOT)
 		return
 	encounter_cleared.emit()

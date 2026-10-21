@@ -54,9 +54,21 @@ func _ready() -> void:
 	_show_look(look_for(health.current_health, health.max_health))
 
 
-## Repairs the walls by `fraction` of the max HP (an upgrade's instant effect).
+## Repairs the walls by `fraction` of the max HP (an upgrade's instant effect, a reward). Nothing under
+## Iron Tithe.
 func repair(fraction: float) -> void:
-	health.heal(roundi(health.max_health * fraction))
+	repair_hp(roundi(health.max_health * fraction))
+
+
+## Repairs `amount` HP (the Quartermaster's, a merchant's). Nothing under Iron Tithe.
+func repair_hp(amount: int) -> void:
+	if can_repair():
+		health.heal(amount)
+
+
+## False under the Iron Tithe relic: the walls can't be repaired at all.
+func can_repair() -> bool:
+	return not RunModifiers.relic(modifiers, RunModifiers.RELIC_IRON_TITHE)
 
 
 func _apply_modifiers() -> void:

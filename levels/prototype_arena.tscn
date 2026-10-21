@@ -49,6 +49,26 @@
 [ext_resource type="Resource" path="res://data/upgrades/fleet_step.tres" id="u_fleet_step"]
 [ext_resource type="Resource" path="res://data/upgrades/cinder_dash.tres" id="u_cinder_dash"]
 [ext_resource type="Script" path="res://resources/upgrade_data.gd" id="33_upgrade_data"]
+[ext_resource type="Resource" path="res://data/relics/bloodpact.tres" id="r_bloodpact"]
+[ext_resource type="Resource" path="res://data/relics/drowned_bell.tres" id="r_drowned_bell"]
+[ext_resource type="Resource" path="res://data/relics/ember_heart.tres" id="r_ember_heart"]
+[ext_resource type="Resource" path="res://data/relics/executioners_mark.tres" id="r_executioners_mark"]
+[ext_resource type="Resource" path="res://data/relics/glass_banner.tres" id="r_glass_banner"]
+[ext_resource type="Resource" path="res://data/relics/hourglass.tres" id="r_hourglass"]
+[ext_resource type="Resource" path="res://data/relics/iron_tithe.tres" id="r_iron_tithe"]
+[ext_resource type="Resource" path="res://data/relics/lantern_of_the_lost.tres" id="r_lantern_of_the_lost"]
+[ext_resource type="Resource" path="res://data/relics/merchants_seal.tres" id="r_merchants_seal"]
+[ext_resource type="Resource" path="res://data/relics/ossuary_bell.tres" id="r_ossuary_bell"]
+[ext_resource type="Resource" path="res://data/relics/phoenix_feather.tres" id="r_phoenix_feather"]
+[ext_resource type="Resource" path="res://data/relics/second_oath.tres" id="r_second_oath"]
+[ext_resource type="Resource" path="res://data/relics/siege_ledger.tres" id="r_siege_ledger"]
+[ext_resource type="Resource" path="res://data/relics/soul_lantern.tres" id="r_soul_lantern"]
+[ext_resource type="Resource" path="res://data/relics/twin_banners.tres" id="r_twin_banners"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="r_script"]
+[ext_resource type="Script" path="res://systems/relic_effects.gd" id="r_effects"]
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="r_enemy_data"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="r_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/mire_priest.tres" id="r_priest"]
 [ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
 [ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
@@ -760,6 +780,7 @@ script = ExtResource("31_offers")
 modifiers = NodePath("../RunModifiers")
 economy = NodePath("../Economy")
 pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_rapid_reload"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax"), ExtResource("u_fleet_step"), ExtResource("u_cinder_dash")])
+relic_pool = Array[ExtResource("r_script")]([ExtResource("r_bloodpact"), ExtResource("r_drowned_bell"), ExtResource("r_ember_heart"), ExtResource("r_executioners_mark"), ExtResource("r_glass_banner"), ExtResource("r_hourglass"), ExtResource("r_iron_tithe"), ExtResource("r_lantern_of_the_lost"), ExtResource("r_merchants_seal"), ExtResource("r_ossuary_bell"), ExtResource("r_phoenix_feather"), ExtResource("r_second_oath"), ExtResource("r_siege_ledger"), ExtResource("r_soul_lantern"), ExtResource("r_twin_banners")])
 
 [node name="Economy" type="Node" parent="Systems"]
 unique_name_in_owner = true
@@ -820,6 +841,19 @@ fortress = NodePath("../../Fortress")
 hero_lives = NodePath("../HeroLives")
 builder = NodePath("../TowerBuilder")
 merchant = NodePath("../Merchant")
+
+[node name="RelicEffects" type="Node" parent="Systems" node_paths=PackedStringArray("modifiers", "spawner", "run_cycle", "hero", "hero_lives", "fortress", "economy", "effects")]
+unique_name_in_owner = true
+script = ExtResource("r_effects")
+modifiers = NodePath("../RunModifiers")
+spawner = NodePath("../../WaveSpawner")
+run_cycle = NodePath("../RunCycle")
+hero = NodePath("../../Hero")
+hero_lives = NodePath("../HeroLives")
+fortress = NodePath("../../Fortress")
+economy = NodePath("../Economy")
+effects = NodePath("../../Effects")
+lantern_targets = Array[ExtResource("r_enemy_data")]([ExtResource("r_cultist"), ExtResource("r_priest")])
 
 [node name="BuildSlots" type="Node2D" parent="."]
 y_sort_enabled = true
@@ -891,7 +925,7 @@ mouse_filter = 2
 texture = SubResource("GradientTexture2D_vignette")
 expand_mode = 1
 
-[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers", "quartermaster") instance=ExtResource("6_hud")]
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers", "quartermaster", "relic_effects") instance=ExtResource("6_hud")]
 fortress = NodePath("../Fortress")
 hero = NodePath("../Hero")
 spawner = NodePath("../WaveSpawner")
@@ -902,6 +936,7 @@ run_cycle = NodePath("../Systems/RunCycle")
 hero_lives = NodePath("../Systems/HeroLives")
 modifiers = NodePath("../Systems/RunModifiers")
 quartermaster = NodePath("../Systems/Quartermaster")
+relic_effects = NodePath("../Systems/RelicEffects")
 
 [node name="BuildMenu" parent="." node_paths=PackedStringArray("builder", "economy") instance=ExtResource("15_menu")]
 builder = NodePath("../Systems/TowerBuilder")

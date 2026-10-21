@@ -11,6 +11,8 @@ extends CharacterBody2D
 signal died
 ## Back on its feet with full HP (see revive()).
 signal revived
+## Its sword landed a hit for `damage` (the Bloodpact relic heals from it).
+signal struck(damage: int)
 
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 ## Where damage numbers appear, relative to the hero.
@@ -65,6 +67,7 @@ func _ready() -> void:
 	_base_damage = _attack_hitbox.damage
 	_dash.modifiers = modifiers
 	_dash.setup(self, _sprite)
+	_attack_hitbox.hit.connect(func(_target: Hurtbox) -> void: struck.emit(_attack_hitbox.damage))
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 		_apply_modifiers()

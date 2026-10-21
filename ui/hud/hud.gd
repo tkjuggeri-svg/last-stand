@@ -46,6 +46,8 @@ const PHASE_TEXTS: Dictionary = {
 @export var modifiers: RunModifiers
 ## Between-waves repairs and life buy-back, offered under the wave panel.
 @export var quartermaster: Quartermaster
+## The run's relic rules (their messages go to the feed). Optional.
+@export var relic_effects: RelicEffects
 
 @onready var _fortress_bar: HealthBar = %FortressBar
 @onready var _hero_bar: HealthBar = %HeroBar
@@ -62,7 +64,8 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _start_wave_button: Button = %StartWaveButton
 @onready var _lives_icons: HBoxContainer = %LivesIcons
 @onready var _lives_status: Label = %LivesStatus
-@onready var _upgrade_icons: HFlowContainer = %UpgradeIcons
+@onready var _upgrade_icons: RunIconsRow = %UpgradeIcons
+@onready var _relic_icons: RunIconsRow = %RelicIcons
 @onready var _dash_row: Control = %DashRow
 @onready var _dash_bar: ProgressBar = %DashBar
 @onready var _dash_label: Label = %DashLabel
@@ -99,10 +102,13 @@ func _ready() -> void:
 		builder.tower_sold.connect(_on_tower_sold)
 		_update_slots()
 	_wave_margin.visible = run_cycle != null
-	_upgrade_icons.visible = modifiers != null
+	_upgrade_icons.setup(modifiers)
+	_relic_icons.setup(modifiers)
 	if modifiers != null:
-		modifiers.upgrade_added.connect(_on_upgrade_added)
-		modifiers.upgrade_removed.connect(_on_upgrade_removed)
+		modifiers.upgrade_added.connect(func(data: UpgradeData, _stacks: int) -> void:
+			_feed.push("%s: %s" % ["Relic" if data is RelicData else "Upgrade", data.display_name], GOLD_COLOR))
+	if relic_effects != null:
+		relic_effects.triggered.connect(func(text: String) -> void: _feed.push(text, GOLD_COLOR))
 	_lives_icons.visible = hero_lives != null
 	_dash_row.visible = hero != null
 	set_process(hero_lives != null or hero != null)
@@ -182,35 +188,6 @@ func _update_wave() -> void:
 		_enemy_stats_label.text = "Next wave: %d enemies" % spawner.get_next_wave_enemy_total()
 	else:
 		_enemy_stats_label.text = "Enemies left: 0"
-
-
-## An icon per upgrade taken (hover: its name and description); a stacked one shows "xN".
-func _on_upgrade_added(data: UpgradeData, stacks: int) -> void:
-	var existing: Node = _upgrade_icons.get_node_or_null(NodePath(String(data.id)))
-	if existing != null:
-		(existing.get_node("Count") as Label).text = "x%d" % stacks
-		return
-	var icon: TextureRect = TextureRect.new()
-	icon.name = String(data.id)
-	icon.texture = data.icon
-	icon.custom_minimum_size = Vector2(32, 32)
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-	icon.tooltip_text = "%s\n%s" % [data.display_name, data.description]
-	var count: Label = Label.new()
-	count.name = "Count"
-	count.position = Vector2(14, 10)
-	icon.add_child(count)
-	_upgrade_icons.add_child(icon)
-	_feed.push("Upgrade: %s" % data.display_name, GOLD_COLOR)
-
-
-func _on_upgrade_removed(data: UpgradeData, stacks: int) -> void:
-	var existing: Node = _upgrade_icons.get_node_or_null(NodePath(String(data.id)))
-	if existing != null:
-		if stacks <= 0:
-			existing.queue_free()
-		else:
-			(existing.get_node("Count") as Label).text = "x%d" % stacks if stacks > 1 else ""
 
 
 ## One helm per life next to the hero's HP bar (spent ones dark).

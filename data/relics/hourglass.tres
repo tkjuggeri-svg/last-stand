@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/hourglass.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"hourglass"
+price = 240
+id = &"hourglass"
+display_name = "Hourglass"
+description = "The first 5 s of every wave, enemies walk at half speed."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+stackable = false

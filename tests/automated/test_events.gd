@@ -1,5 +1,6 @@
 extends SceneTree
-## Automated check for run map events and shrines: the data (5 events with 2-3 answers, 5 shrines with
+## Automated check for run map events and shrines: the data (5 events with 2-3 answers plus the rare
+## Drowned Reliquary (M7.5: a relic choice), 5 shrines with
 ## a deal and Walk away, every answer saying what it does), every effect EventResolver applies (gold,
 ## doubling, damage that never kills, boons and curses as upgrades, losing a life and an upgrade, tower
 ## gifts and prices, free evolutions, merchant prices, twists on the next fights that count down), the
@@ -26,8 +27,9 @@ func _initialize() -> void:
 
 func _test_data() -> void:
 	var chapter: ChapterData = RUN.chapters[0]
-	var events_ok: bool = chapter.events.size() == 5 and chapter.events.all(func(e: EventData) -> bool:
-		return not e.shrine and e.choices.size() >= 2 and e.choices.size() <= 3)
+	var events_ok: bool = chapter.events.size() == 6 and chapter.events.all(func(e: EventData) -> bool:
+		return not e.shrine and e.choices.size() >= 2 and e.choices.size() <= 3) \
+		and chapter.events.filter(func(e: EventData) -> bool: return e.rare).size() == 1
 	var shrines_ok: bool = chapter.shrines.size() == 5 and chapter.shrines.all(func(e: EventData) -> bool:
 		return e.shrine and e.choices.size() == 2 and e.choices[1].effects.is_empty())
 	var told: bool = true
@@ -35,7 +37,7 @@ func _test_data() -> void:
 		told = told and not scene.title.is_empty() and not scene.text.is_empty()
 		for choice: EventChoice in scene.choices:
 			told = told and not choice.label.is_empty() and not choice.outcome.is_empty()
-	_check("chapter 1 has 5 events (2-3 answers) and 5 shrines (a deal, Walk away)", events_ok and shrines_ok)
+	_check("chapter 1 has 5 events (2-3 answers), 1 rare one, and 5 shrines (a deal, Walk away)", events_ok and shrines_ok)
 	_check("every scene has a title and text, every answer says what it does", told)
 
 

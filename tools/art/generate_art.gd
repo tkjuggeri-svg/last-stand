@@ -31,6 +31,7 @@ const MirePriestArt: GDScript = preload("res://tools/art/mire_priest_art.gd")
 const ShieldbearerArt: GDScript = preload("res://tools/art/shieldbearer_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
 const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
+const RelicArt: GDScript = preload("res://tools/art/relic_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
 
 
@@ -83,6 +84,10 @@ func _initialize() -> void:
 		"grapeshot": func() -> void: _save(_sheet(_grapeshot_rows(), Layouts.GRAPESHOT["size"]), Layouts.GRAPESHOT["png"]),
 		"status": func() -> void: _save(_sheet(EvolutionArt.new().status_rows(), Layouts.STATUS["size"]), Layouts.STATUS["png"]),
 		"upgrade_icons": _upgrade_icons,
+		"relic_icons": func() -> void:
+			for id: String in RelicArt.IDS:
+				_save(RelicArt.new().icon(id), Layouts.RELIC_ICON_DIR + id + ".png"),
+		"bone": func() -> void: _save(RelicArt.new().bone(), Layouts.BONE_PNG),
 		"map_icons": func() -> void:
 			for kind: String in MapArt.KINDS:
 				_save(MapArt.new().icon(kind), Layouts.UI_DIR + "map/node_%s.png" % kind),

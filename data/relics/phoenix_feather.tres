@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/phoenix_feather.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"phoenix_feather"
+price = 300
+id = &"phoenix_feather"
+display_name = "Phoenix Feather"
+description = "Once per chapter, a blow that would destroy the fortress leaves it at 30% HP instead."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+stackable = false

@@ -22,6 +22,9 @@ const NO_TOWER: String = "No tower here"
 const UNDER_CONSTRUCTION: String = "Still under construction"
 const NOT_YET: String = "Evolves at level 3"
 const ALREADY_EVOLVED: String = "Already evolved"
+const NO_EVOLUTIONS: String = "Siege Ledger: no evolutions"
+## Twin Banners: two towers of the same type at most this far apart share their best level.
+const TWIN_RANGE: float = 330.0
 
 @export var economy: Economy
 ## The run's upgrades: handed to every tower, and they can make tower upgrades cheaper.
@@ -68,7 +71,12 @@ func get_active_slot() -> BuildSlot:
 
 ## What selling a freshly built tower of this type gives back (based on its build price).
 func refund_for(data: TowerData) -> int:
-	return floori(data.cost * sell_refund_ratio)
+	return floori(build_cost(data) * sell_refund_ratio)
+
+
+## Gold to build `data` (tower-build discounts apply, e.g. Siege Ledger).
+func build_cost(data: TowerData) -> int:
+	return RunModifiers.value_int(modifiers, data.cost, [RunModifiers.TOWER_BUILD_COST])
 
 
 ## What selling this tower gives back: the share of everything spent on it (build + upgrades).
@@ -109,9 +117,14 @@ func upgrade(slot: BuildSlot) -> bool:
 
 ## The two branches the slot's tower can take now (empty: no tower, below level 3, or evolved).
 func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
-	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level():
+	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level() or not can_evolve():
 		return []
 	return slot.tower.data.evolutions.duplicate()
+
+
+## False under the Siege Ledger relic: no tower may evolve.
+func can_evolve() -> bool:
+	return not RunModifiers.relic(modifiers, RunModifiers.RELIC_SIEGE_LEDGER)
 
 
 ## Gold for an evolution (tower-upgrade discounts apply; 0 while a free one is owed).
@@ -129,6 +142,9 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 	var tower: Tower = slot.tower
 	if tower.is_evolved():
 		upgrade_failed.emit(slot, ALREADY_EVOLVED)
+		return false
+	if not can_evolve():
+		upgrade_failed.emit(slot, NO_EVOLUTIONS)
 		return false
 	if not tower.is_max_level() or index < 0 or index >= tower.data.evolutions.size():
 		upgrade_failed.emit(slot, NOT_YET)
@@ -150,12 +166,21 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 	return true
 
 
-## Gives every tower the best Beacon Flame boost that reaches it (none for the beacons themselves).
+## Gives every tower the best Beacon Flame boost that reaches it (none for the beacons themselves),
+## and under Twin Banners the best level of a same-type tower within TWIN_RANGE.
 func refresh_boosts() -> void:
 	var towers: Array[Tower] = []
 	for slot: BuildSlot in get_slots():
 		if not slot.is_empty():
 			towers.append(slot.tower)
+	var twins: bool = RunModifiers.relic(modifiers, RunModifiers.RELIC_TWIN_BANNERS)
+	for tower: Tower in towers:
+		var shared: int = 0
+		for twin: Tower in towers:
+			if twins and twin != tower and twin.data == tower.data and not twin.is_evolved() \
+					and twin.global_position.distance_to(tower.global_position) <= TWIN_RANGE:
+				shared = maxi(shared, twin.get_level())
+		tower.set_shared_level(shared)
 	for tower: Tower in towers:
 		var boost: float = 0.0
 		for beacon: Tower in towers:
@@ -172,13 +197,14 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 	if not slot.is_empty():
 		build_failed.emit(slot, data, SLOT_OCCUPIED)
 		return false
-	if not economy.try_spend(data.cost):
+	var cost: int = build_cost(data)
+	if not economy.try_spend(cost):
 		build_failed.emit(slot, data, NOT_ENOUGH_GOLD)
 		return false
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
 	tower.modifiers = modifiers
-	tower.invested = data.cost
+	tower.invested = cost
 	slot.place(tower)
 	refresh_boosts()
 	tower_built.emit(slot, tower)

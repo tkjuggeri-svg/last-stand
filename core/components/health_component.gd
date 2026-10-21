@@ -7,12 +7,17 @@ signal health_changed(current_health: int, max_health: int)
 signal died
 ## The shield went up, absorbed damage or ran out (0 = none).
 signal shield_changed(amount: int)
+## A blow that would have killed it was survived (a reprieve was spent: the Phoenix Feather relic).
+signal reprieved
 
 @export var max_health: int = 100
 
 var current_health: int
 ## Incoming damage is multiplied by this (a vulnerable enemy takes more), before any shield.
 var damage_taken_multiplier: float = 1.0
+## Times a killing blow leaves it at reprieve_health HP instead (each use spends one).
+var reprieves: int = 0
+var reprieve_health: int = 1
 var _shield: int = 0
 var _shield_left: float = 0.0
 
@@ -47,6 +52,12 @@ func take_damage(amount: int) -> void:
 		if amount <= 0:
 			return
 	current_health = maxi(current_health - amount, 0)
+	if current_health == 0 and reprieves > 0:
+		reprieves -= 1
+		current_health = clampi(reprieve_health, 1, max_health)
+		health_changed.emit(current_health, max_health)
+		reprieved.emit()
+		return
 	health_changed.emit(current_health, max_health)
 	if current_health == 0:
 		died.emit()

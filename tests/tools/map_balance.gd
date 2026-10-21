@@ -17,6 +17,9 @@ extends SceneTree
 ## card of a reward (else any); at a merchant buys a repair below 60% and the cheapest tower card it
 ## can afford while keeping KEEP_GOLD; answers events with their first answer it can take, takes
 ## shrine deals on the fights path only. The hero is HeroBot (or parked out of the way).
+## Relics (M7.5): offered a relic choice, the bot takes the one highest in RELIC_PREFERENCE; at a
+## merchant it buys the relic if it keeps KEEP_GOLD. The summary counts, per relic, how often it was
+## offered and taken over all the runs.
 
 const MAIN: String = "res://main/main.tscn"
 const HeroBot: GDScript = preload("res://tests/tools/hero_bot.gd")
@@ -43,6 +46,10 @@ const PLANS: Dictionary = {
 	},
 }
 const EARLY_BUILDS: int = 6
+## The bot's relic ranking (best first): what helps a bot that doesn't play around trade-offs.
+const RELIC_PREFERENCE: Array[StringName] = [&"twin_banners", &"glass_banner", &"phoenix_feather", &"drowned_bell",
+	&"siege_ledger", &"hourglass", &"iron_tithe", &"executioners_mark", &"ember_heart", &"lantern_of_the_lost",
+	&"soul_lantern", &"ossuary_bell", &"merchants_seal", &"bloodpact", &"second_oath"]
 const PATH_ORDER: Dictionary = {
 	"fights": [RunMap.Kind.ELITE, RunMap.Kind.BATTLE, RunMap.Kind.SHRINE, RunMap.Kind.EVENT, RunMap.Kind.MERCHANT, RunMap.Kind.BOSS],
 	"balanced": [RunMap.Kind.BATTLE, RunMap.Kind.EVENT, RunMap.Kind.MERCHANT, RunMap.Kind.SHRINE, RunMap.Kind.ELITE, RunMap.Kind.BOSS],
@@ -57,6 +64,8 @@ var _hero_mode: String = "bot"
 var _quiet: bool = false
 var _protect_ch1: bool = false
 var _trace: bool = false
+## Per relic id: [times offered, times taken], over every run.
+var _relic_counts: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -90,6 +99,10 @@ func _initialize() -> void:
 		"upgr", "evos", "lives", "income c1/c2", "minutes", "path taken"])
 	for line: String in lines:
 		print(line)
+	print("\n%-22s %8s %6s" % ["relic", "offered", "taken"])
+	for id: StringName in RELIC_PREFERENCE:
+		var counts: Array = _relic_counts.get(id, [0, 0])
+		print("%-22s %8d %6d" % [id, counts[0], counts[1]])
 	quit()
 
 
@@ -162,7 +175,9 @@ func _play(seed_value: int) -> String:
 				event_screen.choice_picked.emit(_answer(level, main))
 			continue
 		if level.offers.is_offer_open():
-			level.offers.pick(_card(level.offers.get_offer()))
+			var offer: Array[UpgradeData] = level.offers.get_offer()
+			var pick: int = _relic_pick(offer) if offer[0] is RelicData else _card(offer)
+			level.offers.pick(pick)
 			continue
 		if not level.is_active():
 			continue
@@ -186,6 +201,8 @@ func _play(seed_value: int) -> String:
 	var line: String = "%-5d %-9s %-9s %-5s %-24s %6d %5d %5d %5d %5d %6d/%-6d %7.1f  %s" % [seed_value, _path, _plan_name, _hero_mode, result,
 		stats["fights"], stats["waves"], (level.get_node("%RunModifiers") as RunModifiers).get_taken().size(), stats["evos"],
 		level.hero_lives.get_lives_left(), stats["income"][0], stats["income"][1], time / 60.0, "".join(stats["taken"])]
+	if not level.modifiers.get_relics().is_empty():
+		line += "  relics: " + ", ".join(level.modifiers.get_relics().map(func(r: RelicData) -> String: return String(r.id)))
 	if not _quiet:
 		print(line)
 	main.queue_free()
@@ -273,8 +290,30 @@ func _card(cards: Array[UpgradeData]) -> int:
 	return 0
 
 
+## The offered relic highest in RELIC_PREFERENCE (counted as offered and taken).
+func _relic_pick(offer: Array[UpgradeData]) -> int:
+	var best: int = 0
+	for i: int in offer.size():
+		_count_relic(offer[i].id, 0)
+		if RELIC_PREFERENCE.find(offer[i].id) < RELIC_PREFERENCE.find(offer[best].id):
+			best = i
+	_count_relic(offer[best].id, 1)
+	return best
+
+
+func _count_relic(id: StringName, column: int) -> void:
+	if not _relic_counts.has(id):
+		_relic_counts[id] = [0, 0]
+	_relic_counts[id][column] += 1
+
+
 func _shop(level: Level) -> void:
 	var merchant: Merchant = level.merchant
+	var relic: RelicData = merchant.get_relic()
+	if relic != null and not merchant.is_relic_sold():
+		_count_relic(relic.id, 0)
+		if level.economy.get_gold() - merchant.price_of(relic) >= KEEP_GOLD and merchant.buy_relic():
+			_count_relic(relic.id, 1)
 	if level.fortress.health.current_health < level.fortress.health.max_health * 0.6:
 		merchant.buy_repair()
 	var cards: Array[UpgradeData] = merchant.get_cards()

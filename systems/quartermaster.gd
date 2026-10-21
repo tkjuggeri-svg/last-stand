@@ -15,6 +15,7 @@ const NOT_ENOUGH_GOLD: String = "Not enough gold"
 const WALLS_WHOLE: String = "The walls are whole"
 const NO_LIFE_LOST: String = "No life lost"
 const ALREADY_BOUGHT: String = "Only once per run"
+const NO_REPAIRS: String = "Iron Tithe: no repairs"
 
 @export var economy: Economy
 @export var fortress: Fortress
@@ -50,7 +51,7 @@ func _ready() -> void:
 
 
 func repair_cost() -> int:
-	return repair_base_cost + repair_cost_step * _repairs
+	return _priced(repair_base_cost + repair_cost_step * _repairs)
 
 
 ## HP one repair would restore now (never past the max).
@@ -63,6 +64,8 @@ func repair_amount() -> int:
 func repair_blocker() -> String:
 	if run_cycle.get_phase() != RunCycle.Phase.BUILD:
 		return NOT_BETWEEN_WAVES
+	if not fortress.can_repair():
+		return NO_REPAIRS
 	if fortress.health.is_dead() or repair_amount() <= 0:
 		return WALLS_WHOLE
 	if not economy.can_afford(repair_cost()):
@@ -78,7 +81,7 @@ func repair() -> bool:
 	if not economy.try_spend(cost):
 		return false
 	_repairs += 1
-	fortress.health.heal(amount)
+	fortress.repair_hp(amount)
 	fortress_repaired.emit(amount, cost)
 	changed.emit()
 	return true
@@ -90,7 +93,7 @@ func get_repair_count() -> int:
 
 func life_cost() -> int:
 	# In the build phase the current wave is the next one, so this counts the waves already fought.
-	return life_base_cost + life_cost_per_wave * maxi(run_cycle.get_current_wave_number() - 1, 0)
+	return _priced(life_base_cost + life_cost_per_wave * maxi(run_cycle.get_current_wave_number() - 1, 0))
 
 
 ## Why buying a life isn't possible now ("" = it is).
@@ -122,3 +125,8 @@ func buy_life() -> bool:
 ## Lives still for sale this run.
 func get_lives_for_sale() -> int:
 	return maxi(max_life_buys - _life_buys, 0)
+
+
+## A price under the run's Quartermaster-price modifiers (Merchant's Seal makes it dearer).
+func _priced(base: int) -> int:
+	return roundi(RunModifiers.value(fortress.modifiers, base, [RunModifiers.QUARTERMASTER_PRICES]))

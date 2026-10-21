@@ -167,7 +167,7 @@ func _make_card(data: TowerData) -> Control:
 	coin.custom_minimum_size = Vector2(20, 20)
 	cost_row.add_child(coin)
 	var cost: Label = Label.new()
-	cost.text = str(data.cost)
+	cost.text = str(builder.build_cost(data))
 	cost_row.add_child(cost)
 	_cost_labels[data] = cost
 	column.add_child(cost_row)
@@ -221,7 +221,10 @@ func _update_upgrade() -> void:
 	var tower: Tower = _slot.tower
 	var cost: int = builder.upgrade_cost(_slot)
 	if cost < 0:
-		_upgrade_info.text = "Choose an evolution below: it is for good." if not builder.evolution_options(_slot).is_empty() else "Highest level."
+		if not builder.can_evolve():
+			_upgrade_info.text = "Highest level. %s." % TowerBuilder.NO_EVOLUTIONS
+		else:
+			_upgrade_info.text = "Choose an evolution below: it is for good." if not builder.evolution_options(_slot).is_empty() else "Highest level."
 		_upgrade_button.text = "Evolved" if tower.is_evolved() else "Max level"
 		_upgrade_button.disabled = true
 		return
@@ -238,7 +241,7 @@ func _on_gold_changed(gold: int) -> void:
 	for data: TowerData in _cost_labels:
 		var label: Label = _cost_labels[data]
 		if is_instance_valid(label):
-			label.add_theme_color_override("font_color", GOLD_COLOR if gold >= data.cost else ERROR_COLOR)
+			label.add_theme_color_override("font_color", GOLD_COLOR if gold >= builder.build_cost(data) else ERROR_COLOR)
 
 
 func _on_upgrade_pressed() -> void:
@@ -273,7 +276,7 @@ func _on_build_failed(slot: BuildSlot, data: TowerData, reason: String) -> void:
 	if slot != _slot:
 		return
 	if reason == TowerBuilder.NOT_ENOUGH_GOLD:
-		_show_message("Not enough gold! %s costs %d." % [data.display_name, data.cost], ERROR_COLOR)
+		_show_message("Not enough gold! %s costs %d." % [data.display_name, builder.build_cost(data)], ERROR_COLOR)
 	else:
 		_show_message(reason, ERROR_COLOR)
 
@@ -281,7 +284,7 @@ func _on_build_failed(slot: BuildSlot, data: TowerData, reason: String) -> void:
 func _on_tower_built(slot: BuildSlot, tower: Tower) -> void:
 	if slot == _slot:
 		_rebuild()
-		_show_message("Built %s for %d gold." % [tower.data.display_name, tower.data.cost], OK_COLOR)
+		_show_message("Built %s for %d gold." % [tower.data.display_name, tower.invested], OK_COLOR)
 
 
 func _on_tower_sold(slot: BuildSlot, refund: int) -> void:

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/ossuary_bell.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"ossuary_bell"
+price = 220
+id = &"ossuary_bell"
+display_name = "Ossuary Bell"
+description = "Every 10th kill drops a bone: pick it up for 30 gold."
+icon = ExtResource("1_icon")
+category = 3
+rarity = 1
+stackable = false

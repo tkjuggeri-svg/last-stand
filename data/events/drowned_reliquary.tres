@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="EventData" format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("3_effect")
+type = 2
+amount = 20
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("3_effect")
+type = 13
+amount = 2
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("2_choice")
+label = "Break the seal"
+outcome = "Something howls out of it and tears at the walls: the fortress takes 20 damage. Then a choice of 2 relics."
+effects = Array[ExtResource("3_effect")]([SubResource("Resource_1"), SubResource("Resource_2")])
+result_text = "The lid gives. The walls shake. Inside, wrapped in drowned silk: two relics."
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("2_choice")
+label = "Leave it sealed"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "Some things are sealed for a reason."
+
+[resource]
+script = ExtResource("1_event")
+id = &"drowned_reliquary"
+title = "The Drowned Reliquary"
+text = "A reliquary half sunk in black water, its lid bound with a saint's seal. Something inside is worth more than gold."
+rare = true
+choices = Array[ExtResource("2_choice")]([SubResource("Resource_3"), SubResource("Resource_4")])

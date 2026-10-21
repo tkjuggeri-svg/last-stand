@@ -12,6 +12,8 @@ enum Kind { BATTLE, ELITE, EVENT, SHRINE, MERCHANT, BOSS }
 
 ## Chance that a node gets a second link (to a neighbour in the next row), when it can.
 const EXTRA_LINK_CHANCE: float = 0.35
+## Chance that a rare event drawn for an event node is kept (else a common one comes instead).
+const RARE_EVENT_CHANCE: float = 0.4
 
 var chapter: ChapterData
 ## All nodes, row by row (row 1 first), left to right within a row.
@@ -214,13 +216,21 @@ func _assign_fights(rng: RandomNumberGenerator) -> void:
 				node.event = _draw_scene(shrines, chapter.shrines, rng)
 
 
-## One scene from `left` (refilled from `pool` once used up), removed so it doesn't come twice.
+## One scene from `left` (refilled from `pool` once used up), removed so it doesn't come twice. A
+## rare one drawn is kept only RARE_EVENT_CHANCE of the time while common ones are left.
 func _draw_scene(left: Array[EventData], pool: Array[EventData], rng: RandomNumberGenerator) -> EventData:
 	if left.is_empty():
 		left.append_array(pool)
 	if left.is_empty():
 		return null
-	return left.pop_at(rng.randi_range(0, left.size() - 1))
+	var index: int = rng.randi_range(0, left.size() - 1)
+	var common: Array[int] = []
+	for i: int in left.size():
+		if not left[i].rare:
+			common.append(i)
+	if left[index].rare and not common.is_empty() and rng.randf() >= RARE_EVENT_CHANCE:
+		index = common[rng.randi_range(0, common.size() - 1)]
+	return left.pop_at(index)
 
 
 func _pick(pool: Array[EncounterData], rng: RandomNumberGenerator) -> EncounterData:

@@ -50,11 +50,14 @@ extends Resource
 @export_group("Rewards")
 ## Upgrade choice after a battle: cards offered (1 of n).
 @export var battle_cards: int = 3
-## After an elite: rare cards offered, and bonus gold.
-@export var elite_cards: int = 2
-@export var elite_gold: int = 100
-## After the boss: rare cards offered, and the share of the fortress's max HP repaired.
-@export var boss_cards: int = 3
+## After an elite: a choice of this many relics (M7.5; before: 2 rare cards and 100 gold).
+@export var elite_relics: int = 3
+## An elite fight's regulars are this much tougher than the chapter's battles (on top of
+## fight_health_scale): the risk that pays for the relic.
+@export var elite_health_scale: float = 1.25
+## After the boss (not the run's last): a choice of this many relics, and the share of the fortress's
+## max HP repaired.
+@export var boss_relics: int = 3
 @export_range(0.0, 1.0) var boss_repair: float = 0.4
 
 

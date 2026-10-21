@@ -5,6 +5,8 @@ extends Node
 ## final values through apply(): (base + every flat) * (1 + every percent), summed over the stat
 ## names they listen to (e.g. a tower's damage listens to "tower.damage" and "tower.archer.damage").
 ## With nothing taken every value is its base, so behaviour is unchanged.
+## Relics (RelicData, M7.5) are taken here too: their stats apply like a card's, and systems ask
+## has_relic(RELIC_*) for their rules. An event that takes "the latest upgrade" never takes a relic.
 
 ## Any modifier was added (systems re-read their stats).
 signal changed
@@ -44,8 +46,32 @@ const INTEREST_CAP: StringName = &"economy.interest_cap"
 const WAVE_INCOME: StringName = &"economy.wave_income"
 ## Price of tower upgrades (levels 2 and 3).
 const TOWER_UPGRADE_COST: StringName = &"economy.tower_upgrade_cost"
+## Price of building a tower.
+const TOWER_BUILD_COST: StringName = &"economy.tower_build_cost"
+## A merchant's prices, and the Quartermaster's.
+const MERCHANT_PRICES: StringName = &"economy.merchant_prices"
+const QUARTERMASTER_PRICES: StringName = &"economy.quartermaster_prices"
+## How long a tower's burning ground lasts.
+const TOWER_BURN_DURATION: StringName = &"burn_duration"
 ## Instant effects (UpgradeData.instant_effect): heal the fortress by effect_amount of its max HP.
 const INSTANT_REPAIR_FORTRESS: StringName = &"repair_fortress"
+# Relic rules (RelicData.rule), carried out by RelicEffects and the systems named.
+const RELIC_HOURGLASS: StringName = &"hourglass"
+const RELIC_BLOODPACT: StringName = &"bloodpact"
+const RELIC_OSSUARY_BELL: StringName = &"ossuary_bell"
+## TowerBuilder: no evolutions.
+const RELIC_SIEGE_LEDGER: StringName = &"siege_ledger"
+const RELIC_LANTERN: StringName = &"lantern_of_the_lost"
+## TowerBuilder: towers of a type share their best level with a twin nearby.
+const RELIC_TWIN_BANNERS: StringName = &"twin_banners"
+const RELIC_PHOENIX: StringName = &"phoenix_feather"
+const RELIC_EXECUTIONER: StringName = &"executioners_mark"
+const RELIC_GLASS_BANNER: StringName = &"glass_banner"
+const RELIC_SOUL_LANTERN: StringName = &"soul_lantern"
+const RELIC_DROWNED_BELL: StringName = &"drowned_bell"
+## Fortress: no repairs of any kind.
+const RELIC_IRON_TITHE: StringName = &"iron_tithe"
+const RELIC_SECOND_OATH: StringName = &"second_oath"
 
 var _taken: Array[UpgradeData] = []
 var _flat: Dictionary = {}
@@ -75,12 +101,15 @@ func add_upgrade(data: UpgradeData) -> void:
 	changed.emit()
 
 
-## Loses the most recent upgrade taken (its modifiers stop; an instant effect stays done). Returns it,
-## or null if none was taken.
+## Loses the most recent upgrade taken, never a relic (its modifiers stop; an instant effect stays
+## done). Returns it, or null if none was taken.
 func remove_last_upgrade() -> UpgradeData:
-	if _taken.is_empty():
+	var index: int = _taken.size() - 1
+	while index >= 0 and _taken[index] is RelicData:
+		index -= 1
+	if index < 0:
 		return null
-	var data: UpgradeData = _taken.pop_back()
+	var data: UpgradeData = _taken.pop_at(index)
 	for modifier: StatModifier in data.modifiers:
 		_flat[modifier.stat] = float(_flat.get(modifier.stat, 0.0)) - modifier.flat
 		_percent[modifier.stat] = float(_percent.get(modifier.stat, 0.0)) - modifier.percent
@@ -104,9 +133,31 @@ func can_take(data: UpgradeData) -> bool:
 	return data.stackable or get_stacks(data.id) == 0
 
 
-## Every upgrade taken, in order (a stacked one appears once per pick).
+## Every upgrade taken, in order (a stacked one appears once per pick), relics included.
 func get_taken() -> Array[UpgradeData]:
 	return _taken.duplicate()
+
+
+## The relics taken, in order.
+func get_relics() -> Array[RelicData]:
+	var relics: Array[RelicData] = []
+	for data: UpgradeData in _taken:
+		if data is RelicData:
+			relics.append(data)
+	return relics
+
+
+## True if a relic with this rule (RELIC_*) was taken.
+func has_relic(rule: StringName) -> bool:
+	for held: RelicData in get_relics():
+		if held.rule == rule:
+			return true
+	return false
+
+
+## has_relic() for systems whose modifiers may be unset (a scene running on its own).
+static func relic(modifiers: RunModifiers, rule: StringName) -> bool:
+	return modifiers != null and modifiers.has_relic(rule)
 
 
 func get_flat(stats: Array[StringName]) -> float:

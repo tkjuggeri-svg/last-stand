@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/second_oath.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_relic"]
+
+[resource]
+script = ExtResource("3_relic")
+rule = &"second_oath"
+price = 220
+id = &"second_oath"
+display_name = "Second Oath"
+description = "When the hero falls it is back in 1 s instead of 4 s, but every fall costs the fortress 10 HP."
+icon = ExtResource("1_icon")
+category = 0
+rarity = 1
+stackable = false
