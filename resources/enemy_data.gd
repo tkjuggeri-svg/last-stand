@@ -31,6 +31,8 @@ extends Resource
 ## A shield in front (the Shieldbearer): tower shots coming at its front within this arc (degrees,
 ## centred on the way it faces) are blocked; 0 = none. See Enemy.receive_shot.
 @export_range(0.0, 360.0) var shield_arc: float = 0.0
+## Share of burn damage it takes (1 = all): tough enemies burn slower (Brutes, bosses).
+@export_range(0.0, 1.0) var burn_taken: float = 1.0
 
 @export_group("Body and look")
 ## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.

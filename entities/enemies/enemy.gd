@@ -73,7 +73,7 @@ func _ready() -> void:
 	_apply_body(data.body_radius)
 	_look.setup(data)
 	_health.shield_changed.connect(_look.show_shield)
-	_status.setup(_health)
+	_status.setup(_health, data.burn_taken)
 	_status.status_changed.connect(func() -> void: _look.show_status(_status))
 	if data.ability != null:
 		_ability = data.ability.instantiate()

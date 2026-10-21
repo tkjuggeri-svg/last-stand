@@ -4,7 +4,12 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
-##     [--protect-ch1] [--trace]
+##     [--protect-ch1] [--trace] [--fire=with|without]
+## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
+## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
+## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
+## start (Hellfire Shells, Cinder Dash, Ember Heart); --fire=without takes them out of every offer
+## and shop. The summary ends with the rows cleared per run (a won run: every row of both chapters).
 ## --protect-ch1 keeps the fortress and the lives full in chapter 1 only, so every run reaches chapter 2
 ## with a real chapter-1 build (towers, upgrades, gold) and chapter 2 is measured on its own. --trace
 ## prints every wave's start and end from chapter 2 on: gold, the towers (id:level per slot), the
@@ -35,13 +40,13 @@ const PLANS: Dictionary = {
 		# The marsh's 7 slots: 0 west road's bend, 1 by the merge (west and south roads' ends), 2 south
 		# road, 3 south of the keep, 4 north of the keep (three roads' ends), 5 north-east road, 6 far
 		# north-east.
-		"drowned_marsh": [["archer", 4], ["archer", 1], ["cannon", 3], ["archer", 5], ["cannon", 0], ["archer", 2],
+		"drowned_marsh": [["cannon", 4], ["archer", 1], ["brazier", 3], ["archer", 5], ["cannon", 0], ["archer", 2],
 			["frost", 6]],
 	},
 	"all five": {
 		"prototype_arena": [["archer", 4], ["ballista", 9], ["brazier", 7], ["archer", 8], ["cannon", 5], ["brazier", 2],
 			["frost", 6], ["ballista", 0], ["archer", 3], ["cannon", 1]],
-		"drowned_marsh": [["archer", 4], ["ballista", 1], ["brazier", 3], ["archer", 5], ["cannon", 0], ["ballista", 2],
+		"drowned_marsh": [["archer", 4], ["cannon", 1], ["brazier", 3], ["ballista", 5], ["cannon", 0], ["archer", 2],
 			["frost", 6]],
 	},
 }
@@ -55,6 +60,10 @@ const PATH_ORDER: Dictionary = {
 	"balanced": [RunMap.Kind.BATTLE, RunMap.Kind.EVENT, RunMap.Kind.MERCHANT, RunMap.Kind.SHRINE, RunMap.Kind.ELITE, RunMap.Kind.BOSS],
 	"safe": [RunMap.Kind.EVENT, RunMap.Kind.MERCHANT, RunMap.Kind.BATTLE, RunMap.Kind.SHRINE, RunMap.Kind.ELITE, RunMap.Kind.BOSS],
 }
+## Map rows per chapter (the last is the boss), for the rows-cleared summary.
+const ROWS_PER_CHAPTER: int = 8
+## The fire cards and relic (--fire).
+const FIRE_CARDS: Array[String] = ["res://data/upgrades/hellfire.tres", "res://data/upgrades/cinder_dash.tres", "res://data/relics/ember_heart.tres"]
 ## Game seconds a run may take before the tool gives up on it.
 const MAX_SECONDS: float = 3600.0
 
@@ -64,6 +73,8 @@ var _hero_mode: String = "bot"
 var _quiet: bool = false
 var _protect_ch1: bool = false
 var _trace: bool = false
+## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
+var _fire: String = ""
 ## Per relic id: [times offered, times taken], over every run.
 var _relic_counts: Dictionary = {}
 
@@ -92,13 +103,19 @@ func _initialize() -> void:
 			_protect_ch1 = true
 		elif arg == "--trace":
 			_trace = true
+		elif arg.begins_with("--fire="):
+			_fire = arg.trim_prefix("--fire=")
 	var lines: Array[String] = []
 	for s: int in seeds:
 		lines.append(await _play(s))
 	print("\n%-5s %-9s %-9s %-5s %-24s %6s %5s %5s %5s %5s %13s %7s  %s" % ["seed", "path", "plan", "hero", "result", "fights", "waves",
 		"upgr", "evos", "lives", "income c1/c2", "minutes", "path taken"])
+	var cleared: float = 0.0
 	for line: String in lines:
 		print(line)
+		cleared += _rows_cleared(line)
+	print("\nplan %s, fire %s, %s: %.1f rows cleared per run (of %d)" % [_plan_name, _fire if _fire != "" else "as drawn",
+		"chapter 1 protected" if _protect_ch1 else "whole runs", cleared / maxf(lines.size(), 1.0), ROWS_PER_CHAPTER * 2])
 	print("\n%-22s %8s %6s" % ["relic", "offered", "taken"])
 	for id: StringName in RELIC_PREFERENCE:
 		var counts: Array = _relic_counts.get(id, [0, 0])
@@ -130,8 +147,9 @@ func _play(seed_value: int) -> String:
 		if level != main.call("get_level"):
 			level = main.call("get_level")
 			bot = HeroBot.new(level.get_node("Hero"), level.get_node("WaveSpawner")) if _hero_mode == "bot" else null
-			plan = _steps(PLANS[_plan_name][level.scene_file_path.get_file().get_basename()])
+			plan = _steps(_plan_for(level.scene_file_path.get_file().get_basename()))
 			next = 0
+			_set_fire(level, chapter == 0)
 			level.economy.gold_earned.connect(func(amount: int, source: Economy.Source) -> void:
 				if source != Economy.Source.REFUND:
 					stats["income"][mini(chapter, 1)] += amount)
@@ -218,6 +236,46 @@ func _describe(level: Level) -> String:
 		towers.append("-" if slot.is_empty() else "%s:%d" % [slot.tower.data.id, slot.tower.get_level()])
 	return "gold %d, fortress %d/%d, towers %s" % [level.economy.get_gold(), level.fortress.health.current_health,
 		level.fortress.health.max_health, " ".join(towers)]
+
+
+## The plan's builds on this level: a hand-made one, "all <tower>" or "braziers first".
+func _plan_for(level_name: String) -> Array:
+	if PLANS.has(_plan_name):
+		return PLANS[_plan_name][level_name]
+	var mixed: Array = PLANS["mixed"][level_name]
+	var builds: Array = []
+	for i: int in mixed.size():
+		var tower: String = mixed[i][0]
+		if _plan_name.begins_with("all "):
+			tower = _plan_name.trim_prefix("all ")
+		elif _plan_name == "braziers first" and i < 3:
+			tower = "brazier"
+		builds.append([tower, mixed[i][1]])
+	return builds
+
+
+## --fire: grant the fire cards and relic (once, at the run's start) or keep them out of every offer.
+func _set_fire(level: Level, run_start: bool) -> void:
+	if _fire == "with" and run_start:
+		for path: String in FIRE_CARDS:
+			level.modifiers.add_upgrade(load(path))
+	elif _fire == "without":
+		var fire: Array[UpgradeData] = []
+		for path: String in FIRE_CARDS:
+			fire.append(load(path))
+		level.offers.pool = level.offers.pool.filter(func(d: UpgradeData) -> bool: return not fire.has(d))
+		level.offers.relic_pool = level.offers.relic_pool.filter(func(d: RelicData) -> bool: return not fire.has(d))
+
+
+## Rows cleared in a run's summary line: every row of both chapters if won, else the rows before the
+## one it fell in.
+func _rows_cleared(line: String) -> float:
+	if line.contains("WON"):
+		return ROWS_PER_CHAPTER * 2.0
+	var found: RegExMatch = RegEx.create_from_string("lost c(\\d) row (\\d)").search(line)
+	if found == null:
+		return 0.0
+	return (int(found.get_string(1)) - 1) * ROWS_PER_CHAPTER + int(found.get_string(2)) - 1.0
 
 
 func _choose_node(map: RunMap) -> MapNode:

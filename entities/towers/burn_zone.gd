@@ -1,13 +1,16 @@
 class_name BurnZone
 extends Node2D
-## Burning ground left by a shot (hellfire shells, the brazier): for `duration` seconds every enemy
-## on it takes `dps` damage per second, in ticks, through its Hurtbox like any other hit. Then the
-## flames die down. The flames are display only.
+## Burning ground left by a shot (hellfire shells, the brazier) or a dash (Cinder Dash): for
+## `duration` seconds it sets every enemy on it on fire (EnemyStatus.ignite: `dps`, burning on for
+## AFTERBURN s after it steps off). Fire never stacks on one enemy: standing in several patches, or
+## in the fire of several towers, it burns at the strongest one's rate. Then the flames die down.
 ## Soul fire (Pyre of Souls, set_death_burst): an enemy that dies while on it (by any hand) bursts:
 ## damage to every enemy around it and plain burning ground there (no chain of bursts).
 
-## Seconds between two damage ticks.
+## Seconds between two ignitions of what stands in it.
 const TICK: float = 0.25
+## An enemy keeps burning this long after it leaves the fire.
+const AFTERBURN: float = 1.0
 const FADE_TIME: float = 0.4
 const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
 const SOUL_FRAMES: SpriteFrames = preload("res://entities/effects/soul_burst_frames.tres")
@@ -17,14 +20,11 @@ var _radius: float = 40.0
 var _duration: float = 3.0
 var _duration_full: float = 3.0
 var _tick_left: float = 0.0
-## Damage owed but not dealt yet (ticks deal whole points).
-var _pending: float = 0.0
 var _burst_damage: int = 0
 var _burst_radius: float = 0.0
 ## Enemies on the soul fire whose death is watched.
 var _watched: Array[Enemy] = []
 
-@onready var _hitbox: Hitbox = %Hitbox
 @onready var _sprite: AnimatedSprite2D = %Sprite
 
 
@@ -66,14 +66,8 @@ func _physics_process(delta: float) -> void:
 	var on_fire: Array[Enemy] = EnemyQuery.in_circle(get_world_2d(), global_position, _radius)
 	if is_soul_fire():
 		_watch(on_fire)
-	_pending += _dps * TICK
-	var damage: int = floori(_pending)
-	if damage <= 0:
-		return
-	_pending -= damage
-	_hitbox.damage = damage
 	for enemy: Enemy in on_fire:
-		enemy.receive_hit(_hitbox)
+		enemy.get_status().ignite(_dps, TICK + AFTERBURN)
 
 
 func get_radius() -> float:

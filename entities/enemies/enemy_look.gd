@@ -1,7 +1,7 @@
 class_name EnemyLook
 extends Node
 ## The enemy's display-only reactions (a component of Enemy, which calls it): its animations and
-## glow from the data, the hit flash, jolt and spark and the health bar on damage, the frost tint and
+## glow from the data, the hit flash, jolt and spark and the health bar on damage, the burning tint, the frost tint and
 ## aura while slowed, an ice block while frozen, a cracked rune over the head while vulnerable
 ## (Shatter Shrine), the ward bubble while shielded; a shield's clang and "Blocked", and a heal's green
 ## glow and "+N". It never changes gameplay state.
@@ -9,6 +9,8 @@ extends Node
 ## Tint while slowed by frost, and while frozen solid.
 const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
 const FROZEN_TINT: Color = Color(0.55, 0.75, 1.0, 1)
+## Tint while burning (under frost, which shows first).
+const BURNING_TINT: Color = Color(1.0, 0.72, 0.5, 1)
 ## The vulnerability rune floats this far above the health bar.
 const MARK_ABOVE_BAR: float = 10.0
 ## Hit recoil of the sprite: how far it jolts, in world px, and for how long.
@@ -103,7 +105,8 @@ func show_heal(amount: int, current_health: int, max_health: int) -> void:
 
 ## Slowed (frost tint and aura), frozen (ice block) and vulnerable (the cracked rune) as they are now.
 func show_status(status: EnemyStatus) -> void:
-	_sprite.self_modulate = FROZEN_TINT if status.is_frozen() else (SLOWED_TINT if status.is_slowed() else Color.WHITE)
+	var tint: Color = BURNING_TINT if status.is_burning() else Color.WHITE
+	_sprite.self_modulate = FROZEN_TINT if status.is_frozen() else (SLOWED_TINT if status.is_slowed() else tint)
 	_show_mark(_frost_aura, &"frost_aura", status.is_slowed() and not status.is_frozen())
 	_show_mark(_frozen_mark, &"frozen", status.is_frozen())
 	_show_mark(_shatter_mark, &"shattered", status.is_vulnerable())
