@@ -1,8 +1,12 @@
 # M8 — Meta Progression & Persistence: design proposal
 
-> Status: **proposal, not approved, not implemented.** Numbers are starting points to be tuned with
-> the balance tools, like everything else in `GAME_DESIGN.md`. Section 9 lists the open questions,
-> each with a recommendation; nothing here is built until the user has answered them.
+> Status: **approved for implementation with Claude's recommendations** (the user was away and asked
+> for the open questions to be answered with them; every decision is in section 10, to be overridden
+> later). The user's design rules for M8 take precedence over the proposal where they differ: unlocks
+> add content and options plus only small conveniences, **no large permanent power boosts** (chapter 1's
+> balance must stay valid), every run earns shards, a shared UI style with the main menu, hub and run
+> summary, one-time skippable tutorial hints, versioned saves with a test that loads an older save.
+> Numbers are starting points for the balance tools.
 
 ## 0. Summary
 
@@ -256,3 +260,21 @@ level).
 | Q8 | Do unlocks matter for the harder modes (M12)? | Unlocks are content, not power; the harder modes (M12) add the challenge. Decide in M12. |
 | Q9 | Several save slots / profiles? | **One profile** (cloud saves only if a release ever needs them: ROADMAP.md, parking lot). A "reset progress" button in Settings. |
 | Q10 | Can a player skip the tutorial hints entirely? | **Yes**: "skip all" on the first hint, and the switch in Settings. |
+
+## 10. Decisions (M8 build; to be overridden by the user later)
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Resume a run after quitting or a crash? | **Yes, from the map**: the run is saved each time the map is shown; Continue on the title screen resumes it there (a fight in progress is replayed from its start). | recommendation |
+| Q2 | Permanent stat bonuses? | **None.** The user's rule: no large permanent power boosts. The proposal's Stores (starting gold) and Mortar (fortress HP) are dropped. What stays: one **convenience** (*Drill*: one free card reroll per run) and one **starting choice** (*Muster*: choose 1 of 2 common cards before the first fight), both unlocks. | user's rule + recommendation |
+| Q3 | Does a lost run pay shards? | **Yes, for all its progress** (section 1.1), also an abandoned one. | user's rule |
+| Q4 | Hub: menu screen or walkable camp? | **A menu screen** (the War Room), with one hub character's line reacting to the last run (the roadmap's M8 item, kept small). | recommendation |
+| Q5 | How long until everything is unlocked? | About **1,200 shards** of unlocks, roughly 25–35 runs. | recommendation |
+| Q6 | Relics unlocked or all there? | **Unlocked in packs** (5 at the start). | recommendation |
+| Q7 | The smaller first-run kit vs chapter 1's balance | **Measured with the balance tool** (`map_balance.gd --profile=first`): the starter kit must keep chapter 1 about as it is with everything; widen the kit rather than ease the waves if it doesn't (section 11 has the numbers). | recommendation |
+| Q8 | Unlocks and the harder modes (M12) | Unlocks are content, not power; decided in M12. | recommendation |
+| Q9 | Save slots | **One profile**, with "Reset progress" in the hub (asks to confirm). | recommendation |
+| Q10 | Skip the tutorial hints? | **Yes**: "Skip all tips" on every hint, and a Tips on/off switch in the hub. | recommendation |
+| — | Save format version | **Version 2**; version 1 is the proposal's format with the dropped `bonuses`: loading it refunds their shards. `tests/fixtures/save_v1.json` is loaded by the save test. | Claude |
+| — | Old Game Over / Victory screens | **Kept**, their button now reads Continue and leads to the run summary (shards, path, stats), then the hub. The pause menu's Restart becomes **Abandon run** (a loss, shards paid). | Claude |
+| — | Tests and tools | Under `--script` (tests, the balance tool) the profile has everything unlocked, nothing is written to disk and Main boots straight into a run, as before M8; the meta tests switch this off. | Claude |
