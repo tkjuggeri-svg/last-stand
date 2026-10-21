@@ -6,7 +6,11 @@ extends Node
 ## (Level.start_encounter, with its reward), a merchant opens the shop, an event or a shrine its
 ## scene (EventScreen; the level's EventResolver applies the answer, and Main plays what it leaves: an
 ## extra fight, upgrade choices one after another). Beating the last chapter's
-## boss wins the run; losing anywhere loses it (Game Over); Restart starts a fresh run. The pause
+## boss wins the run; losing anywhere loses it (Game Over). Either way the run pays Soul Shards into the
+## saved profile (M8), and the front end (FrontEnd: title, War Room, run summary) takes over: Continue
+## shows the summary, then the War Room starts the next run; the pause menu's Abandon run ends it the
+## same way. In script mode (tests, tools) there is no front end: Main starts a run at once, and
+## Restart / Play again start a fresh one, as before M8. The pause
 ## action opens the pause menu, unless something else holds the game (the upgrade choice) or the run
 ## is over; a menu that is open in the level (the build menu) takes Esc first. The feedback key opens
 ## FeedbackScreen anywhere; Main saves its report (FeedbackRecorder: the note, a screenshot and the
@@ -53,6 +57,7 @@ var _pending_choices: Array[FightReward] = []
 @onready var _event_screen: EventScreen = %EventScreen
 @onready var _chapter_screen: ChapterScreen = %ChapterScreen
 @onready var _feedback_screen: FeedbackScreen = %FeedbackScreen
+@onready var _front_end: FrontEnd = %FrontEnd
 
 
 func _ready() -> void:
@@ -65,18 +70,29 @@ func _ready() -> void:
 		var dev_menu: Node = (load(DEV_MENU) as PackedScene).instantiate()
 		dev_menu.set("main", self)
 		add_child(dev_menu)
-	_game_over_screen.restart_requested.connect(start_run)
-	_victory_screen.restart_requested.connect(start_run)
-	_pause_menu.restart_requested.connect(start_run)
+	_game_over_screen.restart_requested.connect(_after_run)
+	_victory_screen.restart_requested.connect(_after_run)
+	_pause_menu.restart_requested.connect(_on_restart_requested)
 	_pause_menu.quit_requested.connect(quit_game)
-	_pause_menu.seed_run_requested.connect(start_run)
+	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
+	_front_end.unlock_board = unlock_board
+	_front_end.run_requested.connect(start_run)
+	_front_end.continue_requested.connect(start_run)
+	_front_end.quit_requested.connect(quit_game)
 	_map_screen.node_chosen.connect(_on_node_chosen)
 	_merchant_screen.left.connect(_show_map)
 	_event_screen.choice_picked.connect(_on_event_choice)
 	_event_screen.continued.connect(_next_follow_up)
 	_chapter_screen.continued.connect(_start_chapter)
 	_feedback_screen.submitted.connect(_save_feedback)
-	start_run()
+	if uses_front_end():
+		_game_over_screen.set_button_text("Continue")
+		_victory_screen.set_button_text("Continue")
+		_pause_menu.set_restart_text("Abandon run")
+	if boot_to_title and uses_front_end():
+		_front_end.show_title()
+	else:
+		start_run()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -89,6 +105,11 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Not while another screen holds the game (the upgrade choice pauses it) or after the run.
 func can_pause() -> bool:
 	return _level != null and not _level.is_run_over() and not get_tree().paused and not _pause_menu.is_open()
+
+
+## True when runs pay into the saved profile and the front end comes between them (not in script mode).
+func uses_front_end() -> bool:
+	return not _save.is_scripted()
 
 
 func quit_game() -> void:
@@ -123,15 +144,13 @@ func _close_screens() -> void:
 	_merchant_screen.hide()
 	_event_screen.hide()
 	_chapter_screen.hide()
+	_front_end.hide_all()
 	_pending_choices.clear()
 
 
 ## Replaces the level with the chapter's (fresh) one and shows its map.
 func _start_chapter() -> void:
-	if _level != null:
-		# Remove first so the old level never overlaps the new one, even for a frame.
-		remove_child(_level)
-		_level.queue_free()
+	_free_level()
 	_level = _run.get_chapter().level_scene.instantiate()
 	_level.run_lost.connect(_on_level_run_lost)
 	_level.encounter_cleared.connect(_on_encounter_cleared)
@@ -148,6 +167,14 @@ func _start_chapter() -> void:
 	if _level.events != null:
 		_level.events.set_seed(_run.chapter_seed())
 	_show_map()
+
+
+func _free_level() -> void:
+	if _level != null:
+		# Remove first so the old level never overlaps the new one, even for a frame.
+		remove_child(_level)
+		_level.queue_free()
+		_level = null
 
 
 func _show_map() -> void:
@@ -187,7 +214,7 @@ func _enter_node(node: MapNode) -> void:
 	_map_screen.close()
 	match node.kind:
 		RunMap.Kind.BATTLE, RunMap.Kind.ELITE, RunMap.Kind.BOSS:
-			_start_fight(node.encounter, node.affix, _reward_for(node))
+			_start_fight(node.encounter, node.affix, _run.get_chapter().reward_for(node.kind, _run.is_last_chapter()))
 		RunMap.Kind.MERCHANT:
 			_level.merchant.open()
 			_merchant_screen.open(_level.merchant)
@@ -218,22 +245,9 @@ func _on_event_choice(index: int) -> void:
 	_pending_choices = outcome.choices.duplicate()
 	if outcome.extra_fight != null:
 		_event_screen.hide()
-		_start_fight(_extra_fight_encounter(), null, outcome.extra_fight)  # its reward, then the choices
+		_start_fight(_run.get_chapter().extra_fight(_node.row + 1), null, outcome.extra_fight)  # its reward, then the choices
 		return
 	_event_screen.show_result(outcome.text if not outcome.text.is_empty() else "So be it.")
-
-
-## An event's extra fight: the first wave of the next row's battle.
-func _extra_fight_encounter() -> EncounterData:
-	var chapter: ChapterData = _run.get_chapter()
-	var row: int = _node.row + 1
-	var pool: Array[EncounterData] = chapter.encounters_for(chapter.battles, row)
-	while pool.is_empty() and row > 1:
-		row -= 1
-		pool = chapter.encounters_for(chapter.battles, row)
-	var fight: EncounterData = pool[0].duplicate()
-	fight.waves = pool[0].waves.slice(0, 1)
-	return fight
 
 
 ## The next upgrade choice an event left (over the level, like a fight's reward), else the map.
@@ -249,17 +263,6 @@ func _next_follow_up() -> void:
 		_next_follow_up()
 		return
 	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _next_follow_up(), CONNECT_ONE_SHOT)
-
-
-## What winning the node's fight gives, from the chapter's data.
-func _reward_for(node: MapNode) -> FightReward:
-	var chapter: ChapterData = _run.get_chapter()
-	match node.kind:
-		RunMap.Kind.ELITE:
-			return FightReward.relic_choice(chapter.elite_relics)
-		RunMap.Kind.BOSS:
-			return FightReward.relic_choice(chapter.boss_relics if not _run.is_last_chapter() else 0, chapter.boss_repair)
-	return FightReward.make(chapter.battle_cards)
 
 
 ## The Muster starting choice: 1 of 2 common cards before the first fight, then the map.
@@ -308,6 +311,8 @@ func _save_feedback(note: String, screenshot: Image) -> void:
 
 ## Which screen the player is on (for a feedback report).
 func _screen_name() -> String:
+	if _front_end.is_open():
+		return "front_end"
 	for screen: CanvasLayer in [_game_over_screen, _victory_screen, _chapter_screen, _merchant_screen, _event_screen, _map_screen, _pause_menu]:
 		if screen.visible:
 			return screen.name.to_snake_case()
@@ -323,6 +328,32 @@ func _finish_run(result: String) -> Dictionary:
 	last_summary["shards"] = MetaProgress.finish_run(_save.profile, last_summary)
 	_save.save_profile()
 	return last_summary
+
+
+## Game Over / Victory's button: the run summary (then the War Room), or in script mode a fresh run.
+func _after_run() -> void:
+	if not uses_front_end():
+		start_run()
+		return
+	_front_end.show_summary(last_summary, func() -> void:
+		_close_screens()
+		_free_level())
+
+
+## The pause menu's Restart, "Abandon run" with the front end: the run ends (and pays) as abandoned.
+func _on_restart_requested() -> void:
+	if not uses_front_end():
+		start_run()
+		return
+	_finish_run("abandoned")
+	_after_run()
+
+
+## A run from a typed seed: with the front end the run in play is abandoned first (it still pays).
+func _on_seed_run_requested(seed_value: int) -> void:
+	if uses_front_end() and _level != null and not _level.is_run_over():
+		_finish_run("abandoned")
+	start_run(seed_value)
 
 
 func _on_level_run_lost(reason: Level.LossReason) -> void:

@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://main/front_end.gd" id="1_front"]
+[ext_resource type="Resource" path="res://data/meta/unlock_board.tres" id="2_board"]
+[ext_resource type="PackedScene" path="res://ui/menus/title_screen.tscn" id="3_title"]
+[ext_resource type="PackedScene" path="res://ui/hub/hub_screen.tscn" id="4_hub"]
+[ext_resource type="PackedScene" path="res://ui/menus/run_summary_screen.tscn" id="5_summary"]
+[ext_resource type="Script" path="res://main/screen_fade.gd" id="6_fade"]
+
+[node name="FrontEnd" type="Node"]
+script = ExtResource("1_front")
+unlock_board = ExtResource("2_board")
+
+[node name="TitleScreen" parent="." instance=ExtResource("3_title")]
+unique_name_in_owner = true
+
+[node name="HubScreen" parent="." instance=ExtResource("4_hub")]
+unique_name_in_owner = true
+
+[node name="RunSummaryScreen" parent="." instance=ExtResource("5_summary")]
+unique_name_in_owner = true
+
+[node name="ScreenFade" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+script = ExtResource("6_fade")

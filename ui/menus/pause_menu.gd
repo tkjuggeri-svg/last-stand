@@ -89,6 +89,11 @@ func show_seed(run_seed: int) -> void:
 	_seed_edit.text = ""
 
 
+## The Restart button's text (Main: "Abandon run" when runs pay into the profile).
+func set_restart_text(text: String) -> void:
+	_restart_button.text = text
+
+
 ## A typed seed (digits only), or -1 if there is none.
 func get_typed_seed() -> int:
 	var text: String = _seed_edit.text.strip_edges()

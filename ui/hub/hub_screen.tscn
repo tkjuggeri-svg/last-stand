@@ -1,0 +1,95 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/hub/hub_screen.gd" id="1_hub"]
+[ext_resource type="PackedScene" path="res://ui/widgets/screen_frame.tscn" id="2_frame"]
+
+[node name="HubScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_hub")
+
+[node name="Frame" parent="." instance=ExtResource("2_frame")]
+title = "The War Room"
+
+[node name="Content" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="Top" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Shards" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "Soul Shards: 0"
+
+[node name="Line" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"DimLabel"
+autowrap_mode = 3
+
+[node name="Middle" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Scroll" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Unlocks" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Scroll"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Side" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="RecordsTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "Records"
+
+[node name="Records" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="TipsButton" type="CheckButton" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Tips"
+
+[node name="ResetButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "Reset progress"
+
+[node name="BackButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "Title screen"
+
+[node name="StartButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+theme_type_variation = &"ButtonPrimary"
+text = "Start a run"
+
+[node name="ConfirmReset" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+title = "Reset progress?"
+dialog_text = "All Soul Shards, unlocks and records will be lost (the old save is kept as a backup)."
+
+[editable path="Frame"]

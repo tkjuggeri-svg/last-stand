@@ -64,3 +64,24 @@ extends Resource
 ## The encounters available on `row` from `pool` (battles or elites).
 func encounters_for(pool: Array[EncounterData], row: int) -> Array[EncounterData]:
 	return pool.filter(func(e: EncounterData) -> bool: return e.row == row)
+
+
+## What winning a fight of `kind` gives (`last_chapter`: the run's last, whose boss gives no relic).
+func reward_for(kind: RunMap.Kind, last_chapter: bool) -> FightReward:
+	match kind:
+		RunMap.Kind.ELITE:
+			return FightReward.relic_choice(elite_relics)
+		RunMap.Kind.BOSS:
+			return FightReward.relic_choice(boss_relics if not last_chapter else 0, boss_repair)
+	return FightReward.make(battle_cards)
+
+
+## An event's extra fight: the first wave of the battle on `row` (or the nearest row before it).
+func extra_fight(row: int) -> EncounterData:
+	var pool: Array[EncounterData] = encounters_for(battles, row)
+	while pool.is_empty() and row > 1:
+		row -= 1
+		pool = encounters_for(battles, row)
+	var fight: EncounterData = pool[0].duplicate()
+	fight.waves = pool[0].waves.slice(0, 1)
+	return fight

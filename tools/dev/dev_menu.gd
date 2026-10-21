@@ -1,7 +1,8 @@
 extends CanvasLayer
 ## The dev menu (F12, the dev_menu action; debug builds only: tools/ is never exported). Jump to any
 ## chapter, map node or wave; set the gold; grant any card or relic; spawn any enemy or boss; make the
-## hero or the fortress invulnerable; see the run's seed. A debugging aid: it pokes the game through
+## hero or the fortress invulnerable; see the run's seed; set the profile's Soul Shards (M8, also on the
+## title, hub and summary, where only that row shows). A debugging aid: it pokes the game through
 ## Main and the level's systems, never the other way round.
 
 const UPGRADES_DIR: String = "res://data/upgrades"
@@ -12,6 +13,9 @@ const ENEMIES_DIR: String = "res://data/enemies"
 var main: Node
 
 var _info: Label
+## Everything that needs a run in play (hidden on the front-end screens).
+var _run_box: VBoxContainer
+var _shards: SpinBox
 var _chapters: OptionButton
 var _nodes: OptionButton
 var _wave: SpinBox
@@ -45,6 +49,10 @@ func _run() -> RunStateNode:
 	return get_node("/root/RunState") as RunStateNode
 
 
+func _save() -> SaveManagerNode:
+	return get_node("/root/SaveManager") as SaveManagerNode
+
+
 func _level() -> Level:
 	return main.call("get_level") as Level
 
@@ -52,6 +60,11 @@ func _level() -> Level:
 func _refresh() -> void:
 	var run: RunStateNode = _run()
 	var level: Level = _level()
+	_shards.value = _save().profile.shards
+	_run_box.visible = level != null
+	if level == null:
+		_info.text = "No run in play"
+		return
 	var node: MapNode = run.map.get_current() if run.map != null else null
 	_info.text = "Seed %d   chapter %d   %s   wave %d" % [run.seed_value, run.chapter_index + 1,
 		"row %d %s" % [node.row, RunMap.Kind.keys()[node.kind].to_lower()] if node != null else "start",
@@ -113,6 +126,12 @@ func _end_fight() -> void:
 	level.spawner.end_wave()
 
 
+## Sets the profile's Soul Shards and saves (the hub refreshes on the save).
+func _set_shards() -> void:
+	_save().profile.shards = int(_shards.value)
+	_save().save_profile()
+
+
 func _set_gold() -> void:
 	var economy: Economy = _level().economy
 	var target: int = int(_gold.value)
@@ -157,6 +176,12 @@ func _build() -> void:
 	box.add_child(title)
 	_info = Label.new()
 	box.add_child(_info)
+	_shards = _spin(0, 99999, 50)
+	_row(box, "Shards", _shards, "Set", _set_shards)
+	_run_box = VBoxContainer.new()
+	_run_box.add_theme_constant_override("separation", 6)
+	box.add_child(_run_box)
+	box = _run_box
 	_chapters = OptionButton.new()
 	_row(box, "Chapter", _chapters, "Go", _jump_chapter)
 	_nodes = OptionButton.new()

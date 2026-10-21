@@ -12,6 +12,8 @@
 
 [ext_resource type="PackedScene" path="res://ui/menus/feedback_screen.tscn" id="20_feedback"]
 [ext_resource type="Resource" path="res://data/meta/unlock_board.tres" id="21_board"]
+[ext_resource type="PackedScene" path="res://main/front_end.tscn" id="22_front"]
+
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 run_data = ExtResource("2_run")
@@ -39,4 +41,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="FeedbackScreen" parent="." instance=ExtResource("20_feedback")]
+unique_name_in_owner = true
+
+[node name="FrontEnd" parent="." instance=ExtResource("22_front")]
 unique_name_in_owner = true

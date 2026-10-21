@@ -1,0 +1,67 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/menus/run_summary_screen.gd" id="1_summary"]
+[ext_resource type="PackedScene" path="res://ui/widgets/screen_frame.tscn" id="2_frame"]
+
+[node name="RunSummaryScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_summary")
+
+[node name="Frame" parent="." instance=ExtResource("2_frame")]
+unique_name_in_owner = true
+title = "The run is over"
+
+[node name="Body" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Where" type="Label" parent="Frame/Margin/Panel/Box/Content/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+horizontal_alignment = 1
+
+[node name="Stats" type="Label" parent="Frame/Margin/Panel/Box/Content/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Icons" type="HFlowContainer" parent="Frame/Margin/Panel/Box/Content/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+alignment = 1
+
+[node name="ShardsTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Body"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "Soul Shards"
+horizontal_alignment = 1
+
+[node name="Lines" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Total" type="Label" parent="Frame/Margin/Panel/Box/Content/Body"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"GoodLabel"
+horizontal_alignment = 1
+
+[node name="NewRunButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+layout_mode = 2
+text = "New run"
+
+[node name="HubButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 48)
+layout_mode = 2
+theme_type_variation = &"ButtonPrimary"
+text = "To the War Room"
+
+[editable path="Frame"]

@@ -22,5 +22,10 @@ func open(subtitle: String, run_seed: int = -1) -> void:
 	_restart_button.grab_focus()
 
 
+## The button's text (Main: "Continue" when the run summary follows).
+func set_button_text(text: String) -> void:
+	_restart_button.text = text
+
+
 func _on_restart_button_pressed() -> void:
 	restart_requested.emit()

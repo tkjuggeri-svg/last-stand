@@ -407,12 +407,8 @@ func _test_sources() -> void:
 	main.set("run_seed", 5)
 	root.add_child(main)
 	await _frames(2)
-	var elite: MapNode = MapNode.new()
-	elite.kind = RunMap.Kind.ELITE
-	var boss: MapNode = MapNode.new()
-	boss.kind = RunMap.Kind.BOSS
-	var elite_reward: FightReward = main.call("_reward_for", elite)
-	var boss_reward: FightReward = main.call("_reward_for", boss)
+	var elite_reward: FightReward = chapter.reward_for(RunMap.Kind.ELITE, false)
+	var boss_reward: FightReward = chapter.reward_for(RunMap.Kind.BOSS, false)
 	_check("an elite's reward is a relic choice of 3 (no cards, no gold); the boss's too, with a repair",
 		elite_reward.relics == 3 and elite_reward.cards == 0 and elite_reward.gold == 0 and boss_reward.relics == 3 and boss_reward.repair > 0.0)
 	var level: Level = main.call("get_level")

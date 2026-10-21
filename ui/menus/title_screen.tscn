@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/menus/title_screen.gd" id="1_title"]
+[ext_resource type="PackedScene" path="res://ui/widgets/screen_frame.tscn" id="2_frame"]
+[ext_resource type="PackedScene" path="res://ui/menus/settings_menu.tscn" id="3_settings"]
+
+[node name="TitleScreen" type="CanvasLayer"]
+layer = 20
+script = ExtResource("1_title")
+
+[node name="Frame" parent="." instance=ExtResource("2_frame")]
+title = ""
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Box" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Logo" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+theme_override_font_sizes/font_size = 96
+text = "LAST STAND"
+horizontal_alignment = 1
+
+[node name="Tagline" type="Label" parent="Center/Box"]
+layout_mode = 2
+theme_type_variation = &"DimLabel"
+text = "The last fortress. One knight. Every night is worse."
+horizontal_alignment = 1
+
+[node name="Buttons" type="VBoxContainer" parent="Center/Box"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ContinueButton" type="Button" parent="Center/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"ButtonPrimary"
+text = "Continue the run"
+
+[node name="PlayButton" type="Button" parent="Center/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Play"
+
+[node name="SettingsButton" type="Button" parent="Center/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="Center/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Quit"
+
+[node name="Notice" type="Label" parent="Center/Box"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_type_variation = &"WarnLabel"
+horizontal_alignment = 1
+
+[node name="SettingsMenu" parent="Center/Box" instance=ExtResource("3_settings")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
