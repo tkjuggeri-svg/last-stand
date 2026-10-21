@@ -40,6 +40,8 @@ const KILL_GOLD: StringName = &"economy.kill_gold"
 ## Share of unspent gold paid at the end of each wave, up to INTEREST_CAP.
 const INTEREST: StringName = &"economy.interest"
 const INTEREST_CAP: StringName = &"economy.interest_cap"
+## Flat gold paid at the end of each wave.
+const WAVE_INCOME: StringName = &"economy.wave_income"
 ## Price of tower upgrades (levels 2 and 3).
 const TOWER_UPGRADE_COST: StringName = &"economy.tower_upgrade_cost"
 ## Instant effects (UpgradeData.instant_effect): heal the fortress by effect_amount of its max HP.

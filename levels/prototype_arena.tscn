@@ -40,7 +40,7 @@
 [ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="u_masonry"]
 [ext_resource type="Resource" path="res://data/upgrades/overcharge.tres" id="u_overcharge"]
 [ext_resource type="Resource" path="res://data/upgrades/piercing.tres" id="u_piercing"]
-[ext_resource type="Resource" path="res://data/upgrades/quick_masons.tres" id="u_quick_masons"]
+[ext_resource type="Resource" path="res://data/upgrades/rapid_reload.tres" id="u_rapid_reload"]
 [ext_resource type="Resource" path="res://data/upgrades/repairs.tres" id="u_repairs"]
 [ext_resource type="Resource" path="res://data/upgrades/second_wind.tres" id="u_second_wind"]
 [ext_resource type="Resource" path="res://data/upgrades/thorns.tres" id="u_thorns"]
@@ -759,7 +759,7 @@ unique_name_in_owner = true
 script = ExtResource("31_offers")
 modifiers = NodePath("../RunModifiers")
 economy = NodePath("../Economy")
-pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_quick_masons"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax"), ExtResource("u_fleet_step"), ExtResource("u_cinder_dash")])
+pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_rapid_reload"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax"), ExtResource("u_fleet_step"), ExtResource("u_cinder_dash")])
 
 [node name="Economy" type="Node" parent="Systems"]
 unique_name_in_owner = true

@@ -19,7 +19,7 @@ const DUST_AREA: Rect2 = Rect2(-50, -40, 100, 90)
 const COLLAPSE_PUFFS: int = 7
 ## Thorned walls (upgrade): enemies whose body is this close to the fortress's centre take the
 ## thorns' damage per second, in ticks of THORNS_TICK seconds.
-const THORNS_RADIUS: float = 92.0
+const THORNS_RADIUS: float = 200.0
 const THORNS_TICK: float = 0.5
 
 ## The run's upgrades (max HP, thorns). Null = base stats.

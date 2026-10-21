@@ -7,21 +7,20 @@
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("3_effect")
-type = 1
-factor = 2.0
+amount = 250
 
 [sub_resource type="Resource" id="Resource_2"]
 script = ExtResource("3_effect")
 type = 10
 affix = ExtResource("r0")
-amount = 2
+amount = 1
 
 [sub_resource type="Resource" id="Resource_3"]
 script = ExtResource("2_choice")
 label = "Take"
-outcome = "Double your gold now. The next 2 fights pay 50% less gold."
+outcome = "+250 gold now. The next fight pays 50% less gold."
 effects = Array[ExtResource("3_effect")]([SubResource("Resource_1"), SubResource("Resource_2")])
-result_text = "Your purse is twice as heavy. For now."
+result_text = "Your purse is heavy: +250 gold. For now."
 
 [sub_resource type="Resource" id="Resource_4"]
 script = ExtResource("2_choice")

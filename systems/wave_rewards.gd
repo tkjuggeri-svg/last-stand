@@ -93,14 +93,14 @@ func _on_enemy_reached_fortress(_enemy: Enemy) -> void:
 		_wave_leaked = true
 
 
-## Interest upgrade: a share of the unspent gold, capped, at the end of every wave.
+## Treasury: a flat sum plus a share of the unspent gold (capped), at the end of every wave.
 func _pay_interest() -> void:
 	if modifiers == null:
 		return
 	var rate: float = modifiers.apply(0.0, [RunModifiers.INTEREST])
-	if rate <= 0.0:
-		return
-	var amount: int = mini(floori(economy.get_gold() * rate), modifiers.apply_int(0, [RunModifiers.INTEREST_CAP]))
+	var amount: int = modifiers.apply_int(0, [RunModifiers.WAVE_INCOME])
+	if rate > 0.0:
+		amount += mini(floori(economy.get_gold() * rate), modifiers.apply_int(0, [RunModifiers.INTEREST_CAP]))
 	if amount > 0:
 		economy.earn(amount, Economy.Source.INTEREST)
 		interest_paid.emit(amount)

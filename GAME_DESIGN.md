@@ -148,22 +148,23 @@ The last fortress of a dying kingdom. A lone hero, a handful of arcane towers, a
   | Berserker's Oath | Hero | rare, once | Sword damage +60%, hero max HP −30% (trade-off) |
   | Keen Fletching | Towers | common | All towers +10% damage |
   | Eagle Eye | Towers | common | All towers +12% range |
-  | Quick Masons | Towers | common, once | Towers built 60% faster |
+  | Rapid Reload | Towers | common | All towers fire 12% faster (replaced Quick Masons after the M7 playtest: towers already build in 0.6 s, so building faster did nothing) |
   | Overcharged Engines | Towers | rare, once | All towers +40% damage, but fire 15% slower (trade-off; net about +22% damage per second). It used to cost range, which crippled the short-range Brazier |
   | Piercing Arrows | Towers | rare, once | Archer arrows fly on (along the ground line from the tower) through 1 more enemy |
-  | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 3 damage/s for 3 s |
+  | Hellfire Shells | Towers | rare, once | Cannon shells leave burning ground: 7 damage/s for 3 s (3 before the M7 playtest: about +16% of a cannon's damage per second) |
   | Deep Freeze | Towers | common | Frost slows last 40% longer |
   | Stout Masonry | Fortress | common | Fortress max HP +25 |
   | Emergency Repairs | Fortress | common | Repair 30% of the fortress's max HP now |
-  | Thorned Walls | Fortress | rare, once | Enemies at the walls (92 px) take 12 damage/s |
+  | Thorned Walls | Fortress | rare, once | Enemies within 200 px of the fortress take 10 damage/s (`Fortress.THORNS_RADIUS`; was 92 px / 12, which only touched enemies for the last ~40 px of their road and never reached Cultists besieging from 170 px) |
   | Bounty Hunters | Economy | common, once | Kills pay 20% more gold (once since the M6 playtest 2: stacked, it snowballed with the growing waves) |
-  | Treasury | Economy | rare, once | End of each wave: +10% of unspent gold, up to 40 |
+  | Treasury | Economy | rare, once | End of each wave: +20 gold (`economy.wave_income`), plus 10% of unspent gold, up to 40 more (interest alone paid ~10 a wave on the small banks scarce gold leaves) |
   | Guild Discount | Economy | common, once | Tower upgrades cost 20% less |
   | War Tax | Economy | rare, once | Kills pay 30% more gold, fortress max HP −25 (trade-off) |
   | Fleet Step (M6) | Hero | common | Dash recharges 25% faster (stacks; never below 0.6 s) |
   | Cinder Dash (M6) | Hero | rare, once | The dash leaves burning ground: a patch every 30 px of the path (radius 26), 16 damage/s for 2 s; overlapping patches add up |
 - Burning ground (`BurnZone`) and thorns damage enemies in ticks through their Hurtboxes like any other hit.
 - Rerolls cost gold (see above).
+- **Every card must matter** (`tests/automated/test_card_impact.gd`): each card, event boon, twist, event / shrine answer and merchant item is measured on the scale it matters on (a tower's damage per second, build time against a ~40 s wave, gold per wave at a 100-gold bank against ~250 kill gold, thorn damage against a mid-run Ghoul's HP, ...) and must move one measure by at least 10%. A stat no measure reads fails the test.
 
 ### 4.7 Waves
 - Defined by `WaveData` (`data/waves/wave_NN.tres`): a list of `SpawnGroup`s `{enemy: EnemyData, count, interval, lane, delay}`. The groups of a wave run in parallel: a group's k-th enemy appears at `delay + k × interval` seconds after the wave starts, on the level lane with index `lane`.

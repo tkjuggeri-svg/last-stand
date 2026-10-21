@@ -7,7 +7,7 @@ const P: GDScript = preload("res://tools/art/palette.gd")
 
 const SIZE: int = 16
 const IDS: Array[String] = ["honed_blade", "long_reach", "battle_rhythm", "iron_body", "second_wind", "berserker",
-	"fletching", "eagle_eye", "quick_masons", "overcharge", "piercing", "hellfire", "deep_freeze",
+	"fletching", "eagle_eye", "rapid_reload", "overcharge", "piercing", "hellfire", "deep_freeze",
 	"masonry", "repairs", "thorns", "bounty", "treasury", "guild", "war_tax", "fleet_step", "cinder_dash",
 	"knights_oath", "knights_sword", "hollow_walls"]
 
@@ -168,14 +168,20 @@ func _eagle_eye(c: Canvas) -> void:
 	c.px(7, 6, Color("ffffff"))
 
 
-func _quick_masons(c: Canvas) -> void:
-	c.part()
-	c.capsule(Vector2(3, 13), Vector2(10, 6), 0.9, P.WOOD)
-	c.part()
-	c.block(Rect2(8, 2, 7, 3), 3.0, P.IRON.slice(2, 5), P.IRON.slice(1, 4), false)
-	c.part(true)
+## Rapid Reload: a leather quiver of three bolts with speed lines (every tower fires faster).
+func _rapid_reload(c: Canvas) -> void:
 	for k: int in 3:
-		c.px(2 + k * 2, 3 + k, P.GOLD[3])
+		var x: float = 8.0 + k * 2.5
+		c.part()
+		c.line(Vector2(x, 2), Vector2(x - 2, 10), P.WOOD[4])
+		c.px(roundi(x), 1, P.STEEL[4])
+		c.px(roundi(x) - 2, 10, P.BANNER[3])
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(5, 8), Vector2(12, 8), Vector2(11, 15), Vector2(6, 15)]), P.LEATHER, Vector3(-0.4, -0.3, 1))
+	c.line(Vector2(5, 9), Vector2(12, 9), P.GOLD[2])
+	c.part(true)
+	for y: int in [4, 7, 10]:
+		c.rect(Rect2i(0, y, 3, 1), P.GOLD[3] if y == 7 else P.GOLD[2])
 
 
 func _overcharge(c: Canvas) -> void:

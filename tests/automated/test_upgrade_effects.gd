@@ -111,11 +111,10 @@ func _test_upgrade(id: StringName) -> void:
 			var archer2: Tower = await _tower(level, 3, ARCHER)
 			mods.add_upgrade(data)
 			ok = is_equal_approx(archer2.get_attack_range(), ARCHER.attack_range * 1.12)
-		"quick_masons":
+		"rapid_reload":
+			var archer: Tower = await _tower(level, 3, ARCHER)
 			mods.add_upgrade(data)
-			builder.build(builder.get_slots()[3], ARCHER)
-			await _frames(roundi(ARCHER.build_time * 60.0 * 0.4) + 2)
-			ok = not builder.get_slots()[3].is_empty() and not builder.get_slots()[3].tower.is_building()
+			ok = is_equal_approx(archer.get_stats().fire_interval, ARCHER.fire_interval * 0.88)
 		"overcharge":
 			var cannon: Tower = await _tower(level, 2, CANNON)
 			mods.add_upgrade(data)
@@ -147,11 +146,15 @@ func _test_upgrade(id: StringName) -> void:
 			mods.add_upgrade(data)
 			var rewards: WaveRewards = level.get_node("%WaveRewards")
 			var economy: Economy = level.get_node("%Economy")
+			economy.try_spend(economy.get_gold())
+			rewards.begin_wave()
+			rewards.end_wave()
+			var broke: int = economy.get_gold()  # nothing saved: the flat 20 only
 			economy.earn(1000, Economy.Source.KILL)
 			var before: int = economy.get_gold()
 			rewards.begin_wave()
 			rewards.end_wave()
-			ok = economy.get_gold() - before == 40
+			ok = broke == 20 and economy.get_gold() - before == 20 + 40
 		"guild":
 			await _tower(level, 3, ARCHER)
 			mods.add_upgrade(data)
@@ -203,13 +206,14 @@ func _check_burn(level: Level, data: UpgradeData) -> bool:
 func _check_thorns(level: Level, data: UpgradeData) -> bool:
 	var mods: RunModifiers = level.get_node("%RunModifiers")
 	var fortress: Fortress = level.get_node("Fortress")
-	var near: Enemy = _stationary(level, fortress.global_position + Vector2(0, 75))
-	var far: Enemy = _stationary(level, fortress.global_position + Vector2(0, 160))
+	# Near: where a Cultist besieges the fortress (170 px); far: beyond the thorns' reach.
+	var near: Enemy = _stationary(level, fortress.global_position + Vector2(0, 175))
+	var far: Enemy = _stationary(level, fortress.global_position + Vector2(0, 240))
 	(near.get_node("%FortressHitbox") as Area2D).monitorable = false  # keep it from being used up
 	await _frames(2)
 	mods.add_upgrade(data)
 	await _frames(62)
-	return _hp(near) < GHOUL.max_health and _hp(far) == GHOUL.max_health and is_equal_approx(fortress.get_thorns_dps(), 12.0)
+	return _hp(near) < GHOUL.max_health and _hp(far) == GHOUL.max_health and is_equal_approx(fortress.get_thorns_dps(), 10.0)
 
 
 ## A drawback: less of a good stat, or a longer interval (slower firing).

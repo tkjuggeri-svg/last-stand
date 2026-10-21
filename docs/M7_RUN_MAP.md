@@ -198,7 +198,9 @@ choose (no hidden cost), except the gamble, which says it is one.
 
 1. **Shrine of Blood:** lose 1 hero life → choose 2 rare upgrades (two separate choices).
 2. **Shrine of Ash:** your highest-level tower crumbles (no refund) → your next evolution is free.
-3. **Shrine of Coins:** double your gold now → kill gold is −50% for the next 2 battles.
+3. **Shrine of Coins:** +250 gold now → kill gold is −50% for the next battle. (After the M7
+   playtest: it used to double your gold for 2 lean battles, worth nothing on the small bank
+   scarce gold leaves.)
 4. **Shrine of Hollow Walls:** fortress max HP −25 for the run → all towers +15% damage for this
    chapter.
 5. **Shrine of Whispers (gamble):**
