@@ -159,6 +159,7 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 
 ## M8 — Meta Progression & Persistence
 Design proposal (not yet approved): `docs/M8_META.md`.
+- [ ] *(Small, can come first, even before the rest of M8.)* **Call the next wave early:** a button (and key) in the build phase, or during a wave once its last group has spawned, that starts the next wave now for bonus gold (more the earlier it is called), like a classic tower defense "send next wave"
 - [ ] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
 - [ ] Hub between runs: spend Soul Shards on unlocks (towers, upgrades into the pool, hero bonuses)
 - [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)
@@ -166,6 +167,7 @@ Design proposal (not yet approved): `docs/M8_META.md`.
 - [ ] Main flow: start → hub → run → summary → hub, with a main menu
 - [ ] **Shared UI style**, built alongside the main menu, the hub and the run summary: buttons, panels, fonts, screen transitions (on top of `ui/theme/game_theme.tres`). Every later screen reuses it instead of styling itself
 - [ ] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
+- [ ] **Hub characters react to the last run:** a few figures in the hub (e.g. the Quartermaster, a priest, a smith) each say a short line about how the last run went (how far, which boss, a lost life, a relic found, a first win); lines are data (conditions + text), so M11 can grow them into real characters
 - [ ] Tests: save/load round trip, version migration, unlocks applied to a run
 
 **Done when:** there's a reason to start another run after dying.
@@ -178,6 +180,8 @@ Presentation work done early instead of all in M13, so a public demo looks and s
 - [ ] Basic sound effects: combat (sword, hits, the hero hurt), towers (each tower's shot, impacts, building, upgrades), deaths, UI (clicks, the choice screens, gold), on the Master / SFX buses
 - [ ] Juice: hit pause on big hits, damage numbers, screen shake (today only a boss's death has a hit-stop and a shake)
 - [ ] Title screen
+- [ ] **Readability:** a grayscale check in the screenshot tool (`capture_screenshots.gd --grayscale`: every enemy, the hero, towers and shots still stand out from the ground without colour), and **consistent colour coding by enemy role** (e.g. one accent per role: melee, fast, tank, caster/support, ranged, boss), applied to the existing enemies' art and documented in `ART_DIRECTION.md`
+- [ ] **Key art by a human artist**, commissioned before the itch.io demo (store/demo page, capsule, title screen). Note: `CLAUDE.md` rule 3 allows only CC0 or self-made assets, so a commissioned piece needs an explicit exception there (the project owning the rights, logged in `assets/CREDITS.md`)
 
 **Done when:** the game is ready for a free itch.io demo.
 
@@ -191,6 +195,8 @@ Presentation work done early instead of all in M13, so a public demo looks and s
   The build menu shows only the shared towers and the hero's own; balance (`map_balance.gd`) per hero.
 - [ ] **Hero-exclusive upgrade cards** (and relics) beside the shared pool: each hero's offers draw from the shared cards plus their own.
 - [ ] Hero choice at the start of a run (later tied to M8's unlocks).
+- [ ] **Intentional build archetypes:** fire, frost, hero (sword-led), economy, ... Cards, relics and towers are tagged by archetype, and the offers lean slightly toward an archetype the run has started on, so a run can commit to a plan instead of collecting random parts
+- [ ] **Combo evolutions:** a special evolution a tower only gets with a specific relic (e.g. a Brazier evolution with Ember Heart, a Frost one with Hourglass), shown on the evolution choice next to the two usual branches
 
 **Done when:** picking a different hero or finding a key relic changes how you play the run.
 
@@ -214,14 +220,14 @@ Built in stages:
 ---
 
 ## M11 — World & Story
-Lore, characters, event texts for the run map, and an ending.
+Lore, characters, event texts for the run map, and an ending. The hub's characters (M8) become real characters with their own stories, still reacting to how each run went.
 
 **Done when:** a player knows why they fight and gets an ending for winning.
 
 ---
 
 ## M12 — Longevity
-Endless mode and unlockable difficulty levels (ascension-style modifiers).
+Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead of plain difficulty levels: before a run the player turns on any mix of modifiers (e.g. tougher elites, no repairs, faster enemies, fewer slots, a stronger boss), each worth points; higher totals unlock rewards and records.
 
 **Done when:** a player who has won keeps finding a harder reason to play.
 
