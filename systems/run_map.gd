@@ -66,6 +66,11 @@ func visit(node: MapNode) -> bool:
 	return true
 
 
+## Moves to any `node`, reachable or not (the dev menu's jump).
+func force_visit(node: MapNode) -> void:
+	path.append(node)
+
+
 func is_finished() -> bool:
 	return get_current() == get_boss()
 

@@ -3,10 +3,13 @@ extends CanvasLayer
 ## The pause menu: Resume, Settings, Restart, Quit. While open the game is truly frozen: the tree is
 ## paused and time stands still (Engine.time_scale 0, so even the always-running sprites stop). Main
 ## decides when it may open (not during the upgrade choice or after the run) and what Restart and
-## Quit mean; this only shows the menu and reports the player's choice.
+## Quit mean; this only shows the menu and reports the player's choice. It shows the run's seed, and a
+## new run can be started from any seed typed in (to replay or share a run).
 
 signal restart_requested
 signal quit_requested
+## A new run from `run_seed` was asked for.
+signal seed_run_requested(run_seed: int)
 
 ## True while open (it only ever ends its own pause).
 var _paused_by_us: bool = false
@@ -18,6 +21,9 @@ var _time_scale: float = 1.0
 @onready var _quit_button: Button = %QuitButton
 @onready var _buttons: Control = %Buttons
 @onready var _settings: SettingsMenu = %SettingsMenu
+@onready var _seed_label: Label = %SeedLabel
+@onready var _seed_edit: LineEdit = %SeedEdit
+@onready var _seed_run_button: Button = %SeedRunButton
 
 
 func _ready() -> void:
@@ -29,6 +35,8 @@ func _ready() -> void:
 		restart_requested.emit())
 	_quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	_settings.closed.connect(_on_settings_closed)
+	_seed_run_button.pressed.connect(_on_seed_run_pressed)
+	_seed_edit.text_submitted.connect(func(_text: String) -> void: _on_seed_run_pressed())
 
 
 func _exit_tree() -> void:
@@ -73,6 +81,27 @@ func _unhandled_input(event: InputEvent) -> void:
 			_settings.close()
 		else:
 			close()
+
+
+## Shows the current run's seed (-1: none).
+func show_seed(run_seed: int) -> void:
+	_seed_label.text = "Seed %d" % run_seed if run_seed >= 0 else ""
+	_seed_edit.text = ""
+
+
+## A typed seed (digits only), or -1 if there is none.
+func get_typed_seed() -> int:
+	var text: String = _seed_edit.text.strip_edges()
+	return int(text) if text.is_valid_int() and int(text) >= 0 else -1
+
+
+func _on_seed_run_pressed() -> void:
+	var typed: int = get_typed_seed()
+	if typed < 0:
+		_seed_edit.grab_focus()
+		return
+	close()
+	seed_run_requested.emit(typed)
 
 
 func _open_settings() -> void:

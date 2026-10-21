@@ -78,6 +78,21 @@ Every key can be changed in **Esc → Settings** (also fullscreen and volume).
   circle (the Lich Warden shields the enemies around it), a bronze ring (the Tollkeeper silences your
   towers inside it for a few seconds).
 
+## Sending feedback from inside the game (F8)
+
+Press **F8** at any moment (you can change the key in Esc → Settings): the game pauses and a small box
+asks for a note. Type what happened or what you think and press **Save**. The game saves a folder with
+your note, a **screenshot** and the **state of your run** (where you are, your towers, upgrades, gold,
+and the run's seed, so we can replay it). Use it as often as you like: right after a bug, an unfair
+moment or anything confusing is best.
+
+To send them: the box shows where it saved (and has an **Open the folder** button). All reports are in
+the game's data folder (see "Where files are" below), in `feedback/`, one folder per report. **Zip the
+whole `feedback` folder and send it to us** with your written answers.
+
+Each run has a **seed** (shown in the pause menu and on the Game Over / Victory screen). If something
+happens that you want us to see, note the seed: the pause menu can also start a new run from a seed.
+
 ## What feedback we want
 
 Play at least one full run (win or lose), more if you can. Then tell us:
@@ -117,4 +132,4 @@ Settings and logs live in the game's data folder:
 - **Linux:** `~/.local/share/godot/app_userdata/The Last Stand/`
 
 `settings.cfg` holds your settings (delete it to reset them); `logs/godot.log` is the log of the
-last session. Please attach it to a bug report.
+last session. Please attach it to a bug report. `feedback/` holds your F8 reports.

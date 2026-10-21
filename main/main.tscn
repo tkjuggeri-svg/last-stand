@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" path="res://ui/map/event_screen.tscn" id="8_event"]
 [ext_resource type="PackedScene" path="res://ui/map/chapter_screen.tscn" id="9_chapter"]
 
+[ext_resource type="PackedScene" path="res://ui/menus/feedback_screen.tscn" id="20_feedback"]
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 run_data = ExtResource("2_run")
@@ -33,4 +34,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("5_pause")]
+unique_name_in_owner = true
+
+[node name="FeedbackScreen" parent="." instance=ExtResource("20_feedback")]
 unique_name_in_owner = true

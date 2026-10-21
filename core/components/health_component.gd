@@ -15,6 +15,8 @@ signal reprieved
 var current_health: int
 ## Incoming damage is multiplied by this (a vulnerable enemy takes more), before any shield.
 var damage_taken_multiplier: float = 1.0
+## Takes no damage at all (the dev menu's invulnerability switch).
+var invulnerable: bool = false
 ## Times a killing blow leaves it at reprieve_health HP instead (each use spends one).
 var reprieves: int = 0
 var reprieve_health: int = 1
@@ -41,7 +43,7 @@ func setup(new_max_health: int) -> void:
 
 func take_damage(amount: int) -> void:
 	# Dead things can't die twice, so ignore hits after death.
-	if is_dead() or amount <= 0:
+	if is_dead() or amount <= 0 or invulnerable:
 		return
 	if damage_taken_multiplier != 1.0:
 		amount = maxi(roundi(amount * damage_taken_multiplier), 1)

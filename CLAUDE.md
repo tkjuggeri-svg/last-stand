@@ -124,7 +124,7 @@ Damage wiring: a `Hitbox` sits **on** `hero_hitbox` (bit value 16), `enemy_hitbo
 
 ## Input actions
 
-Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E: build menu at a slot), `start_wave` (Enter / keypad Enter: ends the build phase; the HUD also has a Start wave button), `dash` (Space / Shift, physical), `pause` (Esc: the pause menu). Menus also use Godot's built-in `ui_*` actions (Esc closes, Enter confirms); `ui_accept` is overridden to Enter / keypad Enter only, because Space is the dash. The hero ignores `attack` while the mouse is over UI.
+Configured: `move_up`, `move_down`, `move_left`, `move_right` (WASD as **physical** keys so AZERTY/QWERTZ work + arrows), `attack` (LMB), `interact` (E: build menu at a slot), `start_wave` (Enter / keypad Enter: ends the build phase; the HUD also has a Start wave button), `dash` (Space / Shift, physical), `pause` (Esc: the pause menu), `feedback` (F8: the in-game feedback box, rebindable), `dev_menu` (F12: the dev menu, debug builds only, not rebindable). Menus also use Godot's built-in `ui_*` actions (Esc closes, Enter confirms); `ui_accept` is overridden to Enter / keypad Enter only, because Space is the dash. The hero ignores `attack` while the mouse is over UI.
 
 Planned, added by the feature that needs them: `build` (B). Never check raw keycodes in code (the settings' rebinding screen is the one place that reads raw key events, to bind them). Every action the player can rebind is listed in `GameSettings.ACTIONS`; add new player actions there too.
 
@@ -140,6 +140,20 @@ Planned, added by the feature that needs them: `build` (B). Never check raw keyc
 The remote `origin` is the private GitHub repo `tkjuggeri-svg/last-stand` (SSH). **Push after every
 milestone and every playtest build:** `git push origin main` and `git push origin --tags` (the
 milestone's and the build's tags included). Never force-push and never rewrite pushed history.
+
+## Feedback, seeds and the dev menu
+
+- **Feedback key** (F8): `FeedbackScreen` (UI) → Main saves a report with `FeedbackRecorder` in
+  `user://feedback/<date_time>/`: `note.txt`, `screenshot.png`, `state.json` (`RunSnapshot`: build, seed,
+  chapter, node, wave, gold, fortress, lives, towers, cards, relics). It ships in playtest builds.
+  Summarize reports with `python3 tools/feedback_summary.py <folders>` (skill `feedback-review`).
+- **Seeds:** every run has one (`RunState.seed_value`), shown in the pause menu and on Game Over /
+  Victory; the pause menu starts a run from a typed seed; `godot --path . -- --seed=<n>` too.
+- **Dev menu** (F12, `tools/dev/dev_menu.tscn`): jump to a chapter / map node / wave, set gold, grant any
+  card or relic, spawn any enemy, hero / fortress invulnerability, the seed. Main loads it only in debug
+  builds and only if the file exists; `tools/` is excluded from every export, so it never ships. Its
+  hooks in the game: `Main.jump_to_node()` / `jump_to_chapter()`, `WaveSpawner.end_wave()` /
+  `spawn_extra()`, `HealthComponent.invulnerable`.
 
 ## Playtest builds
 

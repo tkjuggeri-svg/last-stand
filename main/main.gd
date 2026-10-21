@@ -8,7 +8,9 @@ extends Node
 ## extra fight, upgrade choices one after another). Beating the last chapter's
 ## boss wins the run; losing anywhere loses it (Game Over); Restart starts a fresh run. The pause
 ## action opens the pause menu, unless something else holds the game (the upgrade choice) or the run
-## is over; a menu that is open in the level (the build menu) takes Esc first.
+## is over; a menu that is open in the level (the build menu) takes Esc first. The feedback key opens
+## FeedbackScreen anywhere; Main saves its report (FeedbackRecorder: the note, a screenshot and the
+## run's state, RunSnapshot) in feedback_dir.
 
 const LOSS_TEXT: Dictionary = {
 	Level.LossReason.FORTRESS_DESTROYED: "The fortress has fallen.",
@@ -16,6 +18,8 @@ const LOSS_TEXT: Dictionary = {
 }
 const VICTORY_TEXT: String = "The fortress stands. Every chapter held."
 const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
+## The dev menu (tools/: never exported), loaded in debug builds when it is there.
+const DEV_MENU: String = "res://tools/dev/dev_menu.tscn"
 ## Share of the fortress's max HP repaired between two chapters.
 const CHAPTER_REPAIR: float = 0.5
 
@@ -23,6 +27,8 @@ const CHAPTER_REPAIR: float = 0.5
 @export var run_data: RunData
 ## The run's seed (maps, offers); -1 = a random one each run.
 @export var run_seed: int = -1
+## Where feedback reports are saved (tests point it elsewhere).
+@export var feedback_dir: String = FeedbackRecorder.DEFAULT_DIR
 
 var _level: Level
 ## The map node being played.
@@ -38,26 +44,37 @@ var _pending_choices: Array[FightReward] = []
 @onready var _merchant_screen: MerchantScreen = %MerchantScreen
 @onready var _event_screen: EventScreen = %EventScreen
 @onready var _chapter_screen: ChapterScreen = %ChapterScreen
+@onready var _feedback_screen: FeedbackScreen = %FeedbackScreen
 
 
 func _ready() -> void:
 	assert(run_data != null and not run_data.chapters.is_empty(), "Main needs a run_data with chapters")
 	GameSettings.load_and_apply()
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--seed=") and arg.trim_prefix("--seed=").is_valid_int():
+			run_seed = int(arg.trim_prefix("--seed="))  # replay a run: godot ... -- --seed=<n>
+	if OS.is_debug_build() and ResourceLoader.exists(DEV_MENU):
+		var dev_menu: Node = (load(DEV_MENU) as PackedScene).instantiate()
+		dev_menu.set("main", self)
+		add_child(dev_menu)
 	_game_over_screen.restart_requested.connect(start_run)
 	_victory_screen.restart_requested.connect(start_run)
 	_pause_menu.restart_requested.connect(start_run)
 	_pause_menu.quit_requested.connect(quit_game)
+	_pause_menu.seed_run_requested.connect(start_run)
 	_map_screen.node_chosen.connect(_on_node_chosen)
 	_merchant_screen.left.connect(_show_map)
 	_event_screen.choice_picked.connect(_on_event_choice)
 	_event_screen.continued.connect(_next_follow_up)
 	_chapter_screen.continued.connect(_start_chapter)
+	_feedback_screen.submitted.connect(_save_feedback)
 	start_run()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause") and can_pause():
 		get_viewport().set_input_as_handled()
+		_pause_menu.show_seed(_run.seed_value)
 		_pause_menu.open()
 
 
@@ -80,8 +97,16 @@ func get_map() -> RunMap:
 	return _run.map
 
 
-## Starts a fresh run: a new seed, chapter 1 and its map.
-func start_run() -> void:
+## Starts a fresh run, chapter 1 and its map: from `seed_value` if given (>= 0; a replay), else from
+## run_seed if set, else from a new random seed.
+func start_run(seed_value: int = -1) -> void:
+	_close_screens()
+	var chosen: int = seed_value if seed_value >= 0 else (run_seed if run_seed >= 0 else randi())
+	_run.start_run(run_data, chosen)
+	_start_chapter()
+
+
+func _close_screens() -> void:
 	_pause_menu.close()
 	_game_over_screen.hide()
 	_victory_screen.hide()
@@ -89,8 +114,6 @@ func start_run() -> void:
 	_event_screen.hide()
 	_chapter_screen.hide()
 	_pending_choices.clear()
-	_run.start_run(run_data, run_seed if run_seed >= 0 else randi())
-	_start_chapter()
 
 
 ## Replaces the level with the chapter's (fresh) one and shows its map.
@@ -129,8 +152,24 @@ func _status() -> String:
 
 
 func _on_node_chosen(node: MapNode) -> void:
-	if not _run.map.visit(node):
-		return
+	if _run.map.visit(node):
+		_enter_node(node)
+
+
+## Plays any node of the chapter's map, reachable or not (the dev menu's jump).
+func jump_to_node(node: MapNode) -> void:
+	_run.map.force_visit(node)
+	_enter_node(node)
+
+
+## Starts chapter `index` (0-based) on a fresh level, nothing carried (the dev menu's jump).
+func jump_to_chapter(index: int) -> void:
+	_close_screens()
+	_run.set_chapter(index)
+	_start_chapter()
+
+
+func _enter_node(node: MapNode) -> void:
 	_node = node
 	_map_screen.close()
 	match node.kind:
@@ -220,7 +259,7 @@ func _on_encounter_cleared() -> void:
 func _on_chapter_cleared() -> void:
 	if _run.is_last_chapter():
 		_level.end_run_won()
-		_victory_screen.open(VICTORY_TEXT)
+		_victory_screen.open(VICTORY_TEXT, _run.seed_value)
 		return
 	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
 	var refund_ratio: float = _run.get_chapter().leave_refund
@@ -235,5 +274,21 @@ func _on_chapter_cleared() -> void:
 		mini(carry.fortress_health + roundi(max_health * repair), max_health), max_health)
 
 
+## The feedback box was filled in: save the report with the run's state as it is now.
+func _save_feedback(note: String, screenshot: Image) -> void:
+	var state: Dictionary = RunSnapshot.capture(_run, _level, _node, _screen_name())
+	_feedback_screen.show_saved(FeedbackRecorder.save(feedback_dir, note, screenshot, state))
+
+
+## Which screen the player is on (for a feedback report).
+func _screen_name() -> String:
+	for screen: CanvasLayer in [_game_over_screen, _victory_screen, _chapter_screen, _merchant_screen, _event_screen, _map_screen, _pause_menu]:
+		if screen.visible:
+			return screen.name.to_snake_case()
+	if _level != null and _level.offers != null and _level.offers.is_offer_open():
+		return "upgrade_choice"
+	return "fight"
+
+
 func _on_level_run_lost(reason: Level.LossReason) -> void:
-	_game_over_screen.open(LOSS_TEXT[reason])
+	_game_over_screen.open(LOSS_TEXT[reason], _run.seed_value)

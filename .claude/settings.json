@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send -a 'Claude Code' -i dialog-information 'Claude Code: done' 'LAST STAND: the task is finished, your turn.' >/dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"import json, subprocess, sys\ntry:\n    message = json.load(sys.stdin).get('message') or 'Claude Code needs your input.'\nexcept Exception:\n    message = 'Claude Code needs your input.'\nsubprocess.run(['notify-send', '-a', 'Claude Code', '-u', 'critical', '-i', 'dialog-question', 'Claude Code: input needed', 'LAST STAND: ' + message])\" >/dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ]
+  }
+}

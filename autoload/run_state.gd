@@ -43,6 +43,13 @@ func next_chapter() -> void:
 	_make_map()
 
 
+## Goes to chapter `index` (0-based) with a fresh map and nothing carried (the dev menu's jump).
+func set_chapter(index: int) -> void:
+	chapter_index = clampi(index, 0, get_chapter_count() - 1)
+	carry = null
+	_make_map()
+
+
 ## The seed for chapter-dependent randomness (maps, offers), different per chapter.
 func chapter_seed() -> int:
 	return seed_value * 101 + chapter_index

@@ -5,10 +5,11 @@ class_name GameSettings
 ## (its input map, full volume, windowed).
 
 const ACTIONS: Array[StringName] = [&"move_up", &"move_down", &"move_left", &"move_right", &"attack", &"dash",
-	&"interact", &"start_wave", &"pause"]
+	&"interact", &"start_wave", &"pause", &"feedback"]
 const ACTION_NAMES: Dictionary = {
 	&"move_up": "Move up", &"move_down": "Move down", &"move_left": "Move left", &"move_right": "Move right",
 	&"attack": "Attack", &"dash": "Dash", &"interact": "Build / interact", &"start_wave": "Start wave", &"pause": "Pause",
+	&"feedback": "Send feedback",
 }
 const BUSES: Array[StringName] = [&"Master", &"Music", &"SFX"]
 ## Bindings per action (shown as two slots in the settings menu).

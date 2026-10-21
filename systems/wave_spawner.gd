@@ -137,6 +137,42 @@ func start_next_wave() -> bool:
 	return true
 
 
+## Ends the current wave at once (the dev menu): the rest of its enemies never come, the living ones
+## vanish without paying gold, and the wave counts as cleared.
+func end_wave() -> void:
+	if not _wave_open:
+		return
+	var wave: WaveData = waves[_wave_index]
+	for i: int in wave.groups.size():
+		_group_spawned[i] = wave.groups[i].count
+	_spawned_count = get_wave_enemy_total()
+	for child: Node in get_children():
+		var enemy: Enemy = child as Enemy
+		if enemy != null and enemy.is_alive():
+			enemy.died.disconnect(_on_enemy_died)
+			enemy.reached_fortress.disconnect(_on_enemy_reached_fortress)
+			enemy.queue_free()
+			_enemy_gone()
+	enemy_counts_changed.emit(_living_count, _spawned_count)
+	_check_wave_cleared()
+
+
+## Sends one more `data` down lane `lane_index` now (the dev menu): it joins the current wave (with the
+## wave's scales) if one is running, else it comes on its own (base stats, not counted).
+func spawn_extra(data: EnemyData, lane_index: int) -> Enemy:
+	var lane: Path2D = lanes[clampi(lane_index, 0, lanes.size() - 1)]
+	var at: Vector2 = lane.to_global(lane.curve.sample_baked(0.0))
+	if _wave_open:
+		_summoned_count += 1
+		return _add_enemy(data, lane, at)
+	var enemy: Enemy = enemy_scene.instantiate()
+	enemy.data = data
+	enemy.lane = lane
+	add_child(enemy)
+	enemy.global_position = at
+	return enemy
+
+
 func _is_spawning() -> bool:
 	if not _wave_open:
 		return false

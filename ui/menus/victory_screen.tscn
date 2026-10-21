@@ -41,6 +41,12 @@ layout_mode = 2
 text = "The fortress stands."
 horizontal_alignment = 1
 
+[node name="SeedLabel" type="Label" parent="Center/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.7, 0.78, 1)
+horizontal_alignment = 1
+
 [node name="RestartButton" type="Button" parent="Center/Content"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 48)
