@@ -31,6 +31,23 @@ func set_seed(value: int) -> void:
 	_rng.seed = value
 
 
+## What a saved run needs to carry on (M8: resume from the map): the dice and the twists still due.
+func save_state() -> Dictionary:
+	return {"rng": str(_rng.state), "affixes": _affixes.map(func(a: AffixData) -> String: return a.resource_path), "fights_left": _fights_left.duplicate()}
+
+
+func load_state(state: Dictionary) -> void:
+	_rng.state = String(state.get("rng", str(_rng.state))).to_int()
+	_affixes.clear()
+	_fights_left.clear()
+	var paths: Array = state.get("affixes", [])
+	var fights: Array = state.get("fights_left", [])
+	for i: int in mini(paths.size(), fights.size()):
+		if ResourceLoader.exists(String(paths[i])):
+			_affixes.append(load(String(paths[i])))
+			_fights_left.append(int(fights[i]))
+
+
 ## Why `choice` can't be taken now ("" = it can).
 func choice_blocker(choice: EventChoice) -> String:
 	match choice.need:

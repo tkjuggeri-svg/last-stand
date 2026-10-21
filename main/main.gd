@@ -1,11 +1,9 @@
 extends Node
 ## Boots the game and runs a run (see docs/M7_RUN_MAP.md): loads and applies the player's settings,
-## starts a run in RunState (its chapters from run_data, each with a node map), and plays the map.
-## A chapter's level is made when the chapter starts and stays (with its towers, gold and damage)
-## while the map is shown between nodes; a battle, an elite or the boss is played on it as a fight
-## (Level.start_encounter, with its reward), a merchant opens the shop, an event or a shrine its
-## scene (EventScreen; the level's EventResolver applies the answer, and Main plays what it leaves: an
-## extra fight, upgrade choices one after another). Beating the last chapter's
+## starts a run in RunState (its chapters from run_data, each with a node map), and has MapFlow play
+## the map. A chapter's level is made when the chapter starts and stays (with its towers, gold and
+## damage) while the map is shown between nodes. Each time the map shows, the run is saved there
+## (RunSave in the profile; the title's Continue resumes it). Beating the last chapter's
 ## boss wins the run; losing anywhere loses it (Game Over). Either way the run pays Soul Shards into the
 ## saved profile (M8), and the front end (FrontEnd: title, War Room, run summary) takes over: Continue
 ## shows the summary, then the War Room starts the next run; the pause menu's Abandon run ends it the
@@ -21,7 +19,6 @@ const LOSS_TEXT: Dictionary = {
 	Level.LossReason.HERO_KILLED: "The hero has fallen.",
 }
 const VICTORY_TEXT: String = "The fortress stands. Every chapter held."
-const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
 ## The dev menu (tools/: never exported), loaded in debug builds when it is there.
 const DEV_MENU: String = "res://tools/dev/dev_menu.tscn"
 ## Share of the fortress's max HP repaired between two chapters.
@@ -42,10 +39,6 @@ const CHAPTER_REPAIR: float = 0.5
 var last_summary: Dictionary = {}
 
 var _level: Level
-## The map node being played.
-var _node: MapNode
-## Upgrade choices an event left to make, one after another, before the map comes back.
-var _pending_choices: Array[FightReward] = []
 
 @onready var _run: RunStateNode = get_node("/root/RunState")
 @onready var _save: SaveManagerNode = get_node("/root/SaveManager")
@@ -58,6 +51,7 @@ var _pending_choices: Array[FightReward] = []
 @onready var _chapter_screen: ChapterScreen = %ChapterScreen
 @onready var _feedback_screen: FeedbackScreen = %FeedbackScreen
 @onready var _front_end: FrontEnd = %FrontEnd
+@onready var _map_flow: MapFlow = %MapFlow
 
 
 func _ready() -> void:
@@ -76,13 +70,11 @@ func _ready() -> void:
 	_pause_menu.quit_requested.connect(quit_game)
 	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
 	_front_end.unlock_board = unlock_board
-	_front_end.run_requested.connect(start_run)
-	_front_end.continue_requested.connect(start_run)
+	_front_end.run_requested.connect(_on_new_run_requested)
+	_front_end.continue_requested.connect(continue_run)
 	_front_end.quit_requested.connect(quit_game)
-	_map_screen.node_chosen.connect(_on_node_chosen)
-	_merchant_screen.left.connect(_show_map)
-	_event_screen.choice_picked.connect(_on_event_choice)
-	_event_screen.continued.connect(_next_follow_up)
+	_map_flow.map_shown.connect(_save_run)
+	_map_flow.boss_beaten.connect(_on_chapter_cleared)
 	_chapter_screen.continued.connect(_start_chapter)
 	_feedback_screen.submitted.connect(_save_feedback)
 	if uses_front_end():
@@ -134,27 +126,49 @@ func start_run(seed_value: int = -1) -> void:
 	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile))
 	_start_chapter()
 	if _run.unlocks.has_perk(&"muster"):
-		_offer_muster()
+		_map_flow.offer_muster()
+
+
+## Resumes the saved run on its map (the title's Continue); a fresh run if it can't be.
+func continue_run() -> void:
+	var saved: Dictionary = _save.profile.run
+	_close_screens()
+	if not RunSave.restore_run(_run, saved, run_data, RunUnlocks.for_profile(unlock_board, _save.profile)):
+		_save.profile.run = {}
+		start_run()
+		return
+	_start_chapter(saved)
+
+
+## Plays any node of the chapter's map, reachable or not (the dev menu's jump).
+func jump_to_node(node: MapNode) -> void:
+	_map_flow.jump_to(node)
+
+
+## Starts chapter `index` (0-based) on a fresh level, nothing carried (the dev menu's jump).
+func jump_to_chapter(index: int) -> void:
+	_close_screens()
+	_run.set_chapter(index)
+	_start_chapter()
 
 
 func _close_screens() -> void:
 	_pause_menu.close()
 	_game_over_screen.hide()
 	_victory_screen.hide()
-	_merchant_screen.hide()
-	_event_screen.hide()
+	_map_flow.close()
 	_chapter_screen.hide()
 	_front_end.hide_all()
-	_pending_choices.clear()
 
 
-## Replaces the level with the chapter's (fresh) one and shows its map.
-func _start_chapter() -> void:
+## Replaces the level with the chapter's (fresh) one and shows its map; `resume`: a saved run's state
+## to put back on it (RunSave).
+func _start_chapter(resume: Dictionary = {}) -> void:
 	_free_level()
 	_level = _run.get_chapter().level_scene.instantiate()
 	_level.run_lost.connect(_on_level_run_lost)
-	_level.encounter_cleared.connect(_on_encounter_cleared)
 	add_child(_level)
+	_map_flow.play(_level)
 	_level.apply_unlocks(_run.unlocks)
 	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
 	_level.spawner.wave_cleared.connect(func(_n: int) -> void: _run.waves += 1)
@@ -166,7 +180,9 @@ func _start_chapter() -> void:
 		offers.set_seed(_run.chapter_seed())
 	if _level.events != null:
 		_level.events.set_seed(_run.chapter_seed())
-	_show_map()
+	if not resume.is_empty():
+		RunSave.restore_level(_level, resume)
+	_map_flow.show_map()
 
 
 func _free_level() -> void:
@@ -177,111 +193,11 @@ func _free_level() -> void:
 		_level = null
 
 
-func _show_map() -> void:
-	_level.set_active(false)
-	_map_screen.open(_run.map, _run.get_chapter().display_name, _status())
-
-
-func _status() -> String:
-	var health: HealthComponent = _level.fortress.health
-	var lives: int = _level.hero_lives.get_lives_left() if _level.hero_lives != null else 0
-	var text: String = STATUS_TEXT % [_level.economy.get_gold(), health.current_health, health.max_health, lives]
-	if _level.events != null and not _level.events.get_pending_affixes().is_empty():
-		text = "Next fight: %s    " % ", ".join(_level.events.get_pending_affixes().map(func(a: AffixData) -> String: return a.display_name)) + text
-	return text
-
-
-func _on_node_chosen(node: MapNode) -> void:
-	if _run.map.visit(node):
-		_enter_node(node)
-
-
-## Plays any node of the chapter's map, reachable or not (the dev menu's jump).
-func jump_to_node(node: MapNode) -> void:
-	_run.map.force_visit(node)
-	_enter_node(node)
-
-
-## Starts chapter `index` (0-based) on a fresh level, nothing carried (the dev menu's jump).
-func jump_to_chapter(index: int) -> void:
-	_close_screens()
-	_run.set_chapter(index)
-	_start_chapter()
-
-
-func _enter_node(node: MapNode) -> void:
-	_node = node
-	_map_screen.close()
-	match node.kind:
-		RunMap.Kind.BATTLE, RunMap.Kind.ELITE, RunMap.Kind.BOSS:
-			_start_fight(node.encounter, node.affix, _run.get_chapter().reward_for(node.kind, _run.is_last_chapter()))
-		RunMap.Kind.MERCHANT:
-			_level.merchant.open()
-			_merchant_screen.open(_level.merchant)
-		RunMap.Kind.EVENT, RunMap.Kind.SHRINE:
-			_event_screen.open(node.event, _level.events)
-
-
-## Plays `encounter` on the level with its own twist (an elite's) and any an event left for it.
-func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightReward) -> void:
-	var affixes: Array[AffixData] = []
-	if affix != null:
-		affixes.append(affix)
-	if _level.events != null:
-		affixes.append_array(_level.events.take_fight_affixes())
-	var waves: Array[WaveData] = encounter.build_waves(affixes)
-	var chapter: ChapterData = _run.get_chapter()
-	var scale: float = chapter.fight_health_scale * (chapter.elite_health_scale if _node != null and _node.kind == RunMap.Kind.ELITE else 1.0)
-	for wave: WaveData in waves:
-		wave.health_multiplier *= scale
-	_level.set_active(true)
-	_level.start_encounter(waves, reward)
-
-
-func _on_event_choice(index: int) -> void:
-	var outcome: EventOutcome = _level.events.apply(_node.event.choices[index])
-	if outcome == null:
-		return
-	_pending_choices = outcome.choices.duplicate()
-	if outcome.extra_fight != null:
-		_event_screen.hide()
-		_start_fight(_run.get_chapter().extra_fight(_node.row + 1), null, outcome.extra_fight)  # its reward, then the choices
-		return
-	_event_screen.show_result(outcome.text if not outcome.text.is_empty() else "So be it.")
-
-
-## The next upgrade choice an event left (over the level, like a fight's reward), else the map.
-func _next_follow_up() -> void:
-	if _pending_choices.is_empty():
-		_show_map()
-		return
-	var reward: FightReward = _pending_choices.pop_front()
-	_level.set_active(true)
-	var offer: Array[UpgradeData] = _level.offers.make_relic_offer(reward.relics) if reward.relics > 0 \
-		else _level.offers.make_offer(reward.cards, reward.rare_only)
-	if offer.is_empty():
-		_next_follow_up()
-		return
-	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _next_follow_up(), CONNECT_ONE_SHOT)
-
-
-## The Muster starting choice: 1 of 2 common cards before the first fight, then the map.
-func _offer_muster() -> void:
-	_level.set_active(true)
-	if _level.offers.make_offer(2, false, true).is_empty():
-		_show_map()
-		return
-	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _show_map(), CONNECT_ONE_SHOT)
-
-
-func _on_encounter_cleared() -> void:
-	if _node != null and _node.is_combat():
-		_run.cleared.append({"chapter": _run.chapter_index + 1, "row": _node.row, "kind": RunMap.Kind.keys()[_node.kind].to_lower(),
-			"boss": RunSummary.boss_name(_node.encounter) if _node.kind == RunMap.Kind.BOSS else ""})
-	if _node != null and _node.kind == RunMap.Kind.BOSS:
-		_on_chapter_cleared()
-	else:
-		_next_follow_up()
+## Saves the run where it stands, on the map (not in script mode): Continue resumes it here.
+func _save_run() -> void:
+	if uses_front_end():
+		_save.profile.run = RunSave.capture(_run, _level)
+		_save.save_profile()
 
 
 func _on_chapter_cleared() -> void:
@@ -305,7 +221,7 @@ func _on_chapter_cleared() -> void:
 
 ## The feedback box was filled in: save the report with the run's state as it is now.
 func _save_feedback(note: String, screenshot: Image) -> void:
-	var state: Dictionary = RunSnapshot.capture(_run, _level, _node, _screen_name())
+	var state: Dictionary = RunSnapshot.capture(_run, _level, _map_flow.get_current_node(), _screen_name())
 	_feedback_screen.show_saved(FeedbackRecorder.save(feedback_dir, note, screenshot, state))
 
 
@@ -326,6 +242,7 @@ func _finish_run(result: String) -> Dictionary:
 	last_summary = RunSummary.build(_run, _level, result)
 	last_summary["shard_lines"] = MetaProgress.shard_lines(last_summary, _save.profile)
 	last_summary["shards"] = MetaProgress.finish_run(_save.profile, last_summary)
+	_save.profile.run = {}
 	_save.save_profile()
 	return last_summary
 
@@ -338,6 +255,14 @@ func _after_run() -> void:
 	_front_end.show_summary(last_summary, func() -> void:
 		_close_screens()
 		_free_level())
+
+
+## The War Room's or the summary's new run: a saved run not continued is abandoned first (it pays).
+func _on_new_run_requested() -> void:
+	if not _save.profile.run.is_empty() and RunSave.restore_run(_run, _save.profile.run, run_data,
+			RunUnlocks.for_profile(unlock_board, _save.profile)):
+		_finish_run("abandoned")
+	start_run()
 
 
 ## The pause menu's Restart, "Abandon run" with the front end: the run ends (and pays) as abandoned.

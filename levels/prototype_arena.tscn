@@ -159,7 +159,7 @@ size = Vector2(1500, 100)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
 size = Vector2(100, 1100)
 
-[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers", "offers", "economy", "merchant", "events", "builder")]
+[node name="PrototypeArena" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers", "offers", "economy", "merchant", "events", "builder", "quartermaster")]
 y_sort_enabled = true
 script = ExtResource("1_level")
 fortress = NodePath("Fortress")
@@ -172,6 +172,7 @@ economy = NodePath("Systems/Economy")
 merchant = NodePath("Systems/Merchant")
 events = NodePath("Systems/EventResolver")
 builder = NodePath("Systems/TowerBuilder")
+quartermaster = NodePath("Systems/Quartermaster")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 light_mask = 0

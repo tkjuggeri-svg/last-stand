@@ -223,6 +223,25 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 	return true
 
 
+## Puts a saved tower back on `slot` as it was (M8: resuming a run): built, at `level`, evolved into
+## branch `evolution` (-1: none), `invested` gold in it. Nothing is paid; false if the slot is taken.
+func restore(slot: BuildSlot, data: TowerData, level: int, evolution: int, invested: int) -> bool:
+	if slot == null or data == null or not slot.is_empty():
+		return false
+	var tower: Tower = data.scene.instantiate()
+	tower.data = data
+	tower.modifiers = modifiers
+	tower.invested = invested
+	slot.place(tower)
+	tower.finish_building()
+	tower.set_level(mini(level, data.max_level()))
+	if evolution >= 0 and evolution < data.evolutions.size():
+		tower.evolve(data.evolutions[evolution])
+	refresh_boosts()
+	tower_built.emit(slot, tower)
+	return true
+
+
 ## Takes the slot's tower up a level without paying (an event's gift). Returns false if it can't go up.
 func free_upgrade(slot: BuildSlot) -> bool:
 	if slot == null or slot.is_empty() or slot.tower.is_max_level() or slot.tower.is_building():

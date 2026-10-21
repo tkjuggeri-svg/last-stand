@@ -95,6 +95,15 @@ func _physics_process(delta: float) -> void:
 		_fire()
 
 
+## Skips the construction (a tower put back by a resumed run, M8).
+func finish_building() -> void:
+	if _build_left <= 0.0:
+		return
+	_build_left = 0.0
+	_sprite.play(_anim("idle"))
+	construction_finished.emit()
+
+
 ## The enemy currently aimed at, or null.
 func get_target() -> Enemy:
 	if not _sight.is_valid_target(self, _target):

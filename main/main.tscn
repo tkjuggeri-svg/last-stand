@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://ui/menus/feedback_screen.tscn" id="20_feedback"]
 [ext_resource type="Resource" path="res://data/meta/unlock_board.tres" id="21_board"]
 [ext_resource type="PackedScene" path="res://main/front_end.tscn" id="22_front"]
+[ext_resource type="Script" path="res://main/map_flow.gd" id="23_flow"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -30,6 +31,13 @@ unique_name_in_owner = true
 
 [node name="ChapterScreen" parent="." instance=ExtResource("9_chapter")]
 unique_name_in_owner = true
+
+[node name="MapFlow" type="Node" parent="." node_paths=PackedStringArray("map_screen", "merchant_screen", "event_screen")]
+unique_name_in_owner = true
+script = ExtResource("23_flow")
+map_screen = NodePath("../MapScreen")
+merchant_screen = NodePath("../MerchantScreen")
+event_screen = NodePath("../EventScreen")
 
 [node name="GameOverScreen" parent="." instance=ExtResource("3_game_over")]
 unique_name_in_owner = true

@@ -70,5 +70,7 @@ func chapter_seed() -> int:
 
 func _make_map() -> void:
 	var chapter: ChapterData = get_chapter()
-	var locked: Array[EventData] = unlocks.locked_events if unlocks != null else []
+	var locked: Array[EventData] = []
+	if unlocks != null:
+		locked = unlocks.locked_events
 	map = RunMap.generate(chapter, chapter_seed(), locked) if chapter != null else null

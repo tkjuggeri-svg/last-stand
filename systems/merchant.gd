@@ -41,6 +41,15 @@ var _relic: RelicData = null
 var _relic_sold: bool = false
 
 
+## What a saved run needs to carry on (M8): an event's price for the next visit.
+func save_state() -> Dictionary:
+	return {"next_price_factor": next_price_factor}
+
+
+func load_state(state: Dictionary) -> void:
+	next_price_factor = float(state.get("next_price_factor", 1.0))
+
+
 ## A new visit: fresh cards, the repair available again.
 func open() -> void:
 	_price_factor = next_price_factor

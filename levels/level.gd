@@ -37,6 +37,8 @@ const BOSS_SHAKE_TIME: float = 0.6
 ## Applies the run map's events and shrines to this level.
 @export var events: EventResolver
 @export var builder: TowerBuilder
+## The between-waves gold sinks (a saved run keeps what was bought, M8).
+@export var quartermaster: Quartermaster
 
 var _run_over: bool = false
 var _encounter_mode: bool = false

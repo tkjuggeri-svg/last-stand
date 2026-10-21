@@ -56,6 +56,19 @@ func set_seed(value: int) -> void:
 	_ensure_seeded()
 
 
+## What a saved run needs to carry on (M8: resume from the map): the dice and the rerolls used.
+func save_state() -> Dictionary:
+	_ensure_seeded()
+	return {"rng": str(_rng.state), "rerolls_used": _rerolls_used, "free_rerolls": free_rerolls}
+
+
+func load_state(state: Dictionary) -> void:
+	_ensure_seeded()
+	_rng.state = String(state.get("rng", str(_rng.state))).to_int()
+	_rerolls_used = int(state.get("rerolls_used", 0))
+	free_rerolls = int(state.get("free_rerolls", free_rerolls))
+
+
 ## True if there is anything left to offer.
 func has_cards() -> bool:
 	return not _candidates().is_empty()

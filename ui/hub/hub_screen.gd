@@ -51,6 +51,8 @@ func refresh(profile: SaveProfile, board: UnlockBoard) -> void:
 		"chapter %d, row %d" % [profile.best_chapter, profile.best_row] if profile.best_chapter > 0 else "no run yet",
 		profile.runs, profile.wins,
 		", ".join(profile.bosses) if not profile.bosses.is_empty() else "none yet", profile.shards_total]
+	if not profile.run.is_empty():
+		_records.text += "\n\nA run is saved: Continue it from the title. A new run abandons it."
 
 
 ## The Buy button of unlock `id` (tests).

@@ -50,6 +50,17 @@ func _ready() -> void:
 	fortress.health.health_changed.connect(func(_current: int, _max: int) -> void: changed.emit())
 
 
+## What a saved run needs to carry on (M8): the repairs and lives bought so far (their prices rise).
+func save_state() -> Dictionary:
+	return {"repairs": _repairs, "life_buys": _life_buys}
+
+
+func load_state(state: Dictionary) -> void:
+	_repairs = int(state.get("repairs", 0))
+	_life_buys = int(state.get("life_buys", 0))
+	changed.emit()
+
+
 func repair_cost() -> int:
 	return _priced(repair_base_cost + repair_cost_step * _repairs)
 
