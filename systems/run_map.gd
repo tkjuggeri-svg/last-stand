@@ -18,14 +18,18 @@ const RARE_EVENT_CHANCE: float = 0.4
 var chapter: ChapterData
 ## All nodes, row by row (row 1 first), left to right within a row.
 var nodes: Array[MapNode] = []
+## Events that must not be drawn (not unlocked).
+var _locked_events: Array[EventData] = []
 ## Nodes visited so far, in order (the last one is where the player stands; empty before the first).
 var path: Array[MapNode] = []
 
 
 ## A fresh map for `chapter_data` from `seed_value` (the same seed always gives the same map).
-static func generate(chapter_data: ChapterData, seed_value: int) -> RunMap:
+## `locked_events` never come up (events the player hasn't unlocked yet, M8).
+static func generate(chapter_data: ChapterData, seed_value: int, locked_events: Array[EventData] = []) -> RunMap:
 	var map: RunMap = RunMap.new()
 	map.chapter = chapter_data
+	map._locked_events = locked_events
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = seed_value
 	map._build_rows()
@@ -203,8 +207,8 @@ func _is_mixed_row(row: int) -> bool:
 ## Gives every battle and elite its fight (one of its row's encounters), every elite an affix, and
 ## every event and shrine its scene (no repeats on a map while the pool lasts).
 func _assign_fights(rng: RandomNumberGenerator) -> void:
-	var events: Array[EventData] = chapter.events.duplicate()
-	var shrines: Array[EventData] = chapter.shrines.duplicate()
+	var events: Array[EventData] = chapter.events.filter(func(e: EventData) -> bool: return not _locked_events.has(e))
+	var shrines: Array[EventData] = chapter.shrines.filter(func(e: EventData) -> bool: return not _locked_events.has(e))
 	for node: MapNode in nodes:
 		match node.kind:
 			Kind.BATTLE:
@@ -216,9 +220,9 @@ func _assign_fights(rng: RandomNumberGenerator) -> void:
 			Kind.BOSS:
 				node.encounter = chapter.boss
 			Kind.EVENT:
-				node.event = _draw_scene(events, chapter.events, rng)
+				node.event = _draw_scene(events, chapter.events.filter(func(e: EventData) -> bool: return not _locked_events.has(e)), rng)
 			Kind.SHRINE:
-				node.event = _draw_scene(shrines, chapter.shrines, rng)
+				node.event = _draw_scene(shrines, chapter.shrines.filter(func(e: EventData) -> bool: return not _locked_events.has(e)), rng)
 
 
 ## One scene from `left` (refilled from `pool` once used up), removed so it doesn't come twice. A

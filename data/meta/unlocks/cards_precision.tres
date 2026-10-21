@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/upgrades/piercing.tres" id="r3"]
+[ext_resource type="Resource" path="res://data/upgrades/thorns.tres" id="r4"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"cards_precision"
+display_name = "Cards: Precision"
+description = "Piercing Arrows and Thorned Walls join the upgrade cards."
+cost = 30
+cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4")])

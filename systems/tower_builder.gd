@@ -23,6 +23,7 @@ const UNDER_CONSTRUCTION: String = "Still under construction"
 const NOT_YET: String = "Evolves at level 3"
 const ALREADY_EVOLVED: String = "Already evolved"
 const NO_EVOLUTIONS: String = "Siege Ledger: no evolutions"
+const EVOLUTIONS_LOCKED: String = "Its evolutions are not unlocked yet (the War Room)"
 ## Twin Banners: two towers of the same type at most this far apart share their best level.
 const TWIN_RANGE: float = 330.0
 
@@ -35,6 +36,8 @@ const TWIN_RANGE: float = 330.0
 @export var catalog: Array[TowerData] = []
 @export_range(0.0, 1.0) var sell_refund_ratio: float = 0.5
 
+## What the run may use (M8 unlocks: which towers may evolve); null = everything.
+var unlocks: RunUnlocks = null
 ## Evolutions that cost nothing (a shrine's boon), used by the next ones.
 var free_evolutions: int = 0
 
@@ -117,7 +120,8 @@ func upgrade(slot: BuildSlot) -> bool:
 
 ## The two branches the slot's tower can take now (empty: no tower, below level 3, or evolved).
 func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
-	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level() or not can_evolve():
+	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level() or not can_evolve() \
+			or not evolution_unlocked(slot.tower.data):
 		return []
 	return slot.tower.data.evolutions.duplicate()
 
@@ -125,6 +129,11 @@ func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
 ## False under the Siege Ledger relic: no tower may evolve.
 func can_evolve() -> bool:
 	return not RunModifiers.relic(modifiers, RunModifiers.RELIC_SIEGE_LEDGER)
+
+
+## False if `data`'s evolutions are not unlocked yet in this run (M8).
+func evolution_unlocked(data: TowerData) -> bool:
+	return unlocks == null or unlocks.can_evolve(data)
 
 
 ## Gold for an evolution (tower-upgrade discounts apply; 0 while a free one is owed).
@@ -145,6 +154,9 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 		return false
 	if not can_evolve():
 		upgrade_failed.emit(slot, NO_EVOLUTIONS)
+		return false
+	if not evolution_unlocked(tower.data):
+		upgrade_failed.emit(slot, EVOLUTIONS_LOCKED)
 		return false
 	if not tower.is_max_level() or index < 0 or index >= tower.data.evolutions.size():
 		upgrade_failed.emit(slot, NOT_YET)

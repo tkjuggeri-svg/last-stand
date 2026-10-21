@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/towers/frost.tres" id="r3"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"evolutions_frost"
+display_name = "Evolutions: Frost"
+description = "A level-3 Frost tower can evolve: Glacier Spire or Shatter Shrine."
+cost = 70
+requires = Array[StringName]([&"evolutions_archer"])
+evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

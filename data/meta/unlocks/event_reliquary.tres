@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/event_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/events/drowned_reliquary.tres" id="r3"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"event_reliquary"
+display_name = "Event: The Drowned Reliquary"
+description = "A rare event that offers relics for a price."
+cost = 60
+requires = Array[StringName]([&"relics_1"])
+events = Array[ExtResource("s2")]([ExtResource("r3")])

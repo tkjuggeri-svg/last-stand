@@ -101,6 +101,19 @@ func carry_in(carry: ChapterCarry, repair: float) -> void:
 	health.set_current_health(carry.fortress_health + (roundi(health.max_health * repair) if fortress.can_repair() else 0))
 
 
+## Holds back what the run hasn't unlocked (M8): towers in the build menu, card and relic pools, which
+## towers may evolve, and the Drill's free reroll. Call once it is ready, before the first fight.
+func apply_unlocks(unlocks: RunUnlocks) -> void:
+	if unlocks == null:
+		return
+	builder.catalog = unlocks.filter_towers(builder.catalog)
+	builder.unlocks = unlocks
+	if offers != null:
+		offers.pool = unlocks.filter_cards(offers.pool)
+		offers.relic_pool = unlocks.filter_relics(offers.relic_pool)
+		offers.free_rerolls = 1 if unlocks.has_perk(&"drill") else 0
+
+
 ## Stops the level as won (the run map's last boss fell): everything freezes, like at Game Over.
 func end_run_won() -> void:
 	if _stop():

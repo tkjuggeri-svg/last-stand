@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/upgrades/hellfire.tres" id="r3"]
+[ext_resource type="Resource" path="res://data/upgrades/cinder_dash.tres" id="r4"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"cards_fire"
+display_name = "Cards: Fire"
+description = "Hellfire Shells and Cinder Dash join the upgrade cards."
+cost = 60
+requires = Array[StringName]([&"brazier"])
+cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4")])

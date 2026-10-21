@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/upgrades/treasury.tres" id="r3"]
+[ext_resource type="Resource" path="res://data/upgrades/war_tax.tres" id="r4"]
+[ext_resource type="Resource" path="res://data/upgrades/guild.tres" id="r5"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"cards_gold"
+display_name = "Cards: Gold"
+description = "Treasury, War Tax and Guild Discount join the upgrade cards."
+cost = 70
+cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4"), ExtResource("r5")])

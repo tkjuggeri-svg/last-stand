@@ -11,9 +11,11 @@
 [ext_resource type="PackedScene" path="res://ui/map/chapter_screen.tscn" id="9_chapter"]
 
 [ext_resource type="PackedScene" path="res://ui/menus/feedback_screen.tscn" id="20_feedback"]
+[ext_resource type="Resource" path="res://data/meta/unlock_board.tres" id="21_board"]
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
 run_data = ExtResource("2_run")
+unlock_board = ExtResource("21_board")
 
 [node name="MapScreen" parent="." instance=ExtResource("6_map")]
 unique_name_in_owner = true

@@ -237,9 +237,11 @@ Relics are rarer than cards and change a **rule** of the run, not just a stat (p
   - **Length:** a won run is about 10.5 minutes of fighting, about 18 minutes with a player's ~30 s per build phase and upgrade choice; more for a player who fights slower than the bot.
 - Earlier tuning (M4, M5: 10 waves, no bosses) is in git history.
 
-### 4.8 Meta progression (later milestone)
-- Hub screen between runs. Spend Soul Shards to unlock new towers, upgrades in the pool, a second hero, and small permanent bonuses.
-- Saved to `user://` via a single `SaveManager`.
+### 4.8 Meta progression (M8; design and decisions: `docs/M8_META.md`)
+- **Soul Shards** are paid by every run, lost and abandoned ones too, for its progress (`MetaProgress`): 2 per battle won, 6 per elite, 15 / 25 for chapter 1's / 2's boss, 5 per chapter cleared, 30 for a won run, and a one-off 10 the first time each boss is beaten and each chapter reached. A run lost at chapter 1 row 6 pays about 16; a won run about 110 (140 the first time).
+- **Unlocks** add content and options, never permanent power (chapter 1's balance stays valid): `data/meta/unlock_board.tres` lists the first run's kit (Archer, Cannon, Frost; 13 cards; 5 relics; every event but the rare Drowned Reliquary; no evolutions) and 17 unlocks (1,175 shards in all) in the War Room's order: the Brazier and the Bone Ballista, each tower's evolutions, 4 card packs, 3 relic packs, the Reliquary event, and two perks: **Muster** (a starting choice: 1 of 2 common cards before the first fight) and **Drill** (a convenience: one free card reroll in each chapter). Some need another first (`UnlockData.requires`).
+- **Applied to a run:** `RunUnlocks` (from the board and the profile, held by `RunState`) filters each chapter's level (`Level.apply_unlocks`: the build menu, the card and relic pools, which towers may evolve, Drill's reroll) and the map's events.
+- **The save** (`SaveManager`, `SaveProfile`): shards, unlocks, records (runs, wins, best chapter and row, bosses, the last 10 runs), one-off rewards paid, hints seen, the run in progress; versioned (`SaveProfile.migrate`) and written atomically with a backup.
 
 ## 5. Controls (PC)
 

@@ -266,7 +266,7 @@ level).
 | # | Question | Decision | From |
 |---|---|---|---|
 | Q1 | Resume a run after quitting or a crash? | **Yes, from the map**: the run is saved each time the map is shown; Continue on the title screen resumes it there (a fight in progress is replayed from its start). | recommendation |
-| Q2 | Permanent stat bonuses? | **None.** The user's rule: no large permanent power boosts. The proposal's Stores (starting gold) and Mortar (fortress HP) are dropped. What stays: one **convenience** (*Drill*: one free card reroll per run) and one **starting choice** (*Muster*: choose 1 of 2 common cards before the first fight), both unlocks. | user's rule + recommendation |
+| Q2 | Permanent stat bonuses? | **None.** The user's rule: no large permanent power boosts. The proposal's Stores (starting gold) and Mortar (fortress HP) are dropped. What stays: one **convenience** (*Drill*: one free card reroll in each chapter) and one **starting choice** (*Muster*: choose 1 of 2 common cards before the first fight), both unlocks. | user's rule + recommendation |
 | Q3 | Does a lost run pay shards? | **Yes, for all its progress** (section 1.1), also an abandoned one. | user's rule |
 | Q4 | Hub: menu screen or walkable camp? | **A menu screen** (the War Room), with one hub character's line reacting to the last run (the roadmap's M8 item, kept small). | recommendation |
 | Q5 | How long until everything is unlocked? | About **1,200 shards** of unlocks, roughly 25–35 runs. | recommendation |
@@ -278,3 +278,21 @@ level).
 | — | Save format version | **Version 2**; version 1 is the proposal's format with the dropped `bonuses`: loading it refunds their shards. `tests/fixtures/save_v1.json` is loaded by the save test. | Claude |
 | — | Old Game Over / Victory screens | **Kept**, their button now reads Continue and leads to the run summary (shards, path, stats), then the hub. The pause menu's Restart becomes **Abandon run** (a loss, shards paid). | Claude |
 | — | Tests and tools | Under `--script` (tests, the balance tool) the profile has everything unlocked, nothing is written to disk and Main boots straight into a run, as before M8; the meta tests switch this off. | Claude |
+
+## 11. The first-run kit, measured
+
+`map_balance.gd -- --seeds=1-8 --path=balanced --plan=mixed` from the same build, everything unlocked
+(what script mode gives) against a fresh profile (`--profile=first`: Archer, Cannon, Frost, 13 cards,
+5 relics, no evolutions). Rows cleared per run, of 16 (chapter 1 only; the bot and the idle hero both
+fall in chapter 1 on every seed, as before M8):
+
+| Hero | Everything unlocked | First-run kit | Difference |
+|---|---|---|---|
+| bot | 5.1 | 4.8 | −0.3 (two seeds fall at row 6 instead of row 8) |
+| idle | 4.2 | 3.8 | −0.4 (one seed at row 3 instead of 6) |
+
+The mixed plan's Brazier and Ballista are skipped with the first kit (their slots get the kit's towers),
+so this is close to the worst case. A drop of under half a row is inside the seed-to-seed spread (rows 3
+to 8 either way), so **the kit stays as it is**: no wave is eased and the Brazier stays the first, cheap
+unlock (25 shards, one or two runs). Revisit if playtests show first runs ending much earlier than later
+ones.

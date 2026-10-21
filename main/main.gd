@@ -27,8 +27,15 @@ const CHAPTER_REPAIR: float = 0.5
 @export var run_data: RunData
 ## The run's seed (maps, offers); -1 = a random one each run.
 @export var run_seed: int = -1
+## Start on the title screen (M8); false starts a run at once (tests). Script mode always starts a run.
+@export var boot_to_title: bool = true
+## The unlock board (M8): what a run may use comes from it and the player's profile.
+@export var unlock_board: UnlockBoard
 ## Where feedback reports are saved (tests point it elsewhere).
 @export var feedback_dir: String = FeedbackRecorder.DEFAULT_DIR
+
+## The summary of the last run that ended (M8; empty before), with its shards.
+var last_summary: Dictionary = {}
 
 var _level: Level
 ## The map node being played.
@@ -37,6 +44,7 @@ var _node: MapNode
 var _pending_choices: Array[FightReward] = []
 
 @onready var _run: RunStateNode = get_node("/root/RunState")
+@onready var _save: SaveManagerNode = get_node("/root/SaveManager")
 @onready var _game_over_screen: GameOverScreen = %GameOverScreen
 @onready var _victory_screen: VictoryScreen = %VictoryScreen
 @onready var _pause_menu: PauseMenu = %PauseMenu
@@ -102,8 +110,10 @@ func get_map() -> RunMap:
 func start_run(seed_value: int = -1) -> void:
 	_close_screens()
 	var chosen: int = seed_value if seed_value >= 0 else (run_seed if run_seed >= 0 else randi())
-	_run.start_run(run_data, chosen)
+	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile))
 	_start_chapter()
+	if _run.unlocks.has_perk(&"muster"):
+		_offer_muster()
 
 
 func _close_screens() -> void:
@@ -126,6 +136,9 @@ func _start_chapter() -> void:
 	_level.run_lost.connect(_on_level_run_lost)
 	_level.encounter_cleared.connect(_on_encounter_cleared)
 	add_child(_level)
+	_level.apply_unlocks(_run.unlocks)
+	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
+	_level.spawner.wave_cleared.connect(func(_n: int) -> void: _run.waves += 1)
 	if _run.carry != null:
 		_level.carry_in(_run.carry, CHAPTER_REPAIR)
 		_run.carry = null
@@ -249,7 +262,19 @@ func _reward_for(node: MapNode) -> FightReward:
 	return FightReward.make(chapter.battle_cards)
 
 
+## The Muster starting choice: 1 of 2 common cards before the first fight, then the map.
+func _offer_muster() -> void:
+	_level.set_active(true)
+	if _level.offers.make_offer(2, false, true).is_empty():
+		_show_map()
+		return
+	_level.offers.picked.connect(func(_data: UpgradeData) -> void: _show_map(), CONNECT_ONE_SHOT)
+
+
 func _on_encounter_cleared() -> void:
+	if _node != null and _node.is_combat():
+		_run.cleared.append({"chapter": _run.chapter_index + 1, "row": _node.row, "kind": RunMap.Kind.keys()[_node.kind].to_lower(),
+			"boss": RunSummary.boss_name(_node.encounter) if _node.kind == RunMap.Kind.BOSS else ""})
 	if _node != null and _node.kind == RunMap.Kind.BOSS:
 		_on_chapter_cleared()
 	else:
@@ -259,6 +284,7 @@ func _on_encounter_cleared() -> void:
 func _on_chapter_cleared() -> void:
 	if _run.is_last_chapter():
 		_level.end_run_won()
+		_finish_run("won")
 		_victory_screen.open(VICTORY_TEXT, _run.seed_value)
 		return
 	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
@@ -290,5 +316,15 @@ func _screen_name() -> String:
 	return "fight"
 
 
+## The run ended: its summary, its shards paid into the profile (saved). Returns the summary.
+func _finish_run(result: String) -> Dictionary:
+	last_summary = RunSummary.build(_run, _level, result)
+	last_summary["shard_lines"] = MetaProgress.shard_lines(last_summary, _save.profile)
+	last_summary["shards"] = MetaProgress.finish_run(_save.profile, last_summary)
+	_save.save_profile()
+	return last_summary
+
+
 func _on_level_run_lost(reason: Level.LossReason) -> void:
+	_finish_run("lost")
 	_game_over_screen.open(LOSS_TEXT[reason], _run.seed_value)

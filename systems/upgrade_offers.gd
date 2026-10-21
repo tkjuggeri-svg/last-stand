@@ -26,6 +26,8 @@ signal picked(data: UpgradeData)
 @export var reroll_cost_step: int = 25
 ## Seed of the run's RNG; -1 picks a random one.
 @export var seed_value: int = -1
+## Rerolls that cost nothing (the Drill unlock), used before paid ones.
+@export var free_rerolls: int = 0
 
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _offer: Array[UpgradeData] = []
@@ -37,6 +39,8 @@ var _size: int = 3
 var _rare_only: bool = false
 ## The open offer is of relics (a reroll draws relics again).
 var _relics: bool = false
+## The open offer is of common cards only (the Muster starting choice).
+var _common_only: bool = false
 
 
 func _ready() -> void:
@@ -67,9 +71,10 @@ func get_offer() -> Array[UpgradeData]:
 
 ## Draws a new offer (replacing any open one) and reports it: `size` cards (-1 = offer_size), only
 ## rare ones if `rare_only` (the reward of an elite or a boss).
-func make_offer(size: int = -1, rare_only: bool = false) -> Array[UpgradeData]:
+func make_offer(size: int = -1, rare_only: bool = false, common_only: bool = false) -> Array[UpgradeData]:
 	_size = offer_size if size < 0 else size
 	_rare_only = rare_only
+	_common_only = common_only
 	_relics = false
 	_offer = _draw()
 	_rerolled = false
@@ -117,14 +122,16 @@ func roll(p: float) -> bool:
 
 ## Draws `count` cards for a shop (a merchant's stock): weighted like an offer, but no offer is opened.
 func draw_cards(count: int) -> Array[UpgradeData]:
-	var keep: Array = [_size, _rare_only, _relics]
+	var keep: Array = [_size, _rare_only, _relics, _common_only]
 	_size = count
 	_rare_only = false
 	_relics = false
+	_common_only = false
 	var cards: Array[UpgradeData] = _draw()
 	_size = keep[0]
 	_rare_only = keep[1]
 	_relics = keep[2]
+	_common_only = keep[3]
 	return cards
 
 
@@ -140,7 +147,7 @@ func pick(index: int) -> bool:
 
 
 func get_reroll_cost() -> int:
-	return reroll_base_cost + reroll_cost_step * _rerolls_used
+	return 0 if free_rerolls > 0 else reroll_base_cost + reroll_cost_step * _rerolls_used
 
 
 ## One reroll per offer, if the gold allows.
@@ -152,7 +159,10 @@ func can_reroll() -> bool:
 func reroll() -> bool:
 	if not can_reroll() or not economy.try_spend(get_reroll_cost()):
 		return false
-	_rerolls_used += 1
+	if free_rerolls > 0:
+		free_rerolls -= 1
+	else:
+		_rerolls_used += 1
 	_offer = _draw()
 	_rerolled = true
 	offer_made.emit(get_offer())
@@ -178,7 +188,8 @@ func _ensure_seeded() -> void:
 func _candidates(rare_only: bool = false) -> Array[UpgradeData]:
 	var found: Array[UpgradeData] = []
 	for data: UpgradeData in pool:
-		if data != null and modifiers.can_take(data) and (not rare_only or data.rarity == UpgradeData.Rarity.RARE):
+		if data != null and modifiers.can_take(data) and (not rare_only or data.rarity == UpgradeData.Rarity.RARE) \
+				and (not _common_only or data.rarity == UpgradeData.Rarity.COMMON):
 			found.append(data)
 	return found
 

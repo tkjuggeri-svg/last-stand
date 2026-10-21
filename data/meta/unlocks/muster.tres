@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"muster"
+display_name = "Muster"
+description = "A starting choice: before the first fight of a run, choose 1 of 2 common upgrade cards."
+cost = 75
+perk = &"muster"

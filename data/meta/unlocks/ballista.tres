@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="s2"]
+[ext_resource type="Resource" path="res://data/towers/ballista.tres" id="r3"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"ballista"
+display_name = "Bone Ballista"
+description = "A long-range tower whose bolts pierce a whole line."
+cost = 45
+towers = Array[ExtResource("s2")]([ExtResource("r3")])

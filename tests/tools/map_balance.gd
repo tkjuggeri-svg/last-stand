@@ -4,13 +4,15 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
 ## start (Hellfire Shells, Cinder Dash, Ember Heart); --fire=without takes them out of every offer
 ## and shop. --relics=<ids> grants those relics at the start and offers no other (none: no relics at
-## all), to measure one relic against none. The summary ends with the rows cleared per run (a won run:
+## all), to measure one relic against none. --profile=first plays with a fresh profile's kit (M8: the
+## starting towers, cards and relics only; the plan skips towers it doesn't have). The summary ends
+## with the rows cleared per run (a won run:
 ## every row of both chapters).
 ## --protect-ch1 keeps the fortress and the lives full in chapter 1 only, so every run reaches chapter 2
 ## with a real chapter-1 build (towers, upgrades, gold) and chapter 2 is measured on its own. --trace
@@ -77,6 +79,8 @@ var _protect_ch1: bool = false
 var _trace: bool = false
 ## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
 var _fire: String = ""
+## --profile=first: a fresh profile (the first run's kit) instead of everything unlocked.
+var _first_kit: bool = false
 ## --relics: the only relics of the run (granted at the start); null = drawn as usual.
 var _relics: Variant = null
 ## Per relic id: [times offered, times taken], over every run.
@@ -109,6 +113,8 @@ func _initialize() -> void:
 			_trace = true
 		elif arg.begins_with("--fire="):
 			_fire = arg.trim_prefix("--fire=")
+		elif arg == "--profile=first":
+			_first_kit = true
 		elif arg.begins_with("--relics="):
 			var ids: String = arg.trim_prefix("--relics=")
 			_relics = [] if ids == "none" else Array(ids.split(","))
@@ -131,6 +137,8 @@ func _initialize() -> void:
 
 
 func _play(seed_value: int) -> String:
+	if _first_kit:
+		(root.get_node("SaveManager") as SaveManagerNode).profile = SaveProfile.new()
 	var main: Node = (load(MAIN) as PackedScene).instantiate()
 	main.set("run_seed", seed_value)
 	root.add_child(main)
@@ -346,8 +354,10 @@ func _buy(level: Level, plan: Array, next: int, stats: Dictionary) -> int:
 				stats["evos"] += 1
 				return next + 1
 		_:
+			if not builder.catalog.any(func(d: TowerData) -> bool: return String(d.id) == step[0]):
+				return next + 1  # not in this run's kit (--profile=first): skip it
 			for data: TowerData in builder.catalog:
-				if String(data.id) == step[0] and economy.can_afford(data.cost) and builder.build(slot, data):
+				if String(data.id) == step[0] and economy.can_afford(builder.build_cost(data)) and builder.build(slot, data):
 					return next + 1
 	return next
 
