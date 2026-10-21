@@ -71,3 +71,11 @@ const MARSH_GRASS: Array[Color] = [Color("141b13"), Color("192317"), Color("1f2b
 ## Dry reeds and cattails (ochre, the marsh's light accent against the water).
 const REED: Array[Color] = [Color("26240f"), Color("3d3a1b"), Color("5a5428"), Color("7b7037"), Color("a29149")]
 const LILY: Array[Color] = [Color("17301b"), Color("27492a"), Color("3d6838"), Color("5c8a4a")]
+## The Bloater: a drowned corpse swollen with marsh gas, pallid green-grey skin stretched tight.
+const BLOAT: Array[Color] = [Color("1f2622"), Color("38463c"), Color("566a58"), Color("7a9277"), Color("a3b899"), Color("cfdcc0")]
+## Marsh gas: the glowing sacs on a Bloater and the cloud it bursts into.
+const GAS: Array[Color] = [Color("3e4a14"), Color("6d861f"), Color("a4c437"), Color("d6ec74"), Color("f4fbc4")]
+## The Mire Priest's sodden sackcloth robe (ochre: it must pop off the marsh as a priority target).
+const PRIEST_ROBE: Array[Color] = [Color("2a2213"), Color("4a3c1d"), Color("6f5a2a"), Color("96803c"), Color("bda656"), Color("dccb84")]
+## The Shieldbearer's rust-eaten armour and its tower shield's tarred planks.
+const RUST: Array[Color] = [Color("24171a"), Color("432820"), Color("6a3c26"), Color("94582f"), Color("b97b45")]

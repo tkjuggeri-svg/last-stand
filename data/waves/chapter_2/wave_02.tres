@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
-[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/bloater.tres" id="2_bloater"]
 [ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
 [ext_resource type="Resource" path="res://data/enemies/hound.tres" id="5_hound"]
@@ -31,8 +31,8 @@ delay = 2.0
 
 [sub_resource type="Resource" id="Resource_g3"]
 script = ExtResource("1_group")
-enemy = ExtResource("2_brute")
-count = 4
+enemy = ExtResource("2_bloater")
+count = 3
 interval = 5.0
 delay = 8.0
 
@@ -47,6 +47,6 @@ delay = 10.0
 [resource]
 script = ExtResource("9_wave")
 health_multiplier = 0.85
-gold_multiplier = 0.61
+gold_multiplier = 0.65
 speed_multiplier = 1.05
 groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4")])

@@ -472,6 +472,84 @@ const FROST_FX: Dictionary = {
 	"anims": [["frost_burst", 0, 5, 16.0, false], ["frost_aura", 1, 4, 6.0, true]],
 }
 
+## Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its death bursts) and
+## its Bloatlings (24x24, the same creature drawn small); the Mire Priest (its heal: 0-3 the staff
+## rises, the telegraph; 4-5 the pulse); the Shieldbearer (its shield always toward where it walks).
+const BLOATER: Dictionary = {
+	"png": "res://assets/sprites/enemies/bloater.png",
+	"frames": "res://entities/enemies/bloater_frames.tres",
+	"size": Vector2i(40, 40),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 7.0, true],
+		["walk_up", 4, 6, 7.0, true],
+		["walk_side", 5, 6, 7.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 10.0, false],
+		["attack_up", 8, 6, 10.0, false],
+		["attack_side", 9, 6, 10.0, false],
+	],
+}
+
+const BLOATLING: Dictionary = {
+	"png": "res://assets/sprites/enemies/bloatling.png",
+	"frames": "res://entities/enemies/bloatling_frames.tres",
+	"size": Vector2i(24, 24),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 14.0, true],
+		["walk_up", 4, 6, 14.0, true],
+		["walk_side", 5, 6, 14.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 18.0, false],
+		["attack_up", 8, 6, 18.0, false],
+		["attack_side", 9, 6, 18.0, false],
+	],
+}
+
+const MIRE_PRIEST: Dictionary = {
+	"png": "res://assets/sprites/enemies/mire_priest.png",
+	"frames": "res://entities/enemies/mire_priest_frames.tres",
+	"size": Vector2i(32, 32),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 8.0, true],
+		["walk_up", 4, 6, 8.0, true],
+		["walk_side", 5, 6, 8.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 12.0, false],
+		["attack_up", 8, 6, 12.0, false],
+		["attack_side", 9, 6, 12.0, false],
+		["heal_down", 10, 6, 6.0, false],
+		["heal_up", 11, 6, 6.0, false],
+		["heal_side", 12, 6, 6.0, false],
+	],
+}
+
+const SHIELDBEARER: Dictionary = {
+	"png": "res://assets/sprites/enemies/shieldbearer.png",
+	"frames": "res://entities/enemies/shieldbearer_frames.tres",
+	"size": Vector2i(32, 32),
+	"anims": [
+		["idle_down", 0, 4, 6.0, true],
+		["idle_up", 1, 4, 6.0, true],
+		["idle_side", 2, 4, 6.0, true],
+		["walk_down", 3, 6, 9.0, true],
+		["walk_up", 4, 6, 9.0, true],
+		["walk_side", 5, 6, 9.0, true],
+		["death", 6, 7, 12.0, false],
+		["attack_down", 7, 6, 12.0, false],
+		["attack_up", 8, 6, 12.0, false],
+		["attack_side", 9, 6, 12.0, false],
+	],
+}
+
 ## Rings around the hero wading in marsh water (marsh_art.gd), 32x16 art, looping.
 const RIPPLE: Dictionary = {
 	"png": "res://assets/sprites/effects/ripple.png",
@@ -481,7 +559,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [RIPPLE, HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

@@ -8,6 +8,8 @@ extends CharacterBody2D
 ## or attacking), make it vulnerable (more damage taken) and drag it back along its lane: EnemyStatus
 ## keeps those effects.
 ## Dies when its HP runs out; is used up when its FortressHitbox reaches the fortress.
+## A shielded enemy (EnemyData.shield_arc, the Shieldbearer) blocks tower shots that come at its front
+## (receive_shot): it faces the way it walks, or its target while it fights.
 ## Stats, body size and animations come from an EnemyData resource (one scene for every enemy type).
 ## Visuals only follow the gameplay state.
 
@@ -19,6 +21,8 @@ signal reached_fortress(enemy: Enemy)
 signal attack_started(enemy: Enemy)
 ## Its ability calls up `data` at `at` (the WaveSpawner adds it to the wave, on this enemy's lane).
 signal summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2)
+## Its shield stopped a tower shot (nothing was taken).
+signal shot_blocked(enemy: Enemy)
 
 ## How far ahead on the lane the enemy aims, in pixels. Aiming ahead (instead of following
 ## a fixed position) lets it find its way back to the lane if something pushes it off.
@@ -45,6 +49,9 @@ var _is_finished: bool = false
 var _lane_offset: float = 0.0
 var _lane_offset_frame: int = -1
 var _ability: EnemyAbility
+## The way it faces (its shield's side): where it walks, or toward what it attacks.
+var _heading: Vector2 = Vector2.DOWN
+var _last_health: int = 0
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -60,6 +67,7 @@ var _ability: EnemyAbility
 func _ready() -> void:
 	assert(data != null, "Enemy needs EnemyData: %s" % get_path())
 	_health.setup(maxi(roundi(data.max_health * health_multiplier), 1))
+	_last_health = _health.current_health
 	_fortress_hitbox.damage = data.fortress_damage
 	_attack_hitbox.damage = data.hero_damage
 	_apply_body(data.body_radius)
@@ -93,8 +101,13 @@ func _physics_process(delta: float) -> void:
 	_attack.step(delta)
 	if is_attacking() or has_target() or is_sieging():
 		velocity = Vector2.ZERO  # stand and fight
+		var aim: Vector2 = _attack.get_aim_point() - global_position
+		if not aim.is_zero_approx():
+			_heading = aim.normalized()
 	elif lane != null:
 		velocity = _direction_along_lane() * get_move_speed()
+		if not velocity.is_zero_approx():
+			_heading = velocity.normalized()
 		move_and_slide()
 	else:
 		velocity = Vector2.ZERO
@@ -194,6 +207,40 @@ func receive_hit(hitbox: Hitbox) -> bool:
 	return is_alive() and _hurtbox.receive_hit(hitbox)
 
 
+## A tower shot flying along `travel`: a shield facing it blocks it (false, shot_blocked), anything
+## else takes it like receive_hit. Blasts, burning ground, arrows falling from the sky and the hero's
+## sword are not shots: they always get through.
+func receive_shot(hitbox: Hitbox, travel: Vector2) -> bool:
+	if not is_alive():
+		return false
+	if blocks_shot(travel):
+		shot_blocked.emit(self)
+		_look.show_block()
+		return false
+	return _hurtbox.receive_hit(hitbox)
+
+
+## True if a shot flying along `travel` hits its shield (it comes at its front, within the arc).
+func blocks_shot(travel: Vector2) -> bool:
+	return data.shield_blocks(travel, _heading)
+
+
+## The way it faces (where its shield is).
+func get_heading() -> Vector2:
+	return _heading
+
+
+## Healed by `amount` (a Mire Priest's pulse): shown in green, never above its max HP.
+func heal(amount: int) -> void:
+	if not is_alive():
+		return
+	var before: int = _health.current_health
+	_health.heal(amount)
+	_last_health = _health.current_health
+	if _health.current_health > before:
+		_look.show_heal(_health.current_health - before, _health.current_health, _health.max_health)
+
+
 ## Slows movement to `factor` of normal speed for `duration` seconds. Slows never stack: the strongest
 ## factor applies and the longest remaining time is kept; when it runs out, speed is normal again.
 func apply_slow(factor: float, duration: float) -> void:
@@ -225,12 +272,16 @@ func _update_animation() -> void:
 		_sprite.play_state("walk")
 
 
-## Damage feedback (health_changed only fires on damage).
+## Damage feedback (a heal is shown by heal()).
 func _on_health_changed(current_health: int, max_health: int) -> void:
-	_look.show_hit(current_health, max_health)
+	if current_health < _last_health:
+		_look.show_hit(current_health, max_health)
+	_last_health = current_health
 
 
 func _on_health_died() -> void:
+	if _ability != null:
+		_ability.on_owner_died()  # before `died`: what it leaves behind (a Bloater's young) joins the wave first
 	_finish(died)
 
 

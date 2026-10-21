@@ -3,8 +3,8 @@
 # gold. Run from the project folder: python3 tools/make_waves.py
 # The .tres files are the game's data; edit this table (not the files) and rerun, so the HP curve and
 # the gold scale (GOLD_TARGET: the kill gold each wave's regulars pay) stay consistent.
-HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
-GOLD = {"ghoul": 8, "hound": 4, "brute": 20, "cultist": 10, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
+HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "bloater": 110, "mire_priest": 34, "shieldbearer": 90, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
+GOLD = {"ghoul": 8, "hound": 4, "brute": 20, "cultist": 10, "bloater": 14, "mire_priest": 16, "shieldbearer": 14, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
 # Kill gold of each wave's regulars (bosses pay their own): None = unscaled (waves 1-5).
 GOLD_TARGET = [None, None, None, None, None, 250, 260, 280, 300, 270, 310, 320, 330, 340, 350]
 # Move-speed scale of each wave's regulars (bosses move as authored).
@@ -31,26 +31,33 @@ WAVES = [
  (2.35, [("lich", 1, 1.0, W, 14), ("ghoul", 34, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 0), ("ghoul", 20, 0.8, S, 16), ("hound", 30, 0.4, S, 2), ("hound", 20, 0.4, NE, 28), ("brute", 8, 4.0, NE, 4), ("brute", 8, 4.5, W, 22), ("brute", 6, 5.0, S, 10), ("cultist", 6, 1.6, W, 6), ("cultist", 6, 1.6, S, 8), ("cultist", 5, 1.6, NE, 14), ("cultist", 4, 2.0, W, 30)]),
 ]
 
-# Chapter 2 (M7): ramps up from chapter 1's end (docs/M7_RUN_MAP.md 4.): HP x0.7 -> x3.8 (M7.5: the
-# first rows start lower, since only 40% of the towers' cost carries over and the defence is rebuilt), speed x1.05 ->
-# x1.18, every lane pressed from the first wave, more Brutes and Cultists, the Tollkeeper in wave 15.
+# Chapter 2 (M7, M7.5): ramps up from chapter 1's end (docs/M7_RUN_MAP.md 4.): HP x0.7 -> x3.8 (M7.5:
+# the first rows start lower, since only 40% of the towers' cost carries over and the defence is
+# rebuilt), speed x1.05 -> x1.18, every lane pressed from the first wave, the Tollkeeper in wave 15.
+# M7.5: its own enemies arrive one by one (Bloater wave 2, Mire Priest wave 4, Shieldbearer wave 6),
+# taking the place of some Ghouls and Brutes: harder enemies, not just more HP.
 # Rows 1-6 of its map play waves 1-12, its boss fight waves 13-15.
 WAVES_2 = [
+ # Row 1: the marsh's familiar dead, then the first Bloaters (wave 2).
  (0.7, [("ghoul", 24, 0.8, W, 0), ("ghoul", 12, 0.9, S, 4), ("hound", 16, 0.45, NE, 4), ("brute", 3, 6.0, S, 6), ("cultist", 3, 2.0, W, 8)]),
- (0.85, [("ghoul", 26, 0.8, W, 0), ("ghoul", 14, 0.9, S, 4), ("hound", 18, 0.45, NE, 2), ("brute", 4, 5.0, W, 8), ("cultist", 4, 1.8, S, 10)]),
- (0.95, [("ghoul", 28, 0.75, W, 0), ("ghoul", 14, 0.9, NE, 10), ("hound", 20, 0.4, S, 0), ("brute", 5, 5.0, NE, 6), ("cultist", 4, 1.8, W, 8), ("cultist", 3, 2.0, NE, 14)]),
- (1.1, [("ghoul", 26, 0.75, NE, 0), ("ghoul", 22, 0.8, W, 4), ("hound", 22, 0.4, S, 2), ("brute", 6, 4.5, W, 6), ("cultist", 5, 1.8, S, 10), ("cultist", 3, 2.0, W, 16)]),
- (1.3, [("ghoul", 30, 0.75, W, 0), ("ghoul", 20, 0.8, S, 0), ("hound", 24, 0.4, NE, 4), ("brute", 6, 4.5, S, 8), ("brute", 3, 6.0, NE, 14), ("cultist", 5, 1.7, W, 6), ("cultist", 4, 1.7, NE, 14)]),
- (1.5, [("ghoul", 32, 0.7, W, 0), ("ghoul", 22, 0.8, NE, 0), ("hound", 26, 0.4, S, 2), ("brute", 7, 4.5, W, 6), ("brute", 4, 5.0, NE, 16), ("cultist", 6, 1.7, S, 8), ("cultist", 4, 1.8, W, 18)]),
- (1.75, [("ghoul", 34, 0.7, W, 0), ("ghoul", 24, 0.75, S, 2), ("hound", 28, 0.4, NE, 0), ("hound", 14, 0.4, W, 20), ("brute", 8, 4.0, S, 6), ("brute", 4, 5.0, W, 16), ("cultist", 6, 1.6, NE, 8), ("cultist", 4, 1.8, S, 18)]),
- (2.0, [("ghoul", 36, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 2), ("hound", 30, 0.35, S, 0), ("hound", 16, 0.4, W, 22), ("brute", 8, 4.0, NE, 6), ("brute", 5, 5.0, S, 16), ("cultist", 7, 1.6, W, 6), ("cultist", 5, 1.7, S, 12)]),
- (2.3, [("ghoul", 38, 0.65, W, 0), ("ghoul", 28, 0.75, S, 0), ("hound", 32, 0.35, NE, 2), ("hound", 18, 0.4, S, 22), ("brute", 9, 4.0, W, 4), ("brute", 6, 4.5, NE, 14), ("cultist", 7, 1.5, NE, 6), ("cultist", 6, 1.6, W, 12)]),
- (2.6, [("ghoul", 40, 0.65, W, 0), ("ghoul", 30, 0.7, NE, 0), ("hound", 34, 0.35, S, 0), ("hound", 18, 0.35, W, 22), ("brute", 10, 3.5, S, 4), ("brute", 6, 4.5, W, 16), ("cultist", 8, 1.5, W, 6), ("cultist", 6, 1.6, NE, 14)]),
- (2.95, [("ghoul", 42, 0.6, W, 0), ("ghoul", 30, 0.7, S, 0), ("ghoul", 18, 0.8, NE, 14), ("hound", 36, 0.35, NE, 0), ("hound", 20, 0.35, S, 22), ("brute", 10, 3.5, W, 4), ("brute", 7, 4.0, NE, 10), ("cultist", 8, 1.5, S, 6), ("cultist", 7, 1.5, W, 12)]),
- (3.2, [("ghoul", 44, 0.6, W, 0), ("ghoul", 32, 0.7, NE, 0), ("ghoul", 20, 0.8, S, 14), ("hound", 38, 0.3, S, 0), ("hound", 22, 0.35, W, 22), ("brute", 11, 3.5, NE, 4), ("brute", 8, 4.0, S, 12), ("cultist", 9, 1.4, W, 6), ("cultist", 7, 1.5, NE, 12), ("cultist", 4, 2.0, S, 24)]),
- (3.45, [("ghoul", 46, 0.6, W, 0), ("ghoul", 34, 0.65, S, 0), ("ghoul", 22, 0.75, NE, 12), ("hound", 40, 0.3, NE, 0), ("hound", 24, 0.35, S, 20), ("brute", 12, 3.5, W, 4), ("brute", 9, 4.0, NE, 10), ("cultist", 9, 1.4, S, 6), ("cultist", 8, 1.4, W, 12), ("cultist", 5, 1.8, NE, 24)]),
- (3.6, [("ghoul", 48, 0.55, W, 0), ("ghoul", 36, 0.65, NE, 0), ("ghoul", 24, 0.7, S, 12), ("hound", 42, 0.3, S, 0), ("hound", 26, 0.3, W, 20), ("brute", 13, 3.0, NE, 4), ("brute", 10, 3.5, S, 10), ("cultist", 10, 1.3, W, 6), ("cultist", 8, 1.4, S, 12), ("cultist", 6, 1.6, NE, 22)]),
- (3.8, [("tollkeeper", 1, 1.0, W, 14), ("ghoul", 48, 0.6, W, 0), ("ghoul", 36, 0.65, NE, 0), ("ghoul", 26, 0.7, S, 14), ("hound", 40, 0.3, S, 2), ("hound", 26, 0.3, NE, 24), ("brute", 12, 3.5, NE, 4), ("brute", 10, 4.0, W, 20), ("cultist", 10, 1.4, W, 6), ("cultist", 8, 1.4, S, 10), ("cultist", 6, 1.6, NE, 18)]),
+ (0.85, [("ghoul", 26, 0.8, W, 0), ("ghoul", 14, 0.9, S, 4), ("hound", 18, 0.45, NE, 2), ("bloater", 3, 5.0, W, 8), ("cultist", 4, 1.8, S, 10)]),
+ # Row 2: Bloaters on two roads; the first Mire Priests (wave 4) walk behind a crowd.
+ (0.95, [("ghoul", 28, 0.75, W, 0), ("ghoul", 10, 0.9, NE, 10), ("hound", 20, 0.4, S, 0), ("bloater", 3, 5.0, NE, 6), ("bloater", 2, 6.0, W, 14), ("cultist", 4, 1.8, W, 8), ("cultist", 3, 2.0, NE, 14)]),
+ (1.1, [("ghoul", 26, 0.75, NE, 0), ("ghoul", 18, 0.8, W, 4), ("hound", 22, 0.4, S, 2), ("brute", 3, 6.0, W, 6), ("bloater", 3, 5.0, S, 8), ("mire_priest", 2, 6.0, W, 10), ("cultist", 5, 1.8, S, 10)]),
+ # Row 3: Priests on two roads; the first Shieldbearers (wave 6) lead a column.
+ (1.3, [("ghoul", 30, 0.75, W, 0), ("ghoul", 20, 0.8, S, 0), ("hound", 24, 0.4, NE, 4), ("bloater", 4, 4.5, S, 8), ("brute", 3, 6.0, NE, 14), ("mire_priest", 2, 6.0, W, 8), ("mire_priest", 1, 1.0, S, 16), ("cultist", 4, 1.7, NE, 14)]),
+ (1.5, [("ghoul", 32, 0.7, W, 0), ("ghoul", 22, 0.8, NE, 0), ("hound", 26, 0.4, S, 2), ("shieldbearer", 4, 3.0, NE, 4), ("brute", 4, 5.0, W, 6), ("bloater", 3, 5.0, S, 12), ("mire_priest", 2, 5.0, W, 12), ("cultist", 6, 1.7, S, 8)]),
+ # Rows 4-6: all three on every road, more of them each row.
+ (1.75, [("ghoul", 34, 0.7, W, 0), ("ghoul", 24, 0.75, S, 2), ("hound", 28, 0.4, NE, 0), ("shieldbearer", 4, 3.0, W, 4), ("shieldbearer", 3, 3.0, NE, 10), ("bloater", 4, 4.5, S, 6), ("mire_priest", 2, 5.0, W, 10), ("mire_priest", 2, 5.0, NE, 14), ("cultist", 5, 1.6, NE, 8), ("cultist", 4, 1.8, S, 18)]),
+ (2.0, [("ghoul", 36, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 2), ("hound", 30, 0.35, S, 0), ("shieldbearer", 5, 3.0, S, 4), ("brute", 5, 4.5, NE, 6), ("bloater", 5, 4.0, W, 8), ("mire_priest", 3, 4.0, S, 12), ("cultist", 7, 1.6, W, 6), ("cultist", 5, 1.7, S, 12)]),
+ (2.3, [("ghoul", 38, 0.65, W, 0), ("ghoul", 28, 0.75, S, 0), ("hound", 32, 0.35, NE, 2), ("shieldbearer", 5, 2.8, W, 4), ("shieldbearer", 4, 3.0, NE, 12), ("bloater", 5, 4.0, S, 6), ("brute", 4, 5.0, NE, 14), ("mire_priest", 3, 4.0, W, 10), ("mire_priest", 2, 5.0, NE, 16), ("cultist", 7, 1.5, NE, 6), ("cultist", 6, 1.6, W, 12)]),
+ (2.6, [("ghoul", 40, 0.65, W, 0), ("ghoul", 30, 0.7, NE, 0), ("hound", 34, 0.35, S, 0), ("shieldbearer", 6, 2.8, S, 4), ("shieldbearer", 4, 3.0, W, 14), ("bloater", 6, 3.5, NE, 4), ("brute", 6, 4.5, W, 16), ("mire_priest", 3, 4.0, S, 10), ("mire_priest", 3, 4.0, W, 18), ("cultist", 8, 1.5, W, 6), ("cultist", 6, 1.6, NE, 14)]),
+ (2.95, [("ghoul", 42, 0.6, W, 0), ("ghoul", 30, 0.7, S, 0), ("ghoul", 18, 0.8, NE, 14), ("hound", 36, 0.35, NE, 0), ("shieldbearer", 6, 2.6, W, 4), ("shieldbearer", 5, 2.8, NE, 10), ("bloater", 6, 3.5, S, 6), ("brute", 6, 4.0, NE, 18), ("mire_priest", 4, 3.5, W, 10), ("mire_priest", 3, 4.0, S, 14), ("cultist", 8, 1.5, S, 6), ("cultist", 7, 1.5, W, 12)]),
+ (3.2, [("ghoul", 44, 0.6, W, 0), ("ghoul", 32, 0.7, NE, 0), ("ghoul", 20, 0.8, S, 14), ("hound", 38, 0.3, S, 0), ("shieldbearer", 7, 2.6, NE, 4), ("shieldbearer", 6, 2.6, S, 12), ("bloater", 7, 3.2, W, 6), ("brute", 6, 4.0, S, 18), ("mire_priest", 4, 3.5, NE, 10), ("mire_priest", 4, 3.5, W, 16), ("cultist", 9, 1.4, W, 6), ("cultist", 7, 1.5, NE, 12), ("cultist", 4, 2.0, S, 24)]),
+ # Boss fight (waves 13-15): everything, and the Tollkeeper in wave 15.
+ (3.45, [("ghoul", 46, 0.6, W, 0), ("ghoul", 34, 0.65, S, 0), ("ghoul", 22, 0.75, NE, 12), ("hound", 40, 0.3, NE, 0), ("shieldbearer", 8, 2.5, W, 4), ("shieldbearer", 6, 2.6, NE, 10), ("bloater", 8, 3.0, S, 6), ("brute", 7, 4.0, NE, 16), ("mire_priest", 4, 3.5, S, 8), ("mire_priest", 4, 3.5, W, 14), ("cultist", 9, 1.4, S, 6), ("cultist", 8, 1.4, W, 12), ("cultist", 5, 1.8, NE, 24)]),
+ (3.6, [("ghoul", 48, 0.55, W, 0), ("ghoul", 36, 0.65, NE, 0), ("ghoul", 24, 0.7, S, 12), ("hound", 42, 0.3, S, 0), ("shieldbearer", 8, 2.4, NE, 4), ("shieldbearer", 7, 2.5, S, 10), ("bloater", 9, 3.0, W, 6), ("brute", 8, 3.5, S, 16), ("mire_priest", 5, 3.0, W, 8), ("mire_priest", 4, 3.5, NE, 14), ("cultist", 10, 1.3, W, 6), ("cultist", 8, 1.4, S, 12), ("cultist", 6, 1.6, NE, 22)]),
+ (3.8, [("tollkeeper", 1, 1.0, W, 14), ("ghoul", 48, 0.6, W, 0), ("ghoul", 36, 0.65, NE, 0), ("ghoul", 26, 0.7, S, 14), ("hound", 40, 0.3, S, 2), ("shieldbearer", 8, 2.4, W, 4), ("shieldbearer", 6, 2.5, NE, 12), ("bloater", 8, 3.0, S, 8), ("brute", 8, 4.0, NE, 20), ("mire_priest", 5, 3.0, W, 10), ("mire_priest", 4, 3.5, S, 16), ("cultist", 10, 1.4, W, 6), ("cultist", 8, 1.4, S, 10), ("cultist", 6, 1.6, NE, 18)]),
 ]
 # M7.5: with only 40% of the towers' cost carried over, the defence must grow during the chapter, so
 # its kill gold is back up (M7 kept it at 220-300 because the full refund paid for the rebuild).

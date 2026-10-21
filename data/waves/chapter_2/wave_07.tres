@@ -1,10 +1,12 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
-[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/bloater.tres" id="2_bloater"]
 [ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
 [ext_resource type="Resource" path="res://data/enemies/hound.tres" id="5_hound"]
+[ext_resource type="Resource" path="res://data/enemies/mire_priest.tres" id="6_mire_priest"]
+[ext_resource type="Resource" path="res://data/enemies/shieldbearer.tres" id="7_shieldbearer"]
 [ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
 
 [sub_resource type="Resource" id="Resource_g0"]
@@ -30,35 +32,51 @@ lane = 1
 
 [sub_resource type="Resource" id="Resource_g3"]
 script = ExtResource("1_group")
-enemy = ExtResource("5_hound")
-count = 14
-interval = 0.4
-delay = 20.0
+enemy = ExtResource("7_shieldbearer")
+count = 4
+interval = 3.0
+delay = 4.0
 
 [sub_resource type="Resource" id="Resource_g4"]
 script = ExtResource("1_group")
-enemy = ExtResource("2_brute")
-count = 8
-interval = 4.0
-lane = 2
-delay = 6.0
+enemy = ExtResource("7_shieldbearer")
+count = 3
+interval = 3.0
+lane = 1
+delay = 10.0
 
 [sub_resource type="Resource" id="Resource_g5"]
 script = ExtResource("1_group")
-enemy = ExtResource("2_brute")
+enemy = ExtResource("2_bloater")
 count = 4
-interval = 5.0
-delay = 16.0
+interval = 4.5
+lane = 2
+delay = 6.0
 
 [sub_resource type="Resource" id="Resource_g6"]
 script = ExtResource("1_group")
+enemy = ExtResource("6_mire_priest")
+count = 2
+interval = 5.0
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_g7"]
+script = ExtResource("1_group")
+enemy = ExtResource("6_mire_priest")
+count = 2
+interval = 5.0
+lane = 1
+delay = 14.0
+
+[sub_resource type="Resource" id="Resource_g8"]
+script = ExtResource("1_group")
 enemy = ExtResource("3_cultist")
-count = 6
+count = 5
 interval = 1.6
 lane = 1
 delay = 8.0
 
-[sub_resource type="Resource" id="Resource_g7"]
+[sub_resource type="Resource" id="Resource_g9"]
 script = ExtResource("1_group")
 enemy = ExtResource("3_cultist")
 count = 4
@@ -69,6 +87,6 @@ delay = 18.0
 [resource]
 script = ExtResource("9_wave")
 health_multiplier = 1.75
-gold_multiplier = 0.37
+gold_multiplier = 0.41
 speed_multiplier = 1.1
-groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7")])
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7"), SubResource("Resource_g8"), SubResource("Resource_g9")])

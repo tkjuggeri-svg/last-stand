@@ -31,7 +31,8 @@ func _ready() -> void:
 	_hitbox.damage = _stats.damage
 	var base: Vector2 = global_position - position
 	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), base, _stats.attack_range):
-		if in_cone(base, enemy.global_position) and enemy.receive_hit(_hitbox):
+		# Grapeshot is a spray of shot: a shield facing the battery stops it.
+		if in_cone(base, enemy.global_position) and enemy.receive_shot(_hitbox, enemy.global_position - base):
 			_hits += 1
 	if _stats.burn_dps > 0.0:
 		var zone: BurnZone = BURN_ZONE_SCENE.instantiate()

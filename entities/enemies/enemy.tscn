@@ -115,6 +115,10 @@ visible = false
 z_index = 1
 script = ExtResource("14_bubble")
 
+[node name="FloatingTexts" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = 2
+
 [node name="Look" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("13_look")

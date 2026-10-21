@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/shieldbearer_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/shieldbearer_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Shieldbearer"
+max_health = 90
+move_speed = 44.0
+gold_reward = 14
+fortress_damage = 14
+hero_damage = 12
+attack_range = 26.0
+attack_windup = 0.45
+attack_cooldown = 1.6
+death_effect = ExtResource("2_death")
+body_radius = 13.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -11)
+health_bar_y = -38.0
+hint = "its shield blocks tower shots from the front. Flank it, blast it or use your sword."
+shield_arc = 140.0

@@ -26,6 +26,9 @@ const EvolutionArt: GDScript = preload("res://tools/art/evolution_art.gd")
 const MapArt: GDScript = preload("res://tools/art/map_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
 const MarshArt: GDScript = preload("res://tools/art/marsh_art.gd")
+const BloaterArt: GDScript = preload("res://tools/art/bloater_art.gd")
+const MirePriestArt: GDScript = preload("res://tools/art/mire_priest_art.gd")
+const ShieldbearerArt: GDScript = preload("res://tools/art/shieldbearer_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
 const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
@@ -49,6 +52,10 @@ func _initialize() -> void:
 		"gravelord": func() -> void: _save(_sheet(GravelordArt.new().sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
 		"colossus": func() -> void: _save(_sheet(ColossusArt.new().sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
 		"lich": func() -> void: _save(_sheet(LichArt.new().sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
+		"bloater": func() -> void: _save(_sheet(BloaterArt.new().sheet_rows(), Layouts.BLOATER["size"]), Layouts.BLOATER["png"]),
+		"bloatling": func() -> void: _save(_sheet(BloaterArt.new(true).sheet_rows(), Layouts.BLOATLING["size"]), Layouts.BLOATLING["png"]),
+		"mire_priest": func() -> void: _save(_sheet(MirePriestArt.new().sheet_rows(), Layouts.MIRE_PRIEST["size"]), Layouts.MIRE_PRIEST["png"]),
+		"shieldbearer": func() -> void: _save(_sheet(ShieldbearerArt.new().sheet_rows(), Layouts.SHIELDBEARER["size"]), Layouts.SHIELDBEARER["png"]),
 		"tollkeeper": func() -> void: _save(_sheet(TollkeeperArt.new().sheet_rows(), Layouts.TOLLKEEPER["size"]), Layouts.TOLLKEEPER["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),

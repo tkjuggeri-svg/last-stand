@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/mire_priest_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/mire_priest_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/heal_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Mire Priest"
+max_health = 34
+move_speed = 50.0
+gold_reward = 16
+fortress_damage = 8
+hero_damage = 6
+attack_range = 24.0
+attack_windup = 0.4
+attack_cooldown = 1.6
+death_effect = ExtResource("2_death")
+body_radius = 10.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -12)
+health_bar_y = -46.0
+ability = ExtResource("4_ability")
+hint = "heals the enemies around it. Kill it first!"
+glow_color = Color(0.45, 1, 0.75, 1)

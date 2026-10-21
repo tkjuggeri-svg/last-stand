@@ -3,7 +3,8 @@ extends Node
 ## The enemy's display-only reactions (a component of Enemy, which calls it): its animations and
 ## glow from the data, the hit flash, jolt and spark and the health bar on damage, the frost tint and
 ## aura while slowed, an ice block while frozen, a cracked rune over the head while vulnerable
-## (Shatter Shrine), the ward bubble while shielded. It never changes gameplay state.
+## (Shatter Shrine), the ward bubble while shielded; a shield's clang and "Blocked", and a heal's green
+## glow and "+N". It never changes gameplay state.
 
 ## Tint while slowed by frost, and while frozen solid.
 const SLOWED_TINT: Color = Color(0.62, 0.82, 1.0, 1)
@@ -15,6 +16,14 @@ const HIT_JOLT: float = 2.0
 const HIT_JOLT_TIME: float = 0.12
 ## The hit spark appears this far below the sprite's centre (on the chest).
 const SPARK_DROP: float = 2.0
+const FLOATING_TEXT_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
+## A blocked shot: a cold steel spark and grey text. A heal: a green glow and green text.
+const BLOCK_SPARK_TINT: Color = Color(0.75, 0.85, 1.0, 1)
+const BLOCK_TEXT_COLOR: Color = Color(0.78, 0.8, 0.86, 1)
+const HEAL_COLOR: Color = Color(0.55, 1.0, 0.7, 1)
+const HEAL_GLOW_TIME: float = 0.35
+## Floating texts start this far above the health bar.
+const TEXT_ABOVE_BAR: float = 4.0
 
 var _sprite_rest: Vector2 = Vector2.ZERO
 var _jolt: Tween
@@ -29,6 +38,7 @@ var _small_bar: bool = true
 @onready var _shield_bubble: Node2D = %ShieldBubble
 @onready var _frozen_mark: AnimatedSprite2D = %FrozenMark
 @onready var _shatter_mark: AnimatedSprite2D = %ShatterMark
+@onready var _floating_texts: Node2D = %FloatingTexts
 
 
 func _ready() -> void:
@@ -67,9 +77,28 @@ func show_hit(current_health: int, max_health: int) -> void:
 	_jolt = create_tween()
 	_sprite.position = _sprite_rest + Vector2(0, -HIT_JOLT)
 	_jolt.tween_property(_sprite, "position", _sprite_rest, HIT_JOLT_TIME)
+	_hit_spark.modulate = Color.WHITE
 	_hit_spark.show()
 	_hit_spark.stop()
 	_hit_spark.play(&"spark")
+
+
+## A shot stopped by its shield: a cold spark on the shield and "Blocked" (no flash, no jolt).
+func show_block() -> void:
+	_hit_spark.modulate = BLOCK_SPARK_TINT
+	_hit_spark.show()
+	_hit_spark.stop()
+	_hit_spark.play(&"spark")
+	_float_text("Blocked", BLOCK_TEXT_COLOR)
+
+
+## Healed by `amount`: a green glow, "+amount" and the health bar.
+func show_heal(amount: int, current_health: int, max_health: int) -> void:
+	if _small_bar:
+		_health_bar.show_health(current_health, max_health)
+	_sprite.modulate = HEAL_COLOR
+	create_tween().tween_property(_sprite, "modulate", Color.WHITE, HEAL_GLOW_TIME)
+	_float_text("+%d" % amount, HEAL_COLOR)
 
 
 ## Slowed (frost tint and aura), frozen (ice block) and vulnerable (the cracked rune) as they are now.
@@ -89,3 +118,11 @@ func _show_mark(mark: AnimatedSprite2D, animation: StringName, shown: bool) -> v
 ## The ward bubble shows while a shield (absorbing `amount` more damage) is up.
 func show_shield(amount: int) -> void:
 	_shield_bubble.visible = amount > 0
+
+
+## A short floating text above the enemy (it rises and fades on its own).
+func _float_text(text: String, color: Color) -> void:
+	var label: DamageNumber = FLOATING_TEXT_SCENE.instantiate()
+	label.set_text(text, color)
+	label.position = Vector2(0, _health_bar.position.y - TEXT_ABOVE_BAR)
+	_floating_texts.add_child(label)

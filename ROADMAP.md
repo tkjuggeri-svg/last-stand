@@ -146,8 +146,8 @@ A Slay the Spire–style node map per run, instead of one fixed sequence of wave
 ## M7.5 — Chapter 2 rework & Relics *(from the M7 playtest)*
 Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a full tower refund and only more HP, was easy mode; elites felt worthless. Relics are pulled forward from M9 and chapter 2's map from M10.
 - [x] Phase A: towers refund 40% between chapters (`ChapterData.leave_refund`); `map_balance.gd --protect-ch1`
-- [ ] Phase B: chapter 2's own map, the Drowned Marsh (bigger, roads winding around water and merging before the fortress, 7 spread-out slots, wading hero, its own ground, props, light); the chapter data picks the arena; chapter 2 retuned for the 40% refund
-- [ ] Phase C: chapter 2 enemies, introduced gradually: Bloater (splits into 3 Bloatlings), Mire Priest (telegraphed heal pulse), Shieldbearer (blocks tower shots from the front)
+- [x] Phase B: chapter 2's own map, the Drowned Marsh (bigger, roads winding around water and merging before the fortress, 7 spread-out slots, wading hero, its own ground, props, light); the chapter data picks the arena; chapter 2 retuned for the 40% refund
+- [x] Phase C: chapter 2 enemies, introduced gradually: Bloater (splits into 3 Bloatlings), Mire Priest (telegraphed heal pulse), Shieldbearer (blocks tower shots from the front)
 - [ ] Phase D: relics (pulled from M9): ~15 rule-changing relics, one of each per run, their own HUD row with tooltips; from elites (1 of 3), bosses, merchants (rare, expensive) and rare events; elites harder and clearly better rewarded
 - [ ] Phase E: balance (chapter 2 clearly harder than chapter 1; the bot rarely clears it, idle never), relic pick rates, docs; playtest build `m7.5-playtest`
 

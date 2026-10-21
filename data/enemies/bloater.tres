@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bloater_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bloater_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/split_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+display_name = "Bloater"
+max_health = 110
+move_speed = 36.0
+gold_reward = 14
+fortress_damage = 15
+hero_damage = 10
+attack_range = 22.0
+attack_windup = 0.5
+attack_cooldown = 1.8
+death_effect = ExtResource("2_death")
+body_radius = 15.0
+sprite_frames = ExtResource("3_frames")
+sprite_offset = Vector2(0, -15)
+health_bar_y = -56.0
+ability = ExtResource("4_ability")
+hint = "bursts into 3 Bloatlings when it dies."

@@ -112,7 +112,7 @@ func _release_slot() -> void:
 func _begin_attack() -> void:
 	_cooldown_left = _enemy.data.attack_cooldown
 	_windup_left = _enemy.data.attack_windup
-	_enemy.get_sprite().face(_aim_point() - _enemy.global_position)
+	_enemy.get_sprite().face(get_aim_point() - _enemy.global_position)
 	_enemy.get_sprite().play_state("attack", true)
 	attack_started.emit()
 
@@ -137,12 +137,12 @@ func _shoot() -> void:
 	var bolt: EnemyBolt = BOLT_SCENE.instantiate()
 	var against_hero: bool = has_target()
 	var from: Vector2 = _enemy.global_position + Vector2(0, -CAST_HEIGHT)
-	bolt.setup(from, _aim_point(), data.bolt_speed, data.hero_damage if against_hero else data.siege_damage, against_hero)
+	bolt.setup(from, get_aim_point(), data.bolt_speed, data.hero_damage if against_hero else data.siege_damage, against_hero)
 	_enemy.add_child(bolt)  # a caster's spell dies with it
 
 
 ## What the next attack is aimed at: the hero in range, else the end of the lane (the fortress).
-func _aim_point() -> Vector2:
+func get_aim_point() -> Vector2:
 	if has_target():
 		return _target.global_position
 	var lane: Path2D = _enemy.lane

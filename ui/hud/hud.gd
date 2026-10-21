@@ -11,6 +11,8 @@ extends CanvasLayer
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
 const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
 const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+## The first time an enemy with a hint (EnemyData.hint) appears: what to watch out for.
+const HINT_COLOR: Color = Color(0.75, 0.95, 1.0, 1)
 ## The dash row while the dash recharges (it is bright again when ready).
 const DASH_COOLING_TINT: Color = Color(0.55, 0.55, 0.62, 1)
 const BOSS_ARRIVES_COLOR: Color = Color(0.86, 0.6, 0.95, 1)
@@ -73,6 +75,8 @@ const PHASE_TEXTS: Dictionary = {
 ## The boss whose HP the top bar shows (null when none is alive).
 var _boss: Enemy
 var _banner_tween: Tween
+## Enemy types already introduced by their hint in this level.
+var _hinted: Dictionary = {}
 
 
 func _ready() -> void:
@@ -239,6 +243,9 @@ func _on_wave_cleared(wave_number: int) -> void:
 
 func _on_enemy_spawned(enemy: Enemy) -> void:
 	_feed.push("%s incoming!" % enemy.data.display_name, INCOMING_COLOR)
+	if not enemy.data.hint.is_empty() and not _hinted.has(enemy.data):
+		_hinted[enemy.data] = true
+		show_banner("%s: %s" % [enemy.data.display_name, enemy.data.hint], HINT_COLOR)
 	if enemy.data.is_boss:
 		_show_boss(enemy)
 

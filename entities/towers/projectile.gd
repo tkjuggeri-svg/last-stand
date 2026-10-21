@@ -194,7 +194,9 @@ func _impact() -> void:
 		queue_free()  # a fire glob: the burning ground it left does the work
 		return
 	if _target_alive() and not _lost:
-		target.receive_hit(_hitbox)
+		if not target.receive_shot(_hitbox, _last_dir):
+			queue_free()  # stopped by a shield (or already gone): no chill, no pierce
+			return
 		if stats.slow_factor < 1.0:
 			_chill(target)
 			if stats.slow_area > 0.0:
@@ -232,7 +234,9 @@ func _fly_line(step: float) -> void:
 		if _pierced.has(enemy):
 			continue
 		_pierced.append(enemy)
-		enemy.receive_hit(_hitbox)
+		if not enemy.receive_shot(_hitbox, _line_dir):
+			queue_free()  # a shield stops a piercing shot dead
+			return
 		if _pierced.size() == 1 and evolution != null and evolution.drag_distance > 0.0:
 			enemy.drag_back(evolution.drag_distance * (evolution.boss_drag_factor if enemy.data.is_boss else 1.0))
 		_pierce_left -= 1

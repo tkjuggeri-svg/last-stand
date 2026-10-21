@@ -23,8 +23,14 @@ extends Resource
 @export var death_effect: PackedScene
 ## A boss: its HP shows in a big bar at the top of the screen and its death is a big moment.
 @export var is_boss: bool = false
-## Its special mechanic: a scene whose root is an EnemyAbility (summon, charge, ward). Optional.
+## Its special mechanic: a scene whose root is an EnemyAbility (summon, charge, ward, split, heal).
+## Optional.
 @export var ability: PackedScene
+## A line the HUD shows the first time this enemy appears in a level (what to watch out for). Optional.
+@export_multiline var hint: String = ""
+## A shield in front (the Shieldbearer): tower shots coming at its front within this arc (degrees,
+## centred on the way it faces) are blocked; 0 = none. See Enemy.receive_shot.
+@export_range(0.0, 360.0) var shield_arc: float = 0.0
 
 @export_group("Body and look")
 ## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.
@@ -51,3 +57,10 @@ extends Resource
 
 func is_ranged() -> bool:
 	return bolt_speed > 0.0
+
+
+## True if a shot flying along `travel` meets the shield of an enemy facing `heading`.
+func shield_blocks(travel: Vector2, heading: Vector2) -> bool:
+	if shield_arc <= 0.0 or travel.is_zero_approx():
+		return false
+	return (-travel.normalized()).dot(heading) >= cos(deg_to_rad(shield_arc * 0.5))

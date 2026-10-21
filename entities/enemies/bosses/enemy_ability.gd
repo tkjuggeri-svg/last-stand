@@ -1,8 +1,9 @@
 class_name EnemyAbility
 extends Node2D
-## A boss's special mechanic (a component the Enemy creates from EnemyData.ability; its tunables are
-## exported on the ability scene). It runs in its own physics step beside the enemy and may take the
-## enemy over for a while (is_busy: no walking, no attacks of its own), to telegraph and then act.
+## An enemy's special mechanic, a boss's or a chapter-2 regular's (a component the Enemy creates from
+## EnemyData.ability; its tunables are exported on the ability scene). It runs in its own physics
+## step beside the enemy and may take the enemy over for a while (is_busy: no walking, no attacks of
+## its own), to telegraph and then act.
 ## Every attack is announced first (`telegraphed`, with a ground TelegraphMarker), then happens (`used`).
 
 ## An attack is announced; it happens in `seconds`.
@@ -84,6 +85,11 @@ func _act() -> void:
 
 ## Every physics frame outside the telegraph (e.g. a charge in progress).
 func _ability_step(_delta: float) -> void:
+	pass
+
+
+## The owner was just killed (called before it reports its death to the wave), e.g. to burst.
+func on_owner_died() -> void:
 	pass
 
 
