@@ -135,7 +135,7 @@ A Slay the Spire–style node map per run, instead of one fixed sequence of wave
 - [x] Carry-over: towers, gold and damage stay within a chapter; between chapters towers are packed up for a full refund, gold, upgrades and lives carry, the fortress +50%
 - [x] Two chapters (the count is data): chapter 2 ramps up from chapter 1 with its own boss, the Tollkeeper (its toll silences towers)
 - [x] Run flow: Main owns the map ↔ level switching; Restart / Game Over / Victory work across the whole run (no checkpoints)
-- [ ] Optional small early SFX pass (not done; still possible in M8)
+- [ ] Optional small early SFX pass (not done; moved to M8.5)
 - [x] Tests (map rules, flow, rewards, merchant, events, chapters, the toll) and `tests/tools/map_balance.gd` (bot runs through the map); playtest build `m7-playtest`
 - [x] Hands-on playtest of `m7-playtest` (feedback → M7.5)
 
@@ -161,12 +161,23 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 - [ ] Hub between runs: spend Soul Shards on unlocks (towers, upgrades into the pool, hero bonuses)
 - [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)
 - [ ] Unlock pacing: what is available on the first run, what comes later
-- [ ] Main flow: start → hub → run → summary → hub
+- [ ] Main flow: start → hub → run → summary → hub, with a main menu
+- [ ] **Shared UI style**, built alongside the main menu, the hub and the run summary: buttons, panels, fonts, screen transitions (on top of `ui/theme/game_theme.tres`). Every later screen reuses it instead of styling itself
 - [ ] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
-- [ ] Optional small early SFX pass (if not done in M7)
 - [ ] Tests: save/load round trip, version migration, unlocks applied to a run
 
 **Done when:** there's a reason to start another run after dying.
+
+---
+
+## M8.5 — Demo Polish
+Presentation work done early instead of all in M13, so a public demo looks and sounds finished.
+- [ ] UI consistency pass across every screen (HUD, build menu, choice screens, map, merchant, events, pause, settings, game over, victory) with M8's shared UI style
+- [ ] Basic sound effects: combat (sword, hits, the hero hurt), towers (each tower's shot, impacts, building, upgrades), deaths, UI (clicks, the choice screens, gold), on the Master / SFX buses
+- [ ] Juice: hit pause on big hits, damage numbers, screen shake (today only a boss's death has a hit-stop and a shake)
+- [ ] Title screen
+
+**Done when:** the game is ready for a free itch.io demo.
 
 ---
 
@@ -205,7 +216,7 @@ Endless mode and unlockable difficulty levels (ascension-style modifiers).
 ---
 
 ## M13 — Audio & Presentation
-SFX and music, juice (screen shake, particles, hit feedback), main menu, title and credits, and an art pass over everything added since M6 in the `ART_DIRECTION.md` style. A small early SFX pass can come in M7–M8.
+Music, credits, final art polish (e.g. side views for the bosses, an art pass over everything added since M6 in the `ART_DIRECTION.md` style) and trailer material. The shared UI style (M8), basic SFX, juice and the title screen come earlier (M8.5).
 
 **Done when:** a stranger can watch a 30 s clip and understand + want the game. → **Steam page / trailer / demo.**
 
