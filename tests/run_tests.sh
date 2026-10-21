@@ -2,9 +2,11 @@
 # Runs every check for LAST STAND with Godot 4.7.2:
 #   1. editor import   2. every .gd script with all warnings treated as errors
 #   3. automated tests (tests/automated/test_*.gd)   4. main + every scene in entities/, levels/, ui/ and tests/ for 120 frames
+#   5. shellcheck on every tracked shell script, when shellcheck is installed (on PATH, or in the
+#      dev venv: python3 -m venv ~/.cache/devtools-venv && ~/.cache/devtools-venv/bin/pip install shellcheck-py)
 # Usage: tests/run_tests.sh            (override the Godot binary with GODOT=/path/to/godot)
 set -u
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/.." || exit 1
 
 GODOT="${GODOT:-$HOME/Downloads/Godot_v4.7.2-stable_linux.x86_64}"
 EXPECTED_VERSION="4.7.2.stable"
@@ -32,7 +34,7 @@ report() {  # name, output, exit code
 		echo "  ok    $1"
 	else
 		echo "  FAIL  $1 (exit $3)"
-		[[ -n "$2" ]] && echo "$2" | sed 's/^/        /'
+		[[ -n "$2" ]] && printf '        %s\n' "${2//$'\n'/$'\n'        }"
 		failures=$((failures + 1))
 	fi
 }
@@ -70,6 +72,17 @@ for scene in main/main.tscn $(find entities levels ui -name '*.tscn' | sort) tes
 	RUN_TIMEOUT=60 run_godot --headless --path . "res://$scene" --quit-after 120
 	report "$scene" "$out" "$code"
 done
+
+echo "== Shell scripts (shellcheck) =="
+SHELLCHECK="$(command -v shellcheck || echo "$HOME/.cache/devtools-venv/bin/shellcheck")"
+if [[ -x "$SHELLCHECK" ]]; then
+	for script in $(git ls-files '*.sh'); do
+		out="$("$SHELLCHECK" "$script" 2>&1)"
+		report "$script" "$out" "$?"
+	done
+else
+	echo "  skip  shellcheck is not installed (see the header of this script)"
+fi
 
 echo
 if [[ $failures -eq 0 ]]; then echo "ALL PASSED"; else echo "$failures FAILED"; fi
