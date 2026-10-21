@@ -1,0 +1,11 @@
+{
+	"version": 1,
+	"shards": 37,
+	"unlocks": ["brazier", "cards_precision"],
+	"bonuses": {"stores": 2, "mortar": 1, "drill": 1},
+	"records": {"runs": 4, "wins": 0, "best": {"chapter": 1, "row": 8}, "bosses": ["The Lich Warden"],
+		"shards_total": 121, "history": [{"result": "lost", "chapter": 1, "row": 8, "shards": 52}]},
+	"firsts": ["boss:The Lich Warden", "chapter:2"],
+	"hints_seen": ["build", "start_wave"],
+	"hints_off": false
+}
