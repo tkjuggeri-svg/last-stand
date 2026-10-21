@@ -172,6 +172,12 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 
 ## M9 — Heroes & Relics
 2–3 heroes with distinct playstyles (e.g. the knight, a ranged hero, a summoner) and relics: rare items that change the rules of a run rather than add stats. (Relics were pulled forward into M7.5; M9 adds more of them and hero-specific ones.)
+- [ ] **Each hero has their own towers.** The Archer and the Cannon stay shared by every hero; each hero also has 2–3 **exclusive towers** that fit their playstyle. The Knight (today's hero) keeps the **Brazier**, the **Frost** tower and the **Bone Ballista**. Examples for new heroes (not final):
+  - **Hunter** (a ranged hero): **Trap Layer** (traps on the road), **Hawk Perch**.
+  - **Necromancer** (a summoner): **Bone Pit**, **Soul Siphon**.
+  The build menu shows only the shared towers and the hero's own; balance (`map_balance.gd`) per hero.
+- [ ] **Hero-exclusive upgrade cards** (and relics) beside the shared pool: each hero's offers draw from the shared cards plus their own.
+- [ ] Hero choice at the start of a run (later tied to M8's unlocks).
 
 **Done when:** picking a different hero or finding a key relic changes how you play the run.
 
