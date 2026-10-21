@@ -4,12 +4,14 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
 ## start (Hellfire Shells, Cinder Dash, Ember Heart); --fire=without takes them out of every offer
-## and shop. The summary ends with the rows cleared per run (a won run: every row of both chapters).
+## and shop. --relics=<ids> grants those relics at the start and offers no other (none: no relics at
+## all), to measure one relic against none. The summary ends with the rows cleared per run (a won run:
+## every row of both chapters).
 ## --protect-ch1 keeps the fortress and the lives full in chapter 1 only, so every run reaches chapter 2
 ## with a real chapter-1 build (towers, upgrades, gold) and chapter 2 is measured on its own. --trace
 ## prints every wave's start and end from chapter 2 on: gold, the towers (id:level per slot), the
@@ -75,6 +77,8 @@ var _protect_ch1: bool = false
 var _trace: bool = false
 ## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
 var _fire: String = ""
+## --relics: the only relics of the run (granted at the start); null = drawn as usual.
+var _relics: Variant = null
 ## Per relic id: [times offered, times taken], over every run.
 var _relic_counts: Dictionary = {}
 
@@ -105,6 +109,9 @@ func _initialize() -> void:
 			_trace = true
 		elif arg.begins_with("--fire="):
 			_fire = arg.trim_prefix("--fire=")
+		elif arg.begins_with("--relics="):
+			var ids: String = arg.trim_prefix("--relics=")
+			_relics = [] if ids == "none" else Array(ids.split(","))
 	var lines: Array[String] = []
 	for s: int in seeds:
 		lines.append(await _play(s))
@@ -150,6 +157,7 @@ func _play(seed_value: int) -> String:
 			plan = _steps(_plan_for(level.scene_file_path.get_file().get_basename()))
 			next = 0
 			_set_fire(level, chapter == 0)
+			_set_relics(level, chapter == 0)
 			level.economy.gold_earned.connect(func(amount: int, source: Economy.Source) -> void:
 				if source != Economy.Source.REFUND:
 					stats["income"][mini(chapter, 1)] += amount)
@@ -265,6 +273,16 @@ func _set_fire(level: Level, run_start: bool) -> void:
 			fire.append(load(path))
 		level.offers.pool = level.offers.pool.filter(func(d: UpgradeData) -> bool: return not fire.has(d))
 		level.offers.relic_pool = level.offers.relic_pool.filter(func(d: RelicData) -> bool: return not fire.has(d))
+
+
+## --relics: grant the given relics (once, at the run's start) and offer no other.
+func _set_relics(level: Level, run_start: bool) -> void:
+	if _relics == null:
+		return
+	level.offers.relic_pool = []
+	if run_start:
+		for id: String in _relics:
+			level.modifiers.add_upgrade(load("res://data/relics/%s.tres" % id))
 
 
 ## Rows cleared in a run's summary line: every row of both chapters if won, else the rows before the

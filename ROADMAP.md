@@ -157,6 +157,7 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 ---
 
 ## M8 — Meta Progression & Persistence
+Design proposal (not yet approved): `docs/M8_META.md`.
 - [ ] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
 - [ ] Hub between runs: spend Soul Shards on unlocks (towers, upgrades into the pool, hero bonuses)
 - [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)

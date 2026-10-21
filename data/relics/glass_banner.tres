@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="Resource_m0"]
 script = ExtResource("2_mod")
 stat = &"tower.damage"
-percent = 0.35
+percent = 0.2
 
 [resource]
 script = ExtResource("3_relic")
@@ -15,7 +15,7 @@ rule = &"glass_banner"
 price = 260
 id = &"glass_banner"
 display_name = "Glass Banner"
-description = "Towers deal 35% more damage, but the fortress takes 50% more damage."
+description = "Towers deal 20% more damage, but the fortress takes 50% more damage."
 icon = ExtResource("1_icon")
 category = 1
 rarity = 1

@@ -199,7 +199,7 @@ Relics are rarer than cards and change a **rule** of the run, not just a stat (p
   | Twin Banners | Two towers of the same type within 330 px both fight with the higher one's level (the ember shows it) | — |
   | Phoenix Feather | Once per chapter a fatal blow leaves the fortress at 30% HP | — |
   | Executioner's Mark | Enemies (not bosses) brought below 12% HP die at once | kills pay 15% less gold |
-  | Glass Banner | Towers deal +35% damage | the fortress takes +50% damage |
+  | Glass Banner | Towers deal +20% damage (+35% before the M7.5 playtest-2 check: granted alone it added ~2 rows to a run, four times any other relic) | the fortress takes +50% damage |
   | Soul Lantern | Every kill within 260 px of the fortress repairs it by 1 HP | — |
   | Drowned Bell | Every 20 s of a wave a bell tolls (a ring warns 1 s before): every enemy freezes 1.2 s (a boss 0.4 s) | — |
   | Iron Tithe | Fortress max HP +50% | no repairs at all (Quartermaster, merchant, rewards, cards, between chapters) |

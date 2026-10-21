@@ -1,6 +1,7 @@
 extends SceneTree
 ## Automated check for relics (M7.5): the data (15 rule-changing relics, one of each per run), the
-## offers (never one the run has, never one that works against one it has), that an event taking "the
+## offers (never one the run has, never one that works against one it has; every relic about as likely
+## as any other, in an offer and at a merchant), that an event taking "the
 ## latest upgrade" never takes a relic, every relic's rule on a real level, the sources (an elite's and
 ## a boss's relic choice, a merchant's relic, the Drowned Reliquary event, tougher elites) and the HUD's
 ## own relic row with tooltips.
@@ -24,6 +25,7 @@ var _failures: int = 0
 
 func _initialize() -> void:
 	await _test_data_and_offers()
+	await _test_equal_odds()
 	await _test_hourglass()
 	await _test_bloodpact()
 	await _test_ossuary_bell()
@@ -95,6 +97,31 @@ func _test_data_and_offers() -> void:
 	level.queue_free()
 	fresh.queue_free()
 	await _frames(2)
+
+
+## Many offers from a fresh pool (nothing taken): every relic comes up about as often as the others.
+func _test_equal_odds() -> void:
+	var level: Level = await _level([])
+	level.offers.set_seed(11)
+	var offered: Dictionary = {}
+	var stocked: Dictionary = {}
+	for _i: int in 1500:
+		for data: UpgradeData in level.offers.make_relic_offer(3):
+			offered[data.id] = int(offered.get(data.id, 0)) + 1
+		var relic: RelicData = level.offers.draw_relic()
+		stocked[relic.id] = int(stocked.get(relic.id, 0)) + 1
+	var pool: int = level.offers.relic_pool.size()
+	_check("every relic about as likely in an offer (%d-%d times each, %d expected)" % [offered.values().min(), offered.values().max(), roundi(1500.0 * 3.0 / pool)],
+		offered.size() == pool and _even(offered, 1500.0 * 3.0 / pool, 0.2))
+	_check("...and at a merchant (%d-%d times each, %d expected)" % [stocked.values().min(), stocked.values().max(), roundi(1500.0 / pool)],
+		stocked.size() == pool and _even(stocked, 1500.0 / pool, 0.35))
+	level.queue_free()
+	await _frames(2)
+
+
+## True if every count is within `share` of `expected`.
+func _even(counts: Dictionary, expected: float, share: float) -> bool:
+	return counts.values().all(func(n: int) -> bool: return absf(n - expected) <= expected * share)
 
 
 # ---------------------------------------------------------------- the rules
@@ -253,13 +280,16 @@ func _test_glass_banner() -> void:
 	level.builder.build(level.builder.get_slots()[3], ARCHER)
 	await _frames(2)
 	var damage: int = level.builder.get_slots()[3].tower.get_stats().damage
-	level.modifiers.add_upgrade(_relic("glass_banner"))
+	var banner: RelicData = _relic("glass_banner")
+	var bonus: float = banner.modifiers[0].percent
+	level.modifiers.add_upgrade(banner)
 	await _frames(2)
 	var health: HealthComponent = level.fortress.health
 	health.take_damage(10)
-	_check("Glass Banner: towers deal 35%% more (%d -> %d), the fortress takes 50%% more (-%d from 10)"
-		% [damage, level.builder.get_slots()[3].tower.get_stats().damage, health.max_health - health.current_health],
-		level.builder.get_slots()[3].tower.get_stats().damage == roundi(damage * 1.35) and health.max_health - health.current_health == 15)
+	_check("Glass Banner: towers deal %d%% more (%d -> %d), the fortress takes 50%% more (-%d from 10)"
+		% [roundi(bonus * 100.0), damage, level.builder.get_slots()[3].tower.get_stats().damage, health.max_health - health.current_health],
+		bonus > 0.0 and level.builder.get_slots()[3].tower.get_stats().damage == roundi(damage * (1.0 + bonus))
+		and health.max_health - health.current_health == 15)
 	level.queue_free()
 	await _frames(2)
 
