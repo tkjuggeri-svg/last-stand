@@ -149,7 +149,8 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 - [x] Phase B: chapter 2's own map, the Drowned Marsh (bigger, roads winding around water and merging before the fortress, 7 spread-out slots, wading hero, its own ground, props, light); the chapter data picks the arena; chapter 2 retuned for the 40% refund
 - [x] Phase C: chapter 2 enemies, introduced gradually: Bloater (splits into 3 Bloatlings), Mire Priest (telegraphed heal pulse), Shieldbearer (blocks tower shots from the front)
 - [x] Phase D: relics (pulled from M9): ~15 rule-changing relics, one of each per run, their own HUD row with tooltips; from elites (1 of 3), bosses, merchants (rare, expensive) and rare events; elites harder and clearly better rewarded
-- [ ] Phase E: balance (chapter 2 clearly harder than chapter 1; the bot rarely clears it, idle never), relic pick rates, docs; playtest build `m7.5-playtest`
+- [x] Phase E: balance (chapter 2 clearly harder than chapter 1; idle never clears it, and neither does the bot, as in M7), relic pick rates, docs; playtest build `m7.5-playtest`
+- [ ] Hands-on playtest of `m7.5-playtest`
 
 **Done when:** chapter 2 plays differently from chapter 1 (map, enemies), a run's relics change how it plays, and elites are worth the risk.
 
@@ -212,4 +213,4 @@ Release build pipeline (signing, store builds; the playtest presets and script e
 ---
 
 ## Current focus
-**M7.5** (chapter 2 rework and relics, from the `m7-playtest` feedback), built in phases A–E. Don't start M8 yet.
+**M7.5** (chapter 2 rework and relics) is implemented and built as `m7.5-playtest`; waiting for hands-on playtest feedback. Don't start M8 yet.

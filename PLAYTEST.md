@@ -28,15 +28,23 @@ path leads to (they pulse; hover one to see what it is). Your towers, gold and t
 stay with you from stop to stop.
 - **Battle** (crossed swords): 2 waves, then **choose 1 of 3 upgrades**.
 - **Elite** (horned red skull): a harder fight led by a mini-boss, with a twist (faster, warded,
-  swarming, more Cultists or Brutes). Reward: a choice of 2 rare upgrades and 100 gold.
+  swarming, more Cultists or Brutes). Reward: **a choice of 1 of 3 relics** (below).
 - **Event** (scroll) and **Shrine** (green flame): a short scene; each answer says what it does.
-- **Merchant** (coin purse): buy upgrade cards, a repair, new cards. The row before the boss is all
-  merchants.
-- **Boss** (crowned skull): the chapter's last fight.
+- **Merchant** (coin purse): buy upgrade cards, a repair, new cards, and sometimes a relic (dear). The
+  row before the boss is all merchants.
+- **Boss** (crowned skull): the chapter's last fight. Beating chapter 1's boss gives a relic choice.
 
-**Between the chapters** your towers are packed up for everything they cost (you rebuild on a fresh
-field), gold, upgrades and lives come with you, and the fortress is repaired by half. Chapter 2 is
-much harder, and its boss, the Tollkeeper, silences the towers around it when it rings its bell.
+**Relics** are rarer than upgrades and change a rule of the run (some with a price: cheaper towers that
+can never evolve, stronger towers but a weaker fortress, ...). One of each per run; they keep working
+in chapter 2 and sit in their own row under your upgrades (hover one to read it). A rare event can
+also give one.
+
+**Between the chapters** your towers are packed up for **40%** of what they cost (you rebuild on a fresh
+field with less than you had), gold, upgrades, relics and lives come with you, and the fortress is
+repaired by half. **Chapter 2 is the Drowned Marsh**: a bigger flooded map with its own roads (two of
+them merge before the fortress), only 7 tower spots, and pools you can wade through (slowly). It is
+much harder, with its own dead (below), and its boss, the Tollkeeper, silences the towers around it
+when it rings its bell.
 
 | Action | Default |
 |---|---|
@@ -60,6 +68,11 @@ Every key can be changed in **Esc → Settings** (also fullscreen and volume).
 - **Enemies:** Ghouls (basic), Hounds (fast packs), Brutes (slow, tough), **Cultists** (pale robed
   casters with green fire: they stop before the fortress and shoot it, or you if you come close; fragile,
   hunt them down). Their shots fly straight, so step aside or dash through them.
+- **Chapter 2's dead** (a banner tells you what each does the first time it comes):
+  **Bloaters** (swollen, glowing: they burst into 3 fast Bloatlings when killed, so kill them early),
+  **Mire Priests** (ochre robes and a green censer: a green ring grows around them, then they heal
+  everyone inside; kill them first), **Shieldbearers** (a big shield toward where they walk: tower
+  shots from the front are blocked; hit them from the side or behind, with blasts or your sword).
 - **Bosses and mini-bosses** each have one trick, always announced on the ground first: green rings
   (the Gravelord raises the dead), a red arrow (the Bone Colossus charges, then stands dazed), a blue
   circle (the Lich Warden shields the enemies around it), a bronze ring (the Tollkeeper silences your
@@ -72,22 +85,27 @@ Play at least one full run (win or lose), more if you can. Then tell us:
 1. **The run:** Did you win? If not, which chapter and stop, and how (fortress or hero)? How long did
    it take? Which towers and upgrades did you go for?
 2. **The map:** Did choosing your path feel meaningful? Which stops did you seek out or avoid, and
-   why? Were the events and shrines worth stopping for? Did the move to chapter 2 feel fair?
-3. **Difficulty curve:** Which waves felt too easy, too hard, or unfair? Was there a moment you felt
+   why? Were the events and shrines worth stopping for? Were **elites worth the risk** now? Did the
+   move to chapter 2 feel fair (40% of your towers back)?
+3. **Chapter 2:** Did the Drowned Marsh ask for a different plan than chapter 1? Was it clearly harder
+   but fair? Could you read the Bloater, the Mire Priest and the Shieldbearer, and deal with them?
+4. **Relics:** Which did you take, and did they change how you played? Any relic that felt useless,
+   too strong, or confusing?
+5. **Difficulty curve:** Which waves felt too easy, too hard, or unfair? Was there a moment you felt
    you could not have done anything?
-4. **Readability:** Could you always tell what was happening? Did you notice the Cultists and their
+6. **Readability:** Could you always tell what was happening? Did you notice the Cultists and their
    shots in time? Did you understand each boss's warning before it hit you?
-5. **The hero:** How does the dash feel (distance, cooldown, timing)? Did fighting feel worth it
+7. **The hero:** How does the dash feel (distance, cooldown, timing)? Did fighting feel worth it
    compared with just building towers?
-6. **Choices:** Did the upgrade choices feel meaningful? Any upgrade that felt useless or must-pick?
+8. **Choices:** Did the upgrade choices feel meaningful? Any upgrade that felt useless or must-pick?
    Which evolutions did you take, and why? Did one of a pair always feel like the obvious pick?
    Could you tell what the Shatter Shrine and the Beacon Flame were doing?
    How did gold feel: always short, or did it pile up? Did you use the Quartermaster (repairs, a
    bought-back life), and was it worth the price?
-7. **The best and the worst moment** of your run, in one sentence each.
-8. **Bugs:** what happened, what you expected, and the steps to make it happen again if you know
+9. **The best and the worst moment** of your run, in one sentence each.
+10. **Bugs:** what happened, what you expected, and the steps to make it happen again if you know
    them. A screenshot helps.
-9. **Performance:** any stutter or slowdown? (Your PC, and when it happened.)
+11. **Performance:** any stutter or slowdown? (Your PC, and when it happened.)
 
 Short notes are fine: honest first impressions are the most useful thing you can give us.
 

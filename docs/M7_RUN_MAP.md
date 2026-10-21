@@ -244,7 +244,8 @@ choose (no hidden cost), except the gamble, which says it is one.
 - **Tuning (different from the proposal's tables):**
   - One upgrade choice per battle gives about 5–6 upgrades a chapter instead of 14. So the fights are
     scaled per chapter (`ChapterData.fight_health_scale`): chapter 1 ×0.75, which keeps the M6.5
-    difficulty (the bot clears chapter 1 in 4% of runs), and chapter 2 ×1.8.
+    difficulty (the bot clears chapter 1 in 4% of runs), and chapter 2 ×1.8 (×1.6 since M7.5, with its
+    own map and enemies and a 40% refund: `GAME_DESIGN.md` 3., M7.5 tuning).
   - Chapter 2's kill gold is 220–300 a wave, not 350–450: with the towers' full refund, more made gold
     meaningless (the bot evolved almost every tower). Since M7.5 (40% refund) it is 300–440 again.
   - Results: `GAME_DESIGN.md` 3. (M7 tuning).
