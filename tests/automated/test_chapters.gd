@@ -97,6 +97,7 @@ func _test_toll() -> void:
 func _test_transition() -> void:
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	main.set("run_data", MapFixtures.boss_only_run(2, MapFixtures.encounter(1, 1), load(ARENA)))
+	main.set("run_seed", 3)
 	root.add_child(main)
 	await _frames(2)
 	var level: Level = await MapFixtures.enter_first_battle(main)
@@ -120,6 +121,7 @@ func _test_transition() -> void:
 	var gold: int = level.economy.get_gold()
 	var upgrades: Array[UpgradeData] = (level.get_node("%RunModifiers") as RunModifiers).get_taken()
 	var hp: int = level.fortress.health.current_health
+	var lives: int = level.hero_lives.get_lives_left()  # after the reward (a card may add a life)
 	var screen: ChapterScreen = main.get_node("%ChapterScreen")
 	var text: String = (screen.get_node("%Text") as Label).text
 	_check("the chapter screen: cleared, towers packed up (+%d), the next chapter's name" % invested, screen.visible
@@ -134,7 +136,7 @@ func _test_transition() -> void:
 	_check("no towers on the new field", (fresh.get_node("%TowerBuilder") as TowerBuilder).get_slots().all(func(s: BuildSlot) -> bool: return s.is_empty()))
 	_check("upgrades carried (%d), shown in the HUD row" % mods.get_taken().size(), mods.get_taken() == upgrades
 		and fresh.get_node("HUD").get_node("%UpgradeIcons").get_node_or_null("honed_blade") != null)
-	_check("lives carried (%d)" % fresh.hero_lives.get_lives_left(), fresh.hero_lives.get_lives_left() == 2)
+	_check("lives carried (%d of %d)" % [fresh.hero_lives.get_lives_left(), lives], fresh.hero_lives.get_lives_left() == lives and lives < fresh.hero_lives.get_max_lives())
 	var max_health: int = fresh.fortress.health.max_health
 	_check("the fortress: its HP +50%% (%d -> %d)" % [hp, fresh.fortress.health.current_health], fresh.fortress.health.current_health == mini(hp + roundi(max_health * 0.5), max_health))
 	var shop: Quartermaster = fresh.get_node("%Quartermaster")

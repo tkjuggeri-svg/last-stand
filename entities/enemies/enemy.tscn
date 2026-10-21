@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://entities/enemies/shield_bubble.gd" id="14_bubble"]
 [ext_resource type="Script" path="res://entities/enemies/enemy_status.gd" id="15_status"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="16_status_fx"]
+[ext_resource type="Script" path="res://entities/enemies/enemy_attack.gd" id="17_attack"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -171,3 +172,10 @@ unique_name_in_owner = true
 position = Vector2(22, 0)
 shape = SubResource("CircleShape2D_attack")
 disabled = true
+
+[node name="Attack" type="Node" parent="." node_paths=PackedStringArray("attack_range", "attack_pivot", "attack_shape")]
+unique_name_in_owner = true
+script = ExtResource("17_attack")
+attack_range = NodePath("../AttackRange")
+attack_pivot = NodePath("../AttackPivot")
+attack_shape = NodePath("../AttackPivot/AttackHitbox/AttackShape")

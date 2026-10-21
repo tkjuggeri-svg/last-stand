@@ -15,7 +15,8 @@ extends StaticBody2D
 ## its attack (arrow rain, a cone blast, freezing, dragging, soul fire: see TowerEvolution).
 ## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder); a
 ## Tollkeeper's toll silences it for a while (get_silence(): no firing).
-## deactivate() (called when it is sold) stops it for good.
+## deactivate() (called when it is sold) stops it for good. Its parts: TowerSight (what it can see and
+## aims at), TowerWeapon (how a volley is delivered), TowerSilence (the toll's silence).
 
 signal construction_finished
 
@@ -37,13 +38,12 @@ var _evolution: TowerEvolution = null
 ## Fire-rate bonus from a Beacon Flame in reach (0 = none; 0.25 = 25% more shots).
 var _boost: float = 0.0
 var _weapon: TowerWeapon = TowerWeapon.new()
+var _sight: TowerSight = TowerSight.new()
 var _stats: TowerTier
 var _build_left: float = 0.0
 var _active: bool = true
 var _target: Enemy = null
 var _cooldown_left: float = 0.0
-## Enemy bodies currently inside the range area (may contain freed ones until pruned).
-var _in_range: Array[Node2D] = []
 
 @onready var _sprite: AnimatedSprite2D = %Sprite
 @onready var _range_area: Area2D = %RangeArea
@@ -87,15 +87,15 @@ func _physics_process(delta: float) -> void:
 		_build_left = 0.0
 		construction_finished.emit()
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
-	if not _is_valid_target(_target):
-		_target = _pick_target()  # also forgets a target that died, left range or reached the fortress
+	if not _sight.is_valid_target(self, _target):
+		_target = _sight.pick_target(self)  # also forgets a target that died, left range or reached the fortress
 	if _target != null and _cooldown_left <= 0.0 and not _silence.is_silenced():
 		_fire()
 
 
 ## The enemy currently aimed at, or null.
 func get_target() -> Enemy:
-	if not _is_valid_target(_target):
+	if not _sight.is_valid_target(self, _target):
 		return null
 	return _target
 
@@ -114,7 +114,7 @@ func is_active() -> bool:
 func deactivate() -> void:
 	_active = false
 	_target = null
-	_in_range.clear()
+	_sight.clear()
 	set_physics_process(false)
 	_range_area.set_deferred(&"monitoring", false)
 
@@ -239,42 +239,6 @@ func _apply_range() -> void:
 	(_range_shape.shape as CircleShape2D).radius = get_attack_range()
 
 
-## Untyped on purpose: the stored target may already be freed, and a freed object can't be passed
-## as an Enemy. is_instance_valid() is checked before anything else touches it.
-func _is_valid_target(candidate: Variant) -> bool:
-	if not is_instance_valid(candidate):
-		return false
-	var enemy: Enemy = candidate as Enemy
-	return enemy != null and enemy.is_alive() and _in_range.has(enemy) and is_in_range(enemy.global_position)
-
-
-## Living enemies in range, the furthest along the lane first.
-func _targets_in_range() -> Array[Enemy]:
-	var found: Array[Enemy] = []
-	for i: int in range(_in_range.size() - 1, -1, -1):
-		var body: Node2D = _in_range[i]
-		if not is_instance_valid(body):
-			_in_range.remove_at(i)
-			continue
-		var enemy: Enemy = body as Enemy
-		if enemy != null and enemy.is_alive() and is_in_range(enemy.global_position):
-			found.append(enemy)
-	found.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.get_lane_progress() > b.get_lane_progress())
-	return found
-
-
-func _pick_target() -> Enemy:
-	var found: Array[Enemy] = _targets_in_range()
-	if found.is_empty():
-		return null
-	match _evolution.targeting if _evolution != null else TowerEvolution.Targeting.FIRST:
-		TowerEvolution.Targeting.STRONGEST:
-			return TowerTargeting.strongest(found)
-		TowerEvolution.Targeting.DENSEST:
-			return TowerTargeting.densest(found, get_stats().splash_radius)
-	return found[0]
-
-
 ## One volley at the target (plus the next leading enemies for multi-target levels): TowerWeapon
 ## delivers it.
 func _fire() -> void:
@@ -282,7 +246,7 @@ func _fire() -> void:
 	_cooldown_left = stats.fire_interval
 	var targets: Array[Enemy] = [_target]
 	if stats.targets > 1:
-		for enemy: Enemy in _targets_in_range():
+		for enemy: Enemy in _sight.targets_in_range(self):
 			if targets.size() >= stats.targets:
 				break
 			if enemy != _target:
@@ -292,12 +256,12 @@ func _fire() -> void:
 
 
 func _on_range_body_entered(body: Node2D) -> void:
-	if _active and body is Enemy and not _in_range.has(body):
-		_in_range.append(body)
+	if _active:
+		_sight.add(body)
 
 
 func _on_range_body_exited(body: Node2D) -> void:
-	_in_range.erase(body)
+	_sight.remove(body)
 
 
 func _on_sprite_animation_finished() -> void:

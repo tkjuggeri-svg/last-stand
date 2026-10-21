@@ -135,6 +135,12 @@ Planned, added by the feature that needs them: `build` (B). Never check raw keyc
 - **Run everything before calling a feature done:** `tests/run_tests.sh` (Godot binary from `$GODOT`, default `~/Downloads/Godot_v4.7.2-stable_linux.x86_64`). It runs the editor import, checks every `.gd` with **all GDScript warnings treated as errors** (via a temporary, git-ignored `override.cfg`), runs every automated test with `--fixed-fps 60` (deterministic, faster than real time), and runs `main.tscn` + every scene in `entities/`, `levels/`, `ui/` and `tests/` for 120 frames. Must end with `ALL PASSED`.
 - Helpers for the runner live in `tests/tools/`. The `tests/` and `tools/` folders are excluded from exports (`export_presets.cfg`).
 
+## Git and GitHub
+
+The remote `origin` is the private GitHub repo `tkjuggeri-svg/last-stand` (SSH). **Push after every
+milestone and every playtest build:** `git push origin main` and `git push origin --tags` (the
+milestone's and the build's tags included). Never force-push and never rewrite pushed history.
+
 ## Playtest builds
 
 `tools/build_playtest.sh` runs the suite, exports the Linux and Windows presets (`export_presets.cfg`, x86_64, release) and zips them with `PLAYTEST.md` into the git-ignored `builds/`. It needs the Godot 4.7.2 export templates; `--pack-check` checks the exported game data without them (no tests/ or tools/ inside, runs on its own). Tester instructions and the feedback we ask for: `PLAYTEST.md`.
