@@ -70,13 +70,15 @@ func is_run_over() -> bool:
 	return _run_over
 
 
-## What this chapter hands to the next: its gold plus a full refund of every tower (packed up for all
-## it cost), the run's upgrades, the hero's lives and the fortress's HP.
-func carry_out() -> ChapterCarry:
+## What this chapter hands to the next: its gold plus `refund_ratio` of what every tower cost (packed
+## up), the run's upgrades, the hero's lives and the fortress's HP.
+func carry_out(refund_ratio: float) -> ChapterCarry:
 	var carry: ChapterCarry = ChapterCarry.new()
+	var invested: int = 0
 	for slot: BuildSlot in builder.get_slots():
 		if not slot.is_empty():
-			carry.refund += slot.tower.invested
+			invested += slot.tower.invested
+	carry.refund = floori(invested * refund_ratio)
 	carry.gold = economy.get_gold() + carry.refund
 	carry.upgrades = modifiers.get_taken()
 	carry.lives_left = hero_lives.get_lives_left()

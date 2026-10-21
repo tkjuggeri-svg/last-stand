@@ -219,13 +219,14 @@ func _on_chapter_cleared() -> void:
 		_victory_screen.open(VICTORY_TEXT)
 		return
 	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
-	var carry: ChapterCarry = _level.carry_out()
+	var refund_ratio: float = _run.get_chapter().leave_refund
+	var carry: ChapterCarry = _level.carry_out(refund_ratio)
 	var cleared: String = _run.get_chapter().display_name
 	_run.carry = carry
 	_run.next_chapter()
 	_level.set_active(false)
 	var max_health: int = _level.fortress.health.max_health
-	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, CHAPTER_REPAIR,
+	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, refund_ratio, CHAPTER_REPAIR,
 		mini(carry.fortress_health + roundi(max_health * CHAPTER_REPAIR), max_health), max_health)
 
 

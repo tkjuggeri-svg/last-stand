@@ -39,6 +39,9 @@ extends Resource
 ## map gives fewer upgrades than a straight 15-wave run (one choice per battle, not per wave), so its
 ## fights are tuned to keep the chapter's difficulty (balance: tests/tools/map_balance.gd).
 @export var fight_health_scale: float = 1.0
+## When the chapter is cleared its towers are packed up for this share of what they cost (the rest is
+## lost): the next chapter starts on a fresh field with less than the last one had built.
+@export_range(0.0, 1.0) var leave_refund: float = 0.4
 @export_group("Events")
 ## Events and shrines drawn for the map's event and shrine nodes (each at most once per map, while
 ## the pool lasts).

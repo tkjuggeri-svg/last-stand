@@ -98,6 +98,6 @@ func run(main: Node) -> void:
 	carry.gold = 2105
 	carry.lives_left = 2
 	carry.upgrades = (level.get_node("%RunModifiers") as RunModifiers).get_taken()
-	(main.get_node("%ChapterScreen") as ChapterScreen).open("Chapter 1: The Crypt Road", "Chapter 2: The Drowned Fields", carry, 0.5, 88, 100)
+	(main.get_node("%ChapterScreen") as ChapterScreen).open("Chapter 1: The Crypt Road", "Chapter 2: The Drowned Fields", carry, 0.4, 0.5, 88, 100)
 	await _tool.call("_frames", 5)
 	await _tool.call("_shot", "m7_10_chapter_cleared")

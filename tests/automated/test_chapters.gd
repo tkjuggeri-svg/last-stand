@@ -3,8 +3,9 @@ extends SceneTree
 ## (tougher and faster every row, every lane pressed, kill gold kept scarce), its tougher elites and its boss,
 ## the Tollkeeper, whose toll (telegraphed by a growing ring) silences the towers inside it for a while
 ## and no others; and, through main.tscn, the move from one chapter to the next: the chapter screen,
-## towers packed up for all they cost, gold, upgrades and lives carried, the fortress +50%, a fresh
-## level and map, the life buy-back available again, and the last chapter's boss winning the run.
+## towers packed up for the chapter's share of what they cost (not all of it), gold, upgrades and lives
+## carried, the fortress +50%, a fresh level and map, the life buy-back available again, and the last
+## chapter's boss winning the run.
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const ARENA: String = "res://levels/prototype_arena.tscn"
@@ -124,15 +125,18 @@ func _test_transition() -> void:
 	var lives: int = level.hero_lives.get_lives_left()  # after the reward (a card may add a life)
 	var screen: ChapterScreen = main.get_node("%ChapterScreen")
 	var text: String = (screen.get_node("%Text") as Label).text
-	_check("the chapter screen: cleared, towers packed up (+%d), the next chapter's name" % invested, screen.visible
-		and (screen.get_node("%Title") as Label).text == "Test chapter 1 cleared!" and text.contains("+%d gold" % invested) and text.contains("Test chapter 2"))
+	var ratio: float = ChapterData.new().leave_refund  # the test run's chapters keep the default
+	var refund: int = floori(invested * ratio)
+	_check("the chapter screen: cleared, towers packed up for %d%% (+%d of %d), the next chapter's name" % [roundi(ratio * 100.0), refund, invested], screen.visible
+		and ratio < 1.0 and (screen.get_node("%Title") as Label).text == "Test chapter 1 cleared!"
+		and text.contains("%d%% of what they cost: +%d gold" % [roundi(ratio * 100.0), refund]) and text.contains("Test chapter 2"))
 	screen.get_continue_button().pressed.emit()
 	await _frames(3)
 	var fresh: Level = main.call("get_level")
 	var mods: RunModifiers = fresh.get_node("%RunModifiers")
 	_check("Continue: a fresh level for chapter 2, its map shown", fresh != level and (main.get_node("%MapScreen") as MapScreen).visible
 		and (main.get_node("%MapScreen").get_node("%Title") as Label).text == "Test chapter 2")
-	_check("gold carried with the towers' full refund (%d = %d + %d)" % [fresh.economy.get_gold(), gold, invested], fresh.economy.get_gold() == gold + invested)
+	_check("gold carried with the towers' refund (%d = %d + %d)" % [fresh.economy.get_gold(), gold, refund], fresh.economy.get_gold() == gold + refund)
 	_check("no towers on the new field", (fresh.get_node("%TowerBuilder") as TowerBuilder).get_slots().all(func(s: BuildSlot) -> bool: return s.is_empty()))
 	_check("upgrades carried (%d), shown in the HUD row" % mods.get_taken().size(), mods.get_taken() == upgrades
 		and fresh.get_node("HUD").get_node("%UpgradeIcons").get_node_or_null("honed_blade") != null)

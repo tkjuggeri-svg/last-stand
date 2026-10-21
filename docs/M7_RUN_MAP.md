@@ -105,7 +105,7 @@ Odds for the mixed rows (3–6):
 
 | | Inside a chapter (between nodes) | Between chapters |
 |---|---|---|
-| **Towers** | **Stay built** on their slots, with their levels and evolutions. The battlefield is the same map, and building up the defence over a chapter is the core of today's game. | **Packed up**: every tower is sold for **100%** of what was spent on it (not 50%), as gold. The next chapter starts with an untimed build phase on a fresh field. |
+| **Towers** | **Stay built** on their slots, with their levels and evolutions. The battlefield is the same map, and building up the defence over a chapter is the core of today's game. | **Packed up**: every tower is sold for **40%** of what was spent on it (`ChapterData.leave_refund`; 100% in M7, see below), as gold. The next chapter starts with an untimed build phase on a fresh field. |
 | **Gold** | Carries. | Carries (plus the packed-up towers). |
 | **Fortress HP** | Carries: damage stays. Repairs come from the Quartermaster (between waves), merchants, events and the boss reward. | +50% of max restored, then carries. |
 | **Hero HP** | Full after each wave and node (as today). | Full. |
@@ -117,9 +117,12 @@ Odds for the mixed rows (3–6):
 waves. Rebuilding per battle would turn every battle into a cold start, and the build-up is the
 part the playtest liked.
 
-**Why a full refund between chapters:** chapter 2 starts at a much harder tier on a new field. A
-50% refund would punish the player for having built well, and the ramp is meant to come from the
-enemies, not from the reset. Alternatives are open question Q2.
+**Why a full refund between chapters (M7), and why 40% now (M7.5):** M7 refunded everything, so a
+built-up defence would not punish the player on the new field. The M7 playtest showed the cost: with
+the whole chapter-1 defence rebuilt at once, chapter 2 was easy. Since M7.5 the towers come back as
+40% of their cost (data: `ChapterData.leave_refund` of the chapter being left), so chapter 2 starts on
+less than chapter 1 ended with; its first waves were lowered (HP x1.3 instead of x2.0, rising to the
+same x3.8 at the boss) so that the start is tight rather than lost.
 
 ## 4. Difficulty ramp per chapter
 
@@ -249,7 +252,7 @@ choose (no hidden cost), except the gamble, which says it is one.
 | # | Question | Decision | From |
 |---|---|---|---|
 | 1 | Run length | **2 chapters for now**; the chapter count is data (`RunData.chapters`), and a third comes with M10's maps | user |
-| 2 | Towers between chapters | **Full refund** of everything spent on them | user |
+| 2 | Towers between chapters | **Full refund** of everything spent on them (M7); **40%** since M7.5 (playtest: the full refund made chapter 2 easy) | user |
 | 3 | Upgrade choice cadence | **One choice per battle node** (1 of 3), not per wave. Elites give a **choice of 2 rare cards**. Events and shrines can grant extra upgrades | user |
 | 4 | Elites | The Gravelord and the Bone Colossus become **elite mini-bosses**; the Lich Warden is chapter 1's boss; chapter 2 gets a **new boss** (the Tollkeeper) | user |
 | 5 | Merchant stock | Upgrade cards, a repair and a reroll; relics in M9. No free towers or evolution discounts | recommendation |

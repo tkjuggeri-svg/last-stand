@@ -31,18 +31,19 @@ WAVES = [
  (2.35, [("lich", 1, 1.0, W, 14), ("ghoul", 34, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 0), ("ghoul", 20, 0.8, S, 16), ("hound", 30, 0.4, S, 2), ("hound", 20, 0.4, NE, 28), ("brute", 8, 4.0, NE, 4), ("brute", 8, 4.5, W, 22), ("brute", 6, 5.0, S, 10), ("cultist", 6, 1.6, W, 6), ("cultist", 6, 1.6, S, 8), ("cultist", 5, 1.6, NE, 14), ("cultist", 4, 2.0, W, 30)]),
 ]
 
-# Chapter 2 (M7): ramps up from chapter 1's end (docs/M7_RUN_MAP.md 4.): HP x2.0 -> x3.8, speed x1.05 ->
+# Chapter 2 (M7): ramps up from chapter 1's end (docs/M7_RUN_MAP.md 4.): HP x1.3 -> x3.8 (M7.5: the
+# first rows start lower, since only 40% of the towers' cost carries over and the defence is rebuilt), speed x1.05 ->
 # x1.18, every lane pressed from the first wave, more Brutes and Cultists, the Tollkeeper in wave 15.
 # Rows 1-6 of its map play waves 1-12, its boss fight waves 13-15.
 WAVES_2 = [
- (2.0, [("ghoul", 24, 0.8, W, 0), ("ghoul", 12, 0.9, S, 4), ("hound", 16, 0.45, NE, 4), ("brute", 3, 6.0, S, 6), ("cultist", 3, 2.0, W, 8)]),
- (2.1, [("ghoul", 26, 0.8, W, 0), ("ghoul", 14, 0.9, S, 4), ("hound", 18, 0.45, NE, 2), ("brute", 4, 5.0, W, 8), ("cultist", 4, 1.8, S, 10)]),
- (2.2, [("ghoul", 28, 0.75, W, 0), ("ghoul", 14, 0.9, NE, 10), ("hound", 20, 0.4, S, 0), ("brute", 5, 5.0, NE, 6), ("cultist", 4, 1.8, W, 8), ("cultist", 3, 2.0, NE, 14)]),
- (2.3, [("ghoul", 26, 0.75, NE, 0), ("ghoul", 22, 0.8, W, 4), ("hound", 22, 0.4, S, 2), ("brute", 6, 4.5, W, 6), ("cultist", 5, 1.8, S, 10), ("cultist", 3, 2.0, W, 16)]),
- (2.4, [("ghoul", 30, 0.75, W, 0), ("ghoul", 20, 0.8, S, 0), ("hound", 24, 0.4, NE, 4), ("brute", 6, 4.5, S, 8), ("brute", 3, 6.0, NE, 14), ("cultist", 5, 1.7, W, 6), ("cultist", 4, 1.7, NE, 14)]),
- (2.5, [("ghoul", 32, 0.7, W, 0), ("ghoul", 22, 0.8, NE, 0), ("hound", 26, 0.4, S, 2), ("brute", 7, 4.5, W, 6), ("brute", 4, 5.0, NE, 16), ("cultist", 6, 1.7, S, 8), ("cultist", 4, 1.8, W, 18)]),
- (2.6, [("ghoul", 34, 0.7, W, 0), ("ghoul", 24, 0.75, S, 2), ("hound", 28, 0.4, NE, 0), ("hound", 14, 0.4, W, 20), ("brute", 8, 4.0, S, 6), ("brute", 4, 5.0, W, 16), ("cultist", 6, 1.6, NE, 8), ("cultist", 4, 1.8, S, 18)]),
- (2.7, [("ghoul", 36, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 2), ("hound", 30, 0.35, S, 0), ("hound", 16, 0.4, W, 22), ("brute", 8, 4.0, NE, 6), ("brute", 5, 5.0, S, 16), ("cultist", 7, 1.6, W, 6), ("cultist", 5, 1.7, S, 12)]),
+ (1.3, [("ghoul", 24, 0.8, W, 0), ("ghoul", 12, 0.9, S, 4), ("hound", 16, 0.45, NE, 4), ("brute", 3, 6.0, S, 6), ("cultist", 3, 2.0, W, 8)]),
+ (1.45, [("ghoul", 26, 0.8, W, 0), ("ghoul", 14, 0.9, S, 4), ("hound", 18, 0.45, NE, 2), ("brute", 4, 5.0, W, 8), ("cultist", 4, 1.8, S, 10)]),
+ (1.6, [("ghoul", 28, 0.75, W, 0), ("ghoul", 14, 0.9, NE, 10), ("hound", 20, 0.4, S, 0), ("brute", 5, 5.0, NE, 6), ("cultist", 4, 1.8, W, 8), ("cultist", 3, 2.0, NE, 14)]),
+ (1.8, [("ghoul", 26, 0.75, NE, 0), ("ghoul", 22, 0.8, W, 4), ("hound", 22, 0.4, S, 2), ("brute", 6, 4.5, W, 6), ("cultist", 5, 1.8, S, 10), ("cultist", 3, 2.0, W, 16)]),
+ (2.0, [("ghoul", 30, 0.75, W, 0), ("ghoul", 20, 0.8, S, 0), ("hound", 24, 0.4, NE, 4), ("brute", 6, 4.5, S, 8), ("brute", 3, 6.0, NE, 14), ("cultist", 5, 1.7, W, 6), ("cultist", 4, 1.7, NE, 14)]),
+ (2.2, [("ghoul", 32, 0.7, W, 0), ("ghoul", 22, 0.8, NE, 0), ("hound", 26, 0.4, S, 2), ("brute", 7, 4.5, W, 6), ("brute", 4, 5.0, NE, 16), ("cultist", 6, 1.7, S, 8), ("cultist", 4, 1.8, W, 18)]),
+ (2.45, [("ghoul", 34, 0.7, W, 0), ("ghoul", 24, 0.75, S, 2), ("hound", 28, 0.4, NE, 0), ("hound", 14, 0.4, W, 20), ("brute", 8, 4.0, S, 6), ("brute", 4, 5.0, W, 16), ("cultist", 6, 1.6, NE, 8), ("cultist", 4, 1.8, S, 18)]),
+ (2.65, [("ghoul", 36, 0.7, W, 0), ("ghoul", 26, 0.75, NE, 2), ("hound", 30, 0.35, S, 0), ("hound", 16, 0.4, W, 22), ("brute", 8, 4.0, NE, 6), ("brute", 5, 5.0, S, 16), ("cultist", 7, 1.6, W, 6), ("cultist", 5, 1.7, S, 12)]),
  (2.85, [("ghoul", 38, 0.65, W, 0), ("ghoul", 28, 0.75, S, 0), ("hound", 32, 0.35, NE, 2), ("hound", 18, 0.4, S, 22), ("brute", 9, 4.0, W, 4), ("brute", 6, 4.5, NE, 14), ("cultist", 7, 1.5, NE, 6), ("cultist", 6, 1.6, W, 12)]),
  (3.0, [("ghoul", 40, 0.65, W, 0), ("ghoul", 30, 0.7, NE, 0), ("hound", 34, 0.35, S, 0), ("hound", 18, 0.35, W, 22), ("brute", 10, 3.5, S, 4), ("brute", 6, 4.5, W, 16), ("cultist", 8, 1.5, W, 6), ("cultist", 6, 1.6, NE, 14)]),
  (3.15, [("ghoul", 42, 0.6, W, 0), ("ghoul", 30, 0.7, S, 0), ("ghoul", 18, 0.8, NE, 14), ("hound", 36, 0.35, NE, 0), ("hound", 20, 0.35, S, 22), ("brute", 10, 3.5, W, 4), ("brute", 7, 4.0, NE, 10), ("cultist", 8, 1.5, S, 6), ("cultist", 7, 1.5, W, 12)]),
