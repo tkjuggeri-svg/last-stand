@@ -172,6 +172,8 @@ Design: `docs/M8_META.md` (approved with Claude's recommendations; every decisio
 
 **Done when:** there's a reason to start another run after dying.
 
+Built as `m8-playtest` (not yet playtested).
+
 ---
 
 ## M8.5 — Demo Polish
@@ -241,7 +243,7 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M7.5** (chapter 2 rework and relics) is implemented and built as `m7.5-playtest-3` (with the feedback key); waiting for hands-on playtest feedback. Don't start M8 yet.
+**M8** (meta progression: Soul Shards, the War Room and its unlock board, title / run summary, resume from the map, tutorial tips, calling waves early) is implemented autonomously and built as `m8-playtest`, on top of M7.5 (`m7.5-playtest-3`), neither playtested by hand yet. Every M8 decision taken without the user is listed in `docs/M8_META.md` section 10, to confirm or override. Waiting for playtest feedback; don't start M8.5.
 
 ---
 
