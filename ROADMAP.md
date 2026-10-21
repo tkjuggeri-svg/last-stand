@@ -114,7 +114,7 @@ Tick items as they're finished.
 ---
 
 ## M6.5 — Economy, Difficulty & Tower Evolutions *(depth before release)* — done (`m6.5-done`)
-The Steam release is postponed to focus on depth and replayability (M7–M12); release prep moves to M14.
+Release plans were set aside to focus on depth and replayability (M7–M12); release decisions come later (see the parking lot at the end).
 
 - [x] Gold breakdown in the balance tool (`--gold`); snowballing removed (Bounty Hunters once per run)
 - [x] Scarce gold: kill gold per wave stays flat from wave 6 (`WaveData.gold_multiplier`); maxing every tower by wave 15 is out of reach without economy upgrades
@@ -181,9 +181,9 @@ Presentation work done early instead of all in M13, so a public demo looks and s
 - [ ] Juice: hit pause on big hits, damage numbers, screen shake (today only a boss's death has a hit-stop and a shake)
 - [ ] Title screen
 - [ ] **Readability:** a grayscale check in the screenshot tool (`capture_screenshots.gd --grayscale`: every enemy, the hero, towers and shots still stand out from the ground without colour), and **consistent colour coding by enemy role** (e.g. one accent per role: melee, fast, tank, caster/support, ranged, boss), applied to the existing enemies' art and documented in `ART_DIRECTION.md`
-- [ ] **Key art by a human artist**, commissioned before the itch.io demo (store/demo page, capsule, title screen). Note: `CLAUDE.md` rule 3 allows only CC0 or self-made assets, so a commissioned piece needs an explicit exception there (the project owning the rights, logged in `assets/CREDITS.md`)
+- [ ] *(Optional)* a free itch.io demo **for outside feedback** (players who aren't us)
 
-**Done when:** the game is ready for a free itch.io demo.
+**Done when:** the game looks, sounds and reads finished enough to show to people outside the project.
 
 ---
 
@@ -234,18 +234,21 @@ Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead 
 ---
 
 ## M13 — Audio & Presentation
-Music, credits, final art polish (e.g. side views for the bosses, an art pass over everything added since M6 in the `ART_DIRECTION.md` style) and trailer material. The shared UI style (M8), basic SFX, juice and the title screen come earlier (M8.5).
+Music, credits, final art polish (e.g. side views for the bosses, an art pass over everything added since M6 in the `ART_DIRECTION.md` style), trailer material, a performance pass and a bug bash. The shared UI style (M8), basic SFX, juice and the title screen come earlier (M8.5).
 
-**Done when:** a stranger can watch a 30 s clip and understand + want the game. → **Steam page / trailer / demo.**
-
----
-
-## M14 — Steam Release Prep
-Release build pipeline (signing, store builds; the playtest presets and script exist since M6), Steam integration (achievements, cloud saves; GodotSteam is an external dependency and needs explicit approval), controller support, a performance pass, a bug bash and the Early Access / 1.0 decision.
-
-**Done when:** the game is on Steam.
+**Done when:** a stranger can watch a 30 s clip and understand + want the game.
 
 ---
 
 ## Current focus
 **M7.5** (chapter 2 rework and relics) is implemented and built as `m7.5-playtest-3` (with the feedback key); waiting for hands-on playtest feedback. Don't start M8 yet.
+
+---
+
+## Parking lot (not planned)
+Notes for a release, if and when we decide on one. We're making the best game we can first; none of this is scheduled.
+- **Store page key art** by a human artist (`CLAUDE.md` rule 3 allows only CC0 or self-made assets: a commissioned piece would need an exception there, with the rights logged in `assets/CREDITS.md`).
+- **AI content disclosure** for a store page (how the code and art were made).
+- **Controller support** (and a handheld-friendly UI).
+- **Signed store builds** (code signing, store build pipelines; the playtest presets and `tools/build_playtest.sh` exist since M6).
+- **Steam integration** (achievements, cloud saves; GodotSteam is an external dependency and needs explicit approval).

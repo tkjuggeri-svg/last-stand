@@ -1,6 +1,6 @@
 # LAST STAND — Project Rules
 
-Commercial indie game for Steam. 2D top-down dark fantasy roguelite tower defense.
+Indie game, 2D top-down dark fantasy roguelite tower defense. We're making the best game we can first; release decisions come later (ROADMAP.md, parking lot).
 The player controls a hero in real time, builds towers, and defends a fortress against waves.
 
 - Engine: **Godot 4.7** (4.7.2 installed at `~/Downloads/Godot_v4.7.2-stable_linux.x86_64`), GDScript only, 2D, Windows PC, single player.

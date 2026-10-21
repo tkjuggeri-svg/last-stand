@@ -254,5 +254,5 @@ level).
 | Q6 | Are relics unlocked, or all there from the start? | **Unlocked in packs** (3.2): relics change rules, so meeting them a few at a time helps. |
 | Q7 | The first-run kit is smaller than what today's balance assumes: ease chapter 1? | **Balance the starter kit on its own** with the tool before deciding; ease chapter 1's first rows only if needed. |
 | Q8 | Do unlocks matter for the harder modes (M12)? | Unlocks are content, not power; the harder modes (M12) add the challenge. Decide in M12. |
-| Q9 | Several save slots / profiles? | **One profile** (with Steam Cloud later, M14). A "reset progress" button in Settings. |
+| Q9 | Several save slots / profiles? | **One profile** (cloud saves only if a release ever needs them: ROADMAP.md, parking lot). A "reset progress" button in Settings. |
 | Q10 | Can a player skip the tutorial hints entirely? | **Yes**: "skip all" on the first hint, and the switch in Settings. |
