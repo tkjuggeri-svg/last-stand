@@ -6,9 +6,11 @@ extends Node
 ## applies the answer, and what it leaves is played here: an extra fight, upgrade choices one after
 ## another), then the map again. It records each fight won in RunState for the run's summary.
 ## Main calls down (play, show_map, jump_to, offer_muster, close) and hears back: map_shown (the run
-## stands on the map: it can be saved there) and boss_beaten (the chapter is cleared).
+## stands on the map: it can be saved there), fight_started and boss_beaten (the chapter is cleared).
 
 signal map_shown
+## A fight begins on the level (its first build phase).
+signal fight_started
 signal boss_beaten
 
 const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
@@ -68,6 +70,7 @@ func jump_to(node: MapNode) -> void:
 
 ## The Muster starting choice: 1 of 2 common cards before the first fight, then the map.
 func offer_muster() -> void:
+	map_screen.close()  # no picking a node behind the choice
 	_level.set_active(true)
 	if _level.offers.make_offer(2, false, true).is_empty():
 		show_map()
@@ -116,6 +119,7 @@ func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightRewar
 		wave.health_multiplier *= scale
 	_level.set_active(true)
 	_level.start_encounter(waves, reward)
+	fight_started.emit()
 
 
 func _on_event_choice(index: int) -> void:

@@ -145,7 +145,8 @@ func _test_perks() -> void:
 	await _frames(3)
 	var level: Level = main.call("get_level")
 	var offer: Array[UpgradeData] = level.offers.get_offer()
-	_check("Muster: the run starts with a choice of 2 common cards", offer.size() == 2
+	_check("Muster: the run starts with a choice of 2 common cards (the map hidden)", offer.size() == 2
+		and not (main.get_node("%MapScreen") as MapScreen).visible
 		and offer.all(func(d: UpgradeData) -> bool: return d.rarity == UpgradeData.Rarity.COMMON))
 	_check("Drill: the first reroll is free", level.offers.get_reroll_cost() == 0 and level.offers.reroll() and level.offers.get_reroll_cost() > 0)
 	level.offers.pick(0)

@@ -158,17 +158,17 @@ Playtest of `m7-playtest`: chapter 1 is fine; chapter 2 on the same map, with a 
 ---
 
 ## M8 — Meta Progression & Persistence
-Design proposal (not yet approved): `docs/M8_META.md`.
+Design: `docs/M8_META.md` (approved with Claude's recommendations; every decision in its section 10, to be overridden after playtesting).
 - [ ] *(Small, can come first, even before the rest of M8.)* **Call the next wave early:** a button (and key) in the build phase, or during a wave once its last group has spawned, that starts the next wave now for bonus gold (more the earlier it is called), like a classic tower defense "send next wave"
-- [ ] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
-- [ ] Hub between runs: spend Soul Shards on unlocks (towers, upgrades into the pool, hero bonuses)
-- [ ] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decide: resume runs or not)
-- [ ] Unlock pacing: what is available on the first run, what comes later
-- [ ] Main flow: start → hub → run → summary → hub, with a main menu
-- [ ] **Shared UI style**, built alongside the main menu, the hub and the run summary: buttons, panels, fonts, screen transitions (on top of `ui/theme/game_theme.tres`). Every later screen reuses it instead of styling itself
-- [ ] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
-- [ ] **Hub characters react to the last run:** a few figures in the hub (e.g. the Quartermaster, a priest, a smith) each say a short line about how the last run went (how far, which boss, a lost life, a relic found, a first win); lines are data (conditions + text), so M11 can grow them into real characters
-- [ ] Tests: save/load round trip, version migration, unlocks applied to a run
+- [x] Soul Shards earned at run end (waves / nodes cleared, bosses killed), run summary screen
+- [x] Hub between runs: spend Soul Shards on unlocks (towers, cards and relics into the pools, evolutions, an event, two small perks; no hero stat bonuses: the user's rule)
+- [x] `SaveManager` (autoload, already allowed in `CLAUDE.md`): versioned save in `user://`, profile with unlocks and shards; survives a crash mid-run (decided: runs resume from the map)
+- [x] Unlock pacing: what is available on the first run, what comes later
+- [x] Main flow: start → hub → run → summary → hub, with a main menu
+- [x] **Shared UI style**, built alongside the main menu, the hub and the run summary: buttons, panels, fonts, screen transitions (on top of `ui/theme/game_theme.tres`). Every later screen reuses it instead of styling itself
+- [x] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
+- [x] *(One figure, the Quartermaster, lines chosen in code by `HubLines`; data-driven lines and more figures move to M11.)* **Hub characters react to the last run:** a few figures in the hub (e.g. the Quartermaster, a priest, a smith) each say a short line about how the last run went (how far, which boss, a lost life, a relic found, a first win); lines are data (conditions + text), so M11 can grow them into real characters
+- [x] Tests: save/load round trip, version migration, unlocks applied to a run
 
 **Done when:** there's a reason to start another run after dying.
 

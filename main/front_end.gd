@@ -91,7 +91,10 @@ func _buy(unlock: UnlockData) -> void:
 		_save.save_profile()  # the hub refreshes on the save
 
 
+## Tips back on shows every tip again, from the start.
 func _set_tips(on: bool) -> void:
+	if on and _save.profile.hints_off:
+		_save.profile.hints_seen.clear()
 	_save.profile.hints_off = not on
 	_save.save_profile()
 

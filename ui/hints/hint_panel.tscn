@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/hints/hint_panel.gd" id="1_hint"]
+
+[node name="HintPanel" type="CanvasLayer"]
+process_mode = 3
+layer = 8
+script = ExtResource("1_hint")
+
+[node name="Anchor" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Anchor"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -780.0
+offset_top = -110.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Box" type="HBoxContainer" parent="Anchor/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Tip" type="Label" parent="Anchor/Panel/Box"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_type_variation = &"HeaderLabel"
+text = "Tip"
+
+[node name="Text" type="Label" parent="Anchor/Panel/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+autowrap_mode = 3
+
+[node name="Buttons" type="VBoxContainer" parent="Anchor/Panel/Box"]
+layout_mode = 2
+
+[node name="GotIt" type="Button" parent="Anchor/Panel/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 36)
+layout_mode = 2
+focus_mode = 0
+theme_type_variation = &"ButtonPrimary"
+text = "Got it"
+
+[node name="SkipAll" type="Button" parent="Anchor/Panel/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(170, 36)
+layout_mode = 2
+focus_mode = 0
+text = "Skip all tips"

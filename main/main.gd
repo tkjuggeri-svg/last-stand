@@ -52,6 +52,7 @@ var _level: Level
 @onready var _feedback_screen: FeedbackScreen = %FeedbackScreen
 @onready var _front_end: FrontEnd = %FrontEnd
 @onready var _map_flow: MapFlow = %MapFlow
+@onready var _hints: HintDirector = %HintDirector
 
 
 func _ready() -> void:
@@ -77,6 +78,7 @@ func _ready() -> void:
 	_map_flow.boss_beaten.connect(_on_chapter_cleared)
 	_chapter_screen.continued.connect(_start_chapter)
 	_feedback_screen.submitted.connect(_save_feedback)
+	_hints.enabled = uses_front_end()
 	if uses_front_end():
 		_game_over_screen.set_button_text("Continue")
 		_victory_screen.set_button_text("Continue")
@@ -159,6 +161,7 @@ func _close_screens() -> void:
 	_map_flow.close()
 	_chapter_screen.hide()
 	_front_end.hide_all()
+	_hints.clear()
 
 
 ## Replaces the level with the chapter's (fresh) one and shows its map; `resume`: a saved run's state
@@ -169,6 +172,7 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	_level.run_lost.connect(_on_level_run_lost)
 	add_child(_level)
 	_map_flow.play(_level)
+	_hints.watch(_level)
 	_level.apply_unlocks(_run.unlocks)
 	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
 	_level.spawner.wave_cleared.connect(func(_n: int) -> void: _run.waves += 1)
@@ -239,6 +243,7 @@ func _screen_name() -> String:
 
 ## The run ended: its summary, its shards paid into the profile (saved). Returns the summary.
 func _finish_run(result: String) -> Dictionary:
+	_hints.clear()
 	last_summary = RunSummary.build(_run, _level, result)
 	last_summary["shard_lines"] = MetaProgress.shard_lines(last_summary, _save.profile)
 	last_summary["shards"] = MetaProgress.finish_run(_save.profile, last_summary)

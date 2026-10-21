@@ -1,6 +1,7 @@
 extends SceneTree
 ## Screenshots of the front-end screens (M8) in a real window: the title, the War Room (fresh, and with
-## shards and some unlocks), the run summary. Uses a throwaway save.
+## shards and some unlocks), the run summary, and two tutorial tips (the map's, the first build phase's).
+## Uses a throwaway save.
 ## godot --path . --resolution 1280x720 --script res://tests/tools/front_end_shots.gd -- --out=<dir>
 
 const SAVE_PATH: String = "user://shots_save.json"
@@ -40,6 +41,16 @@ func _initialize() -> void:
 		"shard_lines": [["4 battles won", 8], ["1 elite beaten", 6]], "shards": 14})
 	await _settle()
 	await _shot("summary")
+	save.reset_profile()
+	front.show_hub()
+	await _settle()
+	front.get_hub().get_start_button().pressed.emit()
+	await _settle()
+	await _shot("hint_map")
+	(main.get_node("%HintPanel") as HintPanel).close()
+	await MapFixtures.enter_first_battle(main)
+	await _settle()
+	await _shot("hint_build")
 	save.reset_profile()
 	for suffix: String in ["", ".bak", ".tmp"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH + suffix))

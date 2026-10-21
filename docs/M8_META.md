@@ -278,6 +278,10 @@ level).
 | — | Save format version | **Version 2**; version 1 is the proposal's format with the dropped `bonuses`: loading it refunds their shards. `tests/fixtures/save_v1.json` is loaded by the save test. | Claude |
 | — | Old Game Over / Victory screens | **Kept**, their button now reads Continue and leads to the run summary (shards, path, stats), then the hub. The pause menu's Restart becomes **Abandon run** (a loss, shards paid). | Claude |
 | — | Tests and tools | Under `--script` (tests, the balance tool) the profile has everything unlocked, nothing is written to disk and Main boots straight into a run, as before M8; the meta tests switch this off. | Claude |
+| — | Resume details | The run is saved **each time the map shows** (also right after a new run starts). Quitting in a fight replays it from its start; quitting on the chapter-cleared screen replays the boss (the chapter's map was the last save). A new run started while one is saved **abandons it** (it pays shards as abandoned); the War Room says so. A saved run of an older format is dropped (a fresh run starts). | Claude |
+| — | Hint placement and keys | Bottom right (clear of the HUD's panels), never pausing; **mouse only** ("Got it", "Skip all tips"), not Enter as section 7 proposed, because Enter starts the wave and Space dashes. Each tip goes by itself after 9 s of play. A tip counts as seen once shown. The War Room's **Tips** switch replaces "Show tips" in Settings; switching it back on shows every tip again. | Claude |
+| — | Hub character lines | One figure (the Quartermaster), lines picked in code (`HubLines`) from the last run (won, abandoned, boss beaten, chapter 2, short run, relic, fallen). Data-driven lines and more figures: M11. | Claude |
+| — | The dev menu | Gains a **Shards** row (set the profile's shards, also on the title / hub / summary) to test the unlock board without playing runs. | Claude |
 
 ## 11. The first-run kit, measured
 
