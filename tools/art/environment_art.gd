@@ -88,7 +88,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, b
 		return (lanes.any(func(lane: Array) -> bool: return _distance_to_polyline(p, lane) < 12.0) or p.distance_to(keep) < 42.0
 			or not Rect2(floor_art).grow(-3).has_point(p))
 	_grass_details(img, keep_out, rng, patches)
-	_wall_band(img, floor_art)
+	wall_band(img, floor_art)
 	return img
 
 
@@ -174,8 +174,9 @@ func _pebble(img: Image, at: Vector2i, radius: int) -> void:
 
 
 ## The arena wall: on the north side its south face shows (3/4 view), elsewhere only its top with
-## battlements on the inner rim; it casts a shadow onto the floor below and to the right.
-func _wall_band(img: Image, floor_art: Rect2i) -> void:
+## battlements on the inner rim; it casts a shadow onto the floor below and to the right. Every level's
+## ground uses it (the marsh's too).
+func wall_band(img: Image, floor_art: Rect2i) -> void:
 	var size: Vector2i = img.get_size()
 	var face_height: int = 9
 	for y: int in size.y:

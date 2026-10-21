@@ -37,11 +37,11 @@ func _initialize() -> void:
 		elif arg == "--evolved":
 			_evolved = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
+	var chapter: ChapterData = (load("res://data/run/run.tres") as RunData).chapters[1 if _chapter_2 else 0]
+	var level: Level = chapter.level_scene.instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = [spawner.waves.back(), WaveData.new()]
 	if _chapter_2:
-		var chapter: ChapterData = (load("res://data/run/run.tres") as RunData).chapters[1]
 		var finale: WaveData = (load("res://data/waves/chapter_2/wave_15.tres") as WaveData).duplicate()
 		finale.health_multiplier *= chapter.fight_health_scale
 		spawner.waves = [finale, WaveData.new()]

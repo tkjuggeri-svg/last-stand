@@ -472,8 +472,16 @@ const FROST_FX: Dictionary = {
 	"anims": [["frost_burst", 0, 5, 16.0, false], ["frost_aura", 1, 4, 6.0, true]],
 }
 
+## Rings around the hero wading in marsh water (marsh_art.gd), 32x16 art, looping.
+const RIPPLE: Dictionary = {
+	"png": "res://assets/sprites/effects/ripple.png",
+	"frames": "res://entities/effects/ripple_frames.tres",
+	"size": Vector2i(32, 16),
+	"anims": [["ripple", 0, 4, 6.0, true]],
+}
+
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [RIPPLE, HERO, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {
@@ -525,5 +533,11 @@ const FONT: String = "res://assets/fonts/pixel_font.res"
 const FONT_ATLAS_PNG: String = "res://assets/fonts/pixel_font_atlas.png"
 
 const GROUND_PNG: String = "res://assets/sprites/environment/prototype_arena_ground.png"
+## The Drowned Marsh (chapter 2): its baked ground, props (Sprite2D, hframes 8; MarshArt.PROPS) and the
+## drowned chapel the dead come out of (64x64, standing on art row 60).
+const MARSH_LEVEL: String = "res://levels/drowned_marsh.tscn"
+const MARSH_GROUND_PNG: String = "res://assets/sprites/environment/drowned_marsh_ground.png"
+const MARSH_PROPS_PNG: String = "res://assets/sprites/environment/marsh_props.png"
+const CHAPEL_PNG: String = "res://assets/sprites/environment/drowned_chapel.png"
 ## Width of the visible stone wall band drawn outside the playable floor, in world pixels.
 const WALL_BAND: int = 32

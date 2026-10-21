@@ -62,3 +62,12 @@ const GRASS_DRY: Array[Color] = [Color("2c2b17"), Color("39371d"), Color("484526
 const DIRT: Array[Color] = [Color("231a14"), Color("33261c"), Color("433325"), Color("54412f"), Color("67513b"), Color("7c6449")]
 const MUD: Array[Color] = [Color("1a1512"), Color("261f1a"), Color("332a22")]
 const MOSS: Array[Color] = [Color("1d2914"), Color("2e401d"), Color("435a28")]
+
+# --- The Drowned Marsh (chapter 2) ---
+## Murky marsh water, from the deep middle of a pool to the light caught on its ripples.
+const WATER: Array[Color] = [Color("0d171c"), Color("132328"), Color("1a3033"), Color("243f3e"), Color("34544f"), Color("52766b"), Color("86a898")]
+## Sodden marsh grass: cooler and more olive than the graveyard's.
+const MARSH_GRASS: Array[Color] = [Color("141b13"), Color("192317"), Color("1f2b1b"), Color("26341f"), Color("2e3e24"), Color("39492b")]
+## Dry reeds and cattails (ochre, the marsh's light accent against the water).
+const REED: Array[Color] = [Color("26240f"), Color("3d3a1b"), Color("5a5428"), Color("7b7037"), Color("a29149")]
+const LILY: Array[Color] = [Color("17301b"), Color("27492a"), Color("3d6838"), Color("5c8a4a")]

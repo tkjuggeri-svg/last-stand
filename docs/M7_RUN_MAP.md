@@ -16,7 +16,8 @@
   fortress keeps its damage, and gold and upgrades carry over. **Between chapters,** the towers are
   packed up for gold and the next chapter starts on a fresh field.
 - Chapter 2 **ramps up from the chapter 1 baseline** (HP, speed, enemy mixes, elite affixes), on the
-  current arena until M10 brings new maps, with its own new boss, **the Tollkeeper** (section 4.1).
+  current arena in M7 and on its own map, the Drowned Marsh, since M7.5, with its own new boss,
+  **the Tollkeeper** (section 4.1).
 - **Node types:** battle, elite, merchant, shrine (a risky deal), event (text + choice) and boss.
 
 ## 1. Map shape and run length
@@ -121,8 +122,9 @@ part the playtest liked.
 built-up defence would not punish the player on the new field. The M7 playtest showed the cost: with
 the whole chapter-1 defence rebuilt at once, chapter 2 was easy. Since M7.5 the towers come back as
 40% of their cost (data: `ChapterData.leave_refund` of the chapter being left), so chapter 2 starts on
-less than chapter 1 ended with; its first waves were lowered (HP x1.3 instead of x2.0, rising to the
-same x3.8 at the boss) so that the start is tight rather than lost.
+less than chapter 1 ended with; its first waves were lowered (HP x0.7 instead of x2.0, rising to the
+same x3.8 at the boss) and its kill gold raised back up (300-440 a wave instead of 220-300), so that
+the start is tight rather than lost and the defence grows again during the chapter.
 
 ## 4. Difficulty ramp per chapter
 
@@ -244,7 +246,7 @@ choose (no hidden cost), except the gamble, which says it is one.
     scaled per chapter (`ChapterData.fight_health_scale`): chapter 1 ×0.75, which keeps the M6.5
     difficulty (the bot clears chapter 1 in 4% of runs), and chapter 2 ×1.8.
   - Chapter 2's kill gold is 220–300 a wave, not 350–450: with the towers' full refund, more made gold
-    meaningless (the bot evolved almost every tower).
+    meaningless (the bot evolved almost every tower). Since M7.5 (40% refund) it is 300–440 again.
   - Results: `GAME_DESIGN.md` 3. (M7 tuning).
 
 ## 8. Decisions
@@ -259,7 +261,7 @@ choose (no hidden cost), except the gamble, which says it is one.
 | 6 | Event frequency | ~20% of the mixed rows | recommendation |
 | 7 | Fail state | **Losing in chapter 2 loses the whole run**; no checkpoints | user |
 | 8 | Map visibility | The whole chapter map is visible from the start | recommendation |
-| 9 | Chapter 2 before M10 | On the current arena, with ramped numbers, affixes and its own boss | recommendation (scoped by 1) |
+| 9 | Chapter 2 before M10 | On the current arena, with ramped numbers, affixes and its own boss (M7); **its own map, the Drowned Marsh**, since M7.5 (playtest: "chapter 2 on the same map: no") | recommendation (scoped by 1), then user |
 | 10 | Quartermaster buy-back | **Once per chapter** | recommendation |
 
 **`RunState` autoload:** approved, including the change to the "per-level systems" rule in

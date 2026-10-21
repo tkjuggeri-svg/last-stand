@@ -41,13 +41,13 @@ func _test_data() -> void:
 		for i: int in 2:
 			tougher = tougher and _toughness(b.waves[i]) > _toughness(a.waves[i]) * 1.5
 			faster = faster and b.waves[i].speed_multiplier >= maxf(a.waves[i].speed_multiplier, 1.05)
-			richer = richer and _gold(b.waves[i]) >= 210.0 and _gold(b.waves[i]) <= 320.0
+			richer = richer and _gold(b.waves[i]) >= 290.0 and _gold(b.waves[i]) <= 460.0
 			var used: Dictionary = {}
 			for group: SpawnGroup in b.waves[i].groups:
 				used[group.lane] = true
 			lanes = lanes and used.size() == 3
 	_check("chapter 2's battles: every wave much tougher than chapter 1's same row", tougher)
-	_check("...faster, on every lane, with kill gold of 220-300 a wave (the refund pays the rebuild)", faster and richer and lanes)
+	_check("...faster, on every lane, with kill gold of 300-440 a wave (only 40% of the towers' cost carries over)", faster and richer and lanes)
 	var leaders: bool = two.elites.all(func(e: EncounterData) -> bool: return e.leader != null and e.leader_health_scale > 1.0)
 	_check("chapter 2's elites: their mini-bosses are tougher there", leaders)
 	var last: WaveData = two.boss.waves.back()

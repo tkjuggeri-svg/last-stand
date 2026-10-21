@@ -25,6 +25,7 @@ const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
 const EvolutionArt: GDScript = preload("res://tools/art/evolution_art.gd")
 const MapArt: GDScript = preload("res://tools/art/map_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
+const MarshArt: GDScript = preload("res://tools/art/marsh_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
 const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
@@ -57,6 +58,10 @@ func _initialize() -> void:
 		"ground": func() -> void: _save(_ground(), Layouts.GROUND_PNG),
 		"props": func() -> void: _save(_sheet([EnvironmentArt.new().prop_frames()], EnvironmentArt.PROP_SIZE), Layouts.PROPS_PNG),
 		"crypt": func() -> void: _save(EnvironmentArt.new().crypt(), Layouts.CRYPT_PNG),
+		"marsh_ground": func() -> void: _save(_marsh_ground(), Layouts.MARSH_GROUND_PNG),
+		"marsh_props": func() -> void: _save(_sheet([MarshArt.new().prop_frames()], MarshArt.PROP_SIZE), Layouts.MARSH_PROPS_PNG),
+		"chapel": func() -> void: _save(MarshArt.new().chapel(), Layouts.CHAPEL_PNG),
+		"ripple": func() -> void: _save(_sheet([MarshArt.new().ripple_frames()], Layouts.RIPPLE["size"]), Layouts.RIPPLE["png"]),
 		"mote": func() -> void: _save(EnvironmentArt.new().mote(), Layouts.MOTE_PNG),
 		"coin": func() -> void: _save(UiArt.new().icon("coin"), Layouts.COIN_PNG),
 		"ui": _ui,
@@ -117,7 +122,28 @@ func _upgrade_icons() -> void:
 ## Bakes the prototype arena's ground from the level's floor, lanes (every Path2D named Lane*) and fortress.
 func _ground() -> Image:
 	var level: Node = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
+	var lanes: Array[Array] = _lanes_of(level)
+	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
 	var floor_node: ColorRect = level.get_node("Floor")
+	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
+	level.free()
+	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+
+
+## The Drowned Marsh's ground, baked the same way plus its pools (the Water node's polygons).
+func _marsh_ground() -> Image:
+	var level: Node = (load(Layouts.MARSH_LEVEL) as PackedScene).instantiate()
+	var lanes: Array[Array] = _lanes_of(level)
+	var pools: Array[PackedVector2Array] = (level.get_node("Water") as MarshWater).get_pools()
+	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
+	var floor_node: ColorRect = level.get_node("Floor")
+	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
+	level.free()
+	return MarshArt.new().ground(floor_rect, lanes, pools, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+
+
+## Every Path2D named Lane* as a polyline in level coordinates.
+func _lanes_of(level: Node) -> Array[Array]:
 	var lanes: Array[Array] = []
 	for child: Node in level.get_children():
 		if child is Path2D and child.name.begins_with("Lane"):
@@ -126,10 +152,7 @@ func _ground() -> Image:
 			for i: int in lane.curve.point_count:
 				lane_points.append(lane.position + lane.curve.get_point_position(i))
 			lanes.append(lane_points)
-	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
-	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
-	level.free()
-	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+	return lanes
 
 # ---------------------------------------------------------------- image helpers
 

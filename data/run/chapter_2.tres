@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
-[ext_resource type="PackedScene" path="res://levels/prototype_arena.tscn" id="2_level"]
+[ext_resource type="PackedScene" path="res://levels/drowned_marsh.tscn" id="2_level"]
 [ext_resource type="Resource" path="res://data/run/ch2_battle_1.tres" id="b1"]
 [ext_resource type="Resource" path="res://data/run/ch2_battle_2.tres" id="b2"]
 [ext_resource type="Resource" path="res://data/run/ch2_battle_3.tres" id="b3"]
@@ -35,7 +35,7 @@
 [resource]
 script = ExtResource("1_chapter")
 id = &"drowned_fields"
-display_name = "Chapter 2: The Drowned Fields"
+display_name = "Chapter 2: The Drowned Marsh"
 level_scene = ExtResource("2_level")
 battles = Array[ExtResource("s_enc")]([ExtResource("b1"), ExtResource("b2"), ExtResource("b3"), ExtResource("b4"), ExtResource("b5"), ExtResource("b6")])
 elites = Array[ExtResource("s_enc")]([ExtResource("e3"), ExtResource("e4"), ExtResource("e5"), ExtResource("e6")])

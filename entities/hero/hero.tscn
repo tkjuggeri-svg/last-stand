@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://core/components/attacker_limit.gd" id="10_limit"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="11_light"]
 [ext_resource type="Script" path="res://entities/hero/hero_dash.gd" id="12_dash"]
+[ext_resource type="SpriteFrames" path="res://entities/effects/ripple_frames.tres" id="13_ripple"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -33,6 +34,15 @@ script = ExtResource("1_hero")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")
+
+[node name="Ripple" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 2)
+scale = Vector2(2, 2)
+sprite_frames = ExtResource("13_ripple")
+animation = &"ripple"
+autoplay = "ripple"
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true

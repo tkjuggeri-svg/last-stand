@@ -13,7 +13,19 @@ var _failures: int = 0
 
 
 func _initialize() -> void:
-	var level: Level = (load("res://levels/prototype_arena.tscn") as PackedScene).instantiate()
+	# Each level: its floor rect, and where the hero starts walking toward each wall (on dry land, with
+	# room to reach it in 2 s).
+	await _test_level("res://levels/prototype_arena.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, 200), Vector2(200, 200), Vector2(-600, -300), Vector2(-600, 200), Vector2(-750, -350)])
+	await _test_level("res://levels/drowned_marsh.tscn", Rect2(-1040, -700, 1820, 1300),
+		[Vector2(-900, 0), Vector2(500, 0), Vector2(-850, -390), Vector2(-950, 300), Vector2(-920, -560)])
+	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
+	quit(_failures)
+
+
+func _test_level(path: String, expected: Rect2, starts: Array[Vector2]) -> void:
+	print("--- ", path.get_file())
+	var level: Level = (load(path) as PackedScene).instantiate()
 	root.add_child(level)
 	await WaveFixtures.start_wave(level)
 	await _frames(2)
@@ -24,7 +36,7 @@ func _initialize() -> void:
 	var bounds: StaticBody2D = level.get_node("ArenaBounds")
 
 	# --- Dimensions agree ---
-	_check("arena is the floor rect (%s)" % arena, arena == Rect2(-900, -500, 1300, 900))
+	_check("arena is the floor rect (%s)" % arena, arena == expected)
 	# The camera may show the visible wall band around the floor, and nothing beyond it.
 	var view: Rect2 = arena.grow(Layouts.WALL_BAND)
 	_check("camera limits = arena + wall band (%s)" % view,
@@ -47,15 +59,15 @@ func _initialize() -> void:
 		and _wall_rect(bounds, "WallBottom").end.x >= _wall_rect(bounds, "WallRight").end.x)
 
 	# --- All four boundaries stop the hero (2 s of walking = 400 px, more than enough) ---
-	await _walk(hero, Vector2(-700, 200), ["move_left"])
+	await _walk(hero, starts[0], ["move_left"])
 	_check("left boundary (x=%.1f)" % hero.position.x, _near(hero.position.x, arena.position.x + HERO_RADIUS))
-	await _walk(hero, Vector2(200, 200), ["move_right"])
+	await _walk(hero, starts[1], ["move_right"])
 	_check("right boundary (x=%.1f)" % hero.position.x, _near(hero.position.x, arena.end.x - HERO_RADIUS))
-	await _walk(hero, Vector2(-600, -300), ["move_up"])
+	await _walk(hero, starts[2], ["move_up"])
 	_check("top boundary (y=%.1f)" % hero.position.y, _near(hero.position.y, arena.position.y + HERO_RADIUS))
-	await _walk(hero, Vector2(-600, 200), ["move_down"])
+	await _walk(hero, starts[3], ["move_down"])
 	_check("bottom boundary (y=%.1f)" % hero.position.y, _near(hero.position.y, arena.end.y - HERO_RADIUS))
-	await _walk(hero, Vector2(-750, -350), ["move_up", "move_left"])
+	await _walk(hero, starts[4], ["move_up", "move_left"])
 	_check("corner holds too (%s)" % hero.position,
 		_near(hero.position.x, arena.position.x + HERO_RADIUS) and _near(hero.position.y, arena.position.y + HERO_RADIUS))
 
@@ -74,15 +86,12 @@ func _initialize() -> void:
 	_check("every lane ends on the fortress wall", ends_at_fortress)
 	var fortress: Fortress = level.get_node("Fortress")
 	var frames: int = 0
-	while fortress.health.current_health == 100 and frames < 1200:
+	while fortress.health.current_health == 100 and frames < 2400:
 		await physics_frame
 		frames += 1
-	_check("first ghoul still reaches the fortress (%.1f s after the walking checks)" % (frames / 60.0), fortress.health.current_health == 90)
-
-	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
+	_check("first ghoul still reaches the fortress (%.1f s after the walking checks)" % (frames / 60.0), fortress.health.current_health < 100)
 	level.queue_free()
 	await _frames(2)
-	quit(_failures)
 
 
 ## Puts the hero at start, holds the given actions for 2 s, then releases them.

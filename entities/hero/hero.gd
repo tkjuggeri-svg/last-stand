@@ -3,7 +3,8 @@ extends CharacterBody2D
 ## The player-controlled hero. Moves with the move_* actions, swings a melee attack toward the mouse and
 ## dashes (HeroDash) in the movement direction, passing through enemies and immune while it lasts.
 ## Enemy attacks hurt it through its Hurtbox (with a short invulnerability window after each hit).
-## When it falls it stops being a target (enemies walk on) until revive() brings it back.
+## When it falls it stops being a target (enemies walk on) until revive() brings it back. In marsh
+## water (MarshWater) it wades: slower, with rings spreading around it.
 ## Visuals (DirectionalSprite, swing trail, hit feedback) only follow the gameplay state.
 
 ## HP reached 0. HeroLives decides whether it comes back.
@@ -39,6 +40,8 @@ var _base_max_health: int = 0
 var _base_damage: int = 0
 ## The body's collision layer while alive (the hero layer); 0 while fallen.
 var _body_layer: int = 0
+## Share of its speed it keeps (1 on land; less while wading, see set_wading()).
+var _wading_speed: float = 1.0
 
 ## Public so other systems (HUD) can read HP.
 @onready var health: HealthComponent = %HealthComponent
@@ -50,6 +53,7 @@ var _body_layer: int = 0
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _attack_hitbox: Hitbox = %AttackHitbox
 @onready var _dash: HeroDash = %Dash
+@onready var _ripple: AnimatedSprite2D = %Ripple
 
 
 func _ready() -> void:
@@ -111,6 +115,16 @@ func dash(direction: Vector2) -> bool:
 	return true
 
 
+## Wading in water that leaves it `speed_factor` of its speed (1 = back on dry land).
+func set_wading(speed_factor: float) -> void:
+	_wading_speed = speed_factor
+	_ripple.visible = is_wading()
+
+
+func is_wading() -> bool:
+	return _wading_speed < 1.0
+
+
 ## The dash component (cooldown, for the HUD).
 func get_dash() -> HeroDash:
 	return _dash
@@ -161,7 +175,7 @@ func _move() -> void:
 	var input_direction: Vector2 = _input_direction()
 	if not input_direction.is_zero_approx():
 		_last_direction = input_direction
-	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED])
+	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED]) * _wading_speed
 	move_and_slide()
 
 

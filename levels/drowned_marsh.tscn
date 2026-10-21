@@ -1,0 +1,1164 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
+[ext_resource type="Script" path="res://levels/tiled_ground.gd" id="36_tiled_ground"]
+[ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
+[ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
+[ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="26_wave_data"]
+[ext_resource type="Script" path="res://systems/run_cycle.gd" id="27_cycle"]
+[ext_resource type="Script" path="res://systems/hero_lives.gd" id="28_lives"]
+[ext_resource type="Script" path="res://systems/run_modifiers.gd" id="30_mods"]
+[ext_resource type="Script" path="res://systems/upgrade_offers.gd" id="31_offers"]
+[ext_resource type="PackedScene" path="res://ui/upgrade_screen/upgrade_choice_screen.tscn" id="32_choice"]
+[ext_resource type="Resource" path="res://data/upgrades/battle_rhythm.tres" id="u_battle_rhythm"]
+[ext_resource type="Resource" path="res://data/upgrades/berserker.tres" id="u_berserker"]
+[ext_resource type="Resource" path="res://data/upgrades/bounty.tres" id="u_bounty"]
+[ext_resource type="Resource" path="res://data/upgrades/deep_freeze.tres" id="u_deep_freeze"]
+[ext_resource type="Resource" path="res://data/upgrades/eagle_eye.tres" id="u_eagle_eye"]
+[ext_resource type="Resource" path="res://data/upgrades/fletching.tres" id="u_fletching"]
+[ext_resource type="Resource" path="res://data/upgrades/guild.tres" id="u_guild"]
+[ext_resource type="Resource" path="res://data/upgrades/hellfire.tres" id="u_hellfire"]
+[ext_resource type="Resource" path="res://data/upgrades/honed_blade.tres" id="u_honed_blade"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_body.tres" id="u_iron_body"]
+[ext_resource type="Resource" path="res://data/upgrades/long_reach.tres" id="u_long_reach"]
+[ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="u_masonry"]
+[ext_resource type="Resource" path="res://data/upgrades/overcharge.tres" id="u_overcharge"]
+[ext_resource type="Resource" path="res://data/upgrades/piercing.tres" id="u_piercing"]
+[ext_resource type="Resource" path="res://data/upgrades/rapid_reload.tres" id="u_rapid_reload"]
+[ext_resource type="Resource" path="res://data/upgrades/repairs.tres" id="u_repairs"]
+[ext_resource type="Resource" path="res://data/upgrades/second_wind.tres" id="u_second_wind"]
+[ext_resource type="Resource" path="res://data/upgrades/thorns.tres" id="u_thorns"]
+[ext_resource type="Resource" path="res://data/upgrades/treasury.tres" id="u_treasury"]
+[ext_resource type="Resource" path="res://data/upgrades/war_tax.tres" id="u_war_tax"]
+[ext_resource type="Resource" path="res://data/upgrades/fleet_step.tres" id="u_fleet_step"]
+[ext_resource type="Resource" path="res://data/upgrades/cinder_dash.tres" id="u_cinder_dash"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="33_upgrade_data"]
+[ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
+[ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
+[ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
+[ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
+[ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
+[ext_resource type="Script" path="res://systems/tower_builder.gd" id="10_builder"]
+[ext_resource type="Script" path="res://systems/quartermaster.gd" id="40_quartermaster"]
+[ext_resource type="Script" path="res://systems/merchant.gd" id="41_merchant"]
+[ext_resource type="Script" path="res://systems/event_resolver.gd" id="42_events"]
+[ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
+[ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
+[ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
+[ext_resource type="Resource" path="res://data/towers/brazier.tres" id="34_brazier"]
+[ext_resource type="Resource" path="res://data/towers/ballista.tres" id="35_ballista"]
+[ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
+[ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/props.png" id="20_props"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="21_light"]
+[ext_resource type="Shader" path="res://assets/shaders/ground_fog.gdshader" id="23_fog"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/mote.png" id="24_mote"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/drowned_marsh_ground.png" id="7_ground"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/marsh_props.png" id="m_props"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/drowned_chapel.png" id="m_chapel"]
+[ext_resource type="Script" path="res://levels/marsh_water.gd" id="m_water"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_01.tres" id="c2w01"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_02.tres" id="c2w02"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_03.tres" id="c2w03"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_04.tres" id="c2w04"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_05.tres" id="c2w05"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_06.tres" id="c2w06"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_07.tres" id="c2w07"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_08.tres" id="c2w08"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_09.tres" id="c2w09"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_10.tres" id="c2w10"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_11.tres" id="c2w11"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_12.tres" id="c2w12"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_13.tres" id="c2w13"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_14.tres" id="c2w14"]
+[ext_resource type="Resource" path="res://data/waves/chapter_2/wave_15.tres" id="c2w15"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fog"]
+frequency = 0.008
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fog"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_fog")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
+shader = ExtResource("23_fog")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_fog")
+shader_parameter/fog_color = Color(0.66, 0.8, 0.76, 1)
+shader_parameter/rect_size = Vector2(1820, 1300)
+shader_parameter/pixel_size = 4.0
+shader_parameter/density = 0.4
+shader_parameter/base_density = 0.36
+shader_parameter/focus = Vector2(0.12, 0.25)
+shader_parameter/focus_radius = 0.38
+shader_parameter/drift = Vector2(0.006, 0.002)
+
+[sub_resource type="Gradient" id="Gradient_firefly"]
+offsets = PackedFloat32Array(0, 0.2, 0.5, 0.8, 1)
+colors = PackedColorArray(0.6, 1, 0.85, 0, 0.6, 1, 0.85, 0.9, 0.6, 1, 0.85, 0.3, 0.6, 1, 0.85, 0.9, 0.6, 1, 0.85, 0)
+
+[sub_resource type="Gradient" id="Gradient_soul"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.55, 1, 0.75, 0, 0.6, 1, 0.78, 0.85, 0.4, 0.85, 0.65, 0)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.62, 1)
+colors = PackedColorArray(0.04, 0.03, 0.06, 0, 0.04, 0.03, 0.06, 0.12, 0.04, 0.03, 0.06, 0.6)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 256
+height = 144
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1.05, 0.5)
+
+
+[sub_resource type="Curve2D" id="Curve2D_lane"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -845, -520, 0, 0, 0, 0, -760, -510, 0, 0, 0, 0, -731, -442, 0, 0, 0, 0, -744, -325, 0, 0, 0, 0, -708, -214, 0, 0, 0, 0, -611, -162, 0, 0, 0, 0, -429, -153, 0, 0, 0, 0, -318, -124, 0, 0, 0, 0, -260, -58, 0, 0, 0, 0, -221, 0, 0, 0, 0, 0, -48, 0)
+}
+point_count = 11
+
+[sub_resource type="Curve2D" id="Curve2D_lane2"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 592, -540, 0, 0, 0, 0, 621, -462, 0, 0, 0, 0, 601, -370, 0, 0, 0, 0, 552, -266, 0, 0, 0, 0, 436, -231, 0, 0, 0, 0, 286, -240, 0, 0, 0, 0, 195, -202, 0, 0, 0, 0, 162, -130, 0, 0, 0, 0, 78, -107, 0, 0, 0, 0, 0, -104, 0, 0, 0, 0, 0, -48)
+}
+point_count = 11
+
+[sub_resource type="Curve2D" id="Curve2D_lane3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -858, 481, 0, 0, 0, 0, -689, 494, 0, 0, 0, 0, -533, 426, 0, 0, 0, 0, -351, 471, 0, 0, 0, 0, -195, 455, 0, 0, 0, 0, -153, 364, 0, 0, 0, 0, -162, 247, 0, 0, 0, 0, -214, 156, 0, 0, 0, 0, -240, 72, 0, 0, 0, 0, -221, 0, 0, 0, 0, 0, -48, 0)
+}
+point_count = 11
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(2020, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(100, 1500)
+
+[node name="DrownedMarsh" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers", "offers", "economy", "merchant", "events", "builder")]
+y_sort_enabled = true
+script = ExtResource("1_level")
+fortress = NodePath("Fortress")
+spawner = NodePath("WaveSpawner")
+hero_lives = NodePath("Systems/HeroLives")
+run_cycle = NodePath("Systems/RunCycle")
+modifiers = NodePath("Systems/RunModifiers")
+offers = NodePath("Systems/UpgradeOffers")
+economy = NodePath("Systems/Economy")
+merchant = NodePath("Systems/Merchant")
+events = NodePath("Systems/EventResolver")
+builder = NodePath("Systems/TowerBuilder")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+light_mask = 0
+z_index = -3
+offset_left = -1540
+offset_top = -1100
+offset_right = 1280
+offset_bottom = 1000
+mouse_filter = 2
+color = Color(0.05, 0.06, 0.07, 1)
+
+[node name="Floor" type="ColorRect" parent="."]
+light_mask = 0
+unique_name_in_owner = true
+z_index = -2
+offset_left = -1040
+offset_top = -700
+offset_right = 780
+offset_bottom = 600
+mouse_filter = 2
+color = Color(0.12, 0.17, 0.12, 1)
+
+[node name="Ground" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -1
+position = Vector2(-1072, -732)
+scale = Vector2(2, 2)
+script = ExtResource("36_tiled_ground")
+texture = ExtResource("7_ground")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.56, 0.66, 0.74, 1)
+
+[node name="Fog" type="ColorRect" parent="."]
+light_mask = 0
+z_index = -1
+material = SubResource("ShaderMaterial_fog")
+offset_left = -1040
+offset_top = -700
+offset_right = 780
+offset_bottom = 600
+mouse_filter = 2
+
+[node name="Chapel" type="Sprite2D" parent="."]
+position = Vector2(-915, -532)
+scale = Vector2(2, 2)
+texture = ExtResource("m_chapel")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Chapel"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.8, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Chapel"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Chapel2" type="Sprite2D" parent="."]
+position = Vector2(654, -554)
+scale = Vector2(2, 2)
+texture = ExtResource("m_chapel")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Chapel2"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.8, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Chapel2"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Chapel3" type="Sprite2D" parent="."]
+position = Vector2(-928, 469)
+scale = Vector2(2, 2)
+texture = ExtResource("m_chapel")
+offset = Vector2(0, -28)
+
+[node name="DoorGlow" type="PointLight2D" parent="Chapel3"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+color = Color(0.45, 1, 0.8, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Souls" type="CPUParticles2D" parent="Chapel3"]
+position = Vector2(0, -6)
+scale = Vector2(0.5, 0.5)
+amount = 7
+lifetime = 3.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(40, 6)
+direction = Vector2(0.3, -1)
+spread = 25.0
+gravity = Vector2(0, -6)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_soul")
+
+[node name="Water" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+script = ExtResource("m_water")
+
+[node name="Pool1" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(-259, -390, -249, -363, -250, -333, -272, -306, -314, -289, -362, -283, -407, -283, -448, -284, -487, -287, -524, -296, -557, -308, -590, -322, -627, -338, -659, -361, -672, -390, -659, -419, -629, -442, -597, -461, -566, -479, -532, -495, -491, -504, -448, -504, -407, -498, -368, -490, -329, -479, -297, -462, -277, -439, -267, -415)
+
+[node name="Pool2" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(-287, 240, -269, 266, -278, 293, -312, 316, -358, 333, -409, 346, -464, 353, -520, 350, -570, 340, -612, 328, -655, 318, -702, 306, -741, 289, -760, 265, -756, 240, -743, 217, -731, 193, -714, 169, -681, 147, -632, 133, -576, 127, -520, 125, -464, 129, -414, 139, -377, 158, -356, 180, -341, 200, -317, 219)
+
+[node name="Pool3" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(567, -442, 550, -419, 529, -399, 511, -380, 491, -361, 462, -346, 426, -341, 390, -343, 357, -348, 324, -354, 292, -363, 265, -378, 246, -397, 231, -419, 217, -442, 211, -468, 222, -494, 252, -513, 291, -522, 328, -525, 359, -529, 390, -535, 423, -536, 457, -531, 489, -522, 521, -509, 551, -492, 568, -468)
+
+[node name="Pool4" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(694, 325, 682, 359, 655, 388, 621, 413, 580, 432, 533, 441, 485, 442, 442, 439, 399, 441, 349, 444, 295, 438, 252, 418, 228, 388, 220, 356, 217, 325, 219, 294, 235, 264, 267, 239, 308, 221, 350, 207, 394, 195, 442, 189, 490, 196, 530, 212, 564, 231, 601, 247, 644, 265, 680, 292)
+
+[node name="Pool5" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(-1, -442, -1, -431, -1, -420, -8, -408, -21, -399, -38, -392, -57, -386, -78, -383, -100, -384, -119, -390, -134, -399, -147, -409, -160, -418, -171, -429, -173, -442, -165, -454, -152, -464, -140, -472, -129, -481, -116, -490, -99, -496, -78, -499, -56, -499, -34, -497, -13, -491, 1, -480, 5, -466, 2, -453)
+
+[node name="Pool6" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(-446, -302, -467, -211, -474, -133, -498, -42, -518, 49, -539, 146, -501, 154, -482, 55, -470, -36, -442, -127, -429, -205, -412, -296)
+
+[node name="Pool7" type="CollisionPolygon2D" parent="Water"]
+polygon = PackedVector2Array(375, -356, 383, -281, 366, -209, 377, -142, 369, -93, 401, -89, 403, -144, 394, -207, 417, -279, 405, -360)
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Prop1" type="Sprite2D" parent="Props"]
+position = Vector2(-248, -326)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop2" type="Sprite2D" parent="Props"]
+position = Vector2(-453, -276)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop3" type="Sprite2D" parent="Props"]
+position = Vector2(-663, -349)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop4" type="Sprite2D" parent="Props"]
+position = Vector2(-566, -475)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop5" type="Sprite2D" parent="Props"]
+position = Vector2(-299, -450)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop6" type="Sprite2D" parent="Props"]
+position = Vector2(-267, 275)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop7" type="Sprite2D" parent="Props"]
+position = Vector2(-464, 365)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop8" type="Sprite2D" parent="Props"]
+position = Vector2(-761, 272)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop9" type="Sprite2D" parent="Props"]
+position = Vector2(-683, 159)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop10" type="Sprite2D" parent="Props"]
+position = Vector2(-382, 165)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop11" type="Sprite2D" parent="Props"]
+position = Vector2(523, -394)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop12" type="Sprite2D" parent="Props"]
+position = Vector2(318, -342)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop13" type="Sprite2D" parent="Props"]
+position = Vector2(223, -428)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop14" type="Sprite2D" parent="Props"]
+position = Vector2(294, -510)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop15" type="Sprite2D" parent="Props"]
+position = Vector2(576, -461)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop16" type="Sprite2D" parent="Props"]
+position = Vector2(625, 419)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop17" type="Sprite2D" parent="Props"]
+position = Vector2(478, 446)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop18" type="Sprite2D" parent="Props"]
+position = Vector2(231, 398)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop19" type="Sprite2D" parent="Props"]
+position = Vector2(402, 208)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop20" type="Sprite2D" parent="Props"]
+position = Vector2(673, 306)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop21" type="Sprite2D" parent="Props"]
+position = Vector2(-5, -434)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 1
+
+[node name="Prop22" type="Sprite2D" parent="Props"]
+position = Vector2(-65, -375)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop23" type="Sprite2D" parent="Props"]
+position = Vector2(-173, -450)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop24" type="Sprite2D" parent="Props"]
+position = Vector2(-124, -486)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop25" type="Sprite2D" parent="Props"]
+position = Vector2(-7, -486)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop26" type="Sprite2D" parent="Props"]
+position = Vector2(-503, -36)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop27" type="Sprite2D" parent="Props"]
+position = Vector2(-472, -31)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop28" type="Sprite2D" parent="Props"]
+position = Vector2(379, -277)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 0
+
+[node name="Prop29" type="Sprite2D" parent="Props"]
+position = Vector2(180, 204)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop30" type="Sprite2D" parent="Props"]
+position = Vector2(2, 387)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop31" type="Sprite2D" parent="Props"]
+position = Vector2(-452, 575)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop32" type="Sprite2D" parent="Props"]
+position = Vector2(-71, -263)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop33" type="Sprite2D" parent="Props"]
+position = Vector2(-963, 562)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 4
+
+[node name="Prop34" type="Sprite2D" parent="Props"]
+position = Vector2(-927, -612)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop35" type="Sprite2D" parent="Props"]
+position = Vector2(-982, -466)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop36" type="Sprite2D" parent="Props"]
+position = Vector2(45, -233)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop37" type="Sprite2D" parent="Props"]
+position = Vector2(595, 220)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop38" type="Sprite2D" parent="Props"]
+position = Vector2(360, 137)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop39" type="Sprite2D" parent="Props"]
+position = Vector2(731, -136)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop40" type="Sprite2D" parent="Props"]
+position = Vector2(-355, -254)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop41" type="Sprite2D" parent="Props"]
+position = Vector2(588, -75)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop42" type="Sprite2D" parent="Props"]
+position = Vector2(94, 170)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop43" type="Sprite2D" parent="Props"]
+position = Vector2(528, 500)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop44" type="Sprite2D" parent="Props"]
+position = Vector2(727, -17)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop45" type="Sprite2D" parent="Props"]
+position = Vector2(-839, -89)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop46" type="Sprite2D" parent="Props"]
+position = Vector2(-264, -550)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop47" type="Sprite2D" parent="Props"]
+position = Vector2(-566, 555)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop48" type="Sprite2D" parent="Props"]
+position = Vector2(276, 498)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 4
+
+[node name="Prop49" type="Sprite2D" parent="Props"]
+position = Vector2(336, 52)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop50" type="Sprite2D" parent="Props"]
+position = Vector2(-229, -473)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop51" type="Sprite2D" parent="Props"]
+position = Vector2(438, -35)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop52" type="Sprite2D" parent="Props"]
+position = Vector2(-839, 86)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop53" type="Sprite2D" parent="Props"]
+position = Vector2(-71, -640)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Prop54" type="Sprite2D" parent="Props"]
+position = Vector2(-904, 271)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 5
+
+[node name="Prop55" type="Sprite2D" parent="Props"]
+position = Vector2(14, 178)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop56" type="Sprite2D" parent="Props"]
+position = Vector2(-231, -391)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 7
+
+[node name="Prop57" type="Sprite2D" parent="Props"]
+position = Vector2(-922, -115)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 10
+
+[node name="Prop58" type="Sprite2D" parent="Props"]
+position = Vector2(674, 576)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 1
+
+[node name="Prop59" type="Sprite2D" parent="Props"]
+position = Vector2(111, -471)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop60" type="Sprite2D" parent="Props"]
+position = Vector2(162, 10)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 2
+
+[node name="Prop61" type="Sprite2D" parent="Props"]
+position = Vector2(-530, -262)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop62" type="Sprite2D" parent="Props"]
+position = Vector2(-5, 532)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 3
+
+[node name="Prop63" type="Sprite2D" parent="Props"]
+position = Vector2(-107, 508)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 4
+
+[node name="Prop64" type="Sprite2D" parent="Props"]
+position = Vector2(604, -250)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop65" type="Sprite2D" parent="Props"]
+position = Vector2(-567, -22)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 6
+
+[node name="Prop66" type="Sprite2D" parent="Props"]
+position = Vector2(-609, 380)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop67" type="Sprite2D" parent="Props"]
+position = Vector2(631, -188)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 7
+
+[node name="Prop68" type="Sprite2D" parent="Props"]
+position = Vector2(-677, 56)
+scale = Vector2(2, 2)
+texture = ExtResource("20_props")
+offset = Vector2(0, -20)
+hframes = 12
+frame = 4
+
+[node name="Lantern1" type="Sprite2D" parent="Props"]
+position = Vector2(-793, -390)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern1"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Lantern2" type="Sprite2D" parent="Props"]
+position = Vector2(-364, -208)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern2"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Lantern3" type="Sprite2D" parent="Props"]
+position = Vector2(676, -325)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern3"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Lantern4" type="Sprite2D" parent="Props"]
+position = Vector2(-390, 540)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern4"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Lantern5" type="Sprite2D" parent="Props"]
+position = Vector2(260, -156)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern5"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Lantern6" type="Sprite2D" parent="Props"]
+position = Vector2(-78, 429)
+scale = Vector2(2, 2)
+texture = ExtResource("m_props")
+offset = Vector2(0, -20)
+hframes = 8
+frame = 5
+
+[node name="Light" type="PointLight2D" parent="Props/Lantern6"]
+position = Vector2(5, -42)
+scale = Vector2(0.5, 0.5)
+color = Color(0.5, 1, 0.8, 1)
+energy = 0.8
+texture = ExtResource("21_light")
+texture_scale = 1.4
+
+[node name="Wisps" type="CPUParticles2D" parent="."]
+z_index = 2
+position = Vector2(-130, -50)
+amount = 30
+lifetime = 7.0
+preprocess = 7.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(900, 640)
+direction = Vector2(1, -0.4)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 4.0
+initial_velocity_max = 12.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_firefly")
+
+[node name="ArenaBounds" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="WallTop" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-130, -750)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallBottom" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-130, 650)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallLeft" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-1090, -50)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="WallRight" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(830, -50)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="Lane" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane")
+
+[node name="Lane2" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane2")
+
+[node name="Lane3" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane3")
+
+[node name="Fortress" parent="." node_paths=PackedStringArray("modifiers") instance=ExtResource("2_fortress")]
+modifiers = NodePath("../Systems/RunModifiers")
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="RunModifiers" type="Node" parent="Systems"]
+unique_name_in_owner = true
+script = ExtResource("30_mods")
+
+[node name="UpgradeOffers" type="Node" parent="Systems" node_paths=PackedStringArray("modifiers", "economy")]
+unique_name_in_owner = true
+script = ExtResource("31_offers")
+modifiers = NodePath("../RunModifiers")
+economy = NodePath("../Economy")
+pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_rapid_reload"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax"), ExtResource("u_fleet_step"), ExtResource("u_cinder_dash")])
+
+[node name="Economy" type="Node" parent="Systems"]
+unique_name_in_owner = true
+script = ExtResource("8_economy")
+starting_gold = 150
+
+[node name="WaveRewards" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "spawner", "modifiers")]
+unique_name_in_owner = true
+script = ExtResource("9_rewards")
+economy = NodePath("../Economy")
+spawner = NodePath("../../WaveSpawner")
+modifiers = NodePath("../RunModifiers")
+
+[node name="RunCycle" type="Node" parent="Systems" node_paths=PackedStringArray("spawner", "offers")]
+unique_name_in_owner = true
+script = ExtResource("27_cycle")
+spawner = NodePath("../../WaveSpawner")
+offers = NodePath("../UpgradeOffers")
+
+[node name="HeroLives" type="Node" parent="Systems" node_paths=PackedStringArray("hero", "respawn_point", "modifiers", "spawner")]
+unique_name_in_owner = true
+script = ExtResource("28_lives")
+hero = NodePath("../../Hero")
+respawn_point = NodePath("../../RespawnPoint")
+modifiers = NodePath("../RunModifiers")
+spawner = NodePath("../../WaveSpawner")
+
+[node name="TowerBuilder" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "slots_root", "modifiers")]
+unique_name_in_owner = true
+script = ExtResource("10_builder")
+economy = NodePath("../Economy")
+slots_root = NodePath("../../BuildSlots")
+modifiers = NodePath("../RunModifiers")
+catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon"), ExtResource("34_brazier"), ExtResource("35_ballista")])
+
+[node name="Quartermaster" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "fortress", "hero_lives", "run_cycle")]
+unique_name_in_owner = true
+script = ExtResource("40_quartermaster")
+economy = NodePath("../Economy")
+fortress = NodePath("../../Fortress")
+hero_lives = NodePath("../HeroLives")
+run_cycle = NodePath("../RunCycle")
+
+[node name="Merchant" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "offers", "modifiers", "fortress")]
+unique_name_in_owner = true
+script = ExtResource("41_merchant")
+economy = NodePath("../Economy")
+offers = NodePath("../UpgradeOffers")
+modifiers = NodePath("../RunModifiers")
+fortress = NodePath("../../Fortress")
+
+[node name="EventResolver" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "modifiers", "fortress", "hero_lives", "builder", "merchant")]
+unique_name_in_owner = true
+script = ExtResource("42_events")
+economy = NodePath("../Economy")
+modifiers = NodePath("../RunModifiers")
+fortress = NodePath("../../Fortress")
+hero_lives = NodePath("../HeroLives")
+builder = NodePath("../TowerBuilder")
+merchant = NodePath("../Merchant")
+
+[node name="BuildSlots" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Slot1" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-620, -260)
+
+[node name="Slot2" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-340, -20)
+
+[node name="Slot3" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-290, 335)
+
+[node name="Slot4" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-70, 180)
+
+[node name="Slot5" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-120, -170)
+
+[node name="Slot6" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(270, -120)
+
+[node name="Slot7" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(700, -380)
+
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
+y_sort_enabled = true
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_enemy")
+lanes = [NodePath("../Lane"), NodePath("../Lane2"), NodePath("../Lane3")]
+waves = Array[ExtResource("26_wave_data")]([ExtResource("c2w01"), ExtResource("c2w02"), ExtResource("c2w03"), ExtResource("c2w04"), ExtResource("c2w05"), ExtResource("c2w06"), ExtResource("c2w07"), ExtResource("c2w08"), ExtResource("c2w09"), ExtResource("c2w10"), ExtResource("c2w11"), ExtResource("c2w12"), ExtResource("c2w13"), ExtResource("c2w14"), ExtResource("c2w15")])
+
+[node name="RespawnPoint" parent="." instance=ExtResource("29_respawn")]
+position = Vector2(100, 100)
+
+[node name="Hero" parent="." node_paths=PackedStringArray("modifiers") instance=ExtResource("3_hero")]
+modifiers = NodePath("../Systems/RunModifiers")
+position = Vector2(-90, 80)
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+limit_left = -1072
+limit_top = -732
+limit_right = 812
+limit_bottom = 632
+position_smoothing_enabled = true
+
+[node name="Effects" type="Node2D" parent="."]
+unique_name_in_owner = true
+y_sort_enabled = true
+
+[node name="Vignette" type="CanvasLayer" parent="."]
+
+[node name="Shade" type="TextureRect" parent="Vignette"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
+
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers", "quartermaster") instance=ExtResource("6_hud")]
+fortress = NodePath("../Fortress")
+hero = NodePath("../Hero")
+spawner = NodePath("../WaveSpawner")
+economy = NodePath("../Systems/Economy")
+rewards = NodePath("../Systems/WaveRewards")
+builder = NodePath("../Systems/TowerBuilder")
+run_cycle = NodePath("../Systems/RunCycle")
+hero_lives = NodePath("../Systems/HeroLives")
+modifiers = NodePath("../Systems/RunModifiers")
+quartermaster = NodePath("../Systems/Quartermaster")
+
+[node name="BuildMenu" parent="." node_paths=PackedStringArray("builder", "economy") instance=ExtResource("15_menu")]
+builder = NodePath("../Systems/TowerBuilder")
+economy = NodePath("../Systems/Economy")
+
+[node name="UpgradeChoiceScreen" parent="." node_paths=PackedStringArray("offers", "economy") instance=ExtResource("32_choice")]
+offers = NodePath("../Systems/UpgradeOffers")
+economy = NodePath("../Systems/Economy")

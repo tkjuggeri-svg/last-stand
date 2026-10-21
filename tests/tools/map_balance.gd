@@ -4,9 +4,11 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
-##     [--protect-ch1]
+##     [--protect-ch1] [--trace]
 ## --protect-ch1 keeps the fortress and the lives full in chapter 1 only, so every run reaches chapter 2
-## with a real chapter-1 build (towers, upgrades, gold) and chapter 2 is measured on its own.
+## with a real chapter-1 build (towers, upgrades, gold) and chapter 2 is measured on its own. --trace
+## prints every wave's start and end from chapter 2 on: gold, the towers (id:level per slot), the
+## fortress's HP, leaks.
 ## The bot: picks the next node by --path (fights: battles and elites first; balanced: battles, then
 ## events, merchants, shrines, elites last; safe: events and merchants before battles, never an elite
 ## if it can help it); in a fight it buys the plan's towers and levels in order as the gold allows
@@ -27,15 +29,16 @@ const PLANS: Dictionary = {
 	"mixed": {
 		"prototype_arena": [["archer", 4], ["archer", 9], ["cannon", 7], ["frost", 8], ["cannon", 5], ["archer", 2],
 			["frost", 6], ["cannon", 0], ["archer", 3], ["cannon", 1]],
-		# The marsh's 7 slots: 0 west road, 1 by the merge, 2 south-west, 3 south road, 4 north of the
-		# keep (two roads' ends), 5 north-east road, 6 far north-east.
-		"drowned_marsh": [["archer", 4], ["archer", 1], ["cannon", 3], ["frost", 5], ["cannon", 0], ["archer", 2],
+		# The marsh's 7 slots: 0 west road's bend, 1 by the merge (west and south roads' ends), 2 south
+		# road, 3 south of the keep, 4 north of the keep (three roads' ends), 5 north-east road, 6 far
+		# north-east.
+		"drowned_marsh": [["archer", 4], ["archer", 1], ["cannon", 3], ["archer", 5], ["cannon", 0], ["archer", 2],
 			["frost", 6]],
 	},
 	"all five": {
 		"prototype_arena": [["archer", 4], ["ballista", 9], ["brazier", 7], ["archer", 8], ["cannon", 5], ["brazier", 2],
 			["frost", 6], ["ballista", 0], ["archer", 3], ["cannon", 1]],
-		"drowned_marsh": [["archer", 4], ["ballista", 1], ["brazier", 3], ["archer", 5], ["cannon", 0], ["brazier", 2],
+		"drowned_marsh": [["archer", 4], ["ballista", 1], ["brazier", 3], ["archer", 5], ["cannon", 0], ["ballista", 2],
 			["frost", 6]],
 	},
 }
@@ -53,6 +56,7 @@ var _plan_name: String = "mixed"
 var _hero_mode: String = "bot"
 var _quiet: bool = false
 var _protect_ch1: bool = false
+var _trace: bool = false
 
 
 func _initialize() -> void:
@@ -77,6 +81,8 @@ func _initialize() -> void:
 			_quiet = true
 		elif arg == "--protect-ch1":
 			_protect_ch1 = true
+		elif arg == "--trace":
+			_trace = true
 	var lines: Array[String] = []
 	for s: int in seeds:
 		lines.append(await _play(s))
@@ -117,6 +123,14 @@ func _play(seed_value: int) -> String:
 				if source != Economy.Source.REFUND:
 					stats["income"][mini(chapter, 1)] += amount)
 			(level.get_node("WaveSpawner") as WaveSpawner).wave_started.connect(func(_n: int) -> void: stats["waves"] += 1)
+			if _trace:
+				var traced: Level = level
+				(level.get_node("WaveSpawner") as WaveSpawner).wave_started.connect(func(n: int) -> void:
+					if chapter >= 1:
+						print("  c%d wave %d start: %s" % [chapter + 1, n, _describe(traced)]))
+				(level.get_node("WaveSpawner") as WaveSpawner).wave_cleared.connect(func(n: int) -> void:
+					if chapter >= 1:
+						print("  c%d wave %d end:   %s" % [chapter + 1, n, _describe(traced)]))
 		if (main.get_node("%VictoryScreen") as CanvasLayer).visible:
 			result = "WON"
 			break
@@ -178,6 +192,15 @@ func _play(seed_value: int) -> String:
 	for _i: int in 3:
 		await physics_frame
 	return line
+
+
+## Gold, towers (id:level by slot) and the fortress, for --trace.
+func _describe(level: Level) -> String:
+	var towers: Array[String] = []
+	for slot: BuildSlot in level.builder.get_slots():
+		towers.append("-" if slot.is_empty() else "%s:%d" % [slot.tower.data.id, slot.tower.get_level()])
+	return "gold %d, fortress %d/%d, towers %s" % [level.economy.get_gold(), level.fortress.health.current_health,
+		level.fortress.health.max_health, " ".join(towers)]
 
 
 func _choose_node(map: RunMap) -> MapNode:
