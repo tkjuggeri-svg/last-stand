@@ -11,6 +11,8 @@ const FILL: Color = Color("c2261b")
 const FILL_LIGHT: Color = Color("ff5a3a")
 
 ## Inner width in world px (a multiple of ART_PX).
+var _fill: Color = FILL
+var _fill_light: Color = FILL_LIGHT
 var _width: int = 24
 var _ratio: float = 1.0
 
@@ -20,7 +22,10 @@ func _ready() -> void:
 
 
 ## Size it for a body (wider for bigger enemies) and place it `height` px above the enemy's origin.
-func setup(body_radius: float, height: float) -> void:
+## `color`: its role's (EnemyRoles); the lower half of the fill is a shade darker.
+func setup(body_radius: float, height: float, color: Color = FILL_LIGHT) -> void:
+	_fill_light = color
+	_fill = color.darkened(0.4)
 	_width = maxi(roundi((body_radius * 2.0 + 4.0) / ART_PX), 6) * ART_PX
 	position = Vector2(-_width / 2.0 - ART_PX, height).round()
 	queue_redraw()
@@ -43,5 +48,5 @@ func _draw() -> void:
 	draw_rect(inner, TROUGH)
 	var fill: int = ceili(_width * _ratio / ART_PX) * ART_PX if _ratio > 0.0 else 0
 	if fill > 0:
-		draw_rect(Rect2(inner.position, Vector2(fill, ART_PX)), FILL_LIGHT)
-		draw_rect(Rect2(inner.position + Vector2(0, ART_PX), Vector2(fill, ART_PX)), FILL)
+		draw_rect(Rect2(inner.position, Vector2(fill, ART_PX)), _fill_light)
+		draw_rect(Rect2(inner.position + Vector2(0, ART_PX), Vector2(fill, ART_PX)), _fill)

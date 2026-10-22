@@ -54,7 +54,7 @@ func setup(data: EnemyData) -> void:
 	_sprite.position = data.sprite_offset
 	_sprite_rest = _sprite.position
 	_hit_spark.position = data.sprite_offset + Vector2(0, SPARK_DROP)
-	_health_bar.setup(data.body_radius, data.health_bar_y)
+	_health_bar.setup(data.body_radius, data.health_bar_y, EnemyRoles.color_of(data.role))
 	_small_bar = not data.is_boss
 	_glow.enabled = data.glow_color.a > 0.0
 	_glow.color = data.glow_color

@@ -90,7 +90,7 @@ func _draw_front(c: Canvas, pose: Dictionary) -> void:
 	var stride: float = pose["stride"]
 	_legs(c, body, stride, false)
 	c.part()
-	c.ellipse(Vector2(16, 17) + body, Vector2(5.0, 4.5), P.IRON, 0.0, 0.0)  # the mailed shoulders behind
+	c.ellipse(Vector2(16, 17) + body, Vector2(5.0, 4.5), P.IRON_WORN, 0.0, 0.0)  # the mailed shoulders behind
 	_helm(c, Vector2(16, 10.5) + body, "down")
 	_shield_face(c, Vector2(16, 19.5 + float(pose["shield"]) * 0.5) + body, pose["smear"])
 
@@ -101,16 +101,16 @@ func _draw_back(c: Canvas, pose: Dictionary) -> void:
 	var stride: float = pose["stride"]
 	# The shield's back, beyond the body: only its iron-bound edges show around it.
 	c.part()
-	c.rect(Rect2i(9, roundi(12 + body.y), 14, 14), P.WOOD[1])
-	c.rect(Rect2i(9, roundi(12 + body.y), 14, 1), P.IRON[4])
-	c.rect(Rect2i(9, roundi(12 + body.y), 1, 14), P.IRON[3])
-	c.rect(Rect2i(22, roundi(12 + body.y), 1, 14), P.IRON[1])
+	c.rect(Rect2i(9, roundi(12 + body.y), 14, 14), P.WOOD[2])
+	c.rect(Rect2i(9, roundi(12 + body.y), 14, 1), P.IRON_WORN[4])
+	c.rect(Rect2i(9, roundi(12 + body.y), 1, 14), P.IRON_WORN[3])
+	c.rect(Rect2i(22, roundi(12 + body.y), 1, 14), P.IRON_WORN[1])
 	_legs(c, body, stride, true)
 	c.part()
-	c.ellipse(Vector2(16, 18) + body, Vector2(5.0, 5.4), P.IRON.slice(1, 5), 0.0, 0.05)
+	c.ellipse(Vector2(16, 18) + body, Vector2(5.0, 5.4), P.IRON_WORN.slice(1, 5), 0.0, 0.05)
 	for y: int in range(15, 23, 2):
-		c.line(Vector2(12, y) + body, Vector2(20, y) + body, P.IRON[1])
-	c.line(Vector2(16, 14) + body, Vector2(16, 22) + body, P.IRON[4])  # the lit spine of the mail
+		c.line(Vector2(12, y) + body, Vector2(20, y) + body, P.IRON_WORN[1])
+	c.line(Vector2(16, 14) + body, Vector2(16, 22) + body, P.IRON_WORN[4])  # the lit spine of the mail
 	# A short, torn cloak over the shoulders.
 	c.part()
 	c.polygon(PackedVector2Array([Vector2(12, 14) + body, Vector2(20, 14) + body, Vector2(20.5, 18) + body, Vector2(18.5, 17.5) + body,
@@ -124,15 +124,15 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 	var stride: float = pose["stride"]
 	_legs(c, body, stride, true, true)
 	c.part()
-	c.ellipse(Vector2(15, 18) + body, Vector2(4.0, 5.0), P.IRON, 0.0, 0.0)
+	c.ellipse(Vector2(15, 18) + body, Vector2(4.0, 5.0), P.IRON_WORN, 0.0, 0.0)
 	for y: int in range(15, 23, 2):
-		c.line(Vector2(12, y) + body, Vector2(18, y) + body, P.IRON[1])
+		c.line(Vector2(12, y) + body, Vector2(18, y) + body, P.IRON_WORN[1])
 	_helm(c, Vector2(15.5, 10.5) + body, "side")
 	var x: float = 20.0 + float(pose["shield"])
 	c.part()
-	c.block(Rect2(x, 12 + body.y, 3, 1), 15.0, P.RUST, P.WOOD.slice(0, 4), false)
-	c.line(Vector2(x + 3, 12 + body.y), Vector2(x + 3, 27 + body.y), P.IRON[3])  # the iron rim catching the light
-	c.line(Vector2(x, 12 + body.y), Vector2(x + 3, 12 + body.y), P.IRON[4])
+	c.block(Rect2(x, 12 + body.y, 3, 1), 15.0, P.RUST, P.WOOD.slice(1, 5), false)
+	c.line(Vector2(x + 3, 12 + body.y), Vector2(x + 3, 27 + body.y), P.IRON_WORN[3])  # the iron rim catching the light
+	c.line(Vector2(x, 12 + body.y), Vector2(x + 3, 12 + body.y), P.IRON_WORN[4])
 	if pose["smear"]:
 		c.part(true)
 		for k: int in 3:
@@ -146,7 +146,7 @@ func _legs(c: Canvas, body: Vector2, stride: float, dark: bool, side: bool = fal
 		if side:
 			foot.x = 16 + stride * s * 3.0
 		c.part()
-		c.capsule(hip, foot, 1.5, P.IRON if not dark or s > 0 else P.IRON.slice(0, 4), -0.05)
+		c.capsule(hip, foot, 1.5, P.IRON_WORN if not dark or s > 0 else P.IRON_WORN.slice(0, 4), -0.05)
 		c.part()
 		c.ellipse(foot + Vector2(0.8 if side else 0.0, 0.3), Vector2(2.0 if side else 1.6, 1.1), P.RUST, 0.0, -0.1)
 
@@ -154,15 +154,15 @@ func _legs(c: Canvas, body: Vector2, stride: float, dark: bool, side: bool = fal
 ## A dented kettle helm, rusting; from the front a dark visor slit with two red eyes.
 func _helm(c: Canvas, at: Vector2, facing: String) -> void:
 	c.part()
-	c.ellipse(at, Vector2(3.6, 3.3), P.IRON, 0.0, 0.08)
+	c.ellipse(at, Vector2(3.6, 3.3), P.IRON_WORN, 0.0, 0.08)
 	c.part()
 	c.ellipse(at + Vector2(0, 1.5), Vector2(5.2, 1.3), P.RUST.slice(1, 5), 0.0, 0.0)  # the wide brim
 	if facing == "down":
 		c.rect(Rect2i(roundi(at.x) - 2, roundi(at.y) + 2, 4, 1), P.OUTLINE)
-		c.px(roundi(at.x) - 1, roundi(at.y) + 2, P.EYE_GLOW[2])
-		c.px(roundi(at.x) + 1, roundi(at.y) + 2, P.EYE_GLOW[2])
+		c.px(roundi(at.x) - 1, roundi(at.y) + 2, P.EYES_TANK[2])
+		c.px(roundi(at.x) + 1, roundi(at.y) + 2, P.EYES_TANK[2])
 	elif facing == "side":
-		c.px(roundi(at.x) + 2, roundi(at.y) + 2, P.EYE_GLOW[2])
+		c.px(roundi(at.x) + 2, roundi(at.y) + 2, P.EYES_TANK[2])
 	c.px(roundi(at.x) - 1, roundi(at.y) - 2, P.RUST[3])  # rust streaks on the dome
 	c.px(roundi(at.x) + 1, roundi(at.y) - 1, P.RUST[2])
 
@@ -171,16 +171,16 @@ func _helm(c: Canvas, at: Vector2, facing: String) -> void:
 func _shield_face(c: Canvas, centre: Vector2, smear: bool) -> void:
 	var r: Rect2 = Rect2(centre - Vector2(6.5, 7.5), Vector2(13, 15))
 	c.part()
-	c.block(Rect2(r.position.x, r.position.y, r.size.x, 1), r.size.y - 1, P.RUST, P.WOOD.slice(0, 4), false)
+	c.block(Rect2(r.position.x, r.position.y, r.size.x, 1), r.size.y - 1, P.RUST, P.WOOD.slice(1, 5), false)
 	for x: int in range(int(r.position.x) + 3, int(r.end.x), 3):
-		c.line(Vector2(x, r.position.y + 1), Vector2(x, r.end.y - 1), P.WOOD[0])
+		c.line(Vector2(x, r.position.y + 1), Vector2(x, r.end.y - 1), P.WOOD[1])
 	for y: float in [r.position.y + 3.0, r.end.y - 4.0]:
-		c.line(Vector2(r.position.x, y), Vector2(r.end.x - 1, y), P.IRON[3])
-		c.line(Vector2(r.position.x, y + 1), Vector2(r.end.x - 1, y + 1), P.IRON[1])
+		c.line(Vector2(r.position.x, y), Vector2(r.end.x - 1, y), P.IRON_WORN[3])
+		c.line(Vector2(r.position.x, y + 1), Vector2(r.end.x - 1, y + 1), P.IRON_WORN[1])
 	# The rim: lit along the top and the left edge (light from the top-left).
-	c.line(r.position, Vector2(r.end.x - 1, r.position.y), P.IRON[4])
-	c.line(r.position, Vector2(r.position.x, r.end.y - 1), P.IRON[3])
-	c.line(Vector2(r.end.x - 1, r.position.y), r.end - Vector2(1, 1), P.IRON[1])
+	c.line(r.position, Vector2(r.end.x - 1, r.position.y), P.IRON_WORN[4])
+	c.line(r.position, Vector2(r.position.x, r.end.y - 1), P.IRON_WORN[3])
+	c.line(Vector2(r.end.x - 1, r.position.y), r.end - Vector2(1, 1), P.IRON_WORN[1])
 	# The painted skull.
 	var s: Vector2i = Vector2i(centre.round()) + Vector2i(0, -1)
 	c.rect(Rect2i(s.x - 2, s.y - 2, 5, 3), P.BONE[2])

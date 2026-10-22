@@ -11,6 +11,8 @@ extends SceneTree
 ## enemy type on several lanes, then the Victory screen) and "m5" (the upgrade choice screen, the HUD's
 ## upgrade row, a Long Reach swing, the Brazier's fire, a Ballista bolt, the 5-tower build menu) and
 ## "m6" (M6 content, see m6_shots.gd; --only=dash,... picks parts).
+## --grayscale also saves a grayscale copy of every shot (<name>_gray.png, M8.5's readability check:
+## the hero, enemies, towers and shots must still stand out from the ground without colour).
 
 const M6Shots: GDScript = preload("res://tests/tools/m6_shots.gd")
 const M7Shots: GDScript = preload("res://tests/tools/m7_shots.gd")
@@ -18,6 +20,7 @@ const M7Shots: GDScript = preload("res://tests/tools/m7_shots.gd")
 var _out_dir: String = "user://screenshots"
 var _scenario: String = "tour"
 var _only: PackedStringArray = PackedStringArray()
+var _grayscale: bool = false
 
 
 func _initialize() -> void:
@@ -28,6 +31,8 @@ func _initialize() -> void:
 			_scenario = arg.trim_prefix("--scenario=")
 		elif arg.begins_with("--only="):
 			_only = arg.trim_prefix("--only=").split(",")
+		elif arg == "--grayscale":
+			_grayscale = true
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(_out_dir))
 	var main: Node = (load("res://main/main.tscn") as PackedScene).instantiate()
 	root.add_child(main)
@@ -432,6 +437,8 @@ func _save(image: Image, shot_name: String) -> void:
 	var path: String = ProjectSettings.globalize_path(_out_dir.path_join(shot_name + ".png"))
 	image.save_png(path)
 	print("saved ", path)
+	if _grayscale:
+		Grayscale.convert(image).save_png(path.get_basename() + "_gray.png")
 
 
 func _frames(count: int) -> void:

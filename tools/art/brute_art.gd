@@ -312,8 +312,8 @@ func _head(c: Canvas, at: Vector2, facing: String, mouth_open: bool) -> void:
 			var e: Vector2i = Vector2i(at.round())
 			c.line(Vector2(e.x - 3, e.y - 1), Vector2(e.x + 2, e.y - 1), P.BRUTE_SKIN[1])  # brow
 			for dx: int in [-2, 1]:
-				c.px(e.x + dx + (1 if dx < 0 else 0), e.y, P.EYE_GLOW[2])
-				c.px(e.x + dx + (0 if dx < 0 else 1), e.y, P.EYE_GLOW[1])
+				c.px(e.x + dx + (1 if dx < 0 else 0), e.y, P.EYES_TANK[2])
+				c.px(e.x + dx + (0 if dx < 0 else 1), e.y, P.EYES_TANK[1])
 			c.rect(Rect2i(e.x - 2, e.y + 2, 4, 2 if mouth_open else 1), P.OUTLINE)
 			c.px(e.x - 2, e.y + 1, P.BONE[3])  # tusks
 			c.px(e.x + 1, e.y + 1, P.BONE[2])
@@ -328,8 +328,8 @@ func _head(c: Canvas, at: Vector2, facing: String, mouth_open: bool) -> void:
 			c.ellipse(at, Vector2(3.2, 3.1), P.BRUTE_SKIN, 0.0, 0.05)
 			var e3: Vector2i = Vector2i(at.round())
 			c.line(Vector2(e3.x, e3.y - 1), Vector2(e3.x + 3, e3.y - 1), P.BRUTE_SKIN[1])
-			c.px(e3.x + 2, e3.y, P.EYE_GLOW[2])
-			c.px(e3.x + 1, e3.y, P.EYE_GLOW[1])
+			c.px(e3.x + 2, e3.y, P.EYES_TANK[2])
+			c.px(e3.x + 1, e3.y, P.EYES_TANK[1])
 			c.part()
 			c.ellipse(Vector2(e3.x + 1.8, e3.y + 2.4 + (0.8 if mouth_open else 0.0)), Vector2(2.2, 1.2), P.BRUTE_SKIN, 0.0, -0.08)
 			c.px(e3.x + 3, e3.y + 1 + (1 if mouth_open else 0), P.BONE[3])  # tusk

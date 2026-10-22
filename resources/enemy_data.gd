@@ -3,6 +3,9 @@ extends Resource
 ## Stats and look of one enemy type. Make one .tres per enemy in data/enemies/ and tune it there.
 ## All enemies share entities/enemies/enemy.tscn; this data decides what it is.
 
+## What it does in a fight, which sets its colour everywhere (EnemyRoles, M8.5).
+enum Role { GRUNT, FAST, TANK, RANGED, SUPPORT, SPLITTER, BOSS }
+
 @export var display_name: String = ""
 @export var max_health: int = 30
 ## Pixels per second along the lane.
@@ -23,6 +26,8 @@ extends Resource
 @export var death_effect: PackedScene
 ## A boss: its HP shows in a big bar at the top of the screen and its death is a big moment.
 @export var is_boss: bool = false
+## Its role (its colour: eyes, health bar, feed, banner).
+@export var role: Role = Role.GRUNT
 ## Its special mechanic: a scene whose root is an EnemyAbility (summon, charge, ward, split, heal).
 ## Optional.
 @export var ability: PackedScene

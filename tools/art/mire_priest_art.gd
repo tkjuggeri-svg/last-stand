@@ -164,10 +164,10 @@ func _robe(c: Canvas, pose: Dictionary, facing: String) -> void:
 	c.part()
 	c.ellipse(head, Vector2(2.8, 2.7), P.BLOAT.slice(1, 6) if facing != "up" else P.PRIEST_ROBE, 0.0, 0.05)
 	if facing == "down":
-		c.px(roundi(head.x) - 1, roundi(head.y), P.EYE_GLOW[2])
-		c.px(roundi(head.x) + 1, roundi(head.y), P.EYE_GLOW[2])
+		c.px(roundi(head.x) - 1, roundi(head.y), P.EYES_SUPPORT[2])
+		c.px(roundi(head.x) + 1, roundi(head.y), P.EYES_SUPPORT[2])
 	elif side:
-		c.px(roundi(head.x) + 1, roundi(head.y), P.EYE_GLOW[2])
+		c.px(roundi(head.x) + 1, roundi(head.y), P.EYES_SUPPORT[2])
 	c.part()
 	c.polygon(PackedVector2Array([head + Vector2(-3, -1.5), head + Vector2(-1.5, -9), head + Vector2(0, -11), head + Vector2(1.5, -9),
 		head + Vector2(3, -1.5)]), P.REED, Vector3(-0.4, -0.3, 0.8))

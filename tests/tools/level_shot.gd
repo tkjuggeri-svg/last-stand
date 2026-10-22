@@ -27,7 +27,9 @@ func _initialize() -> void:
 			for pair: String in arg.trim_prefix("--at=").split(";"):
 				var xy: PackedStringArray = pair.split(",")
 				_points.append(Vector2(float(xy[0]), float(xy[1])))
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://" + _out))
+	# A relative --out is under the project (dev_screenshots/...); an absolute one is used as it is.
+	var out_dir: String = _out if _out.is_absolute_path() else ProjectSettings.globalize_path("res://" + _out)
+	DirAccess.make_dir_recursive_absolute(out_dir)
 	var level: Level = (load(_level_path) as PackedScene).instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = spawner.waves.slice(_wave - 1)
@@ -41,7 +43,7 @@ func _initialize() -> void:
 		hero.global_position = _points[i]
 		for _f: int in 30:
 			await process_frame
-		var path: String = "res://%s/%s_%d.png" % [_out, _level_path.get_file().get_basename(), i]
-		root.get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path(path))
+		var path: String = out_dir.path_join("%s_%d.png" % [_level_path.get_file().get_basename(), i])
+		root.get_viewport().get_texture().get_image().save_png(path)
 		print("saved ", path)
 	quit()

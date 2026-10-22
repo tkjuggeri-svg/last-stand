@@ -21,6 +21,8 @@ const ATTACK_FRAMES: int = 6
 var _size: Vector2i = BLOATER_SIZE
 var _feet: Vector2 = BLOATER_FEET
 var _k: float = 1.0
+## Its eyes' role colour (ART_DIRECTION 5): a splitter's magenta, the Bloatling's fast yellow.
+var _eyes: Array[Color] = P.EYES_SPLITTER
 
 
 ## small = the Bloatling.
@@ -29,6 +31,7 @@ func _init(small: bool = false) -> void:
 		_size = BLOATLING_SIZE
 		_feet = BLOATLING_FEET
 		_k = 0.5
+		_eyes = P.EYES_FAST
 
 
 ## Rows in the order of sheet_layouts.BLOATER / BLOATLING.
@@ -151,8 +154,8 @@ func _draw_front(c: Canvas, pose: Dictionary, front: bool) -> void:
 	if front:
 		var e: Vector2i = Vector2i(head.round())
 		var gap: int = 1 if _k < 1.0 else 2
-		c.px(e.x - gap, e.y, P.EYE_GLOW[2])
-		c.px(e.x + gap - (0 if _k < 1.0 else 1), e.y, P.EYE_GLOW[2])
+		c.px(e.x - gap, e.y, _eyes[2])
+		c.px(e.x + gap - (0 if _k < 1.0 else 1), e.y, _eyes[2])
 		if _k >= 1.0:
 			c.rect(Rect2i(e.x - 1, e.y + 2, 2, 1), P.OUTLINE)  # a slack, drooling mouth
 			c.px(e.x, e.y + 3, P.GAS[2])
@@ -183,7 +186,7 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 	c.part()
 	c.ellipse(head, Vector2(3.4, 3.0) * _k + Vector2(0.4, 0.4), P.BLOAT, 0.0, 0.05)
 	var e: Vector2i = Vector2i((head + Vector2(1.5, 0) * _k).round())
-	c.px(e.x, e.y, P.EYE_GLOW[2])
+	c.px(e.x, e.y, _eyes[2])
 	c.part()
 	c.capsule(shoulder, hand, 1.3 * _k + 0.3, P.BLOAT, 0.0)
 	c.part()

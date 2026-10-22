@@ -7,6 +7,7 @@
 
 [resource]
 script = ExtResource("1_data")
+role = 5
 knockback_taken = 0.6
 display_name = "Bloater"
 max_health = 110

@@ -19,6 +19,16 @@ const GHOUL_SKIN: Array[Color] = [Color("25252c"), Color("3d4046"), Color("5d646
 const RAGS: Array[Color] = [Color("17130f"), Color("2a221b"), Color("41362a"), Color("5a4c3b")]
 const BONE: Array[Color] = [Color("5b5446"), Color("8f8670"), Color("c3b99c"), Color("ece4cb")]
 const EYE_GLOW: Array[Color] = [Color("6e1410"), Color("c2261b"), Color("ff5a3a"), Color("ffc9a0")]
+## Eyes by enemy role (M8.5; ART_DIRECTION 5: one colour per role, the same as EnemyRoles.COLORS at
+## index 2): the common dead red (EYE_GLOW), fast yellow, tanks cold blue, ranged witchfire green (the
+## Cultist's own), support teal, splitters magenta, bosses violet.
+const EYES_GRUNT: Array[Color] = EYE_GLOW
+const EYES_FAST: Array[Color] = [Color("6e5410"), Color("c2a11b"), Color("ffe14a"), Color("fff6b0")]
+const EYES_TANK: Array[Color] = [Color("10306e"), Color("1b5ac2"), Color("7fb4ff"), Color("d0e4ff")]
+const EYES_RANGED: Array[Color] = [Color("1f4a1c"), Color("3f8f2a"), Color("7fd13b"), Color("c8f57a")]
+const EYES_SUPPORT: Array[Color] = [Color("104e48"), Color("1b9a88"), Color("57e0c8"), Color("b8fff0")]
+const EYES_SPLITTER: Array[Color] = [Color("5e1050"), Color("b21b9c"), Color("ff6adf"), Color("ffc4f2")]
+const EYES_BOSS: Array[Color] = [Color("3a1a6e"), Color("6a3ac2"), Color("b58cff"), Color("e4d4ff")]
 const ICHOR: Array[Color] = [Color("10170f"), Color("223322"), Color("3b5a33"), Color("6f9a4f")]
 const SOUL: Array[Color] = [Color("1e3d3a"), Color("2f6b5f"), Color("57b892"), Color("a8f0c8"), Color("e8fff0")]
 ## Grave Hound: flayed, mangy red-brown hide over pale bone (warmer and redder than the Ghoul).
@@ -47,6 +57,9 @@ const DEAD_WOOD: Array[Color] = [Color("181416"), Color("2a2324"), Color("3f3634
 ## Bronze: upgraded cannon barrels.
 const BRONZE: Array[Color] = [Color("2e1d10"), Color("5a3a1c"), Color("8a5e2c"), Color("b88a45"), Color("e2bd76")]
 const IRON: Array[Color] = [Color("15141b"), Color("25242e"), Color("3a3946"), Color("575766"), Color("82838f")]
+## Worn iron a few steps lighter, for a body made mostly of it (the Shieldbearer: IRON alone read as
+## barely brighter than the ground in grayscale, M8.5's readability check).
+const IRON_WORN: Array[Color] = [Color("2c2b37"), Color("484756"), Color("676778"), Color("8f909e"), Color("bcbec8")]
 const BANNER: Array[Color] = [Color("2c0d14"), Color("531721"), Color("7e232b"), Color("a83632"), Color("c95341")]
 const HOOD: Array[Color] = [Color("16200f"), Color("26381f"), Color("3a5530"), Color("557547"), Color("7a9a5c")]
 

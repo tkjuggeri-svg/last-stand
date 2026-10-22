@@ -288,12 +288,12 @@ func _skull_side(c: Canvas, at: Vector2, jaw: float, smear: bool) -> void:
 	c.capsule(at + Vector2(1.2, 0.4), at + Vector2(4.6, 0.8), 1.15, P.BONE, -0.02)
 	var e: Vector2i = Vector2i(at.round())
 	c.rect(Rect2i(e.x, e.y - 1, 2, 2), P.OUTLINE)
-	c.px(e.x + 1, e.y - 1, P.EYE_GLOW[2])
-	c.px(e.x, e.y, P.EYE_GLOW[1])
+	c.px(e.x + 1, e.y - 1, P.EYES_FAST[2])
+	c.px(e.x, e.y, P.EYES_FAST[1])
 	c.px(e.x + 5, e.y, P.OUTLINE)  # nostril
 	if jaw > 0.2:
 		# The open maw: a dark gap with a red glow and teeth.
-		c.line(at + Vector2(1.2, 1.8), at + Vector2(4.2, 1.8 + drop * 0.6), P.EYE_GLOW[0])
+		c.line(at + Vector2(1.2, 1.8), at + Vector2(4.2, 1.8 + drop * 0.6), P.EYES_FAST[0])
 		c.px(e.x + 2, e.y + 2, P.BONE[3])
 		c.px(e.x + 4, e.y + 2, P.BONE[3])
 	if smear:
@@ -316,11 +316,11 @@ func _skull_front(c: Canvas, at: Vector2, jaw: float, smear: bool) -> void:
 	var e: Vector2i = Vector2i(at.round())
 	for dx: int in [-2, 1]:
 		c.rect(Rect2i(e.x + dx, e.y - 1, 2, 2), P.OUTLINE)
-		c.px(e.x + dx + (1 if dx < 0 else 0), e.y - 1, P.EYE_GLOW[2])
-		c.px(e.x + dx + (1 if dx < 0 else 0), e.y, P.EYE_GLOW[1])
+		c.px(e.x + dx + (1 if dx < 0 else 0), e.y - 1, P.EYES_FAST[2])
+		c.px(e.x + dx + (1 if dx < 0 else 0), e.y, P.EYES_FAST[1])
 	c.px(e.x, e.y + 1, P.OUTLINE)  # nose
 	if drop > 0.0:
-		c.rect(Rect2i(e.x - 1, e.y + 3, 3, int(drop)), P.EYE_GLOW[0])
+		c.rect(Rect2i(e.x - 1, e.y + 3, 3, int(drop)), P.EYES_FAST[0])
 		c.px(e.x - 1, e.y + 3, P.BONE[3])
 		c.px(e.x + 1, e.y + 3, P.BONE[3])
 	if smear:

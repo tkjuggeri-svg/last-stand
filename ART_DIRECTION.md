@@ -74,6 +74,23 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 - **Accent:** red (`TABARD`, `BANNER`) only on the hero and on the fortress's banners — the player's side.
 - **Gold:** trims, coins, UI highlights, the order's tower emblem.
 - **Undead:** ashen grey-green skin (`GHOUL_SKIN`), red eyes (`EYE_GLOW`), pale green souls (`SOUL`). Each enemy type has its own hue so they read apart at a glance: Ghoul grey-green, Hound red-brown hide over bone (`HOUND_HIDE`), Brute violet-grey (`BRUTE_SKIN`, kept light because the cool dusk light flattens violets, plus a 1 px rim light on its top-left silhouette edges), Cultist a pale ash-grey robe (`CULT_ROBE`, the lightest enemy, so the fragile caster is spotted at once) with a black hood hollow and bright green witchfire (`WITCHFIRE`: eyes, orb, shots) plus a faint green light.
+- **Colour by role (M8.5):** every enemy's **eyes glow in its role's colour**, and the game repeats that
+  colour on its small health bar, its feed line and its first-sight banner (`EnemyRoles`; the art's
+  `P.EYES_*` ramps, index 2 = the same colour; `test_readability` keeps them in sync). One colour per
+  role, distinct in hue:
+
+  | Role | Enemies | Colour |
+  |---|---|---|
+  | Grunt (the common dead) | Ghoul | red `#ff5a3a` (`EYE_GLOW`) |
+  | Fast | Hound, Bloatling | yellow `#ffe14a` |
+  | Tank | Brute, Shieldbearer | cold blue `#7fb4ff` |
+  | Ranged | Cultist | witchfire green `#7fd13b` |
+  | Support | Mire Priest | teal `#57e0c8` |
+  | Splitter | Bloater | magenta `#ff6adf` |
+  | Boss | Gravelord, Bone Colossus, Lich Warden, Tollkeeper | violet `#b58cff` (their bar and name; their art keeps its own design) |
+
+  A new enemy picks its role (`EnemyData.role`) and draws its eyes from that ramp; a new role needs a
+  colour far in hue from the others.
 - **Magic/elements:** fire `FIRE` (orange → white), ice `ICE` (deep blue → white).
 - Characters are always **brighter and higher-contrast than the ground** they stand on.
 
@@ -192,4 +209,8 @@ godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 3. Light comes from the top-left everywhere; outlines present (or deliberately absent on soft FX).
 4. Frames share their ground anchor; no jitter in idle/walk loops.
 5. Effects don't hide enemies, health bars or the lane.
-6. `tests/run_tests.sh` passes.
+6. **Grayscale:** characters still stand out from the ground with the colour removed
+   (`capture_screenshots.gd --grayscale`, `ui_shots.gd --grayscale` save gray copies;
+   `test_readability` measures every enemy, the hero, towers and shots against both grounds: a
+   brightness contrast of at least 1.8 for characters, 1.5 for buildings and shots).
+7. `tests/run_tests.sh` passes.

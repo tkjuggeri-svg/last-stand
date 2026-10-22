@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_data")
+role = 3
 display_name = "Cultist"
 max_health = 20
 move_speed = 52.0
