@@ -20,6 +20,9 @@ const HERO: Dictionary = {
 		["attack_up", 7, 4, 20.0, false],
 		["attack_side", 8, 4, 20.0, false],
 		["death", 9, 6, 8.0, false],
+		["dash_down", 10, 3, 20.0, true],
+		["dash_up", 11, 3, 20.0, true],
+		["dash_side", 12, 3, 20.0, true],
 	],
 }
 

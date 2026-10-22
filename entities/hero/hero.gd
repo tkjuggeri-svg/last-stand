@@ -223,6 +223,10 @@ func _set_targetable(targetable: bool) -> void:
 
 
 func _update_animation() -> void:
+	if _dash.is_dashing():
+		_sprite.face(velocity)
+		_sprite.play_state("dash")  # the lunge behind the shield (display only)
+		return
 	if _sprite.is_playing_state("attack"):
 		return  # let the swing pose finish
 	if velocity.is_zero_approx():

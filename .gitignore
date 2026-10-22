@@ -10,3 +10,6 @@ dev_screenshots/
 
 # Playtest builds (tools/build_playtest.sh), never commit
 builds/
+
+# Sprite exports for outside tools (tools/art/export_knight.py)
+/exports/

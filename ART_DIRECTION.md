@@ -117,7 +117,11 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 ## 8. Proportions
 
 - Hero: heroic chibi — head ≈ 1/3 of the body, broad shoulders (pauldrons), long sword (≈ 10 px),
-  heater shield. Silhouette must read as "knight" from the plume and cape alone.
+  kite shield. Redrawn after `docs/reference/knight_concept.png`: a rounded great helm with a
+  gold-trimmed visor and a red crest from brow to nape, grey plate, gold-rimmed pauldrons, a red
+  tabard with a torn hem, brown belt and boots, no cape. The kite shield (steel rim, red-brown field,
+  a gold crest) shows from every side: its face from the front and in three-quarters from the side,
+  its rimmed back from behind. Silhouette reads as "knight" from the round helm, crest and shield.
 - Ghoul: hunched (head between the shoulders), thin limbs, long arms with claws, small and wiry.
   Silhouette must read as "crawling thing" next to the upright hero.
 - Buildings: thick bases, slightly wider at the bottom, heavy roofs; nothing spindly.
@@ -180,7 +184,7 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
   `UiColors` (`ui/theme/ui_colors.gd`), the same values as the variations.
 - **Key art** (the title screen, M8.5: `tools/art/title_art.gd`, job `title`): a full 640×360 art px
   scene in the same palette, plain pixel fills without sprite outlines (a scene, not a sprite): the
-  knight from behind on a ledge (red plume and cape: the accent), the horde with red eyes on the
+  knight from behind on a ledge (red plume and cape: the accent; drawn before the knight's redraw), the horde with red eyes on the
   road, the fortress on its hill against a dusk sky, a moon at the top right (its rim-light is on the
   right edges here, the one place the light isn't from the top-left). The title's menu sits in the
   dark left third over a soft shade.
