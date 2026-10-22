@@ -173,7 +173,7 @@ func _fortress() -> void:
 func _banner(top: Vector2i, length: int) -> void:
 	for i: int in length:
 		var wave: int = roundi(sin(i / 2.0) * 1.0)
-		for y: int in range(0, 5 - i / 4):
+		for y: int in range(0, 5 - floori(i / 4.0)):
 			_img.set_pixel(top.x + 1 + i, top.y + 1 + y + wave, P.BANNER[2] if y == 0 else P.BANNER[1])
 
 
