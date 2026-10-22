@@ -188,6 +188,8 @@ Presentation work done early instead of all in M13, so a public demo looks and s
 
 **Done when:** the game looks, sounds and reads finished enough to show to people outside the project.
 
+Built as `m8.5-playtest` (not yet playtested). The optional itch.io demo is left for the user to decide.
+
 ---
 
 ## M9 — Heroes & Relics
@@ -244,7 +246,7 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M8** (meta progression: Soul Shards, the War Room and its unlock board, title / run summary, resume from the map, tutorial tips, calling waves early) is implemented autonomously and built as `m8-playtest` (`m8-playtest-2` adds the tower pair bonuses), on top of M7.5 (`m7.5-playtest-3`), neither playtested by hand yet. Every M8 decision taken without the user is listed in `docs/M8_META.md` section 10, to confirm or override. Waiting for playtest feedback; don't start M8.5.
+**M8.5** (demo polish: one UI style, 47 synthesized sound effects, hit-stop / screen shake / damage numbers / knockback, the title key art, colour by enemy role and the grayscale check) is implemented autonomously on top of M8 (with the shard pace adjusted) and built as `m8.5-playtest`; nothing since `m7.5-playtest-3` has been played by hand. Report: `docs/M8_5_BUILD_REPORT.md`. Waiting for playtest feedback; don't start M9.
 
 ---
 

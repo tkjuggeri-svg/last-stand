@@ -1,7 +1,7 @@
 # LAST STAND — Internal Playtest
 
-Thanks for playing! This is an early build: the pixel art is in, but there is **no sound yet**. The game
-opens on a title screen; **Play** leads to the War Room, where you start runs. A run is **two chapters** on a map of choices (about
+Thanks for playing! This is an early build: the pixel art and sound effects are in, but there is **no
+music yet**. The game opens on a title screen; **Play** leads to the War Room, where you start runs. A run is **two chapters** on a map of choices (about
 35–45 minutes if you win; the first chapter alone is about 15–20).
 
 ## Running the build
@@ -79,7 +79,13 @@ Every key can be changed in **Esc → Settings** (also fullscreen and volume).
 - **Before each wave** you build towers (you can also build during a wave). Upgrades come after a
   battle, not after every wave.
 - **Gold** comes from kills. Towers can be upgraded twice; selling refunds half.
-- **Pair bonuses (new in this build):** each tower type has a partner: build them close together
+- **New in this build (polish):** sound effects for everything (retro, made for the game; set their
+  volume in Esc → Settings → Sound volume), a short freeze and a screen shake on big hits (Settings →
+  **Screen shake**: Full, Reduced or Off), **damage numbers** over enemies (Settings → Damage
+  numbers), your sword now **knocks enemies back** a little (bosses don't budge), and every enemy's
+  **role has a colour**: its eyes, health bar and its name in the messages (red: the common dead,
+  yellow: fast, blue: tough, green: ranged, teal: healers, magenta: bursts when killed, violet: bosses).
+- **Pair bonuses:** each tower type has a partner: build them close together
   (neighbouring stone pads) and both can get a bonus (Cannon + Frost: wider blasts and longer slows;
   Archer + Brazier: fire arrows; Ballista + Archer: faster bolts; Brazier + Cannon: hotter fire). The
   tower menu says which bonus a tower has, an ember marks it, and dashed lines show its partners
@@ -124,7 +130,11 @@ happens that you want us to see, note the seed: the pause menu can also start a 
 
 Play at least one full run (win or lose), more if you can. Then tell us:
 
-0. **Progression (new):** Did earning Soul Shards after a lost run make you want to start another?
+0. **Polish (new):** Were the sounds pleasant or tiring after an hour? Any too loud, too quiet, or
+   missing? Did the screen shake and hit freeze feel good, or get in the way (did you turn shake
+   down)? Were the damage numbers useful or clutter? Did the role colours help you tell enemies
+   apart? What do you think of the title screen?
+0. **Progression:** Did earning Soul Shards after a lost run make you want to start another?
    Which unlocks did you buy first, and why? Did your first run (3 towers, no evolutions) feel too
    bare? Were the title, War Room and run summary clear? Did Continue bring you back where you left?
    Were the tips helpful or in the way? Did you call waves early, and was the bonus worth the risk?
