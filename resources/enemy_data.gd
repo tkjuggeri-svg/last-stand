@@ -33,6 +33,8 @@ extends Resource
 @export_range(0.0, 360.0) var shield_arc: float = 0.0
 ## Share of burn damage it takes (1 = all): tough enemies burn slower (Brutes, bosses).
 @export_range(0.0, 1.0) var burn_taken: float = 1.0
+## Share of the hero's sword knockback it takes (1 = all, 0 = none; bosses take none).
+@export_range(0.0, 1.0) var knockback_taken: float = 1.0
 
 @export_group("Body and look")
 ## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.

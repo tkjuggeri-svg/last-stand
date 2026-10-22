@@ -7,6 +7,9 @@ extends Node2D
 ## Physics frames the blast area stays active (enough for overlaps to register).
 const ACTIVE_FRAMES: int = 2
 ## The big-shell blast (its own, bigger frames).
+## A large blast (the Siege Mortar) shakes the screen a little (px, s).
+const LARGE_SHAKE: float = 2.0
+const LARGE_SHAKE_TIME: float = 0.15
 const LARGE_FRAMES: SpriteFrames = preload("res://entities/effects/explosion_large_frames.tres")
 
 var _damage: int = 20
@@ -40,6 +43,8 @@ func _ready() -> void:
 	(_shape.shape as CircleShape2D).radius = _radius
 	_sprite.animation_finished.connect(queue_free)
 	Sfx.play(self, &"explosion")
+	if _large:
+		Juice.shake(self, LARGE_SHAKE, LARGE_SHAKE_TIME)
 	if _look_frames != null:
 		_sprite.sprite_frames = _look_frames
 		_sprite.play(_look)

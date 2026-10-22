@@ -7,6 +7,7 @@
 script = ExtResource("1_ability")
 telegraph_sound = &"boss_warning"
 act_sound = &"boss_summon"
+act_shake = 3.0
 minion = ExtResource("2_minion")
 count = 3
 first_delay = 4.0

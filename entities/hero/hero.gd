@@ -26,6 +26,13 @@ const SWING_FRAMES: SpriteFrames = preload("res://entities/hero/swing_frames.tre
 const SWING_LONG_FRAMES: SpriteFrames = preload("res://entities/hero/swing_long_frames.tres")
 const REACH_TIERS: Array[float] = [1.0, 1.15, 1.3, 1.45, 1.6]
 const BLINKS_PER_SECOND: float = 6.0
+## Game feel (M8.5, display only): a landed hit and a hit taken stop time this long (s) and shake the
+## screen this much (px), a fall more.
+const HIT_STOP: float = 0.03
+const HIT_SHAKE: Vector2 = Vector2(1.5, 0.08)
+const HURT_STOP: float = 0.06
+const HURT_SHAKE: Vector2 = Vector2(3.0, 0.18)
+const DEATH_SHAKE: Vector2 = Vector2(5.0, 0.4)
 
 @export var move_speed: float = 200.0
 ## The run's upgrades (damage, speed, max HP, attack speed, reach). Null = base stats.
@@ -34,6 +41,8 @@ const BLINKS_PER_SECOND: float = 6.0
 @export var attack_duration: float = 0.12
 ## Time between the start of two swings, in seconds. Keep it longer than attack_duration.
 @export var attack_cooldown: float = 0.4
+## How far (px) a sword hit pushes an enemy back along its lane (EnemyData.knockback_taken scales it).
+@export var knockback: float = 12.0
 
 var _attack_time_left: float = 0.0
 ## The last direction the hero moved in: a dash from standing still goes this way.
@@ -69,9 +78,7 @@ func _ready() -> void:
 	_base_damage = _attack_hitbox.damage
 	_dash.modifiers = modifiers
 	_dash.setup(self, _sprite)
-	_attack_hitbox.hit.connect(func(_target: Hurtbox) -> void:
-		Sfx.play(self, &"hero_hit")
-		struck.emit(_attack_hitbox.damage))
+	_attack_hitbox.hit.connect(_on_attack_landed)
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 		_apply_modifiers()
@@ -261,12 +268,24 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 	_hit_spark.stop()
 	_hit_spark.play(&"spark")
 	Sfx.play(self, &"hero_hurt")
+	Juice.hit_stop(self, HURT_STOP)
+	Juice.shake(self, HURT_SHAKE.x, HURT_SHAKE.y)
 	hurt.emit(amount)
 	var number: DamageNumber = DAMAGE_NUMBER_SCENE.instantiate()
 	number.set_amount(amount)
 	number.top_level = true  # stays where the hit happened instead of following the hero
 	number.position = global_position + DAMAGE_NUMBER_OFFSET
 	add_child(number)
+
+
+func _on_attack_landed(target: Hurtbox) -> void:
+	Sfx.play(self, &"hero_hit")
+	Juice.hit_stop(self, HIT_STOP)
+	Juice.shake(self, HIT_SHAKE.x, HIT_SHAKE.y)
+	var enemy: Enemy = target.owner as Enemy if is_instance_valid(target) else null
+	if enemy != null:
+		enemy.knock_back(knockback)
+	struck.emit(_attack_hitbox.damage)
 
 
 func _on_health_died() -> void:
@@ -277,4 +296,5 @@ func _on_health_died() -> void:
 	_set_targetable(false)
 	_sprite.play(&"death")
 	Sfx.play(self, &"hero_death")
+	Juice.shake(self, DEATH_SHAKE.x, DEATH_SHAKE.y)
 	died.emit()

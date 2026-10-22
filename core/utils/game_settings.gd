@@ -1,6 +1,6 @@
 class_name GameSettings
 ## The player's settings (static, no autoload): window mode, the volume of the Master, Music and SFX
-## audio buses, and the key/mouse bindings of every rebindable action. Saved to a ConfigFile in
+## audio buses, the screen shake and the damage numbers (M8.5), and the key/mouse bindings of every rebindable action. Saved to a ConfigFile in
 ## user:// on every change; Main loads and applies them at startup. Defaults come from the project
 ## (its input map, full volume, windowed).
 
@@ -12,6 +12,8 @@ const ACTION_NAMES: Dictionary = {
 	&"feedback": "Send feedback",
 }
 const BUSES: Array[StringName] = [&"Master", &"Music", &"SFX"]
+## Screen shake strengths offered (Full, Reduced, Off).
+const SHAKE_LEVELS: Array[float] = [1.0, 0.5, 0.0]
 ## Bindings per action (shown as two slots in the settings menu).
 const SLOTS: int = 2
 
@@ -19,6 +21,8 @@ const SLOTS: int = 2
 static var path: String = "user://settings.cfg"
 static var _fullscreen: bool = false
 static var _volumes: Dictionary = {}
+static var _screen_shake: float = 1.0
+static var _damage_numbers: bool = true
 
 
 ## Reads the saved settings (if any) and applies them: window mode, volumes, bindings.
@@ -26,6 +30,8 @@ static func load_and_apply() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	var loaded: bool = config.load(path) == OK
 	_fullscreen = loaded and bool(config.get_value("display", "fullscreen", false))
+	_screen_shake = float(config.get_value("display", "screen_shake", 1.0)) if loaded else 1.0
+	_damage_numbers = bool(config.get_value("display", "damage_numbers", true)) if loaded else true
 	for bus: StringName in BUSES:
 		_volumes[bus] = float(config.get_value("audio", String(bus), 1.0)) if loaded else 1.0
 	reset_bindings()
@@ -46,6 +52,8 @@ static func load_and_apply() -> void:
 static func save() -> void:
 	var config: ConfigFile = ConfigFile.new()
 	config.set_value("display", "fullscreen", _fullscreen)
+	config.set_value("display", "screen_shake", _screen_shake)
+	config.set_value("display", "damage_numbers", _damage_numbers)
 	for bus: StringName in BUSES:
 		config.set_value("audio", String(bus), get_volume(bus))
 	for action: StringName in ACTIONS:
@@ -65,6 +73,25 @@ static func is_fullscreen() -> bool:
 static func set_fullscreen(on: bool) -> void:
 	_fullscreen = on
 	_apply_window()
+	save()
+
+
+## How strong screen shakes are: 1 (full) .. 0 (off).
+static func get_screen_shake() -> float:
+	return _screen_shake
+
+
+static func set_screen_shake(strength: float) -> void:
+	_screen_shake = clampf(strength, 0.0, 1.0)
+	save()
+
+
+static func shows_damage_numbers() -> bool:
+	return _damage_numbers
+
+
+static func set_damage_numbers(on: bool) -> void:
+	_damage_numbers = on
 	save()
 
 

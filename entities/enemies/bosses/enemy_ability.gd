@@ -11,6 +11,8 @@ signal telegraphed(seconds: float)
 ## The attack happened.
 signal used
 
+const ACT_SHAKE_TIME: float = 0.35
+
 ## Seconds before the first use (after the boss appears) and between two uses.
 @export var first_delay: float = 4.0
 @export var interval: float = 8.0
@@ -19,6 +21,8 @@ signal used
 ## Sounds (Sfx ids, M8.5; empty: none): when the attack is announced, and when it happens.
 @export var telegraph_sound: StringName = &""
 @export var act_sound: StringName = &""
+## The attack shakes the screen this much (px; 0: not at all), for ACT_SHAKE_TIME.
+@export var act_shake: float = 0.0
 
 var enemy: Enemy
 
@@ -46,6 +50,8 @@ func _physics_process(delta: float) -> void:
 		if _telegraph_left < 0.0:
 			_act()
 			_sound(act_sound)
+			if act_shake > 0.0:
+				Juice.shake(enemy, act_shake, ACT_SHAKE_TIME)
 			used.emit()
 		return
 	_ability_step(delta)

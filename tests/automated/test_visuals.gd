@@ -135,13 +135,17 @@ func _test_ghoul_and_effects() -> void:
 	(ghoul.get_node("%HealthComponent") as HealthComponent).take_damage(100)
 	await _frames(1)
 	var death_effects: Array[Node] = effects.get_children().filter(func(n: Node) -> bool: return n is OneShotEffect)
-	var gold_texts: Array[Node] = effects.get_children().filter(func(n: Node) -> bool: return n is DamageNumber)
+	var gold_texts: Array[Node] = effects.get_children().filter(func(n: Node) -> bool:
+		return n is DamageNumber and (n.get_node("%Label") as Label).text.begins_with("+"))
+	var damage_texts: Array[Node] = effects.get_children().filter(func(n: Node) -> bool:
+		return n is DamageNumber and not (n.get_node("%Label") as Label).text.begins_with("+"))
 	_check("death effect spawned at the ghoul's position",
 		death_effects.size() == 1 and (death_effects[0] as Node2D).global_position.distance_to(death_spot) < 2.0)
 	var reward: int = (load("res://data/enemies/ghoul.tres") as EnemyData).gold_reward
 	_check("a gold '+%d' rises where the ghoul died" % reward,
 		gold_texts.size() == 1 and (gold_texts[0].get_node("%Label") as Label).text == "+%d" % reward
 		and (gold_texts[0] as Node2D).global_position.distance_to(death_spot) < 40.0)
+	_check("...and damage numbers for the hits (M8.5: %d)" % damage_texts.size(), damage_texts.size() >= 1)
 	await _frames(70)
 	_check("death effect and gold text remove themselves (within ~1 s)", effects.get_child_count() == 0)
 	level.queue_free()

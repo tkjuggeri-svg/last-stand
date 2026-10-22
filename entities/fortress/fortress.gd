@@ -10,6 +10,9 @@ signal destroyed
 enum Look { HEALTHY, DAMAGED, BADLY_DAMAGED, DESTROYED }
 
 const DUST_SCENE: PackedScene = preload("res://entities/effects/dust_puff.tscn")
+## A hit also shakes the screen a little (px, s).
+const HIT_SCREEN_SHAKE: float = 2.0
+const HIT_SCREEN_SHAKE_TIME: float = 0.12
 ## How far (world px) and how long (s) the walls shake when hit.
 const SHAKE_DISTANCE: float = 2.0
 const SHAKE_TIME: float = 0.2
@@ -137,6 +140,7 @@ func _on_health_changed(current_health: int, max_health: int) -> void:
 
 func _react_to_hit() -> void:
 	Sfx.play(self, &"fortress_hit")
+	Juice.shake(self, HIT_SCREEN_SHAKE, HIT_SCREEN_SHAKE_TIME)
 	if _shake != null:
 		_shake.kill()
 	_shake = create_tween()

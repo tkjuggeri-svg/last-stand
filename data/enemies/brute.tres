@@ -6,6 +6,7 @@
 
 [resource]
 script = ExtResource("1_data")
+knockback_taken = 0.35
 display_name = "Brute"
 max_health = 150
 move_speed = 32.0

@@ -18,7 +18,9 @@ signal encounter_cleared
 enum LossReason { FORTRESS_DESTROYED, HERO_KILLED }
 
 const FLOATING_TEXT_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
-const GOLD_TEXT_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+const GOLD_TEXT_COLOR: Color = UiColors.GOLD
+## Where an enemy's damage number starts, from its feet.
+const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -44)
 ## A boss's death: the game runs at this speed for this many real seconds, and the camera shakes.
 const BOSS_HIT_STOP_SCALE: float = 0.25
 const BOSS_HIT_STOP_TIME: float = 0.5
@@ -62,6 +64,7 @@ func _ready() -> void:
 		modifiers.upgrade_added.connect(_on_upgrade_added)
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
+		spawner.enemy_spawned.connect(func(enemy: Enemy) -> void: enemy.damage_reported.connect(_show_damage))
 
 
 func _exit_tree() -> void:
@@ -235,15 +238,15 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 
 
 func _boss_moment() -> void:
-	Engine.time_scale = BOSS_HIT_STOP_SCALE
-	# Real seconds, and only while the game runs (a pause keeps time at 0 until it ends).
-	get_tree().create_timer(BOSS_HIT_STOP_TIME, false, false, true).timeout.connect(func() -> void: Engine.time_scale = 1.0)
-	var camera: Camera2D = get_viewport().get_camera_2d()
-	if camera == null:
+	Juice.hit_stop(self, BOSS_HIT_STOP_TIME, BOSS_HIT_STOP_SCALE, true)
+	Juice.shake(self, BOSS_SHAKE, BOSS_SHAKE_TIME)
+
+
+## A damaged enemy's number (Settings: Damage numbers), on the effects layer so it outlives the enemy.
+func _show_damage(amount: int, at: Vector2) -> void:
+	if not GameSettings.shows_damage_numbers():
 		return
-	var shake: Tween = camera.create_tween()
-	shake.set_ignore_time_scale(true)
-	for i: int in 6:
-		var strength: float = BOSS_SHAKE * (1.0 - i / 6.0)
-		shake.tween_property(camera, "offset", Vector2(strength if i % 2 == 0 else -strength, strength * 0.5).round(), BOSS_SHAKE_TIME / 7.0)
-	shake.tween_property(camera, "offset", Vector2.ZERO, BOSS_SHAKE_TIME / 7.0)
+	var number: DamageNumber = FLOATING_TEXT_SCENE.instantiate()
+	number.set_text(str(amount), UiColors.TEXT)
+	number.position = at + DAMAGE_NUMBER_OFFSET
+	_effects.add_child(number)

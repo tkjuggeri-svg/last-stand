@@ -23,6 +23,9 @@ signal attack_started(enemy: Enemy)
 signal summon_requested(summoner: Enemy, minion: EnemyData, at: Vector2)
 ## Its shield stopped a tower shot (nothing was taken).
 signal shot_blocked(enemy: Enemy)
+## Damage it took since the last report (summed, so burning doesn't flood: at most every
+## DAMAGE_REPORT_TIME, and once more as it dies). The level shows it as a number.
+signal damage_reported(amount: int, at: Vector2)
 
 ## How far ahead on the lane the enemy aims, in pixels. Aiming ahead (instead of following
 ## a fixed position) lets it find its way back to the lane if something pushes it off.
@@ -31,6 +34,11 @@ const LANE_LOOKAHEAD: float = 24.0
 const HURTBOX_MARGIN: float = 2.0
 ## The claw/fist strike reaches this far past the body's edge (centre of the attack shape).
 const STRIKE_REACH: float = 10.0
+## A boss's arrival shakes the screen this much (px) for this long (s).
+const BOSS_ARRIVAL_SHAKE: float = 3.0
+const BOSS_ARRIVAL_SHAKE_TIME: float = 0.5
+## Seconds between two damage reports (damage_reported).
+const DAMAGE_REPORT_TIME: float = 0.3
 
 @export var data: EnemyData
 
@@ -52,6 +60,8 @@ var _ability: EnemyAbility
 ## The way it faces (its shield's side): where it walks, or toward what it attacks.
 var _heading: Vector2 = Vector2.DOWN
 var _last_health: int = 0
+var _unreported_damage: int = 0
+var _report_left: float = 0.0
 
 @onready var _health: HealthComponent = %HealthComponent
 @onready var _fortress_hitbox: Hitbox = %FortressHitbox
@@ -85,10 +95,14 @@ func _ready() -> void:
 	_attack.setup(self)
 	if data.is_boss:
 		Sfx.play(self, &"boss_appear")
+		Juice.shake(self, BOSS_ARRIVAL_SHAKE, BOSS_ARRIVAL_SHAKE_TIME)
 	_attack.attack_started.connect(func() -> void: attack_started.emit(self))
 
 
 func _physics_process(delta: float) -> void:
+	_report_left -= delta
+	if _unreported_damage > 0 and _report_left <= 0.0:
+		_report_damage()
 	_attack.tick_cooldown(delta)
 	_status.tick(delta)
 	if _status.is_dragged():
@@ -204,6 +218,12 @@ func drag_back(distance: float) -> void:
 		_status.drag_to(get_lane_progress() - distance)
 
 
+## Pushed back along its lane by `distance` px (the hero's sword), less for tough ones, none for bosses.
+func knock_back(distance: float) -> void:
+	if not data.is_boss:
+		drag_back(distance * data.knockback_taken)
+
+
 ## Takes a hit from a projectile that already knows its target (same path as an overlapping hitbox).
 func receive_hit(hitbox: Hitbox) -> bool:
 	return is_alive() and _hurtbox.receive_hit(hitbox)
@@ -278,6 +298,7 @@ func _update_animation() -> void:
 ## Damage feedback (a heal is shown by heal()).
 func _on_health_changed(current_health: int, max_health: int) -> void:
 	if current_health < _last_health:
+		_unreported_damage += _last_health - current_health
 		_look.show_hit(current_health, max_health)
 		if current_health > 0:
 			Sfx.play(self, &"enemy_hit")
@@ -288,6 +309,8 @@ func _on_health_died() -> void:
 	if _ability != null:
 		_ability.on_owner_died()  # before `died`: what it leaves behind (a Bloater's young) joins the wave first
 	Sfx.play(self, &"boss_death" if data.is_boss else &"enemy_death")
+	if _unreported_damage > 0:
+		_report_damage()
 	_finish(died)
 
 
@@ -303,3 +326,9 @@ func _finish(outcome: Signal) -> void:
 	_is_finished = true
 	outcome.emit(self)
 	queue_free()
+
+
+func _report_damage() -> void:
+	damage_reported.emit(_unreported_damage, global_position)
+	_unreported_damage = 0
+	_report_left = DAMAGE_REPORT_TIME
