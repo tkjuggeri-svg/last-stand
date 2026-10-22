@@ -208,6 +208,7 @@ Built as `m8.5-playtest` (not yet playtested). The optional itch.io demo is left
 ---
 
 ## M10 — Maps & Biomes
+Before the first new biome: decide the art resolution (proposal `docs/M10_ART_RESOLUTION.md`: keep today's resolution with high-detail close-ups, or redraw everything at double resolution).
 At least **9 biomes in 3 tiers of 3**: tier 1 for chapter 1 (easy), tier 2 for chapter 2 (medium), tier 3 for a new chapter 3 (hard). Each run picks one biome per tier: at random, or the player chooses between two roads at the end of a chapter. The Graveyard is tier 1 and the Drowned Marsh tier 2 (pulled forward into M7.5).
 Every biome has:
 - its own map and lane layout;
