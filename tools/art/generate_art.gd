@@ -32,6 +32,7 @@ const ShieldbearerArt: GDScript = preload("res://tools/art/shieldbearer_art.gd")
 const UiArt: GDScript = preload("res://tools/art/ui_art.gd")
 const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const RelicArt: GDScript = preload("res://tools/art/relic_art.gd")
+const TitleArt: GDScript = preload("res://tools/art/title_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
 
 
@@ -73,6 +74,7 @@ func _initialize() -> void:
 		"mote": func() -> void: _save(EnvironmentArt.new().mote(), Layouts.MOTE_PNG),
 		"coin": func() -> void: _save(UiArt.new().icon("coin"), Layouts.COIN_PNG),
 		"ui": _ui,
+		"title": func() -> void: _save(TitleArt.new().scene(), Layouts.UI_DIR + "title_scene.png"),
 		"towers": func() -> void: _save(_sheet(TowerArt.new().sheet_rows() + EvolutionArt.new().sheet_rows(), Layouts.TOWERS["size"]), Layouts.TOWERS["png"]),
 		"projectiles": func() -> void: _save(_sheet(TowerArt.new().projectile_rows() + _evolution_shots(), Layouts.PROJECTILES["size"]), Layouts.PROJECTILES["png"]),
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),

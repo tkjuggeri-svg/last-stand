@@ -182,7 +182,7 @@ Presentation work done early instead of all in M13, so a public demo looks and s
 - [x] UI consistency pass across every screen (HUD, build menu, choice screens, map, merchant, events, pause, settings, game over, victory) with M8's shared UI style
 - [x] Basic sound effects (47, synthesized in code: `tools/audio/`; bosses, the map and the run's moments too): combat (sword, hits, the hero hurt), towers (each tower's shot, impacts, building, upgrades), deaths, UI (clicks, the choice screens, gold), on the Master / SFX buses
 - [x] Juice: hit pause on big hits, damage numbers, screen shake (with a Full / Reduced / Off setting), the sword's knockback (today only a boss's death has a hit-stop and a shake)
-- [ ] Title screen
+- [x] Title screen (key art drawn in code: `tools/art/title_art.gd`)
 - [ ] **Readability:** a grayscale check in the screenshot tool (`capture_screenshots.gd --grayscale`: every enemy, the hero, towers and shots still stand out from the ground without colour), and **consistent colour coding by enemy role** (e.g. one accent per role: melee, fast, tank, caster/support, ranged, boss), applied to the existing enemies' art and documented in `ART_DIRECTION.md`
 - [ ] *(Optional)* a free itch.io demo **for outside feedback** (players who aren't us)
 

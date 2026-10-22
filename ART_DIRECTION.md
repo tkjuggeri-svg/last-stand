@@ -161,6 +161,12 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
   one primary. In-world panels (HUD, build menu, tips) stay compact: no title at 48.
 - Colours that code must set by hand (a disabled button's text, the feed, banners) come from
   `UiColors` (`ui/theme/ui_colors.gd`), the same values as the variations.
+- **Key art** (the title screen, M8.5: `tools/art/title_art.gd`, job `title`): a full 640×360 art px
+  scene in the same palette, plain pixel fills without sprite outlines (a scene, not a sprite): the
+  knight from behind on a ledge (red plume and cape: the accent), the horde with red eyes on the
+  road, the fortress on its hill against a dusk sky, a moon at the top right (its rim-light is on the
+  right edges here, the one place the light isn't from the top-left). The title's menu sits in the
+  dark left third over a soft shade.
 - `tests/tools/ui_shots.gd -- --out=<dir>` shoots every screen, to review a change across all of them.
 
 ## 13. Pipeline
