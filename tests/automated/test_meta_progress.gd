@@ -114,7 +114,8 @@ func _test_shards() -> void:
 	var first_time: int = MetaProgress.finish_run(profile, won)
 	var again: int = MetaProgress.shards_for(won, profile)
 	_check("a won run pays %d the first time (one-off rewards), %d after" % [first_time, again],
-		first_time == again + 3 * MetaProgress.FIRST_TIME and again == 9 * 2 + 2 * 6 + 15 + 25 + 2 * 5 + 30)
+		first_time == again + 3 * MetaProgress.FIRST_TIME and again == 9 * MetaProgress.BATTLE + 2 * MetaProgress.ELITE
+		+ MetaProgress.BOSS[0] + MetaProgress.BOSS[1] + 2 * MetaProgress.CHAPTER_CLEARED + MetaProgress.RUN_WON)
 	_check("the records: runs, wins, best, bosses, all shards ever", profile.runs == 1 and profile.wins == 1 and profile.best_chapter == 2
 		and profile.best_row == 8 and profile.bosses.size() == 2 and profile.shards == first_time and profile.shards_total == first_time)
 	for _i: int in 12:

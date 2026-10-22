@@ -33,8 +33,8 @@ Paid on the run summary, for everything the run did (a lost run keeps all it ear
 
 | Done | Shards | Why |
 |---|---|---|
-| A battle won | 2 | the bulk; a short run still pays |
-| An elite won | 6 | the risk the map asks for |
+| A battle won | 3 (was 2 until the pace check below) | the bulk; a short run still pays |
+| An elite won | 8 (was 6) | the risk the map asks for |
 | A chapter's boss beaten | 15 (chapter 1), 25 (chapter 2) | |
 | A chapter cleared (moving on) | 5 | |
 | The run won | 30 | |
@@ -300,3 +300,21 @@ so this is close to the worst case. A drop of under half a row is inside the see
 to 8 either way), so **the kit stays as it is**: no wave is eased and the Brazier stays the first, cheap
 unlock (25 shards, one or two runs). Revisit if playtests show first runs ending much earlier than later
 ones.
+
+## 12. The shard pace, checked (after `m8-playtest-2`)
+
+Target (the user's): the key unlocks, the first evolutions included, within 5–10 runs; everything
+within 20–30. `python3 tools/shard_pace.py` reads the rates and prices and plays two made-up players:
+a **typical** one (chapter-1 losses for ~5 runs, then mostly chapter-2 losses, a win every 5 or so)
+and a **slow** one (chapter-1 losses for ~10 runs). Key unlocks: Brazier, Bone Ballista, Archer and
+Cannon evolutions, Relics I.
+
+| | Battle / elite | Key unlocks | Key: typical / slow | Everything | All: typical / slow |
+|---|---|---|---|---|---|
+| Before | 2 / 6 | 220 | run 9 / run 12 | 1,175 | run 26 / run 30 |
+| **Now** | **3 / 8** | **210** | **run 8 / run 9** | **1,165** | **run 22 / run 26** |
+
+Early chapter-1 losses paid only 6–16 shards, so the first evolutions came late; they now pay 9–23.
+The Cannon's evolutions cost 50 (was 60). On the way: the Brazier on run 2, the Archer's evolutions
+by run 4, the Ballista by run 5. The bosses, chapters and wins stay as they were: they are what makes
+a run that reaches chapter 2 pay 70–90.

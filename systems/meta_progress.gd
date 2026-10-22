@@ -5,8 +5,8 @@ extends RefCounted
 ## bought first). Works on a SaveProfile; SaveManager saves it, the hub and the run summary show it.
 
 ## Shards per thing done in a run (docs/M8_META.md 1.1).
-const BATTLE: int = 2
-const ELITE: int = 6
+const BATTLE: int = 3
+const ELITE: int = 8
 ## A chapter's boss, by chapter (1-based; the last value for later chapters).
 const BOSS: Array[int] = [15, 25]
 const CHAPTER_CLEARED: int = 5
