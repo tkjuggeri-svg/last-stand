@@ -55,6 +55,7 @@ cone_angle = 70.0
 [resource]
 script = ExtResource("1_data")
 id = &"cannon"
+fire_sound = &"cannon_shot"
 display_name = "Cannon Tower"
 description = "Slow, heavy shots that blast groups of enemies."
 cost = 100

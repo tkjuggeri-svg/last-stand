@@ -16,6 +16,9 @@ signal used
 @export var interval: float = 8.0
 ## How long the telegraph lasts before the attack happens.
 @export var telegraph_time: float = 1.2
+## Sounds (Sfx ids, M8.5; empty: none): when the attack is announced, and when it happens.
+@export var telegraph_sound: StringName = &""
+@export var act_sound: StringName = &""
 
 var enemy: Enemy
 
@@ -42,6 +45,7 @@ func _physics_process(delta: float) -> void:
 		_telegraph_step(1.0 - maxf(_telegraph_left, 0.0) / telegraph_time)
 		if _telegraph_left < 0.0:
 			_act()
+			_sound(act_sound)
 			used.emit()
 		return
 	_ability_step(delta)
@@ -50,6 +54,7 @@ func _physics_process(delta: float) -> void:
 		_cooldown_left = interval
 		_telegraph_left = telegraph_time
 		_begin_telegraph()
+		_sound(telegraph_sound)
 		telegraphed.emit(telegraph_time)
 
 
@@ -109,3 +114,8 @@ func _play(state: String) -> void:
 	var sprite: DirectionalSprite = enemy.get_sprite()
 	if sprite.sprite_frames.has_animation(StringName("%s_%s" % [state, sprite.facing])):
 		sprite.play_state(state, true)
+
+
+func _sound(id: StringName) -> void:
+	if id != &"":
+		Sfx.play(enemy, id)

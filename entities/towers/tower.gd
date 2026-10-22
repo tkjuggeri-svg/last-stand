@@ -317,6 +317,8 @@ func _fire() -> void:
 				targets.append(enemy)
 	_weapon.fire(self, targets, stats)
 	_sprite.play(_anim("fire"))
+	if data.fire_sound != &"":
+		Sfx.play(self, data.fire_sound)
 
 
 func _on_range_body_entered(body: Node2D) -> void:

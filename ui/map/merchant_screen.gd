@@ -21,8 +21,10 @@ var _relic_button: Button = null
 
 func _ready() -> void:
 	hide()
-	_repair_button.pressed.connect(func() -> void: _merchant.buy_repair())
-	_reroll_button.pressed.connect(func() -> void: _merchant.reroll())
+	_repair_button.pressed.connect(func() -> void: _bought(_merchant.buy_repair()))
+	_reroll_button.pressed.connect(func() -> void:
+		if _merchant.reroll():
+			Sfx.play(self, &"reroll"))
 	_leave_button.pressed.connect(_leave)
 
 
@@ -79,12 +81,12 @@ func _refresh() -> void:
 	var cards: Array[UpgradeData] = _merchant.get_cards()
 	for i: int in cards.size():
 		var index: int = i
-		var card: Control = _card(cards[i], _merchant.card_blocker(i), func() -> void: _merchant.buy_card(index))
+		var card: Control = _card(cards[i], _merchant.card_blocker(i), func() -> void: _bought(_merchant.buy_card(index)))
 		_buy_buttons.append(card.find_child("Buy", true, false) as Button)
 		_cards.add_child(card)
 	_relic_button = null
 	if _merchant.get_relic() != null:
-		var relic_card: Control = _card(_merchant.get_relic(), _merchant.relic_blocker(), func() -> void: _merchant.buy_relic())
+		var relic_card: Control = _card(_merchant.get_relic(), _merchant.relic_blocker(), func() -> void: _bought(_merchant.buy_relic()))
 		_relic_button = relic_card.find_child("Buy", true, false) as Button
 		_cards.add_child(relic_card)
 	_gold_label.text = "Gold: %d" % _merchant.economy.get_gold()
@@ -130,3 +132,7 @@ func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	button.pressed.connect(buy)
 	column.add_child(button)
 	return card
+
+
+func _bought(done: bool) -> void:
+	Sfx.play(self, &"gold" if done else &"ui_error")

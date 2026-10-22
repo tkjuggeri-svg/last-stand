@@ -24,6 +24,7 @@ func _ready() -> void:
 ## after its `repair` share).
 func open(cleared: String, next: String, carry: ChapterCarry, refund_ratio: float, repair: float, health: int, max_health: int) -> void:
 	_title.text = "%s cleared!" % cleared
+	Sfx.play(self, &"chapter_clear")
 	_text.text = LINES % [roundi(refund_ratio * 100.0), carry.refund, carry.gold, roundi(repair * 100.0), health, max_health, carry.lives_left, carry.upgrades.size(), next]
 	show()
 	_continue_button.grab_focus.call_deferred()

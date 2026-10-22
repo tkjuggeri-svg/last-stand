@@ -269,6 +269,7 @@ func _on_tower_upgraded(slot: BuildSlot, tower: Tower, level: int) -> void:
 	if slot == _slot:
 		_rebuild()
 		_show_message("Upgraded to level %d." % level, OK_COLOR)
+		Sfx.play(self, &"tower_upgrade")
 		_slot.show_range(tower.get_attack_range())
 
 
@@ -276,6 +277,7 @@ func _on_tower_evolved(slot: BuildSlot, _tower: Tower, evolution: TowerEvolution
 	if slot == _slot:
 		_rebuild()
 		_show_message("Evolved into %s." % evolution.display_name, OK_COLOR)
+		Sfx.play(self, &"tower_evolve")
 
 
 func _on_upgrade_failed(slot: BuildSlot, reason: String) -> void:
@@ -301,12 +303,14 @@ func _on_tower_built(slot: BuildSlot, tower: Tower) -> void:
 	if slot == _slot:
 		_rebuild()
 		_show_message("Built %s for %d gold." % [tower.data.display_name, tower.invested], OK_COLOR)
+		Sfx.play(self, &"tower_build")
 
 
 func _on_tower_sold(slot: BuildSlot, refund: int) -> void:
 	if slot == _slot:
 		_rebuild()
 		_show_message("Sold for %d gold." % refund, GOLD_COLOR)
+		Sfx.play(self, &"tower_sell")
 
 
 func _on_active_slot_changed(slot: BuildSlot) -> void:
@@ -315,5 +319,7 @@ func _on_active_slot_changed(slot: BuildSlot) -> void:
 
 
 func _show_message(text: String, color: Color) -> void:
+	if color == ERROR_COLOR:
+		Sfx.play(self, &"ui_error")
 	_message.text = text
 	_message.add_theme_color_override("font_color", color)

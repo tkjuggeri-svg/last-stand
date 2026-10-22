@@ -39,6 +39,7 @@ func show_hint(id: StringName, text: String) -> void:
 	_text.text = text
 	_left = show_time
 	show()
+	Sfx.play(self, &"tip")
 
 
 ## The tip showing (&"" when none).

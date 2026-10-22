@@ -51,6 +51,7 @@ pierce = 2
 [resource]
 script = ExtResource("2_yybw4")
 id = &"ballista"
+fire_sound = &"ballista_shot"
 display_name = "Bone Ballista"
 description = "Slow, long-range bolts that pierce a whole line of enemies."
 cost = 120

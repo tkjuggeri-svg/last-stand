@@ -37,6 +37,8 @@ extends Resource
 @export var muzzle_offset: Vector2 = Vector2(0, -48)
 ## Colour of the light the tower gives off at its muzzle (e.g. the frost crystal). Alpha 0 = no light.
 @export var glow_color: Color = Color(0, 0, 0, 0)
+## Its shot's sound (an Sfx id, M8.5; empty: silent).
+@export var fire_sound: StringName = &""
 
 @export_group("Slow")
 ## Speed multiplier applied to a hit enemy (1 = no slow).

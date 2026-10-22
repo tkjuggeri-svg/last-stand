@@ -21,6 +21,7 @@ func _can_start() -> bool:
 
 
 func on_owner_died() -> void:
+	Sfx.play(enemy, &"enemy_burst")
 	var turn: float = enemy.get_heading().angle()
 	for i: int in count:
 		enemy.request_summon(minion, enemy.global_position + Vector2.from_angle(turn + TAU * (i + 0.5) / count) * spread)

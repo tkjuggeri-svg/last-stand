@@ -105,6 +105,7 @@ static func describe(node: MapNode) -> String:
 
 func _choose(node: MapNode) -> void:
 	if _map != null and _map.get_choices().has(node):
+		Sfx.play(self, &"map_select")
 		node_chosen.emit(node)
 
 

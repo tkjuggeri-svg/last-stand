@@ -139,6 +139,7 @@ func _shoot() -> void:
 	var from: Vector2 = _enemy.global_position + Vector2(0, -CAST_HEIGHT)
 	bolt.setup(from, get_aim_point(), data.bolt_speed, data.hero_damage if against_hero else data.siege_damage, against_hero)
 	_enemy.add_child(bolt)  # a caster's spell dies with it
+	Sfx.play(_enemy, &"enemy_cast")
 
 
 ## What the next attack is aimed at: the hero in range, else the end of the lane (the fortress).

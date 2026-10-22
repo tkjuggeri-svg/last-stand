@@ -56,6 +56,7 @@ shatter_bonus = 0.25
 [resource]
 script = ExtResource("1_data")
 id = &"frost"
+fire_sound = &"frost_shot"
 display_name = "Frost Tower"
 description = "Icy bolts slow enemies to half speed for 2 s."
 cost = 60

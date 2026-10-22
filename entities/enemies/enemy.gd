@@ -83,6 +83,8 @@ func _ready() -> void:
 	_health.health_changed.connect(_on_health_changed)
 	_fortress_hitbox.hit.connect(_on_fortress_hitbox_hit)
 	_attack.setup(self)
+	if data.is_boss:
+		Sfx.play(self, &"boss_appear")
 	_attack.attack_started.connect(func() -> void: attack_started.emit(self))
 
 
@@ -216,6 +218,7 @@ func receive_shot(hitbox: Hitbox, travel: Vector2) -> bool:
 	if blocks_shot(travel):
 		shot_blocked.emit(self)
 		_look.show_block()
+		Sfx.play(self, &"shield_block")
 		return false
 	return _hurtbox.receive_hit(hitbox)
 
@@ -276,12 +279,15 @@ func _update_animation() -> void:
 func _on_health_changed(current_health: int, max_health: int) -> void:
 	if current_health < _last_health:
 		_look.show_hit(current_health, max_health)
+		if current_health > 0:
+			Sfx.play(self, &"enemy_hit")
 	_last_health = current_health
 
 
 func _on_health_died() -> void:
 	if _ability != null:
 		_ability.on_owner_died()  # before `died`: what it leaves behind (a Bloater's young) joins the wave first
+	Sfx.play(self, &"boss_death" if data.is_boss else &"enemy_death")
 	_finish(died)
 
 

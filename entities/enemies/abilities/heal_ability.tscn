@@ -4,6 +4,7 @@
 
 [node name="HealAbility" type="Node2D"]
 script = ExtResource("1_ability")
+act_sound = &"enemy_heal"
 first_delay = 3.0
 interval = 6.0
 telegraph_time = 1.0

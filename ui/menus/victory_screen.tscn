@@ -7,6 +7,7 @@
 layer = 10
 visible = false
 script = ExtResource("1_screen")
+open_sound = &"victory"
 
 [node name="Dim" type="Panel" parent="."]
 anchors_preset = 15

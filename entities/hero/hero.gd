@@ -13,6 +13,8 @@ signal died
 signal revived
 ## Its sword landed a hit for `damage` (the Bloodpact relic heals from it).
 signal struck(damage: int)
+## It lost `amount` HP (a hit got through).
+signal hurt(amount: int)
 
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 ## Where damage numbers appear, relative to the hero.
@@ -67,7 +69,9 @@ func _ready() -> void:
 	_base_damage = _attack_hitbox.damage
 	_dash.modifiers = modifiers
 	_dash.setup(self, _sprite)
-	_attack_hitbox.hit.connect(func(_target: Hurtbox) -> void: struck.emit(_attack_hitbox.damage))
+	_attack_hitbox.hit.connect(func(_target: Hurtbox) -> void:
+		Sfx.play(self, &"hero_hit")
+		struck.emit(_attack_hitbox.damage))
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 		_apply_modifiers()
@@ -105,6 +109,7 @@ func attack(target_position: Vector2) -> void:
 	_sprite.face(direction)
 	_sprite.play_state("attack", true)
 	_play_swing_trail(direction.angle())
+	Sfx.play(self, &"hero_swing")
 
 
 ## Dashes toward `direction` (zero: the way the hero last moved). Hits are ignored while it lasts.
@@ -115,6 +120,7 @@ func dash(direction: Vector2) -> bool:
 	if not _dash.try_dash(direction if not direction.is_zero_approx() else _last_direction):
 		return false
 	_hurtbox.make_invulnerable(_dash.get_invulnerability())
+	Sfx.play(self, &"hero_dash")
 	return true
 
 
@@ -156,6 +162,7 @@ func revive(at: Vector2, invulnerable_time: float = 0.0) -> void:
 	if invulnerable_time > 0.0:
 		_hurtbox.make_invulnerable(invulnerable_time)
 		_blink(invulnerable_time)
+	Sfx.play(self, &"hero_respawn")
 	revived.emit()
 
 
@@ -253,6 +260,8 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 	_hit_spark.show()
 	_hit_spark.stop()
 	_hit_spark.play(&"spark")
+	Sfx.play(self, &"hero_hurt")
+	hurt.emit(amount)
 	var number: DamageNumber = DAMAGE_NUMBER_SCENE.instantiate()
 	number.set_amount(amount)
 	number.top_level = true  # stays where the hit happened instead of following the hero
@@ -267,4 +276,5 @@ func _on_health_died() -> void:
 	_attack_visual.hide()
 	_set_targetable(false)
 	_sprite.play(&"death")
+	Sfx.play(self, &"hero_death")
 	died.emit()

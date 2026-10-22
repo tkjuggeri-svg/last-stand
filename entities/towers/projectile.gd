@@ -199,6 +199,7 @@ func _impact() -> void:
 			return
 		if stats.slow_factor < 1.0:
 			_chill(target)
+			Sfx.play(self, &"frost_impact")
 			if stats.slow_area > 0.0:
 				_slow_area()
 				_finish_with(FROST_NOVA_SCENE.instantiate())

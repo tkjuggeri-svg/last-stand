@@ -136,6 +136,7 @@ func _on_health_changed(current_health: int, max_health: int) -> void:
 
 
 func _react_to_hit() -> void:
+	Sfx.play(self, &"fortress_hit")
 	if _shake != null:
 		_shake.kill()
 	_shake = create_tween()

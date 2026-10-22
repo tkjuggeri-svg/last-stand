@@ -57,6 +57,7 @@ boost_fire_rate = 0.5
 [resource]
 script = ExtResource("2_84c1e")
 id = &"brazier"
+fire_sound = &"brazier_shot"
 display_name = "Brazier"
 description = "Lobs burning pitch: the ground burns, hurting every enemy on it."
 cost = 80

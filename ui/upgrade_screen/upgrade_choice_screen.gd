@@ -32,7 +32,9 @@ func _ready() -> void:
 	_reroll_button.pressed.connect(_on_reroll_pressed)
 	if offers != null:
 		offers.offer_made.connect(_open)
-		offers.picked.connect(func(_data: UpgradeData) -> void: _close())
+		offers.picked.connect(func(data: UpgradeData) -> void:
+			Sfx.play(self, &"relic_pick" if data is RelicData else &"upgrade_pick")
+			_close())
 	if economy != null:
 		economy.gold_changed.connect(func(_gold: int) -> void: _update_reroll())
 
@@ -132,4 +134,5 @@ func _update_reroll() -> void:
 
 
 func _on_reroll_pressed() -> void:
-	offers.reroll()
+	if offers.reroll():
+		Sfx.play(self, &"reroll")

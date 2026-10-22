@@ -16,6 +16,7 @@
 [ext_resource type="Script" path="res://main/map_flow.gd" id="23_flow"]
 [ext_resource type="Script" path="res://main/hint_director.gd" id="24_hints"]
 [ext_resource type="PackedScene" path="res://ui/hints/hint_panel.tscn" id="25_hint_panel"]
+[ext_resource type="Script" path="res://ui/widgets/ui_sounds.gd" id="26_ui_sounds"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -64,3 +65,6 @@ unique_name_in_owner = true
 
 [node name="FrontEnd" parent="." instance=ExtResource("22_front")]
 unique_name_in_owner = true
+
+[node name="UiSounds" type="Node" parent="."]
+script = ExtResource("26_ui_sounds")

@@ -4,6 +4,9 @@ extends CanvasLayer
 
 signal restart_requested
 
+## Its jingle when it opens (an Sfx id).
+@export var open_sound: StringName = &"game_over"
+
 @onready var _restart_button: Button = %RestartButton
 @onready var _subtitle: Label = %Subtitle
 @onready var _seed_label: Label = %SeedLabel
@@ -19,6 +22,7 @@ func open(subtitle: String, run_seed: int = -1) -> void:
 	_subtitle.text = subtitle
 	_seed_label.text = "Seed %d" % run_seed if run_seed >= 0 else ""
 	show()
+	Sfx.play(self, open_sound)
 	_restart_button.grab_focus()
 
 

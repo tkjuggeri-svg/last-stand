@@ -97,7 +97,9 @@ func _ready() -> void:
 		_on_gold_changed(economy.get_gold())
 	if rewards != null:
 		rewards.perfect_defense_awarded.connect(_on_perfect_defense_awarded)
-		rewards.early_call_paid.connect(func(bonus: int) -> void: _feed.push("Called early: +%d gold" % bonus, GOLD_COLOR))
+		rewards.early_call_paid.connect(func(bonus: int) -> void:
+			Sfx.play(self, &"gold")
+			_feed.push("Called early: +%d gold" % bonus, GOLD_COLOR))
 	_slots_label.visible = builder != null
 	_slots_row.visible = builder != null
 	if builder != null:
@@ -216,11 +218,13 @@ func _on_hero_respawned() -> void:
 
 func _on_wave_started(wave_number: int) -> void:
 	_feed.push("Wave %d begins!" % wave_number, INCOMING_COLOR)
+	Sfx.play(self, &"wave_start")
 	_update_wave()
 
 
 func _on_wave_cleared(wave_number: int) -> void:
 	_feed.push("Wave %d cleared!" % wave_number, SLAIN_COLOR)
+	Sfx.play(self, &"wave_clear")
 	_update_wave()
 
 

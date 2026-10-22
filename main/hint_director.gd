@@ -46,7 +46,7 @@ func watch(level: Level) -> void:
 		return
 	level.builder.tower_built.connect(func(_slot: BuildSlot, _tower: Tower) -> void: request(&"start_wave"))
 	level.spawner.wave_started.connect(func(_n: int) -> void: request(&"fight"))
-	level.hero_lives.hero.struck.connect(func(_damage: int) -> void: request(&"dash"))
+	level.hero_lives.hero.hurt.connect(func(_amount: int) -> void: request(&"dash"))
 	level.offers.offer_made.connect(func(_cards: Array[UpgradeData]) -> void: request(&"upgrade"))
 	level.modifiers.upgrade_added.connect(func(data: UpgradeData, _stacks: int) -> void:
 		if data is RelicData:

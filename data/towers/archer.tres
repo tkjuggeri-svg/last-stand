@@ -53,6 +53,7 @@ rain_interval = 0.25
 [resource]
 script = ExtResource("1_data")
 id = &"archer"
+fire_sound = &"archer_shot"
 display_name = "Archer Tower"
 description = "Steady single-target damage: one enemy at a time."
 scene = ExtResource("2_scene")

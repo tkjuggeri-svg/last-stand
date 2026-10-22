@@ -39,6 +39,7 @@ func _ready() -> void:
 	_hitbox.damage = _damage
 	(_shape.shape as CircleShape2D).radius = _radius
 	_sprite.animation_finished.connect(queue_free)
+	Sfx.play(self, &"explosion")
 	if _look_frames != null:
 		_sprite.sprite_frames = _look_frames
 		_sprite.play(_look)

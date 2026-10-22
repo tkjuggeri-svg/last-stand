@@ -5,6 +5,8 @@
 
 [node name="WardAbility" type="Node2D"]
 script = ExtResource("1_ability")
+telegraph_sound = &"boss_warning"
+act_sound = &"boss_ward"
 first_delay = 3.0
 interval = 6.0
 radius = 240.0
