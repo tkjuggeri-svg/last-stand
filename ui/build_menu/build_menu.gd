@@ -91,6 +91,7 @@ func open(slot: BuildSlot) -> void:
 func close() -> void:
 	if _slot != null and is_instance_valid(_slot):
 		_slot.show_range(0.0)
+		_slot.show_links([])
 	_slot = null
 	_panel.hide()
 
@@ -110,6 +111,7 @@ func _rebuild() -> void:
 		for data: TowerData in builder.catalog:
 			_options.add_child(_make_card(data))
 		_slot.show_range(0.0)
+		_slot.show_links([])
 		_on_gold_changed(economy.get_gold() if economy != null else 0)
 		var first: Button = _options.get_child(0).find_child("Build", true, false) if _options.get_child_count() > 0 else null
 		_show_details(builder.catalog[0] if not builder.catalog.is_empty() else null)
@@ -123,6 +125,9 @@ func _rebuild() -> void:
 		_info_icon.texture = TowerIcons.for_level(data, tower.get_level()) if evolution == null else TowerIcons.for_evolution(data, evolution)
 		_info_name.text = data.description if evolution == null else evolution.description
 		_info_text.text = _stats_text(tower.get_stats()) if evolution == null else (tower.get_stats() as TowerEvolution).key_numbers()
+		if not data.synergies.is_empty():
+			_info_text.text += "\n" + TowerSynergies.describe(data, tower.get_synergies(), builder.catalog)
+		_show_links(data, tower)
 		_sell_button.text = "Sell   +%d gold" % builder.refund_for_tower(tower)
 		_update_upgrade()
 		_details.text = ""
@@ -189,11 +194,22 @@ func _preview(data: TowerData) -> void:
 
 func _show_details(data: TowerData) -> void:
 	_details.text = "" if data == null else "%s  %s" % [data.description, _stats_text(data.stats_for(1)).replace("\n", ". ")]
+	if data != null and not data.synergies.is_empty():
+		_details.text += "  " + TowerSynergies.describe(data, [], builder.catalog)
 
 
 func _preview_range(data: TowerData) -> void:
 	if _slot != null and _slot.is_empty():
 		_slot.show_range(data.attack_range)
+		_show_links(data, null)
+
+
+## Links from the slot to the towers that pair with `data` there (TowerSynergy).
+func _show_links(data: TowerData, except: Tower) -> void:
+	var points: Array[Vector2] = []
+	for partner: Tower in TowerSynergies.all_partners(data, _slot.global_position, builder.get_towers(), except):
+		points.append(partner.global_position)
+	_slot.show_links(points)
 
 
 func _stats_text(stats: TowerTier) -> String:
@@ -228,7 +244,7 @@ func _update_upgrade() -> void:
 		_upgrade_button.text = "Evolved" if tower.is_evolved() else "Max level"
 		_upgrade_button.disabled = true
 		return
-	var next: TowerTier = tower.data.stats_for(tower.get_level() + 1)
+	var next: TowerTier = tower.preview_level(tower.get_level() + 1)
 	_upgrade_info.text = "Level %d: %s" % [tower.get_level() + 1, next.describe_changes(tower.get_stats())]
 	_upgrade_button.text = "Upgrade   -%d gold" % cost
 	_upgrade_button.disabled = economy != null and not economy.can_afford(cost)

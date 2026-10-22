@@ -81,3 +81,25 @@ Calling blindly costs more than it pays, so the bonus is a real risk, not an exp
 - The dev menu's Shards row was not clicked by hand.
 - The War Room's look with all 17 unlocks bought.
 - Hub lines for a won run (no bot has won a run).
+
+## Added in `m8-playtest-2`: tower pair bonuses
+
+Each tower type has a partner. While a partner stands within 280 px, the tower gets one bonus:
+Archer + Brazier +20% damage, Cannon + Frost +25% blast radius, Frost + Cannon +30% slow time,
+Brazier + Cannon +20% burn, Ballista + Archer +15% fire rate. A fixed reach is used instead of the
+tower's range, because otherwise Frost would almost never pair and no two Drowned Marsh slots would.
+The tower menu says which bonus is active, an ember marks the tower, and dashed lines show its
+partners (also in the build preview). The upgrade preview now includes the run's cards and the
+pair bonus; before, it compared against the bare next level.
+
+Balance (`map_balance`, 8 seeds, rows cleared per run):
+
+| Run | Before | With pair bonuses |
+|---|---|---|
+| bot | 5.1 | 5.8 |
+| idle hero | 4.2 | 5.1 |
+| first-run kit, bot | 4.8 | 6.1 |
+| chapter 1 protected (chapter 2) | 10.6 | 10.2 |
+
+Chapter 1 is noticeably easier; chapter 2 is unchanged. No waves were retuned. To check: is the
+bonus too strong, and should it be smaller (e.g. half) or should chapter 1's waves go up?

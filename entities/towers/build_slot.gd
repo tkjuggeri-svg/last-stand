@@ -9,6 +9,8 @@ signal hero_entered(slot: BuildSlot)
 signal hero_exited(slot: BuildSlot)
 
 const RANGE_COLOR: Color = Color(0.95, 0.85, 0.5, 0.55)
+## Pair-bonus links (TowerSynergy) in the build menu.
+const LINK_COLOR: Color = Color(0.55, 0.9, 1.0, 0.9)
 const DUST_SCENE: PackedScene = preload("res://entities/effects/dust_puff.tscn")
 const DISMANTLE_SCENE: PackedScene = preload("res://entities/towers/tower_dismantle.tscn")
 ## The mouse-over area (slot-local px): the pad and the tower standing on it.
@@ -19,6 +21,8 @@ var tower: Tower = null
 
 ## Rings requested by the build menu: [outer radius, inner radius (dead zone, 0 = none), colour].
 var _menu_rings: Array = []
+## Pair-bonus links to draw while the build menu is open here (global positions of partner towers).
+var _links: Array[Vector2] = []
 var _hovered: bool = false
 
 @onready var _pad: Sprite2D = %Pad
@@ -74,6 +78,16 @@ func show_range(radius: float) -> void:
 func show_rings(rings: Array) -> void:
 	_menu_rings = rings
 	queue_redraw()
+
+
+## Draws a dashed link to each of `points` (partner towers' global positions; empty hides them).
+func show_links(points: Array[Vector2]) -> void:
+	_links = points
+	queue_redraw()
+
+
+func get_links() -> Array[Vector2]:
+	return _links
 
 
 ## Mouse-over: the ring of the tower standing here (called every frame with the mouse position).
@@ -135,6 +149,8 @@ func _update_prompt() -> void:
 
 
 func _draw() -> void:
+	for point: Vector2 in _links:
+		_draw_link(to_local(point))
 	for ring: Array in get_shown_rings():
 		_draw_ring(ring[0], ring[2])
 		if ring[1] > 0.0:
@@ -150,3 +166,10 @@ func _draw_ring(radius: float, color: Color) -> void:
 		var a: float = TAU * i / segments
 		var b: float = TAU * (i + 1) / segments
 		draw_line(Vector2.from_angle(a) * radius, Vector2.from_angle(b) * radius, color, 2.0)
+
+
+## A dashed line from the pad to `to` (a partner tower), in 2 px dashes like the rings.
+func _draw_link(to: Vector2) -> void:
+	var steps: int = maxi(2, roundi(to.length() / 8.0))
+	for i: int in range(0, steps, 2):
+		draw_line(to * (float(i) / steps), to * (float(i + 1) / steps), LINK_COLOR, 2.0)

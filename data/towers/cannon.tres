@@ -4,6 +4,8 @@
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_yxcx4"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/packed_crowds.tres" id="21_synergy"]
 
 [sub_resource type="Resource" id="Resource_yxcx4"]
 script = ExtResource("3_yxcx4")
@@ -67,3 +69,4 @@ homing = false
 muzzle_offset = Vector2(14, -22)
 tiers = Array[ExtResource("3_yxcx4")]([SubResource("Resource_yxcx4"), SubResource("Resource_tojmg")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_siege_mortar"), SubResource("Resource_evo_grapeshot_battery")])
+synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])

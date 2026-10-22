@@ -13,7 +13,8 @@ extends StaticBody2D
 ## data.stats_for(level). At the highest level TowerBuilder can evolve it once (evolve(): level 4, one
 ## of data.evolutions, for good), which may change its targeting (strongest, densest, a dead zone) and
 ## its attack (arrow rain, a cone blast, freezing, dragging, soul fire: see TowerEvolution).
-## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder); a
+## A Beacon Flame nearby speeds up its fire rate (set_fire_rate_boost, from TowerBuilder), and a
+## partner tower nearby gives it its pair bonus (set_synergies, TowerSynergy); a
 ## Tollkeeper's toll silences it for a while (get_silence(): no firing).
 ## deactivate() (called when it is sold) stops it for good. Its parts: TowerSight (what it can see and
 ## aims at), TowerWeapon (how a volley is delivered), TowerSilence (the toll's silence).
@@ -37,6 +38,8 @@ var _level: int = 1
 var _evolution: TowerEvolution = null
 ## Fire-rate bonus from a Beacon Flame in reach (0 = none; 0.25 = 25% more shots).
 var _boost: float = 0.0
+## Its pair bonuses active now (a partner tower nearby; TowerBuilder keeps them up to date).
+var _synergies: Array[TowerSynergy] = []
 ## Twin Banners: a same-type tower's level shared with this one (0 = none); the better one counts.
 var _shared_level: int = 0
 var _weapon: TowerWeapon = TowerWeapon.new()
@@ -176,6 +179,19 @@ func get_fire_rate_boost() -> float:
 	return _boost
 
 
+## The pair bonuses active now (from TowerBuilder).
+func set_synergies(synergies: Array[TowerSynergy]) -> void:
+	if synergies == _synergies:
+		return
+	_synergies = synergies
+	_stats = _effective_stats()
+	_update_boost_mark()
+
+
+func get_synergies() -> Array[TowerSynergy]:
+	return _synergies
+
+
 ## Twin Banners (from TowerBuilder): fights with the stats of `level` if that is above its own.
 func set_shared_level(level: int) -> void:
 	if level == _shared_level:
@@ -194,6 +210,11 @@ func get_stats_level() -> int:
 ## The stats at the current level, with the run's upgrades applied.
 func get_stats() -> TowerTier:
 	return _stats if _stats != null else _effective_stats()
+
+
+## What it would fight with at regular `level` (the upgrade preview: same cards and pair bonuses).
+func preview_level(level: int) -> TowerTier:
+	return _stats_from(data.stats_for(level))
 
 
 ## Switches to `level` (TowerBuilder does the paying): new stats, range and look, with a flash.
@@ -243,11 +264,21 @@ func _anim(state: String) -> StringName:
 
 ## The level's stats with the run's modifiers applied (a copy: the data stays untouched).
 func _effective_stats() -> TowerTier:
-	var base: TowerTier = _evolution if _evolution != null else data.stats_for(get_stats_level())
+	return _stats_from(_evolution if _evolution != null else data.stats_for(get_stats_level()))
+
+
+## `base` with everything that lifts this tower now: a Beacon's speed, the run's cards, pair bonuses.
+func _stats_from(base: TowerTier) -> TowerTier:
 	var stats: TowerTier = base.duplicate() as TowerTier
 	stats.fire_interval = base.fire_interval / (1.0 + _boost)
-	if modifiers == null:
-		return stats
+	if modifiers != null:
+		_apply_modifiers(stats, base)
+	for synergy: TowerSynergy in _synergies:
+		synergy.apply_to(stats)
+	return stats
+
+
+func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
 	stats.damage = modifiers.apply_int(base.damage, RunModifiers.tower_stats(RunModifiers.TOWER_DAMAGE, data.id))
 	stats.fire_interval = maxf(modifiers.apply(stats.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
 	stats.attack_range = modifiers.apply(base.attack_range, RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
@@ -255,12 +286,12 @@ func _effective_stats() -> TowerTier:
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
 	stats.burn_dps = modifiers.apply(base.burn_dps, RunModifiers.tower_stats(RunModifiers.TOWER_BURN, data.id))
 	stats.burn_duration = modifiers.apply(base.burn_duration, RunModifiers.tower_stats(RunModifiers.TOWER_BURN_DURATION, data.id))
-	return stats
 
 
-## The ember over a tower something lifts: a Beacon Flame's speed, a twin's level (Twin Banners).
+## The ember over a tower something lifts: a Beacon Flame's speed, a twin's level (Twin Banners), a
+## pair bonus.
 func _update_boost_mark() -> void:
-	_boost_mark.visible = _boost > 0.0 or get_stats_level() > _level
+	_boost_mark.visible = _boost > 0.0 or get_stats_level() > _level or not _synergies.is_empty()
 
 
 func _on_modifiers_changed() -> void:

@@ -169,10 +169,11 @@ Design: `docs/M8_META.md` (approved with Claude's recommendations; every decisio
 - [x] First-time tutorial hints: short on-screen prompts, each shown once (build at a slot, start a wave, dash, the upgrade choice, evolutions), skippable (one hint or all), remembered in the save (here, because it needs `SaveManager`)
 - [x] *(One figure, the Quartermaster, lines chosen in code by `HubLines`; data-driven lines and more figures move to M11.)* **Hub characters react to the last run:** a few figures in the hub (e.g. the Quartermaster, a priest, a smith) each say a short line about how the last run went (how far, which boss, a lost life, a relic found, a first win); lines are data (conditions + text), so M11 can grow them into real characters
 - [x] Tests: save/load round trip, version migration, unlocks applied to a run
+- [x] *(Added after `m8-playtest`, at the user's request.)* **Tower pair bonuses:** each tower type has a partner; built close together (280 px) the tower gets a small bonus (`TowerSynergy`, GAME_DESIGN 4.4)
 
 **Done when:** there's a reason to start another run after dying.
 
-Built as `m8-playtest` (not yet playtested).
+Built as `m8-playtest`, then `m8-playtest-2` with the tower pair bonuses (neither playtested yet).
 
 ---
 
@@ -243,7 +244,7 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M8** (meta progression: Soul Shards, the War Room and its unlock board, title / run summary, resume from the map, tutorial tips, calling waves early) is implemented autonomously and built as `m8-playtest`, on top of M7.5 (`m7.5-playtest-3`), neither playtested by hand yet. Every M8 decision taken without the user is listed in `docs/M8_META.md` section 10, to confirm or override. Waiting for playtest feedback; don't start M8.5.
+**M8** (meta progression: Soul Shards, the War Room and its unlock board, title / run summary, resume from the map, tutorial tips, calling waves early) is implemented autonomously and built as `m8-playtest` (`m8-playtest-2` adds the tower pair bonuses), on top of M7.5 (`m7.5-playtest-3`), neither playtested by hand yet. Every M8 decision taken without the user is listed in `docs/M8_META.md` section 10, to confirm or override. Waiting for playtest feedback; don't start M8.5.
 
 ---
 

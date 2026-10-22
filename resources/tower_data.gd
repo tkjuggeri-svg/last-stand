@@ -57,6 +57,8 @@ extends Resource
 @export var tiers: Array[TowerTier] = []
 ## The two level-4 branches offered at the highest level (TowerEvolution); the choice is permanent.
 @export var evolutions: Array[TowerEvolution] = []
+## Pair bonuses: each active while a partner tower stands within its reach (TowerSynergy).
+@export var synergies: Array[TowerSynergy] = []
 
 var _level_one: TowerTier
 

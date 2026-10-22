@@ -79,6 +79,11 @@ Every key can be changed in **Esc → Settings** (also fullscreen and volume).
 - **Before each wave** you build towers (you can also build during a wave). Upgrades come after a
   battle, not after every wave.
 - **Gold** comes from kills. Towers can be upgraded twice; selling refunds half.
+- **Pair bonuses (new in this build):** each tower type has a partner: build them close together
+  (neighbouring stone pads) and both can get a bonus (Cannon + Frost: wider blasts and longer slows;
+  Archer + Brazier: fire arrows; Ballista + Archer: faster bolts; Brazier + Cannon: hotter fire). The
+  tower menu says which bonus a tower has, an ember marks it, and dashed lines show its partners
+  (also when you preview a tower on an empty pad).
 - **Calling a wave early:** once a wave has sent all its dead, the wave button reads "Next wave now
   +N": the next wave comes at once, with the survivors still on the field, and you get N gold now
   (half their kill gold; more the more are still alive), but no perfect-defense bonus for that wave.
@@ -123,6 +128,7 @@ Play at least one full run (win or lose), more if you can. Then tell us:
    Which unlocks did you buy first, and why? Did your first run (3 towers, no evolutions) feel too
    bare? Were the title, War Room and run summary clear? Did Continue bring you back where you left?
    Were the tips helpful or in the way? Did you call waves early, and was the bonus worth the risk?
+   Did the pair bonuses change where you built? Could you tell which towers were paired?
 1. **The run:** Did you win? If not, which chapter and stop, and how (fortress or hero)? How long did
    it take? Which towers and upgrades did you go for?
 2. **The map:** Did choosing your path feel meaningful? Which stops did you seek out or avoid, and

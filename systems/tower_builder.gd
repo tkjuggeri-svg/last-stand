@@ -5,7 +5,7 @@ extends Node
 ## of everything spent on that tower (build + upgrades + evolution) back when selling. At level 3 a
 ## tower can evolve once into one of its two TowerData.evolutions (level 4, for good). Keeps the
 ## Beacon Flames' fire-rate boost on the towers in their reach up to date (one boost per tower, never
-## stacking). Also tracks which slot the hero is standing at. Never pauses the game.
+## stacking), and every tower's pair bonuses (TowerSynergies). Also tracks which slot the hero is standing at. Never pauses the game.
 
 signal active_slot_changed(slot: BuildSlot)
 signal tower_built(slot: BuildSlot, tower: Tower)
@@ -61,6 +61,15 @@ func get_slots() -> Array[BuildSlot]:
 			if child is BuildSlot:
 				slots.append(child)
 	return slots
+
+
+## The towers standing on the slots.
+func get_towers() -> Array[Tower]:
+	var towers: Array[Tower] = []
+	for slot: BuildSlot in get_slots():
+		if not slot.is_empty():
+			towers.append(slot.tower)
+	return towers
 
 
 func get_free_slot_count() -> int:
@@ -181,10 +190,7 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 ## Gives every tower the best Beacon Flame boost that reaches it (none for the beacons themselves),
 ## and under Twin Banners the best level of a same-type tower within TWIN_RANGE.
 func refresh_boosts() -> void:
-	var towers: Array[Tower] = []
-	for slot: BuildSlot in get_slots():
-		if not slot.is_empty():
-			towers.append(slot.tower)
+	var towers: Array[Tower] = get_towers()
 	var twins: bool = RunModifiers.relic(modifiers, RunModifiers.RELIC_TWIN_BANNERS)
 	for tower: Tower in towers:
 		var shared: int = 0
@@ -201,6 +207,7 @@ func refresh_boosts() -> void:
 					and beacon.global_position.distance_to(tower.global_position) <= beacon.get_attack_range():
 				boost = maxf(boost, evolution.boost_fire_rate)
 		tower.set_fire_rate_boost(boost)
+		tower.set_synergies(TowerSynergies.active_for(tower, towers))
 
 
 func build(slot: BuildSlot, data: TowerData) -> bool:

@@ -4,6 +4,8 @@
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_84c1e"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_afn0k"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/blasted_pitch.tres" id="21_synergy"]
 
 [sub_resource type="Resource" id="Resource_eo0ol"]
 script = ExtResource("3_afn0k")
@@ -72,3 +74,4 @@ burn_radius = 36.0
 burn_duration = 2.5
 tiers = Array[ExtResource("3_afn0k")]([SubResource("Resource_eo0ol"), SubResource("Resource_0pj21")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_pyre_of_souls"), SubResource("Resource_evo_beacon_flame")])
+synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])
