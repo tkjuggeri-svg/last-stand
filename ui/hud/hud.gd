@@ -11,8 +11,8 @@ extends CanvasLayer
 const START_WAVE_TEXT: String = "Start wave  [Enter]"
 const EARLY_CALL_TEXT: String = "Next wave now +%d  [Enter]"
 const INCOMING_COLOR: Color = Color(1.0, 0.65, 0.3, 1)
-const SLAIN_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
-const GOLD_COLOR: Color = Color(0.95, 0.82, 0.45, 1)
+const SLAIN_COLOR: Color = UiColors.GOOD
+const GOLD_COLOR: Color = UiColors.GOLD
 ## The first time an enemy with a hint (EnemyData.hint) appears: what to watch out for.
 const HINT_COLOR: Color = Color(0.75, 0.95, 1.0, 1)
 ## The dash row while the dash recharges (it is bright again when ready).
@@ -26,8 +26,8 @@ const LIFE_SPENT_TINT: Color = Color(0.25, 0.22, 0.28, 1)
 const PHASE_COLORS: Dictionary = {
 	RunCycle.Phase.BUILD: Color(0.72, 0.84, 0.62, 1),
 	RunCycle.Phase.COMBAT: Color(1.0, 0.5, 0.38, 1),
-	RunCycle.Phase.CHOOSE: Color(0.94, 0.82, 0.48, 1),
-	RunCycle.Phase.FINISHED: Color(0.94, 0.82, 0.48, 1),
+	RunCycle.Phase.CHOOSE: UiColors.GOLD,
+	RunCycle.Phase.FINISHED: UiColors.GOLD,
 }
 const PHASE_TEXTS: Dictionary = {
 	RunCycle.Phase.BUILD: "Build phase",

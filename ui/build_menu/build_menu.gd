@@ -7,9 +7,9 @@ extends CanvasLayer
 ## Display and intents only: TowerBuilder decides. Never pauses the game.
 
 const COIN: Texture2D = preload("res://assets/sprites/ui/coin.png")
-const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
-const OK_COLOR: Color = Color(0.6, 0.9, 0.5, 1)
-const GOLD_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
+const ERROR_COLOR: Color = UiColors.WARN
+const OK_COLOR: Color = UiColors.GOOD
+const GOLD_COLOR: Color = UiColors.GOLD
 
 @export var builder: TowerBuilder
 @export var economy: Economy

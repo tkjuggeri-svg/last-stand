@@ -7,9 +7,6 @@ extends CanvasLayer
 
 signal left
 
-const RARE_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
-const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
-const RELIC_COLOR: Color = Color(0.82, 0.66, 1.0, 1)
 
 var _merchant: Merchant
 var _buy_buttons: Array[Button] = []
@@ -116,7 +113,7 @@ func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	var title: Label = Label.new()
 	var relic: bool = data is RelicData
 	title.text = ("Relic: %s" if relic else "%s") % data.display_name
-	title.add_theme_color_override("font_color", RELIC_COLOR if relic else (RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else Color.WHITE))
+	title.theme_type_variation = UiColors.card_title(data)
 	header.add_child(title)
 	var text: Label = Label.new()
 	text.text = data.description
@@ -129,7 +126,7 @@ func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	button.text = "Sold" if blocker == Merchant.SOLD_OUT else "Buy   -%d gold" % _merchant.price_of(data)
 	button.disabled = not blocker.is_empty()
 	if blocker == Merchant.NOT_ENOUGH_GOLD:
-		button.add_theme_color_override("font_disabled_color", ERROR_COLOR)
+		button.add_theme_color_override("font_disabled_color", UiColors.WARN)
 	button.pressed.connect(buy)
 	column.add_child(button)
 	return card

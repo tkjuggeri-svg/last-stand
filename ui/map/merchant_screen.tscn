@@ -7,13 +7,13 @@
 layer = 6
 script = ExtResource("1_screen")
 
-[node name="Backdrop" type="ColorRect" parent="."]
+[node name="Backdrop" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.05, 0.08, 0.92)
+theme_type_variation = &"Backdrop"
 
 [node name="Center" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -25,6 +25,7 @@ theme = ExtResource("2_theme")
 
 [node name="Panel" type="PanelContainer" parent="Center"]
 layout_mode = 2
+theme_type_variation = &"ModalPanel"
 
 [node name="Box" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
@@ -36,13 +37,15 @@ layout_mode = 2
 [node name="Title" type="Label" parent="Center/Panel/Box/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
 text = "The Merchant"
+theme_type_variation = &"TitleLabel"
 
 [node name="GoldLabel" type="Label" parent="Center/Panel/Box/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Gold: 0"
+size_flags_vertical = 4
+theme_type_variation = &"HeaderLabel"
 
 [node name="Cards" type="HBoxContainer" parent="Center/Panel/Box"]
 unique_name_in_owner = true
@@ -68,3 +71,4 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Leave"
+theme_type_variation = &"ButtonPrimary"

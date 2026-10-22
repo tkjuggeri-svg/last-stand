@@ -7,13 +7,13 @@ process_mode = 3
 layer = 50
 script = ExtResource("1_feedback")
 
-[node name="Dim" type="ColorRect" parent="."]
+[node name="Dim" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.04, 0.03, 0.06, 0.6)
+theme_type_variation = &"Backdrop"
 
 [node name="Center" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -25,6 +25,7 @@ grow_vertical = 2
 [node name="Panel" type="PanelContainer" parent="Center"]
 custom_minimum_size = Vector2(640, 0)
 layout_mode = 2
+theme_type_variation = &"ModalPanel"
 
 [node name="Box" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
@@ -32,10 +33,9 @@ theme_override_constants/separation = 10
 
 [node name="Title" type="Label" parent="Center/Panel/Box"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
-theme_override_font_sizes/font_size = 48
 text = "Feedback"
 horizontal_alignment = 1
+theme_type_variation = &"TitleLabel"
 
 [node name="Form" type="VBoxContainer" parent="Center/Panel/Box"]
 unique_name_in_owner = true
@@ -46,6 +46,7 @@ theme_override_constants/separation = 10
 layout_mode = 2
 text = "What happened, or what do you think? A screenshot and the run's state are saved with your note."
 autowrap_mode = 3
+theme_type_variation = &"DimLabel"
 
 [node name="Note" type="TextEdit" parent="Center/Panel/Box/Form"]
 unique_name_in_owner = true
@@ -64,6 +65,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 48)
 layout_mode = 2
 text = "Save"
+theme_type_variation = &"ButtonPrimary"
 
 [node name="CancelButton" type="Button" parent="Center/Panel/Box/Form/Buttons"]
 unique_name_in_owner = true
@@ -98,3 +100,4 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(180, 48)
 layout_mode = 2
 text = "Back to the game"
+theme_type_variation = &"ButtonPrimary"

@@ -10,13 +10,13 @@ layer = 9
 visible = false
 script = ExtResource("1_pause")
 
-[node name="Dim" type="ColorRect" parent="."]
+[node name="Dim" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+theme_type_variation = &"Backdrop"
 
 [node name="Center" type="CenterContainer" parent="."]
 anchors_preset = 15
@@ -29,64 +29,70 @@ theme = ExtResource("2_theme")
 [node name="Box" type="VBoxContainer" parent="Center"]
 layout_mode = 2
 
-[node name="Buttons" type="VBoxContainer" parent="Center/Box"]
+[node name="Panel" type="PanelContainer" parent="Center/Box"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+theme_type_variation = &"ModalPanel"
+
+[node name="Buttons" type="VBoxContainer" parent="Center/Box/Panel"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="Center/Box/Buttons"]
+[node name="Title" type="Label" parent="Center/Box/Panel/Buttons"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
-theme_override_font_sizes/font_size = 72
 text = "Paused"
 horizontal_alignment = 1
+theme_type_variation = &"TitleLabel"
 
-[node name="ResumeButton" type="Button" parent="Center/Box/Buttons"]
+[node name="ResumeButton" type="Button" parent="Center/Box/Panel/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Resume"
+theme_type_variation = &"ButtonPrimary"
 
-[node name="SettingsButton" type="Button" parent="Center/Box/Buttons"]
+[node name="SettingsButton" type="Button" parent="Center/Box/Panel/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Settings"
 
-[node name="RestartButton" type="Button" parent="Center/Box/Buttons"]
+[node name="RestartButton" type="Button" parent="Center/Box/Panel/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Restart run"
 
-[node name="QuitButton" type="Button" parent="Center/Box/Buttons"]
+[node name="QuitButton" type="Button" parent="Center/Box/Panel/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260, 48)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Quit game"
 
-[node name="SeedLabel" type="Label" parent="Center/Box/Buttons"]
+[node name="SeedLabel" type="Label" parent="Center/Box/Panel/Buttons"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.72, 0.7, 0.78, 1)
 horizontal_alignment = 1
+theme_type_variation = &"DimLabel"
 
-[node name="SeedRow" type="HBoxContainer" parent="Center/Box/Buttons"]
+[node name="SeedRow" type="HBoxContainer" parent="Center/Box/Panel/Buttons"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 8
 
-[node name="SeedEdit" type="LineEdit" parent="Center/Box/Buttons/SeedRow"]
+[node name="SeedEdit" type="LineEdit" parent="Center/Box/Panel/Buttons/SeedRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 48)
 layout_mode = 2
 placeholder_text = "Seed"
 
-[node name="SeedRunButton" type="Button" parent="Center/Box/Buttons/SeedRow"]
+[node name="SeedRunButton" type="Button" parent="Center/Box/Panel/Buttons/SeedRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2

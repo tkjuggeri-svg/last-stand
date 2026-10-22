@@ -147,6 +147,21 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
   foundation, skull) lead every HUD row.
 - Gold always uses the coin icon and the gold colour `#efd07a`.
 - Layout: HUD bottom-left, notifications top-right, build panel bottom-right; nothing in the middle.
+- **One style for every screen (M8.5):** style through the theme's **type variations**, never per-node
+  colour or size overrides:
+  - Labels: `TitleLabel` (48 px gold: a screen's title), `TitleBadLabel` (48 px red: Game Over),
+    `HeaderLabel` (gold: section heads, gold amounts, rare cards), plain `Label` (body text),
+    `DimLabel` (secondary text, consequences, seeds), `GoodLabel` (gains), `WarnLabel` (what can't be
+    done), `RelicLabel` (relics, bosses).
+  - Containers: `ModalPanel` (a modal's framed panel, roomier margins), `CardPanel` (cards and rows),
+    `Backdrop` (the dimmed screen behind a modal); full-screen front-end screens use `ScreenFrame`.
+  - Buttons: `ButtonPrimary` for the one main action of a screen (Resume, Continue, Leave, Save).
+- **A modal screen** (pause, settings, choices, merchant, events, chapter, Game Over, Victory, feedback):
+  `Backdrop`, a centred `ModalPanel`, a `TitleLabel` title, body, buttons at the bottom with the main
+  one primary. In-world panels (HUD, build menu, tips) stay compact: no title at 48.
+- Colours that code must set by hand (a disabled button's text, the feed, banners) come from
+  `UiColors` (`ui/theme/ui_colors.gd`), the same values as the variations.
+- `tests/tools/ui_shots.gd -- --out=<dir>` shoots every screen, to review a change across all of them.
 
 ## 13. Pipeline
 

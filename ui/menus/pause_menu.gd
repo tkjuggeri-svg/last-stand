@@ -19,7 +19,7 @@ var _time_scale: float = 1.0
 @onready var _settings_button: Button = %SettingsButton
 @onready var _restart_button: Button = %RestartButton
 @onready var _quit_button: Button = %QuitButton
-@onready var _buttons: Control = %Buttons
+@onready var _panel: Control = %Panel
 @onready var _settings: SettingsMenu = %SettingsMenu
 @onready var _seed_label: Label = %SeedLabel
 @onready var _seed_edit: LineEdit = %SeedEdit
@@ -56,7 +56,7 @@ func open() -> void:
 	_time_scale = Engine.time_scale
 	Engine.time_scale = 0.0
 	_settings.hide()
-	_buttons.show()
+	_panel.show()
 	show()
 	_resume_button.grab_focus.call_deferred()
 
@@ -110,10 +110,10 @@ func _on_seed_run_pressed() -> void:
 
 
 func _open_settings() -> void:
-	_buttons.hide()
+	_panel.hide()
 	_settings.open()
 
 
 func _on_settings_closed() -> void:
-	_buttons.show()
+	_panel.show()
 	_settings_button.grab_focus.call_deferred()

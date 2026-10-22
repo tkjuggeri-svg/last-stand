@@ -10,8 +10,6 @@ signal continued
 
 const EVENT_ICON: Texture2D = preload("res://assets/sprites/ui/map/node_event.png")
 const SHRINE_ICON: Texture2D = preload("res://assets/sprites/ui/map/node_shrine.png")
-const DIM_COLOR: Color = Color(0.72, 0.7, 0.78, 1)
-const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
 
 var _buttons: Array[Button] = []
 
@@ -52,7 +50,7 @@ func open(event: EventData, resolver: EventResolver) -> void:
 			var outcome: Label = Label.new()
 			outcome.text = "    " + choice.outcome
 			outcome.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			outcome.add_theme_color_override("font_color", ERROR_COLOR if not blocker.is_empty() else DIM_COLOR)
+			outcome.theme_type_variation = &"WarnLabel" if not blocker.is_empty() else &"DimLabel"
 			_choices.add_child(outcome)
 	_choices.show()
 	_result.hide()

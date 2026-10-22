@@ -5,9 +5,6 @@ extends CanvasLayer
 ## take). One reroll per offer for gold. Display and intents only: UpgradeOffers decides. A relic offer
 ## (an elite's or a boss's reward) says so in its title and on each card.
 
-const RARE_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
-const COMMON_COLOR: Color = Color(0.88, 0.86, 0.92, 1)
-const DIM_COLOR: Color = Color(0.72, 0.7, 0.78, 1)
 const CATEGORY_NAMES: Dictionary = {
 	UpgradeData.Category.HERO: "Hero",
 	UpgradeData.Category.TOWERS: "Towers",
@@ -15,7 +12,6 @@ const CATEGORY_NAMES: Dictionary = {
 	UpgradeData.Category.ECONOMY: "Economy",
 }
 const CARD_SIZE: Vector2 = Vector2(300, 320)
-const RELIC_COLOR: Color = Color(0.82, 0.66, 1.0, 1)
 const CARD_TITLE: String = "Choose an upgrade"
 const RELIC_TITLE: String = "Choose a relic"
 
@@ -102,7 +98,7 @@ func _make_card(data: UpgradeData, index: int) -> Control:
 	title.text = data.display_name
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var relic: bool = data is RelicData
-	title.add_theme_color_override("font_color", RELIC_COLOR if relic else (RARE_COLOR if data.rarity == UpgradeData.Rarity.RARE else COMMON_COLOR))
+	title.theme_type_variation = UiColors.card_title(data)
 	column.add_child(title)
 	var kind: Label = Label.new()
 	if relic:
@@ -111,7 +107,7 @@ func _make_card(data: UpgradeData, index: int) -> Control:
 		kind.text = "%s  -  %s%s" % ["Rare" if data.rarity == UpgradeData.Rarity.RARE else "Common", CATEGORY_NAMES[data.category],
 			"" if data.stackable else "  -  once"]
 	kind.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	kind.add_theme_color_override("font_color", DIM_COLOR)
+	kind.theme_type_variation = &"DimLabel"
 	column.add_child(kind)
 	var text: Label = Label.new()
 	text.text = data.description

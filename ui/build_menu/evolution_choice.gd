@@ -9,8 +9,8 @@ extends HBoxContainer
 const COLORS: Array[Color] = [Color(0.95, 0.75, 0.4, 1), Color(0.55, 0.85, 1.0, 1)]
 const DIM_ALPHA: float = 0.3
 const BRIGHT_ALPHA: float = 0.7
-const ERROR_COLOR: Color = Color(1.0, 0.47, 0.4, 1)
-const GOLD_COLOR: Color = Color(0.94, 0.82, 0.48, 1)
+const ERROR_COLOR: Color = UiColors.WARN
+const GOLD_COLOR: Color = UiColors.GOLD
 
 var _builder: TowerBuilder
 var _slot: BuildSlot

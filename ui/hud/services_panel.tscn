@@ -21,8 +21,8 @@ theme_override_constants/separation = 4
 
 [node name="Title" type="Label" parent="Box"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.94, 0.82, 0.48, 1)
 text = "Quartermaster"
+theme_type_variation = &"HeaderLabel"
 
 [node name="RepairButton" type="Button" parent="Box"]
 unique_name_in_owner = true

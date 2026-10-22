@@ -113,7 +113,7 @@ func _test_settings(menu: PauseMenu) -> void:
 	(menu.get_node("%SettingsButton") as Button).pressed.emit()
 	await _frames(2)
 	var settings: SettingsMenu = menu.get_node("%SettingsMenu")
-	_check("Settings opens inside the pause menu", settings.visible and not (menu.get_node("%Buttons") as Control).visible)
+	_check("Settings opens inside the pause menu", settings.visible and not (menu.get_node("%Panel") as Control).visible)
 	_check("the audio buses exist: Master, Music, SFX",
 		AudioServer.get_bus_index(&"Music") > 0 and AudioServer.get_bus_index(&"SFX") > 0 and AudioServer.get_bus_index(&"Master") == 0)
 	(settings.get_node("%MusicSlider") as HSlider).value = 50.0
@@ -128,7 +128,7 @@ func _test_settings(menu: PauseMenu) -> void:
 		and bool(config.get_value("display", "fullscreen", false)))
 	(settings.get_node("%Fullscreen") as CheckButton).button_pressed = false
 	await _key(KEY_ESCAPE)
-	_check("Esc in the settings goes back to the pause menu", not settings.visible and menu.is_open() and (menu.get_node("%Buttons") as Control).visible)
+	_check("Esc in the settings goes back to the pause menu", not settings.visible and menu.is_open() and (menu.get_node("%Panel") as Control).visible)
 
 
 func _test_bindings(menu: PauseMenu) -> void:

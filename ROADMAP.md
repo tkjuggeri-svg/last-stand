@@ -179,7 +179,7 @@ Built as `m8-playtest`, then `m8-playtest-2` with the tower pair bonuses (neithe
 
 ## M8.5 — Demo Polish
 Presentation work done early instead of all in M13, so a public demo looks and sounds finished.
-- [ ] UI consistency pass across every screen (HUD, build menu, choice screens, map, merchant, events, pause, settings, game over, victory) with M8's shared UI style
+- [x] UI consistency pass across every screen (HUD, build menu, choice screens, map, merchant, events, pause, settings, game over, victory) with M8's shared UI style
 - [ ] Basic sound effects: combat (sword, hits, the hero hurt), towers (each tower's shot, impacts, building, upgrades), deaths, UI (clicks, the choice screens, gold), on the Master / SFX buses
 - [ ] Juice: hit pause on big hits, damage numbers, screen shake (today only a boss's death has a hit-stop and a shake)
 - [ ] Title screen
