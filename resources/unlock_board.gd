@@ -15,3 +15,11 @@ func find(id: StringName) -> UnlockData:
 		if unlock.id == id:
 			return unlock
 	return null
+
+
+## True if `hero` can be played: no unlock lists it (the starting hero) or its unlock is bought.
+func is_hero_unlocked(profile: SaveProfile, hero: HeroData) -> bool:
+	for unlock: UnlockData in unlocks:
+		if unlock.heroes.has(hero):
+			return profile.has_unlock(String(unlock.id))
+	return true

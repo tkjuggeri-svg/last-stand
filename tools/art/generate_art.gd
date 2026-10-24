@@ -11,6 +11,7 @@ extends SceneTree
 
 const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 const HeroArt: GDScript = preload("res://tools/art/hero_art.gd")
+const HuntressArt: GDScript = preload("res://tools/art/huntress_art.gd")
 const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const HoundArt: GDScript = preload("res://tools/art/hound_art.gd")
 const BruteArt: GDScript = preload("res://tools/art/brute_art.gd")
@@ -50,6 +51,7 @@ func _initialize() -> void:
 			only = arg.trim_prefix("--only=").split(",")
 	var jobs: Dictionary = {
 		"hero": func() -> void: _save(_sheet(HeroArt.new(Layouts.FINE).sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
+		"huntress": func() -> void: _save(_sheet(HuntressArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS["size"]), Layouts.HUNTRESS["png"]),
 		"swing": func() -> void: _save(_sheet(EffectsArt.new().swing_rows(), Layouts.SWING["size"]), Layouts.SWING["png"]),
 		"swing_long": func() -> void: _save(_sheet(EffectsArt.new().swing_long_rows(), Layouts.SWING_LONG["size"]), Layouts.SWING_LONG["png"]),
 		"ghoul": func() -> void: _save(_sheet(GhoulArt.new(Layouts.FINE).sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),

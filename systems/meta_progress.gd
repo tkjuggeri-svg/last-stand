@@ -95,6 +95,9 @@ static func blocker(profile: SaveProfile, board: UnlockBoard, unlock: UnlockData
 		if not profile.unlocks.has(String(need)):
 			var first: UnlockData = board.find(need)
 			return "Needs %s" % (first.display_name if first != null else String(need))
+	if unlock.requires_first != "" and not profile.firsts.has(unlock.requires_first):
+		var what: String = unlock.requires_first.get_slice(":", 1)
+		return "Beat %s" % what if unlock.requires_first.begins_with("boss:") else "Needs: %s" % what
 	if profile.shards < unlock.cost:
 		return NEEDS_SHARDS
 	return ""

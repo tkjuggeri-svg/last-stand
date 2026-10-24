@@ -30,11 +30,12 @@ func _ready() -> void:
 	_hub.buy_requested.connect(_buy)
 	_hub.tips_toggled.connect(_set_tips)
 	_hub.reset_requested.connect(_reset)
+	_hub.hero_cycled.connect(_cycle_hero)
 	_summary.hub_requested.connect(func() -> void: _fade.transition(show_hub))
 	_summary.new_run_requested.connect(func() -> void: _leave(run_requested))
 	_save.changed.connect(func() -> void:
 		if _hub.visible:
-			_hub.refresh(_save.profile, unlock_board, _hero()))
+			_hub.refresh(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1))
 
 
 ## True while one of its screens is shown.
@@ -50,7 +51,7 @@ func show_title() -> void:
 
 func show_hub() -> void:
 	hide_all()
-	_hub.open(_save.profile, unlock_board, _hero())
+	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1)
 
 
 ## The end of a run (`summary`: RunSummary's, with its shard lines), faded in; `at_dark` (Main
@@ -66,6 +67,26 @@ func show_summary(summary: Dictionary, at_dark: Callable = Callable()) -> void:
 ## The hero the next run is played with (null before Main gave the run's data).
 func _hero() -> HeroData:
 	return run_data.get_hero(_save.profile.hero) if run_data != null else null
+
+
+## The heroes the profile can play, in the run's order.
+func _owned_heroes() -> Array[HeroData]:
+	var owned: Array[HeroData] = []
+	if run_data != null:
+		for hero: HeroData in run_data.heroes:
+			if unlock_board == null or unlock_board.is_hero_unlocked(_save.profile, hero):
+				owned.append(hero)
+	return owned
+
+
+## The hub's hero buttons: the next (or previous) hero owned becomes the pick for the next run.
+func _cycle_hero(step: int) -> void:
+	var owned: Array[HeroData] = _owned_heroes()
+	if owned.size() < 2:
+		return
+	var at: int = maxi(owned.find(_hero()), 0)
+	_save.profile.hero = String(owned[posmod(at + step, owned.size())].id)
+	_save.save_profile()
 
 
 func hide_all() -> void:

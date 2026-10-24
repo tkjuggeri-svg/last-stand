@@ -10,12 +10,16 @@ signal back_requested
 signal buy_requested(unlock: UnlockData)
 signal tips_toggled(on: bool)
 signal reset_requested
+## The hero buttons: -1 the previous owned hero, 1 the next.
+signal hero_cycled(step: int)
 
 @onready var _shards: Label = %Shards
 @onready var _line: Label = %Line
 @onready var _unlocks: VBoxContainer = %Unlocks
 @onready var _hero_name: Label = %HeroName
 @onready var _hero_text: Label = %HeroText
+@onready var _hero_prev: Button = %HeroPrev
+@onready var _hero_next: Button = %HeroNext
 @onready var _records: Label = %Records
 @onready var _start_button: Button = %StartButton
 @onready var _tips_button: CheckButton = %TipsButton
@@ -28,19 +32,23 @@ func _ready() -> void:
 	hide()
 	_start_button.pressed.connect(func() -> void: start_requested.emit())
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
+	_hero_prev.pressed.connect(func() -> void: hero_cycled.emit(-1))
+	_hero_next.pressed.connect(func() -> void: hero_cycled.emit(1))
 	_tips_button.toggled.connect(func(on: bool) -> void: tips_toggled.emit(on))
 	_reset_button.pressed.connect(func() -> void: _confirm.popup_centered())
 	_confirm.confirmed.connect(func() -> void: reset_requested.emit())
 
 
-func open(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null) -> void:
-	refresh(profile, board, hero)
+func open(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false) -> void:
+	refresh(profile, board, hero, can_cycle)
 	show()
 	_start_button.grab_focus.call_deferred()
 
 
 ## Shows `profile` against `board`: shards, the line, the hero of the next run, every unlock's state, the records.
-func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null) -> void:
+func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false) -> void:
+	_hero_prev.visible = can_cycle
+	_hero_next.visible = can_cycle
 	_hero_name.text = hero.display_name if hero != null else ""
 	_hero_text.text = hero.description if hero != null else ""
 	_shards.text = "Soul Shards: %d" % profile.shards

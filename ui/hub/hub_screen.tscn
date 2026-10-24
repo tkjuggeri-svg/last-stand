@@ -58,9 +58,24 @@ layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "Hero"
 
-[node name="HeroName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="HeroPick" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+layout_mode = 2
+
+[node name="HeroPrev" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
 unique_name_in_owner = true
 layout_mode = 2
+text = "<"
+
+[node name="HeroName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_alignment = 1
+
+[node name="HeroNext" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
+unique_name_in_owner = true
+layout_mode = 2
+text = ">"
 
 [node name="HeroText" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
 unique_name_in_owner = true

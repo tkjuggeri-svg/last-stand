@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
+[ext_resource type="Resource" path="res://data/heroes/huntress.tres" id="r_hero"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"hero_huntress"
+display_name = "The Huntress"
+description = "A new hero: a crossbow that marks enemies for your towers. Not stronger, different."
+cost = 60
+requires_first = "boss:The Lich Warden"
+heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])

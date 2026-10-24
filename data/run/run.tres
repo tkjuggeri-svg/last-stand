@@ -6,8 +6,9 @@
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
 [ext_resource type="Resource" path="res://data/heroes/knight.tres" id="4_knight"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
+[ext_resource type="Resource" path="res://data/heroes/huntress.tres" id="5_huntress"]
 
 [resource]
 script = ExtResource("1_run")
-heroes = Array[ExtResource("s_hero")]([ExtResource("4_knight")])
+heroes = Array[ExtResource("s_hero")]([ExtResource("4_knight"), ExtResource("5_huntress")])
 chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1"), ExtResource("3_ch2")])

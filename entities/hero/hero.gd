@@ -24,6 +24,10 @@ const BLINK_ALPHA: float = 0.3
 ## The swing trail art: normal reach, and the Long Reach tiers (reach x REACH_TIERS[i] is tier i + 1).
 const SWING_FRAMES: SpriteFrames = preload("res://entities/hero/swing_frames.tres")
 const SWING_LONG_FRAMES: SpriteFrames = preload("res://entities/hero/swing_long_frames.tres")
+const BOLT_SCENE: PackedScene = preload("res://entities/hero/hero_bolt.tscn")
+## Where a bolt leaves the crossbow: this far (px) along the aim, at chest height.
+const MUZZLE_DISTANCE: float = 18.0
+const MUZZLE_HEIGHT: float = -14.0
 const REACH_TIERS: Array[float] = [1.0, 1.15, 1.3, 1.45, 1.6]
 const BLINKS_PER_SECOND: float = 6.0
 ## Game feel (M8.5, display only): a landed hit and a hit taken stop time this long (s) and shake the
@@ -114,11 +118,27 @@ func attack(target_position: Vector2) -> void:
 	var direction: Vector2 = target_position - global_position
 	_attack_pivot.rotation = direction.angle()
 	_cooldown_left = RunModifiers.value(modifiers, attack_cooldown, [RunModifiers.HERO_ATTACK_COOLDOWN])
+	if data != null and data.attack_kind == HeroData.AttackKind.BOLT:
+		_fire_bolt(direction)
+		return
 	_attack_time_left = attack_duration
 	_set_attack_active(true)
 	_sprite.face(direction)
 	_sprite.play_state("attack", true)
 	_play_swing_trail(direction.angle())
+	Sfx.play(self, &"hero_swing")
+
+
+## The Huntress's attack: a bolt along the aim, her animation and no sword arc.
+func _fire_bolt(direction: Vector2) -> void:
+	var bolt: HeroBolt = BOLT_SCENE.instantiate()
+	var aim: Vector2 = direction.normalized() if not direction.is_zero_approx() else Vector2.DOWN
+	bolt.launch(global_position + Vector2(0, MUZZLE_HEIGHT) + aim * MUZZLE_DISTANCE, aim, _attack_hitbox.damage, data,
+		RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH]))
+	bolt.hit.connect(_on_bolt_hit)
+	add_child(bolt)
+	_sprite.face(aim)
+	_sprite.play_state("attack", true)
 	Sfx.play(self, &"hero_swing")
 
 
@@ -153,6 +173,8 @@ func get_dash() -> HeroDash:
 func _apply_data() -> void:
 	if data == null:
 		return
+	if data.frames != null:
+		_sprite.sprite_frames = data.frames
 	health.setup(data.max_health)
 	_attack_hitbox.damage = data.attack_damage
 	move_speed = data.move_speed
@@ -295,6 +317,11 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 	number.top_level = true  # stays where the hit happened instead of following the hero
 	number.position = global_position + DAMAGE_NUMBER_OFFSET
 	add_child(number)
+
+
+func _on_bolt_hit(_enemy: Enemy) -> void:
+	Sfx.play(self, &"hero_hit")
+	struck.emit(_attack_hitbox.damage)
 
 
 func _on_attack_landed(target: Hurtbox) -> void:

@@ -194,6 +194,7 @@ func _impact() -> void:
 		queue_free()  # a fire glob: the burning ground it left does the work
 		return
 	if _target_alive() and not _lost:
+		_hitbox.damage = roundi(stats.damage * (1.0 + target.get_status().get_mark_bonus()))
 		if not target.receive_shot(_hitbox, _last_dir):
 			queue_free()  # stopped by a shield (or already gone): no chill, no pierce
 			return
@@ -235,6 +236,7 @@ func _fly_line(step: float) -> void:
 		if _pierced.has(enemy):
 			continue
 		_pierced.append(enemy)
+		_hitbox.damage = roundi(stats.damage * (1.0 + enemy.get_status().get_mark_bonus()))
 		if not enemy.receive_shot(_hitbox, _line_dir):
 			queue_free()  # a shield stops a piercing shot dead
 			return

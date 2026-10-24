@@ -68,6 +68,11 @@ const VISOR_SIDE: Array[String] = [
 	".....s.s..",
 ]
 
+## The ramps of the plate and the tabard (the Huntress, which extends this, wears leather and green).
+var armor: Array = P.STEEL
+var armor_dark: Array = P.DARK_STEEL
+var cloth: Array = P.TABARD
+
 ## Image pixels per art pixel: 2 for the double-resolution sheet the game uses (64x80 frames).
 var detail: int = 1
 
@@ -211,7 +216,7 @@ func _draw_down(c: Canvas, pose: Dictionary) -> void:
 	# Shield arm (the hero's left = screen right): the kite shield's face.
 	var shield_center: Vector2 = Vector2(22.0, 24) + up + Vector2(0, -2.0 * float(pose["shield_up"]))
 	c.part()
-	c.capsule(Vector2(21, 19.5) + up, shield_center + Vector2(-1, -2), 1.5, P.STEEL, -0.05)
+	c.capsule(Vector2(21, 19.5) + up, shield_center + Vector2(-1, -2), 1.5, armor, -0.05)
 	_kite_face(c, shield_center, 1.0)
 	_pauldron(c, Vector2(21.4, 18.2) + up, false)
 	_pauldron(c, Vector2(10.6, 18.2) + up, false)
@@ -227,16 +232,16 @@ func _draw_up(c: Canvas, pose: Dictionary) -> void:
 	_legs_front(c, pose, up)
 	# The back of the plate under the tabard's back panel.
 	c.part()
-	c.ellipse(Vector2(16, 21) + up, Vector2(5.2, 4.4), P.STEEL)
+	c.ellipse(Vector2(16, 21) + up, Vector2(5.2, 4.4), armor)
 	_tabard(c, up, float(pose["hem"]), true)
 	# The shield on the left arm (screen left), seen from behind: its rimmed wooden back and straps.
 	c.part()
-	c.capsule(Vector2(11, 19.5) + up, Vector2(10, 23) + up, 1.5, P.STEEL, -0.05)
+	c.capsule(Vector2(11, 19.5) + up, Vector2(10, 23) + up, 1.5, armor, -0.05)
 	_kite_back(c, Vector2(9.4, 24) + up + Vector2(0, -2.0 * float(pose["shield_up"])))
 	c.part()
-	c.capsule(Vector2(21, 19.5) + up, hand + Vector2(0, -0.5), 1.5, P.STEEL, -0.05)
+	c.capsule(Vector2(21, 19.5) + up, hand + Vector2(0, -0.5), 1.5, armor, -0.05)
 	c.part()
-	c.ellipse(hand, Vector2(1.6, 1.5), P.DARK_STEEL, 0.0, 0.1)
+	c.ellipse(hand, Vector2(1.6, 1.5), armor_dark, 0.0, 0.1)
 	_pauldron(c, Vector2(10.6, 18.2) + up, true)
 	_pauldron(c, Vector2(21.4, 18.2) + up, true)
 	_helm(c, HELM + up, "up", pose["crest"])
@@ -249,17 +254,17 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 	var stride: float = pose["stride"]
 	# Legs: the far leg darker, then the near leg.
 	var hip: Vector2 = Vector2(16, 27) + up
-	_leg(c, hip + Vector2(0.5, 0), Vector2(16 - stride * 3.5, FEET.y - 1.5 - maxf(-stride, 0.0) * 1.2), P.DARK_STEEL, true)
-	_leg(c, hip, Vector2(16 + stride * 3.5, FEET.y - 1.5 - maxf(stride, 0.0) * 1.2), P.STEEL, true)
+	_leg(c, hip + Vector2(0.5, 0), Vector2(16 - stride * 3.5, FEET.y - 1.5 - maxf(-stride, 0.0) * 1.2), armor_dark, true)
+	_leg(c, hip, Vector2(16 + stride * 3.5, FEET.y - 1.5 - maxf(stride, 0.0) * 1.2), armor, true)
 	# Torso in profile with the tabard over it, belted.
 	c.part()
-	c.ellipse(Vector2(16, 21) + up, Vector2(4.2, 4.4), P.STEEL)
+	c.ellipse(Vector2(16, 21) + up, Vector2(4.2, 4.4), armor)
 	c.part()
 	var hem: float = pose["hem"]
 	var tabard: PackedVector2Array = PackedVector2Array([Vector2(13.4, 18.4) + up, Vector2(19.2, 19.0) + up,
 		Vector2(19.8, 28.6) + up, Vector2(18.2, 27.8) + up, Vector2(16.6, 28.8) + up, Vector2(15.0, 27.8) + up,
 		Vector2(13.2 - hem * 0.6, 28.6) + up])
-	c.polygon(tabard, P.TABARD, Vector3(0.2, 0.1, 1))
+	c.polygon(tabard, cloth, Vector3(0.2, 0.1, 1))
 	_belt(c, Rect2i(Vector2i(Vector2(13, 24) + up), Vector2i(7, 2)), Vector2i(Vector2(18, 24) + up))
 	_helm(c, Vector2(16.5, 11) + up, "side", pose["crest"])
 	_pauldron(c, Vector2(15.6, 18.4) + up, false)
@@ -268,9 +273,9 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 	_kite_face(c, shield_center, 0.62)
 	var hand: Vector2 = Vector2(17.5, 25.5) + up + _arm_offset(pose)
 	c.part()
-	c.capsule(Vector2(15.5, 19.5) + up, hand, 1.5, P.STEEL, 0.05)
+	c.capsule(Vector2(15.5, 19.5) + up, hand, 1.5, armor, 0.05)
 	c.part()
-	c.ellipse(hand, Vector2(1.6, 1.5), P.DARK_STEEL, 0.0, 0.1)
+	c.ellipse(hand, Vector2(1.6, 1.5), armor_dark, 0.0, 0.1)
 	_sword(c, hand, pose)
 
 
@@ -279,8 +284,8 @@ func _draw_side(c: Canvas, pose: Dictionary) -> void:
 func _legs_front(c: Canvas, pose: Dictionary, up: Vector2) -> void:
 	var kneel: float = pose["kneel"]
 	var hip_y: float = 27.0 + up.y * 0.5 + kneel
-	_leg(c, Vector2(14, hip_y), Vector2(13.6, FEET.y - 1.5 - float(pose["lift_l"]) * 1.6), P.STEEL, false)
-	_leg(c, Vector2(18, hip_y), Vector2(18.4, FEET.y - 1.5 - float(pose["lift_r"]) * 1.6), P.STEEL, false)
+	_leg(c, Vector2(14, hip_y), Vector2(13.6, FEET.y - 1.5 - float(pose["lift_l"]) * 1.6), armor, false)
+	_leg(c, Vector2(18, hip_y), Vector2(18.4, FEET.y - 1.5 - float(pose["lift_r"]) * 1.6), armor, false)
 
 
 ## A short greave over a tall brown boot.
@@ -297,7 +302,7 @@ func _leg(c: Canvas, hip: Vector2, foot: Vector2, ramp: Array, side: bool) -> vo
 func _torso_front(c: Canvas, up: Vector2, kneel: float, hem: float) -> void:
 	var o: Vector2 = up + Vector2(0, kneel * 0.5)
 	c.part()
-	c.ellipse(Vector2(16, 21) + o, Vector2(5.2, 4.4), P.STEEL)
+	c.ellipse(Vector2(16, 21) + o, Vector2(5.2, 4.4), armor)
 	_tabard(c, o, hem, false)
 	_belt(c, Rect2i(Vector2i(12, 24) + Vector2i(o.round()), Vector2i(8, 2)), Vector2i(16, 24) + Vector2i(o.round()))
 
@@ -308,13 +313,13 @@ func _tabard(c: Canvas, o: Vector2, hem: float, back: bool) -> void:
 	var sway: float = hem * 0.4
 	c.polygon(PackedVector2Array([Vector2(12.4, 18.2) + o, Vector2(19.6, 18.2) + o, Vector2(20.4, 28.4) + o,
 		Vector2(19.0 + sway, 27.4) + o, Vector2(17.6, 28.8) + o, Vector2(16.0, 27.6) + o, Vector2(14.4, 28.8) + o,
-		Vector2(13.0 - sway, 27.4) + o, Vector2(11.6, 28.4) + o]), P.TABARD, Vector3(-0.15, -0.1, 1))
+		Vector2(13.0 - sway, 27.4) + o, Vector2(11.6, 28.4) + o]), cloth, Vector3(-0.15, -0.1, 1))
 	if back:
-		c.line(Vector2(16, 19) + o, Vector2(16, 23) + o, P.TABARD[1], c.detail > 1)
+		c.line(Vector2(16, 19) + o, Vector2(16, 23) + o, cloth[1], c.detail > 1)
 	if c.detail > 1:
 		# Folds falling from the belt and a gold trim along the neckline.
 		for x: float in [13.9, 18.1]:
-			c.line(Vector2(x, 26.2) + o, Vector2(x + (x - 16.0) * 0.08, 28.0) + o, P.TABARD[1], true)
+			c.line(Vector2(x, 26.2) + o, Vector2(x + (x - 16.0) * 0.08, 28.0) + o, cloth[1], true)
 		c.line(Vector2(12.9, 18.4) + o, Vector2(19.1, 18.4) + o, P.GOLD[2], true)
 
 
@@ -329,7 +334,7 @@ func _belt(c: Canvas, band: Rect2i, buckle: Vector2i) -> void:
 ## A round plate pauldron with a gold rim along its lower edge (from behind too).
 func _pauldron(c: Canvas, center: Vector2, back: bool) -> void:
 	c.part()
-	c.ellipse(center, Vector2(3.0, 2.6), P.STEEL, 0.0, 0.08)
+	c.ellipse(center, Vector2(3.0, 2.6), armor, 0.0, 0.08)
 	var rim: int = roundi(center.y + 2.0)
 	for x: int in range(roundi(center.x - 2.6), roundi(center.x + 2.6) + 1):
 		if c.is_filled(x, rim):

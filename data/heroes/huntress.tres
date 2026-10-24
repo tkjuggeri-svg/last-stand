@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+[ext_resource type="SpriteFrames" path="res://entities/hero/huntress_frames.tres" id="2_frames"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"huntress"
+display_name = "The Huntress"
+description = "The skirmisher: a crossbow bolt that pierces one and marks it: towers deal +15% to marked enemies.\nWeak at the gate: crowds and anything that reaches her."
+max_health = 75
+move_speed = 215.0
+attack_damage = 9
+attack_cooldown = 0.55
+attack_duration = 0.12
+knockback = 6.0
+frames = ExtResource("2_frames")
+attack_kind = 1
+bolt_range = 340.0
+bolt_speed = 520.0
+bolt_pierce = 1
+mark_bonus = 0.15
+mark_time = 3.0

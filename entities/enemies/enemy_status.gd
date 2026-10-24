@@ -21,6 +21,9 @@ var _slow_left: float = 0.0
 var _freeze_left: float = 0.0
 var _vulnerable_left: float = 0.0
 var _vulnerability: float = 0.0
+## The Huntress's Mark: the extra damage towers deal to it, and how long it still lasts.
+var _mark_bonus: float = 0.0
+var _mark_left: float = 0.0
 ## Lane offset the enemy is being dragged back to (-1 = not dragged).
 var _drag_to: float = -1.0
 ## The burn on it (damage per second before burn_taken) and how long it still lasts.
@@ -41,17 +44,20 @@ func setup(health: HealthComponent, burn_taken: float = 1.0) -> void:
 
 ## Counts every effect down (call once per physics frame).
 func tick(delta: float) -> void:
-	var was: Array[bool] = [is_slowed(), is_frozen(), is_vulnerable(), is_burning()]
+	var was: Array[bool] = [is_slowed(), is_frozen(), is_vulnerable(), is_burning(), is_marked()]
 	_tick_burn(delta)
 	_slow_left = maxf(_slow_left - delta, 0.0)
 	if _slow_left <= 0.0:
 		_slow_factor = 1.0
 	_freeze_left = maxf(_freeze_left - delta, 0.0)
+	_mark_left = maxf(_mark_left - delta, 0.0)
+	if _mark_left <= 0.0:
+		_mark_bonus = 0.0
 	_vulnerable_left = maxf(_vulnerable_left - delta, 0.0)
 	if _vulnerable_left <= 0.0 and _vulnerability > 0.0:
 		_vulnerability = 0.0
 		_health.damage_taken_multiplier = 1.0
-	if was != [is_slowed(), is_frozen(), is_vulnerable(), is_burning()]:
+	if was != [is_slowed(), is_frozen(), is_vulnerable(), is_burning(), is_marked()]:
 		status_changed.emit()
 
 
@@ -141,6 +147,25 @@ func mark_vulnerable(bonus: float, seconds: float) -> void:
 
 func is_vulnerable() -> bool:
 	return _vulnerable_left > 0.0
+
+
+## Marks it for `seconds`: towers' shots deal `bonus` more (0.15 = +15%) to it. A new mark keeps the
+## bigger bonus and the longer time.
+func mark(bonus: float, seconds: float) -> void:
+	if bonus <= 0.0 or seconds <= 0.0:
+		return
+	_mark_bonus = maxf(_mark_bonus, bonus)
+	_mark_left = maxf(_mark_left, seconds)
+	status_changed.emit()
+
+
+func is_marked() -> bool:
+	return _mark_left > 0.0
+
+
+## The extra damage towers deal to it right now (0 when not marked).
+func get_mark_bonus() -> float:
+	return _mark_bonus if is_marked() else 0.0
 
 
 ## Starts dragging it back to lane offset `offset` (never below 0; a new drag replaces the old).
