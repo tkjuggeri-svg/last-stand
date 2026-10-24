@@ -19,3 +19,4 @@ category = 2
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_g6jo0")]([SubResource("Resource_djfcf")])
+tags = Array[StringName]([&"fortress"])

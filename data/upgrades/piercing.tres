@@ -19,3 +19,4 @@ category = 1
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_q873k")]([SubResource("Resource_nsf1q")])
+tags = Array[StringName]([&"ranged"])

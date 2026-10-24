@@ -1,6 +1,8 @@
 [gd_resource type="Resource" script_class="UnlockData" format=3]
 
 [ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_teeth.tres" id="r_c5"]
+[ext_resource type="Resource" path="res://data/upgrades/long_cord.tres" id="r_c6"]
 [ext_resource type="Resource" path="res://data/relics/falcons_hood.tres" id="r_rel2"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
 [ext_resource type="Resource" path="res://data/heroes/huntress.tres" id="r_hero"]
@@ -20,10 +22,10 @@
 script = ExtResource("1_unlock")
 id = &"hero_huntress"
 display_name = "The Huntress"
-description = "A new hero: a crossbow that marks enemies for your towers, her Trap Layer, Hawk Perch and Watchtower, four cards and two relics. Not stronger, different."
+description = "A new hero: a crossbow that marks enemies for your towers, her Trap Layer, Hawk Perch and Watchtower, six cards and two relics. Not stronger, different."
 cost = 60
 requires_first = "boss:The Lich Warden"
 heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])
 towers = Array[ExtResource("s_tower")]([ExtResource("r_trap"), ExtResource("r_hawk"), ExtResource("r_watch")])
-cards = Array[ExtResource("s_card")]([ExtResource("r_c1"), ExtResource("r_c2"), ExtResource("r_c3"), ExtResource("r_c4")])
+cards = Array[ExtResource("s_card")]([ExtResource("r_c1"), ExtResource("r_c2"), ExtResource("r_c3"), ExtResource("r_c4"), ExtResource("r_c5"), ExtResource("r_c6")])
 relics = Array[ExtResource("s_relic")]([ExtResource("r_rel"), ExtResource("r_rel2")])

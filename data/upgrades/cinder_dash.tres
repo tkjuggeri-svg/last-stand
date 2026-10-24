@@ -18,3 +18,4 @@ icon = ExtResource("1_icon")
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_trail")])
+tags = Array[StringName]([&"fire", &"blade"])

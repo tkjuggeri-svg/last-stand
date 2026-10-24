@@ -23,3 +23,4 @@ icon = ExtResource("1_mii4s")
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_s7ja1")]([SubResource("Resource_lkgmc"), SubResource("Resource_r4n2b")])
+tags = Array[StringName]([&"blade"])

@@ -16,3 +16,4 @@ icon = ExtResource("1_icon")
 category = 2
 rarity = 1
 stackable = false
+tags = Array[StringName]([&"fortress"])

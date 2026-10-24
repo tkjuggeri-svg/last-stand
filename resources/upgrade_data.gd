@@ -17,5 +17,7 @@ enum Rarity { COMMON, RARE }
 @export var stackable: bool = true
 @export var modifiers: Array[StatModifier] = []
 ## Something that happens once when picked (see RunModifiers.INSTANT_*); empty = none.
+## Its archetypes (Archetypes.TAGS): one or two. Offers lean toward the tags a run already holds.
+@export var tags: Array[StringName] = []
 @export var instant_effect: StringName = &""
 @export var effect_amount: float = 0.0

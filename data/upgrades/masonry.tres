@@ -17,3 +17,4 @@ description = "Fortress max HP +25."
 icon = ExtResource("1_iscyk")
 category = 2
 modifiers = Array[ExtResource("2_jj85u")]([SubResource("Resource_dmx7o")])
+tags = Array[StringName]([&"fortress"])

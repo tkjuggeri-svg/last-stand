@@ -17,3 +17,4 @@ description = "All towers fire 12% faster."
 icon = ExtResource("1_22dsa")
 category = 1
 modifiers = Array[ExtResource("2_h3bjq")]([SubResource("Resource_ya6fd")])
+tags = Array[StringName]([&"ranged"])

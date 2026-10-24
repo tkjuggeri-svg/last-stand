@@ -16,3 +16,4 @@ display_name = "Fleet Step"
 description = "Dash recharges 25% faster."
 icon = ExtResource("1_icon")
 modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_cooldown")])
+tags = Array[StringName]([&"blade"])

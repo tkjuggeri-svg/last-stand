@@ -1,6 +1,6 @@
 # M9: Heroes & Relics (design proposal)
 
-> **Status: approved (section 10). Stages 1, 2 and 3 built; 4 to do.** The numbers are starting points
+> **Status: approved (section 10). Stages 1 to 4 built; M9 waits for its playtest.** The numbers are starting points
 > for the balance tools (`map_balance.gd`, `balance_report.gd`).
 
 ## 0. Summary
@@ -311,3 +311,25 @@ playtest build `m9-playtest-1`.
   four Bone Pits): 250 fps average, 113 fps 1% low.
 - **Not yet:** Grave Crown and Falcon's Hood with the combo evolutions (stage 4); the Knight's new cards,
   relics and Bulwark.
+
+**Bone Knights taunt** (Q-less follow-up to stage 3): `MinionData.taunts`; `EnemyAttack` keeps a taunting body
+as its target while it is in reach (a plain body entering later doesn't replace it; if the taunter leaves, any
+other taunter in reach is next). Reach only: an enemy still walks its lane until something enters its range.
+
+**Stage 4 as built** (archetypes and combo evolutions):
+- **Combos** (`TowerData.combo`, `TowerEvolution.requires_relic`, `evolution_options()` appends it while the run
+  holds the relic; saves store the index into `TowerData.all_evolutions()`): Heart of the Pyre (burn leaps to a
+  neighbour, `BurnZone.spreads`), Stillwater (a pulse every 10 s freezes everything in reach, a boss 0.3 s),
+  Headsman's Bolt (kills non-bosses left under 25%), Sky Tyrant (carries off non-bosses left with 40 HP or less),
+  Legion (skeletons rise in pairs, 6 at a time), Banner Guard (2 targets, archers in reach pierce 1 more). Their
+  looks are one sheet (`combo_towers_art.gd`); new relics Falcon's Hood (Huntress) and Grave Crown (Necromancer)
+  carry small stat bonuses of their own.
+- **Archetypes** (`core/utils/archetypes.gd`): `UpgradeData.tags` on all 51 cards and relics; two held of a tag
+  weigh that tag's cards 1.6x in offers, four 2x (`UpgradeOffers.weight_of`); the HUD's card row names the
+  leading tag ("Blade build"). Fire and frost have only 3 cards and relics each, so their lean runs out quickly;
+  Traps had one card, so the Huntress got Iron Teeth and Long Cord (6 cards for her now).
+- **Left out:** tags on towers (nothing would read them).
+- **Balance** (`map_balance.gd --archetype=<tag>`, 8 seeds): rows cleared 5.1 for every Knight archetype but
+  economy (6.4), Necromancer summon 5.6 (5.0 without), Huntress traps 5.4 (5.4 without, down from 5.6 before her two new trap cards entered the pool). The ratio between best and worst is
+  1.25. The tool is a weak instrument for this: its bot dies in chapter 1 after about four cards, so most
+  archetypes change nothing; only a playtest can say how a plan feels.

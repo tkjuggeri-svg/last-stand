@@ -16,3 +16,4 @@ display_name = "Long Reach"
 description = "Sword reach +15%."
 icon = ExtResource("1_7c2ky")
 modifiers = Array[ExtResource("2_lk4dn")]([SubResource("Resource_mfg01")])
+tags = Array[StringName]([&"blade"])

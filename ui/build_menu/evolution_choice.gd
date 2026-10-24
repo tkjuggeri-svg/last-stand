@@ -1,12 +1,15 @@
 class_name EvolutionChoice
 extends HBoxContainer
-## The build menu's evolution choice for a level-3 tower: its two branches side by side, each with
+## The build menu's evolution choice for a level-3 tower: its two branches (and a combo, while the run
+## holds its relic) side by side, each with
 ## the evolved tower's icon, name, description, key numbers, price and an Evolve button, and both
 ## branches' range rings on the slot in the cards' colours (the hovered or focused one brighter).
 ## Permanent, so the card says so. Display and intents only: TowerBuilder decides.
 
-## Ring and name colours of the two branches.
-const COLORS: Array[Color] = [Color(0.95, 0.75, 0.4, 1), Color(0.55, 0.85, 1.0, 1)]
+## Ring and name colours of the branches (the third is the combo, M9).
+const COLORS: Array[Color] = [Color(0.95, 0.75, 0.4, 1), Color(0.55, 0.85, 1.0, 1), Color(0.85, 0.65, 1.0, 1)]
+## Card width with two branches and with a combo as well (so three still fit the screen).
+const CARD_WIDTH: Array[float] = [360.0, 320.0]
 const DIM_ALPHA: float = 0.3
 const BRIGHT_ALPHA: float = 0.7
 const ERROR_COLOR: Color = UiColors.WARN
@@ -55,7 +58,8 @@ func _make_card(index: int) -> Control:
 	var evolution: TowerEvolution = _options[index]
 	var card: PanelContainer = PanelContainer.new()
 	card.theme_type_variation = &"CardPanel"
-	card.custom_minimum_size = Vector2(360, 0)
+	var narrow: bool = _options.size() > 2
+	card.custom_minimum_size = Vector2(CARD_WIDTH[1 if narrow else 0], 0)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var row: HBoxContainer = HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
@@ -77,7 +81,7 @@ func _make_card(index: int) -> Control:
 		var label: Label = Label.new()
 		label.text = text
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.custom_minimum_size = Vector2(260, 0)
+		label.custom_minimum_size = Vector2(220 if narrow else 260, 0)
 		column.add_child(label)
 	var button: Button = Button.new()
 	button.text = "Evolve (for good)   -%d gold" % _builder.evolution_cost(evolution)

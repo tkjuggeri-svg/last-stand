@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/long_cord.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_up"]
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("2_mod")
+stat = &"tower.trap_layer.range"
+percent = 0.25
+
+[sub_resource type="Resource" id="Mod_1"]
+script = ExtResource("2_mod")
+stat = &"tower.trap_layer.fire_interval"
+percent = -0.15
+
+[resource]
+script = ExtResource("3_up")
+id = &"long_cord"
+display_name = "Long Cord"
+description = "Trap Layers throw 25% further and 15% faster."
+icon = ExtResource("1_icon")
+category = 1
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0"), SubResource("Mod_1")])
+tags = Array[StringName]([&"traps"])

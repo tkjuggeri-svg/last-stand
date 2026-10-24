@@ -15,3 +15,4 @@ display_name = "Bone Armour"
 description = "Your skeletons have 50% more health."
 icon = ExtResource("1_icon")
 modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])
+tags = Array[StringName]([&"summon"])

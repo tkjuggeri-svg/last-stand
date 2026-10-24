@@ -3,7 +3,7 @@ extends SceneTree
 ## not a pass/fail test): where it ended (won, or lost in chapter c at row r), the fights and waves
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
-##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--quiet]
+##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--quiet]
 ##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
@@ -89,6 +89,9 @@ const MAX_SECONDS: float = 3600.0
 var _path: String = "balanced"
 var _plan_name: String = "mixed"
 var _hero_mode: String = "bot"
+## --archetype=<tag>: the card policy takes a card (or relic) of this tag whenever one is offered, to see
+## whether an archetype is much stronger or weaker than the rest.
+var _archetype: StringName = &""
 ## --hero-kind=knight|huntress: whose run is played (the "mixed" plan then builds that hero's towers).
 var _hero_kind: String = "knight"
 var _quiet: bool = false
@@ -121,6 +124,8 @@ func _initialize() -> void:
 			_path = arg.trim_prefix("--path=")
 		elif arg.begins_with("--plan="):
 			_plan_name = arg.trim_prefix("--plan=")
+		elif arg.begins_with("--archetype="):
+			_archetype = StringName(arg.trim_prefix("--archetype="))
 		elif arg.begins_with("--hero-kind="):
 			_hero_kind = arg.trim_prefix("--hero-kind=")
 		elif arg.begins_with("--hero="):
@@ -397,6 +402,10 @@ func _sinks(level: Level) -> void:
 
 
 func _card(cards: Array[UpgradeData]) -> int:
+	if _archetype != &"":
+		for i: int in cards.size():
+			if cards[i].tags.has(_archetype):
+				return i
 	for i: int in cards.size():
 		if cards[i].category == UpgradeData.Category.TOWERS:
 			return i
@@ -408,6 +417,9 @@ func _relic_pick(offer: Array[UpgradeData]) -> int:
 	var best: int = 0
 	for i: int in offer.size():
 		_count_relic(offer[i].id, 0)
+		if _archetype != &"" and offer[i].tags.has(_archetype) and not offer[best].tags.has(_archetype):
+			best = i
+			continue
 		if RELIC_PREFERENCE.find(offer[i].id) < RELIC_PREFERENCE.find(offer[best].id):
 			best = i
 	_count_relic(offer[best].id, 1)

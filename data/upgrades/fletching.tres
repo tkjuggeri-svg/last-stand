@@ -17,3 +17,4 @@ description = "All towers deal 10% more damage."
 icon = ExtResource("1_owmnn")
 category = 1
 modifiers = Array[ExtResource("2_7bulg")]([SubResource("Resource_b7ig1")])
+tags = Array[StringName]([&"ranged"])

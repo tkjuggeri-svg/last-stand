@@ -16,3 +16,4 @@ display_name = "Honed Blade"
 description = "Sword damage +4."
 icon = ExtResource("1_ehemj")
 modifiers = Array[ExtResource("2_3dj37")]([SubResource("Resource_jrsbq")])
+tags = Array[StringName]([&"blade"])

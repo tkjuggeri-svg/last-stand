@@ -207,7 +207,13 @@ func _candidates(rare_only: bool = false) -> Array[UpgradeData]:
 	return found
 
 
-## offer_size different cards, weighted by rarity.
+## The chance weight of drawing `data`: its rarity's, leaning toward the tags the run holds (`held`:
+## Archetypes.counts).
+func weight_of(data: UpgradeData, held: Dictionary = {}) -> float:
+	return (rare_weight if data.rarity == UpgradeData.Rarity.RARE else common_weight) * Archetypes.lean_weight(data, held)
+
+
+## offer_size different cards, weighted by rarity and by the run's archetypes.
 func _draw() -> Array[UpgradeData]:
 	_ensure_seeded()
 	var left: Array[UpgradeData] = []
@@ -218,8 +224,9 @@ func _draw() -> Array[UpgradeData]:
 	var cards: Array[UpgradeData] = []
 	while cards.size() < _size and not left.is_empty():
 		var weights: PackedFloat32Array = PackedFloat32Array()
+		var held: Dictionary = Archetypes.counts(modifiers)
 		for data: UpgradeData in left:
-			weights.append(rare_weight if data.rarity == UpgradeData.Rarity.RARE else common_weight)
+			weights.append(weight_of(data, held))
 		var index: int = _rng.rand_weighted(weights)
 		cards.append(left[index])
 		left.remove_at(index)

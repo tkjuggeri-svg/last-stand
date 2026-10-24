@@ -19,3 +19,4 @@ category = 1
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_8hm6h")]([SubResource("Resource_68p5d")])
+tags = Array[StringName]([&"fire"])

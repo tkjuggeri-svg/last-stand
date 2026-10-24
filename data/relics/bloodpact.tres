@@ -21,3 +21,4 @@ category = 0
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_mod")]([SubResource("Resource_m0")])
+tags = Array[StringName]([&"blade"])

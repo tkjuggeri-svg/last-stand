@@ -18,3 +18,4 @@ icon = ExtResource("1_lkjnp")
 category = 3
 stackable = false
 modifiers = Array[ExtResource("2_kx0sa")]([SubResource("Resource_0bn3i")])
+tags = Array[StringName]([&"economy"])

@@ -29,3 +29,4 @@ category = 3
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_13uik")]([SubResource("Resource_qhtcf"), SubResource("Resource_tni8u"), SubResource("Resource_income")])
+tags = Array[StringName]([&"economy"])

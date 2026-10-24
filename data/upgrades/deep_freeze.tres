@@ -17,3 +17,4 @@ description = "Frost slows last 40% longer."
 icon = ExtResource("1_t8heb")
 category = 1
 modifiers = Array[ExtResource("2_wjvtb")]([SubResource("Resource_433xm")])
+tags = Array[StringName]([&"frost"])

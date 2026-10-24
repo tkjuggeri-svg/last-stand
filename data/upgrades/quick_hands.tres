@@ -15,3 +15,4 @@ display_name = "Quick Hands"
 description = "You reload 20% faster."
 icon = ExtResource("1_icon")
 modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])
+tags = Array[StringName]([&"ranged"])

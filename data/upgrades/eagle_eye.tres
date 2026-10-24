@@ -17,3 +17,4 @@ description = "All towers reach 12% further."
 icon = ExtResource("1_mwh08")
 category = 1
 modifiers = Array[ExtResource("2_65s3f")]([SubResource("Resource_2en7s")])
+tags = Array[StringName]([&"ranged"])

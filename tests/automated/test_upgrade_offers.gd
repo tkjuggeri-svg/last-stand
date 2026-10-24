@@ -134,7 +134,8 @@ func _test_flow() -> void:
 	_check("then the screen closes, the game runs again and the build phase begins",
 		not screen.is_open() and not paused and cycle.get_phase() == RunCycle.Phase.BUILD)
 	var icons: Node = level.get_node("HUD").get_node("%UpgradeIcons")
-	_check("the HUD shows the upgrade's icon", icons.get_child_count() == 1 and icons.get_child(0).name == String(offer[1].id))
+	var shown: Array[Node] = icons.get_children().filter(func(n: Node) -> bool: return n is TextureRect)
+	_check("the HUD shows the upgrade's icon", shown.size() == 1 and shown[0].name == String(offer[1].id))
 	cycle.start_wave()
 	for _i: int in 120:
 		await physics_frame

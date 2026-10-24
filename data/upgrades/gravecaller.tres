@@ -17,3 +17,4 @@ icon = ExtResource("1_icon")
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])
+tags = Array[StringName]([&"summon"])

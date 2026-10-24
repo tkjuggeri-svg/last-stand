@@ -12,3 +12,4 @@ id = &"reliquary_of_bones"
 display_name = "Reliquary of Bones"
 description = "Kills by your skeletons fill Ossuaries twice as fast. Needs an Ossuary."
 icon = ExtResource("1_icon")
+tags = Array[StringName]([&"summon"])

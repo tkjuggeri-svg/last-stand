@@ -19,6 +19,8 @@ const ICONS: Dictionary = {
 	"soul_feast": "res://assets/sprites/ui/upgrades/soul_feast.png",
 	"dark_bargain": "res://assets/sprites/ui/upgrades/dark_bargain.png",
 	"reliquary_of_bones": "res://assets/sprites/ui/relics/reliquary_of_bones.png",
+	"iron_teeth": "res://assets/sprites/ui/upgrades/iron_teeth.png",
+	"long_cord": "res://assets/sprites/ui/upgrades/long_cord.png",
 	"falcons_hood": "res://assets/sprites/ui/relics/falcons_hood.png",
 	"grave_crown": "res://assets/sprites/ui/relics/grave_crown.png",
 }
@@ -173,3 +175,22 @@ func _grave_crown(c: Canvas) -> void:
 	c.line(Vector2(4, 24), Vector2(28, 24), P.GOLD[2])
 	c.part(true)
 	c.ellipse(Vector2(16, 17), Vector2(2, 2.4), P.SOUL, 0.0, 0.3)
+
+
+func _iron_teeth(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 22), Vector2(12, 5), P.IRON, 0.0, 0.0)
+	for k: int in 6:
+		c.part()
+		c.polygon(PackedVector2Array([Vector2(6 + k * 4, 21), Vector2(8 + k * 4, 21), Vector2(7 + k * 4, 8 + (k % 2) * 3)]), P.STEEL, Vector3(-0.3, -0.4, 1))
+
+
+func _long_cord(c: Canvas) -> void:
+	c.part()
+	c.capsule(Vector2(5, 26), Vector2(14, 12), 1.5, P.LEATHER, 0.1)
+	c.capsule(Vector2(14, 12), Vector2(27, 7), 1.5, P.LEATHER, 0.1)
+	c.part()
+	c.ellipse(Vector2(27, 7), Vector2(3, 3), P.IRON, 0.0, 0.1)
+	c.part(true)
+	c.line(Vector2(4, 28), Vector2(10, 28), P.BONE[3])
+	c.line(Vector2(6, 30), Vector2(12, 30), P.BONE[3])

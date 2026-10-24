@@ -16,3 +16,4 @@ display_name = "Battle Rhythm"
 description = "Swing 15% faster."
 icon = ExtResource("1_genok")
 modifiers = Array[ExtResource("2_8h21q")]([SubResource("Resource_fvpse")])
+tags = Array[StringName]([&"blade"])

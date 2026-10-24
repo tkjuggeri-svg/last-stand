@@ -16,3 +16,4 @@ display_name = "Iron Constitution"
 description = "Hero max HP +30."
 icon = ExtResource("1_d5jp2")
 modifiers = Array[ExtResource("2_ahecu")]([SubResource("Resource_yy48v")])
+tags = Array[StringName]([&"fortress"])

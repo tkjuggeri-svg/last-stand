@@ -13,3 +13,4 @@ icon = ExtResource("1_0pqn3")
 category = 2
 instant_effect = &"repair_fortress"
 effect_amount = 0.3
+tags = Array[StringName]([&"fortress"])

@@ -24,3 +24,4 @@ category = 1
 rarity = 1
 stackable = false
 modifiers = Array[ExtResource("2_up0ha")]([SubResource("Resource_6h68p"), SubResource("Resource_l41to")])
+tags = Array[StringName]([&"ranged"])

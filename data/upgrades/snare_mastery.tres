@@ -16,3 +16,4 @@ description = "Trap Layer snares hold 0.5 s longer."
 icon = ExtResource("1_icon")
 category = 1
 modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])
+tags = Array[StringName]([&"traps"])

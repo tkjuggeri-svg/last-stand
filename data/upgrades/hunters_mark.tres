@@ -20,3 +20,4 @@ display_name = "Hunter's Mark"
 description = "Your Mark is 10% stronger and lasts 2 s longer."
 icon = ExtResource("1_icon")
 modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0"), SubResource("Mod_1")])
+tags = Array[StringName]([&"ranged"])
