@@ -12,4 +12,5 @@ attack_cooldown = 0.9
 move_speed = 110.0
 lifetime = 25.0
 burst_damage = 0
+taunts = true
 burst_radius = 0.0

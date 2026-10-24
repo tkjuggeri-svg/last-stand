@@ -35,14 +35,35 @@ var _claimed_limit: AttackerLimit = null
 ## Called by the enemy in its _ready().
 func setup(enemy: Enemy) -> void:
 	_enemy = enemy
-	attack_range.body_entered.connect(func(body: Node2D) -> void: _target = body)
-	attack_range.body_exited.connect(func(body: Node2D) -> void:
-		if body == _target:
-			_target = null)
+	attack_range.body_entered.connect(_on_body_entered)
+	attack_range.body_exited.connect(_on_body_exited)
 
 
 func _exit_tree() -> void:
 	_release_slot()  # dying mid-attack frees the slot for the next enemy
+
+
+## The newest body in reach becomes the target, unless the one it has is taunting (a Bone Knight).
+func _on_body_entered(body: Node2D) -> void:
+	if is_instance_valid(_target) and _is_taunting(_target) and not _is_taunting(body):
+		return
+	_target = body
+
+
+## A target that left is replaced by a taunting body still in reach, else by none (the next to enter).
+func _on_body_exited(body: Node2D) -> void:
+	if body != _target:
+		return
+	_target = null
+	for other: Node2D in attack_range.get_overlapping_bodies():
+		if other != body and is_instance_valid(other) and _is_taunting(other):
+			_target = other
+			return
+
+
+func _is_taunting(body: Node2D) -> bool:
+	var minion: Minion = body as Minion
+	return minion != null and minion.data != null and minion.data.taunts
 
 
 ## The cooldown runs every frame, even while the enemy can't act (frozen, busy).

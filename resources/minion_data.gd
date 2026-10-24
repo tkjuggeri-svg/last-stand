@@ -15,3 +15,5 @@ extends Resource
 ## It bursts when it falls (not when it expires): this much damage to every enemy within the radius.
 @export var burst_damage: int = 0
 @export var burst_radius: float = 0.0
+## Enemies that have it in reach attack it before any other body there (a Bone Knight).
+@export var taunts: bool = false

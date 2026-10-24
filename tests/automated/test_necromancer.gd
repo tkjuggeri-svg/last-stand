@@ -29,6 +29,7 @@ func _initialize() -> void:
 	await _test_fighting()
 	await _test_expiry_and_burst()
 	await _test_cards()
+	await _test_taunt()
 	_test_unlock()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -162,6 +163,36 @@ func _test_cards() -> void:
 	level.minions.raise(SKELETON, second.global_position + Vector2(-20, 0), hero, 3, hero)
 	await _frames(120)
 	_check("with it, one more soul (%d)" % ossuary.get_souls(), (not is_instance_valid(second) or not second.is_alive()) and ossuary.get_souls() == 1)
+	level.queue_free()
+	await process_frame
+
+
+## A taunting knight draws the blows even when a plain skeleton entered the enemy's reach later.
+func _test_taunt() -> void:
+	var level: Level = _level()
+	await _frames(2)
+	var hero: Hero = level.get_node("Hero")
+	hero.global_position = Vector2(380, 380)
+	var enemy: Enemy = ENEMY_SCENE.instantiate()
+	enemy.data = GHOUL
+	enemy.position = Vector2(-250, 100)
+	level.add_child(enemy)
+	var knight_data: MinionData = SKELETON.duplicate()
+	knight_data.taunts = true
+	knight_data.max_health = 5000
+	knight_data.lifetime = 0.0
+	var plain_data: MinionData = SKELETON.duplicate()
+	plain_data.max_health = 5000
+	plain_data.lifetime = 0.0
+	plain_data.damage = 0
+	knight_data.damage = 0
+	var knight: Minion = level.minions.raise(knight_data, Vector2(-250, 120), hero, 9)
+	await _frames(5)
+	var plain: Minion = level.minions.raise(plain_data, Vector2(-250, 80), hero, 9)
+	await _frames(240)
+	var knight_hurt: int = knight.get_health().max_health - knight.get_health().current_health
+	var plain_hurt: int = plain.get_health().max_health - plain.get_health().current_health
+	_check("a taunting knight takes the blows (%d) while the plain skeleton that came later takes none (%d)" % [knight_hurt, plain_hurt], knight_hurt > 0 and plain_hurt == 0)
 	level.queue_free()
 	await process_frame
 
