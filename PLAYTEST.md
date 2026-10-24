@@ -17,7 +17,24 @@ music yet**. The game opens on a title screen; **Play** leads to the War Room, w
 and zips them into `builds/`. It needs Godot 4.7.2's export templates (Editor → Manage Export
 Templates). `tools/build_playtest.sh --pack-check` checks the game data without the templates.
 
-## Between runs: the War Room (new in this build)
+## New in this build: a second hero, the Huntress
+
+The War Room has a new unlock, **The Huntress** (60 Soul Shards; available once you have beaten
+chapter 1's boss). Buy her, then use the **< >** buttons in the War Room's **Hero** panel to pick who
+the next run is played with. She is **not stronger, only different**:
+
+- **Crossbow** (left mouse, aimed): a bolt that passes through 1 enemy and leaves a **Mark** on what
+  it hits: towers deal +15% damage to marked enemies for 3 s. She has 75 HP and is a little faster.
+- **Her own towers** instead of the Brazier, Frost and Bone Ballista (the Archer and the Cannon stay):
+  **Trap Layer** (throws snares on the road: the first enemy to step on one is held and hurt),
+  **Hawk Perch** (a hawk dives on the leader; shields can't stop it) and **Watchtower** (doesn't
+  attack: towers near it get more range, and she deals +10% damage standing near it). Each has two
+  upgrades and two evolutions.
+- **Her own cards** (Barbed Bolts, Quick Hands, Snare Mastery, Hunter's Mark) and a relic (Quiver of
+  Plenty); the sword cards (Honed Blade, Long Reach, Battle Rhythm, Berserker's Oath) are the Knight's.
+- The new towers, hero and icons are a **first art pass** (the towers look small next to the old ones).
+
+## Between runs: the War Room
 
 Every run pays **Soul Shards**, lost ones too: for each battle won, elite and boss beaten, chapter
 cleared, a win, and a one-off reward the first time you beat each boss or reach a chapter. The run
@@ -130,7 +147,11 @@ happens that you want us to see, note the seed: the pause menu can also start a 
 
 Play at least one full run (win or lose), more if you can. Then tell us:
 
-0. **Polish (new):** Were the sounds pleasant or tiring after an hour? Any too loud, too quiet, or
+0. **The Huntress (new):** Did she feel different from the Knight, or just weaker/stronger? Was the
+   crossbow fun to aim, and did the Mark matter? Which of her towers did you build, and which felt
+   useless? Did you understand the Watchtower and the snares? Was she easier or harder than the
+   Knight? Was her art readable?
+0. **Polish:** Were the sounds pleasant or tiring after an hour? Any too loud, too quiet, or
    missing? Did the screen shake and hit freeze feel good, or get in the way (did you turn shake
    down)? Were the damage numbers useful or clutter? Did the role colours help you tell enemies
    apart? What do you think of the title screen?
