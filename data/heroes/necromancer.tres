@@ -1,9 +1,20 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/necromancer_frames.tres" id="2_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/soul_bolt_frames.tres" id="3_bolt"]
 [ext_resource type="Resource" path="res://data/minions/skeleton.tres" id="4_skeleton"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="5_tower"]
+[ext_resource type="Resource" path="res://data/towers/bone_pit.tres" id="6_pit"]
+[ext_resource type="Resource" path="res://data/towers/soul_siphon.tres" id="7_siphon"]
+[ext_resource type="Resource" path="res://data/towers/ossuary.tres" id="8_ossuary"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="9_card"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="10_relic"]
+[ext_resource type="Resource" path="res://data/upgrades/bone_armour.tres" id="11_c1"]
+[ext_resource type="Resource" path="res://data/upgrades/gravecaller.tres" id="12_c2"]
+[ext_resource type="Resource" path="res://data/upgrades/soul_feast.tres" id="13_c3"]
+[ext_resource type="Resource" path="res://data/upgrades/dark_bargain.tres" id="14_c4"]
+[ext_resource type="Resource" path="res://data/relics/reliquary_of_bones.tres" id="15_rel"]
 
 [resource]
 script = ExtResource("1_data")
@@ -28,3 +39,6 @@ bolt_speed = 480.0
 bolt_pierce = 0
 mark_bonus = 0.0
 mark_time = 3.0
+exclusive_towers = Array[ExtResource("5_tower")]([ExtResource("6_pit"), ExtResource("7_siphon"), ExtResource("8_ossuary")])
+exclusive_cards = Array[ExtResource("9_card")]([ExtResource("11_c1"), ExtResource("12_c2"), ExtResource("13_c3"), ExtResource("14_c4")])
+exclusive_relics = Array[ExtResource("10_relic")]([ExtResource("15_rel")])

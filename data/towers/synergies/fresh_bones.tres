@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TowerSynergy" format=3]
+
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="1_synergy"]
+
+[resource]
+script = ExtResource("1_synergy")
+display_name = "Fresh bones"
+partner_id = &"ossuary"
+flavor = "The ossuary keeps the pit supplied."
+fire_rate = 0.15

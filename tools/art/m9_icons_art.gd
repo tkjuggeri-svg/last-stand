@@ -14,6 +14,11 @@ const ICONS: Dictionary = {
 	"snare_mastery": "res://assets/sprites/ui/upgrades/snare_mastery.png",
 	"hunters_mark": "res://assets/sprites/ui/upgrades/hunters_mark.png",
 	"quiver_of_plenty": "res://assets/sprites/ui/relics/quiver_of_plenty.png",
+	"bone_armour": "res://assets/sprites/ui/upgrades/bone_armour.png",
+	"gravecaller": "res://assets/sprites/ui/upgrades/gravecaller.png",
+	"soul_feast": "res://assets/sprites/ui/upgrades/soul_feast.png",
+	"dark_bargain": "res://assets/sprites/ui/upgrades/dark_bargain.png",
+	"reliquary_of_bones": "res://assets/sprites/ui/relics/reliquary_of_bones.png",
 }
 
 
@@ -93,3 +98,57 @@ func _quiver_of_plenty(c: Canvas) -> void:
 	c.part()
 	c.line(Vector2(11, 14), Vector2(20, 14), P.GOLD[2])
 	c.line(Vector2(11.5, 23), Vector2(19.5, 23), P.GOLD[2])
+
+
+func _skull(c: Canvas, at: Vector2, radius: float) -> void:
+	c.part()
+	c.ellipse(at, Vector2(radius, radius * 0.95), P.BONE, 0.0, 0.15)
+	c.ellipse(at + Vector2(0, radius * 0.9), Vector2(radius * 0.6, radius * 0.4), P.BONE, 0.0, -0.1)
+	c.part()
+	c.ellipse(at + Vector2(-radius * 0.4, 0), Vector2(radius * 0.22, radius * 0.28), P.SOUL, 0.0, 0.3)
+	c.ellipse(at + Vector2(radius * 0.4, 0), Vector2(radius * 0.22, radius * 0.28), P.SOUL, 0.0, 0.3)
+
+
+func _bone_armour(c: Canvas) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(6, 8), Vector2(26, 8), Vector2(24, 26), Vector2(16, 30), Vector2(8, 26)]), P.BONE, Vector3(-0.3, -0.4, 1))
+	for k: int in 4:
+		c.part()
+		c.line(Vector2(9, 12 + k * 4), Vector2(23, 12 + k * 4), P.BONE[0])
+	c.part()
+	c.rect(Rect2i(15, 8, 2, 20), P.BONE[0])
+
+
+func _gravecaller(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 26), Vector2(12, 4.5), P.DIRT, 0.0, -0.1)
+	c.part()
+	c.capsule(Vector2(16, 26), Vector2(16, 12), 1.8, P.BONE, 0.1)
+	for k: int in 4:
+		c.line(Vector2(12 + k * 2.6, 12), Vector2(11 + k * 3.0, 6 + (k % 2)), P.BONE[3])
+	c.part(true)
+	c.ellipse(Vector2(16, 18), Vector2(3, 3), P.SOUL, 0.0, 0.2)
+
+
+func _soul_feast(c: Canvas) -> void:
+	_skull(c, Vector2(16, 18), 8.0)
+	c.part(true)
+	for k: int in 3:
+		c.ellipse(Vector2(7 + k * 9, 6 + (k % 2) * 3), Vector2(1.6, 2.4), P.SOUL, 0.0, 0.3)
+
+
+func _dark_bargain(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 16), Vector2(11, 11), P.GOLD, 0.0, 0.0)
+	c.ellipse(Vector2(16, 16), Vector2(8, 8), P.GOLD, 0.0, -0.3)
+	_skull(c, Vector2(16, 16), 5.0)
+	c.part()
+	c.line(Vector2(6, 6), Vector2(26, 26), P.TABARD[3])
+
+
+func _reliquary_of_bones(c: Canvas) -> void:
+	c.part()
+	c.block(Rect2(6, 12, 20, 6), 10.0, P.GOLD.slice(1, 5), P.GOLD.slice(0, 4))
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(5, 12), Vector2(16, 5), Vector2(27, 12)]), P.GOLD, Vector3(-0.3, -0.5, 1))
+	_skull(c, Vector2(16, 21), 3.4)

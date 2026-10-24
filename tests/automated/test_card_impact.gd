@@ -103,6 +103,10 @@ func _measures(catalog: Array[TowerData]) -> Dictionary:
 	_measure(m, "hero bolt enemies hit", [RunModifiers.HERO_BOLT_PIERCE], 2.0, func(s: RunModifiers) -> float: return 2.0 + s.apply_int(0, [RunModifiers.HERO_BOLT_PIERCE]))
 	_measure(m, "hero mark strength", [RunModifiers.HERO_MARK_BONUS, RunModifiers.HERO_MARK_TIME], 0.45, func(s: RunModifiers) -> float:
 		return s.apply(0.15, [RunModifiers.HERO_MARK_BONUS]) * s.apply(3.0, [RunModifiers.HERO_MARK_TIME]))
+	# The Necromancer's skeletons (30 HP, 3 at a time) and what a fallen one gives back.
+	_measure(m, "skeleton health", [RunModifiers.MINION_HEALTH], 30.0, func(s: RunModifiers) -> float: return 30.0 * s.apply(1.0, [RunModifiers.MINION_HEALTH]))
+	_measure(m, "skeletons at a time", [RunModifiers.MINION_CAP], 3.0, func(s: RunModifiers) -> float: return 3.0 + s.apply(0.0, [RunModifiers.MINION_CAP]))
+	_measure(m, "heal per fallen skeleton", [RunModifiers.HERO_SOUL_FEAST], HERO["health"] * 0.25, func(s: RunModifiers) -> float: return s.apply(0.0, [RunModifiers.HERO_SOUL_FEAST]))
 	_measure(m, "hero lives", [RunModifiers.HERO_LIVES], HERO["lives"], func(s: RunModifiers) -> float: return s.apply(HERO["lives"], [RunModifiers.HERO_LIVES]))
 	_measure(m, "dash cooldown", [RunModifiers.HERO_DASH_COOLDOWN], HERO["dash"], func(s: RunModifiers) -> float:
 		return maxf(s.apply(HERO["dash"], [RunModifiers.HERO_DASH_COOLDOWN]), HERO["min_dash"]))

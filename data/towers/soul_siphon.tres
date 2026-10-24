@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
+[ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/necro_tower_frames.tres" id="5_frames"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/shelled_souls.tres" id="8_syn"]
+[ext_resource type="Script" path="res://resources/minion_data.gd" id="9_minion_script"]
+
+[sub_resource type="Resource" id="Tier_2"]
+script = ExtResource("3_tier")
+cost = 140
+damage = 19
+fire_interval = 1.0
+attack_range = 180.0
+ramp_bonus = 0.5
+ramp_time = 3.0
+
+[sub_resource type="Resource" id="Tier_3"]
+script = ExtResource("3_tier")
+cost = 200
+damage = 24
+fire_interval = 1.0
+attack_range = 190.0
+ramp_bonus = 0.5
+ramp_time = 3.0
+
+[sub_resource type="Resource" id="Evo_0"]
+script = ExtResource("4_evo")
+id = &"soul_harvester"
+display_name = "Soul Harvester"
+description = "Every kill by the beam mends the fortress by 1 HP (10 a wave at most)."
+cost = 400
+damage = 24
+fire_interval = 1.0
+attack_range = 190.0
+ramp_bonus = 0.5
+ramp_time = 3.0
+soul_heal = 1
+
+[sub_resource type="Resource" id="Evo_1"]
+script = ExtResource("4_evo")
+id = &"wither_beam"
+display_name = "Wither Beam"
+description = "The beam burns a second enemy next to the first."
+cost = 400
+damage = 24
+fire_interval = 1.0
+attack_range = 190.0
+ramp_bonus = 0.5
+ramp_time = 3.0
+beam_targets = 2
+
+[resource]
+script = ExtResource("2_data")
+scene = ExtResource("1_scene")
+frames = ExtResource("5_frames")
+id = &"soul_siphon"
+display_name = "Soul Siphon"
+description = "A beam on one enemy, burning harder the longer it holds it. Shields do not stop it."
+cost = 85
+attack_range = 170.0
+damage = 14
+fire_interval = 1.0
+muzzle_offset = Vector2(0, -66)
+kind = 4
+ramp_bonus = 0.5
+ramp_time = 3.0
+beam_targets = 1
+tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
+evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
+synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])

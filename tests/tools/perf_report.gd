@@ -2,7 +2,7 @@ extends SceneTree
 ## Plays the run's last wave (165 enemies and the Lich Warden) with every slot built and upgraded and reports the frame
 ## rate and frame times. Run it in a real window (not headless), at real speed:
 ##   godot --path . --resolution 1280x720 --script res://tests/tools/perf_report.gd [-- --seconds=60] [--no-towers]
-##     [--chapter-2] [--evolved]
+##     [--chapter-2] [--evolved] [--necromancer]
 ## --chapter-2 plays chapter 2's last wave (223 enemies and the Tollkeeper, with the chapter's fight HP
 ## scale) instead; --evolved evolves every tower (alternating branches) so their effects are on screen.
 ## Vsync is switched off so the numbers show the real headroom. --no-towers leaves the whole wave
@@ -11,6 +11,8 @@ extends SceneTree
 ## on screen at once. --display runs the level inside the game's Display at its smooth scaling (at
 ## 1080p: rendered at 2x and filtered down) to measure what that costs.
 
+## --necromancer: her towers (by id, per slot) instead of the Knight's.
+const NECRO_TOWERS: Array[String] = ["archer", "bone_pit", "ossuary", "archer", "bone_pit", "soul_siphon", "bone_pit", "cannon", "soul_siphon", "bone_pit"]
 const TOWERS: Array[int] = [0, 2, 3, 0, 4, 2, 0, 1, 2, 4]  # catalog index per slot (archer, cannon, ...)
 
 var _seconds: float = 60.0
@@ -22,6 +24,7 @@ var _lights: bool = true
 var _chapter_2: bool = false
 var _evolved: bool = false
 var _display: bool = false
+var _necromancer: bool = false
 
 
 func _initialize() -> void:
@@ -38,6 +41,8 @@ func _initialize() -> void:
 			_chapter_2 = true
 		elif arg == "--evolved":
 			_evolved = true
+		elif arg == "--necromancer":
+			_necromancer = true
 		elif arg == "--display":
 			_display = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
@@ -50,6 +55,9 @@ func _initialize() -> void:
 		finale.health_multiplier *= chapter.fight_health_scale
 		spawner.waves = [finale, WaveData.new()]
 	WaveFixtures.no_upgrades(level)
+	var necro: HeroData = load("res://data/heroes/necromancer.tres")
+	if _necromancer:
+		(level.get_node("Hero") as Hero).data = necro
 	if _display:
 		var display: Display = (load("res://main/display.tscn") as PackedScene).instantiate()
 		display.content = null
@@ -59,11 +67,18 @@ func _initialize() -> void:
 		root.add_child(level)
 	for _i: int in 3:
 		await process_frame
+	if _necromancer:
+		level.apply_hero(necro, (load("res://data/run/run.tres") as RunData).heroes)
 	(level.get_node("Fortress") as Fortress).health.setup(100000)  # it must not fall mid-measurement
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	(level.get_node("%Economy") as Economy).earn(100000, Economy.Source.KILL)
 	for i: int in (builder.get_slots().size() if _towers else 0):
-		builder.build(builder.get_slots()[i], builder.catalog[TOWERS[i] % builder.catalog.size()])
+		var data: TowerData = builder.catalog[TOWERS[i] % builder.catalog.size()]
+		if _necromancer:
+			for candidate: TowerData in builder.catalog:
+				if String(candidate.id) == NECRO_TOWERS[i]:
+					data = candidate
+		builder.build(builder.get_slots()[i], data)
 	for _i: int in 60:
 		await process_frame
 	for slot: BuildSlot in builder.get_slots():

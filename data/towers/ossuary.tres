@@ -1,0 +1,77 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
+[ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/necro_tower_frames.tres" id="5_frames"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/bone_meal.tres" id="8_syn"]
+[ext_resource type="Script" path="res://resources/minion_data.gd" id="9_minion_script"]
+[ext_resource type="Resource" path="res://data/minions/pit_skeleton_3.tres" id="m_pit_skeleton_3"]
+
+[sub_resource type="Resource" id="Tier_2"]
+script = ExtResource("3_tier")
+cost = 150
+damage = 110
+fire_interval = 1.0
+attack_range = 200.0
+splash_radius = 200.0
+souls_needed = 10
+
+[sub_resource type="Resource" id="Tier_3"]
+script = ExtResource("3_tier")
+cost = 230
+damage = 150
+fire_interval = 1.0
+attack_range = 200.0
+splash_radius = 200.0
+souls_needed = 8
+
+[sub_resource type="Resource" id="Evo_0"]
+script = ExtResource("4_evo")
+id = &"bone_storm"
+display_name = "Bone Storm"
+description = "The blast also raises 3 skeletons."
+cost = 420
+damage = 150
+fire_interval = 1.0
+attack_range = 200.0
+splash_radius = 200.0
+souls_needed = 8
+release_minions = 3
+minion = ExtResource("m_pit_skeleton_3")
+
+[sub_resource type="Resource" id="Evo_1"]
+script = ExtResource("4_evo")
+id = &"death_knell"
+display_name = "Death Knell"
+description = "The blast also slows every enemy it reaches to half speed for 3 s."
+cost = 420
+damage = 150
+fire_interval = 1.0
+attack_range = 200.0
+splash_radius = 200.0
+souls_needed = 8
+slow_factor = 0.5
+slow_duration = 3.0
+
+[resource]
+script = ExtResource("2_data")
+scene = ExtResource("1_scene")
+frames = ExtResource("5_frames")
+id = &"ossuary"
+display_name = "Ossuary"
+description = "Gathers the souls of the dead within its reach; when it holds enough it releases them in a blast."
+cost = 100
+attack_range = 200.0
+damage = 80
+fire_interval = 1.0
+splash_radius = 200.0
+muzzle_offset = Vector2(0, -50)
+glow_color = Color(0.34, 0.72, 0.57, 1)
+kind = 5
+souls_needed = 12
+tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
+evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
+synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])

@@ -1,6 +1,6 @@
 # M9: Heroes & Relics (design proposal)
 
-> **Status: approved (section 10). Stages 1 and 2 built; 3-4 to do.** The numbers are starting points
+> **Status: approved (section 10). Stages 1, 2 and 3 built; 4 to do.** The numbers are starting points
 > for the balance tools (`map_balance.gd`, `balance_report.gd`).
 
 ## 0. Summary
@@ -282,3 +282,32 @@ playtest build `m9-playtest-1`.
   cleared per run, Knight 5.1 (target: within +-20%).
 - **Not yet:** Falcon's Hood (comes with the combo evolutions, stage 4), the Knight's new cards and relics and
   Bulwark, the War Room portrait, the `HeroAttack` split (the bolt is a branch in `Hero` for now).
+
+**Stage 3 as built** (the Necromancer; the allies layer approved in Q3):
+- **Layer 9 `allies`** (bit 256): `Minion` bodies sit on it; every enemy's `AttackRange` mask is now 258
+  (hero + allies), so enemies stop to fight skeletons and their blows hit the minion's Hurtbox. Hero-only
+  systems (build prompt, marsh water, bones) keep masking layer 2. CLAUDE.md's layer table is updated.
+- **`MinionData`** (`data/minions/`), **`Minion`** (`entities/minions/`: seeks the nearest enemy near its anchor,
+  strikes with a Hitbox on `hero_hitbox`, expires after its lifetime, may burst) and **`MinionPool`**
+  (`systems/minion_pool.gd`, made by `Level._ready`: counts minions per raiser, caps, health scale). The
+  pool is created in code rather than listed in the two level scenes; `TowerBuilder.minion_pool` is set by it.
+- **Hero:** `data/heroes/necromancer.tres` (80 HP, speed 195, soul bolt 6 every 0.45 s, range 220); a kill her
+  bolt lands raises a skeleton there (`Hero.slew`, `Level._raise_for_hero`), up to 3 (+ Gravecaller).
+- **Towers** (`TowerData.Kind` PIT, BEAM, OSSUARY): Bone Pit (Charnel Gate: 150 HP knights; Plague Pit:
+  bombers, 50 damage on falling), Soul Siphon (`TowerBeam`: damage per second, +50% over 3 s on one enemy,
+  ignores shields; Soul Harvester mends the fortress 1 HP per kill, 10 a wave; Wither Beam burns a second
+  enemy), Ossuary (souls from every death in reach via `TowerBuilder.enemy_died`; the blast at 12 / 10 / 8
+  souls; Death Knell slows, Bone Storm raises 3 skeletons). Pair bonuses: Fresh bones, Shelled souls, Bone meal.
+- **Cards:** Bone Armour, Gravecaller, Soul Feast, Dark Bargain; relic Reliquary of Bones (a skeleton's kill
+  counts as a second soul). War Room: 90 shards, needs chapter 2 reached.
+- **Changed from the proposal:** Charnel Gate's knights do not taunt (enemies pick targets by who entered
+  their range last; a taunt would need a targeting rule of its own); the Bone Pit and Ossuary numbers were
+  raised after the balance tool (Bone Pit 6 s / 3 skeletons of 50 HP at level 1, 4 s / 4 of 75 at level 3;
+  Ossuary 12 / 10 / 8 souls for 80 / 110 / 150) because the first numbers cleared 3.6 rows against the
+  Knight's 5.1.
+- **Balance** (`map_balance.gd --seeds=1-8 --hero-kind=...`): Knight 5.1, Huntress 5.6, Necromancer 5.0 rows
+  per run. With Archers only (`--plan="all archer"`) the heroes themselves clear 6.4 / 7.2 / 6.8.
+- **Performance** (`perf_report.gd --necromancer`, 1080p window, vsync off, chapter 1's last wave, ten towers,
+  four Bone Pits): 250 fps average, 113 fps 1% low.
+- **Not yet:** Grave Crown and Falcon's Hood with the combo evolutions (stage 4); the Knight's new cards,
+  relics and Bulwark.

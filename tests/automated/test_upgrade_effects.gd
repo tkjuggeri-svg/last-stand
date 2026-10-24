@@ -6,6 +6,7 @@ extends SceneTree
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const HUNTRESS: HeroData = preload("res://data/heroes/huntress.tres")
+const NECROMANCER: HeroData = preload("res://data/heroes/necromancer.tres")
 const ARENA: String = "res://levels/prototype_arena.tscn"
 const UPGRADES_DIR: String = "res://data/upgrades"
 const ENEMY_SCENE: PackedScene = preload("res://entities/enemies/enemy.tscn")
@@ -27,9 +28,10 @@ func _initialize() -> void:
 	quit(_failures)
 
 
-## The Huntress's cards are only offered to her (apply_hero); test_huntress checks them.
+## The new heroes' cards are only offered to them (apply_hero); test_huntress and test_necromancer
+## check them.
 func _hero_only(id: StringName) -> bool:
-	return HUNTRESS.exclusive_cards.any(func(card: UpgradeData) -> bool: return card.id == id)
+	return [HUNTRESS, NECROMANCER].any(func(hero: HeroData) -> bool: return hero.exclusive_cards.any(func(card: UpgradeData) -> bool: return card.id == id))
 
 
 func _test_pool() -> void:
@@ -60,7 +62,7 @@ func _test_pool() -> void:
 	for id: StringName in _pool:
 		linked = linked and (_hero_only(id) or offered.any(func(d: UpgradeData) -> bool: return d.id == id))
 	var shared: int = _pool.keys().filter(func(id: StringName) -> bool: return not _hero_only(id)).size()
-	_check("the level offers every upgrade (the Huntress's own come with her, test_huntress)", linked and offered.size() == shared)
+	_check("the level offers every upgrade (the new heroes' own come with them)", linked and offered.size() == shared)
 	level.free()
 
 

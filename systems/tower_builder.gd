@@ -13,6 +13,8 @@ signal tower_sold(slot: BuildSlot, refund: int)
 signal build_failed(slot: BuildSlot, data: TowerData, reason: String)
 signal tower_upgraded(slot: BuildSlot, tower: Tower, level: int)
 signal upgrade_failed(slot: BuildSlot, reason: String)
+## A tower's beam killed an enemy (the Level heals the fortress for a Soul Harvester).
+signal tower_slew(tower: Tower, enemy: Enemy)
 signal tower_evolved(slot: BuildSlot, tower: Tower, evolution: TowerEvolution)
 
 const NOT_ENOUGH_GOLD: String = "Not enough gold"
@@ -34,6 +36,8 @@ const TWIN_RANGE: float = 330.0
 @export var slots_root: Node
 ## The towers that can be built, in menu order.
 @export var catalog: Array[TowerData] = []
+## Where Bone Pits and Ossuaries raise skeletons (set by the Level, which makes the pool).
+var minion_pool: MinionPool
 @export_range(0.0, 1.0) var sell_refund_ratio: float = 0.5
 
 ## What the run may use (M8 unlocks: which towers may evolve); null = everything.
@@ -222,6 +226,13 @@ func _aura_range_for(tower: Tower, towers: Array[Tower]) -> float:
 	return bonus
 
 
+## An enemy died at `at`: every Ossuary within its reach takes `souls` souls.
+func enemy_died(at: Vector2, souls: int = 1) -> void:
+	for tower: Tower in get_towers():
+		if tower.data.kind == TowerData.Kind.OSSUARY and tower.global_position.distance_to(at) <= tower.get_attack_range():
+			tower.add_souls(souls)
+
+
 ## How much more damage a hero at `point` deals under the Watchtowers in reach (0 = none; the best counts).
 func hero_bonus_at(point: Vector2) -> float:
 	var bonus: float = 0.0
@@ -245,6 +256,8 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
 	tower.modifiers = modifiers
+	tower.minion_pool = minion_pool
+	tower.slew.connect(func(t: Tower, enemy: Enemy) -> void: tower_slew.emit(t, enemy))
 	tower.invested = cost
 	slot.place(tower)
 	refresh_boosts()

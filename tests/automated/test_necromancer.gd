@@ -12,6 +12,12 @@ const NECRO: HeroData = preload("res://data/heroes/necromancer.tres")
 const SKELETON: MinionData = preload("res://data/minions/skeleton.tres")
 const GHOUL: EnemyData = preload("res://data/enemies/ghoul.tres")
 const BOARD: UnlockBoard = preload("res://data/meta/unlock_board.tres")
+const BONE_ARMOUR: UpgradeData = preload("res://data/upgrades/bone_armour.tres")
+const GRAVECALLER: UpgradeData = preload("res://data/upgrades/gravecaller.tres")
+const SOUL_FEAST: UpgradeData = preload("res://data/upgrades/soul_feast.tres")
+const DARK_BARGAIN: UpgradeData = preload("res://data/upgrades/dark_bargain.tres")
+const RELIQUARY: RelicData = preload("res://data/relics/reliquary_of_bones.tres")
+const OSSUARY: TowerData = preload("res://data/towers/ossuary.tres")
 const RUN: RunData = preload("res://data/run/run.tres")
 
 var _failures: int = 0
@@ -22,6 +28,7 @@ func _initialize() -> void:
 	await _test_raise_on_kill()
 	await _test_fighting()
 	await _test_expiry_and_burst()
+	await _test_cards()
 	_test_unlock()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -108,6 +115,53 @@ func _test_expiry_and_burst() -> void:
 	carrier.get_health().take_damage(1000)
 	await _frames(20)
 	_check("a bomber bursts when it falls: 40 damage around it (%d of 200)" % near.get_health().current_health, near.get_health().current_health <= 160)
+	level.queue_free()
+	await process_frame
+
+
+func _test_cards() -> void:
+	var level: Level = _level()
+	await _frames(2)
+	var hero: Hero = level.get_node("Hero")
+	var offers: UpgradeOffers = level.offers
+	_check("her offers hold her four cards and her relic, not the sword cards or the Huntress's", offers.pool.has(BONE_ARMOUR) and offers.pool.has(GRAVECALLER)
+		and offers.pool.has(SOUL_FEAST) and offers.pool.has(DARK_BARGAIN) and offers.relic_pool.has(RELIQUARY)
+		and not offers.pool.has(preload("res://data/upgrades/honed_blade.tres")) and not offers.pool.has(preload("res://data/upgrades/barbed_bolts.tres")))
+	level.modifiers.add_upgrade(BONE_ARMOUR)
+	var skeleton: Minion = level.minions.raise(SKELETON, Vector2(-250, 100), hero, 9, hero)
+	_check("Bone Armour: skeletons have 45 HP", skeleton.get_health().max_health == 45)
+	level.modifiers.add_upgrade(GRAVECALLER)
+	_check("Gravecaller: 4 skeletons of hers at once", RunModifiers.value_int(level.modifiers, NECRO.raise_cap, [RunModifiers.MINION_CAP]) == 4)
+	hero.health.take_damage(40)
+	var hp: int = hero.health.current_health
+	level.modifiers.add_upgrade(SOUL_FEAST)
+	skeleton.get_health().take_damage(1000)
+	await _frames(5)
+	_check("Soul Feast: a fallen skeleton heals her 5 (%d to %d)" % [hp, hero.health.current_health], hero.health.current_health == hp + 5)
+	level.modifiers.add_upgrade(DARK_BARGAIN)
+	_check("Dark Bargain: 40%% more damage, 20 less max HP (%d, %d)" % [(hero.get_node("%AttackHitbox") as Hitbox).damage, hero.health.max_health],
+		(hero.get_node("%AttackHitbox") as Hitbox).damage == 8 and hero.health.max_health == 60)
+	level.queue_free()
+	await process_frame
+	level = _level()
+	await _frames(2)
+	(level.get_node("%Economy") as Economy).earn(5000, Economy.Source.KILL)
+	var slot: BuildSlot = level.builder.get_slots()[3]
+	level.builder.build(slot, OSSUARY)
+	await _frames(int(OSSUARY.build_time * 60.0) + 2)
+	var ossuary: Tower = slot.tower
+	hero = level.get_node("Hero")
+	# Enemies placed by hand never come from the spawner, so its own soul for a death is absent here:
+	# what is counted is only the Reliquary's extra one.
+	var first: Enemy = _enemy(level, ossuary.global_position + Vector2(60, 0), 6)
+	level.minions.raise(SKELETON, first.global_position + Vector2(-20, 0), hero, 3, hero)
+	await _frames(120)
+	_check("without the Reliquary a skeleton's kill gives an Ossuary nothing extra", (not is_instance_valid(first) or not first.is_alive()) and ossuary.get_souls() == 0)
+	level.modifiers.add_upgrade(RELIQUARY)
+	var second: Enemy = _enemy(level, ossuary.global_position + Vector2(60, 40), 6)
+	level.minions.raise(SKELETON, second.global_position + Vector2(-20, 0), hero, 3, hero)
+	await _frames(120)
+	_check("with it, one more soul (%d)" % ossuary.get_souls(), (not is_instance_valid(second) or not second.is_alive()) and ossuary.get_souls() == 1)
 	level.queue_free()
 	await process_frame
 

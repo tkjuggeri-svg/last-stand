@@ -3,12 +3,26 @@
 [ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
 [ext_resource type="Resource" path="res://data/heroes/necromancer.tres" id="r_hero"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="s_tower"]
+[ext_resource type="Resource" path="res://data/towers/bone_pit.tres" id="r_pit"]
+[ext_resource type="Resource" path="res://data/towers/soul_siphon.tres" id="r_siphon"]
+[ext_resource type="Resource" path="res://data/towers/ossuary.tres" id="r_ossuary"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="s_card"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="s_relic"]
+[ext_resource type="Resource" path="res://data/upgrades/bone_armour.tres" id="r_c1"]
+[ext_resource type="Resource" path="res://data/upgrades/gravecaller.tres" id="r_c2"]
+[ext_resource type="Resource" path="res://data/upgrades/soul_feast.tres" id="r_c3"]
+[ext_resource type="Resource" path="res://data/upgrades/dark_bargain.tres" id="r_c4"]
+[ext_resource type="Resource" path="res://data/relics/reliquary_of_bones.tres" id="r_rel"]
 
 [resource]
 script = ExtResource("1_unlock")
 id = &"hero_necromancer"
 display_name = "The Necromancer"
-description = "A new hero: a soul bolt whose kills raise skeletons to fight for you. Not stronger, different."
+description = "A new hero: a soul bolt whose kills raise skeletons to fight for you, and the Bone Pit, Soul Siphon and Ossuary, four cards and a relic. Not stronger, different."
 cost = 90
 requires_first = "chapter:Chapter 2 reached"
 heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])
+towers = Array[ExtResource("s_tower")]([ExtResource("r_pit"), ExtResource("r_siphon"), ExtResource("r_ossuary")])
+cards = Array[ExtResource("s_card")]([ExtResource("r_c1"), ExtResource("r_c2"), ExtResource("r_c3"), ExtResource("r_c4")])
+relics = Array[ExtResource("s_relic")]([ExtResource("r_rel")])

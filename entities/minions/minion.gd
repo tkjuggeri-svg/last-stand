@@ -157,7 +157,7 @@ func _on_died() -> void:
 		burst.setup(data.burst_damage, data.burst_radius)
 		burst.top_level = true
 		burst.position = global_position
-		get_parent().add_child(burst)
+		get_parent().add_child.call_deferred(burst)  # it fell inside a physics callback
 	_sprite.play(&"death")
 	_sprite.animation_finished.connect(queue_free)
 

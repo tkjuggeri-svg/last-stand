@@ -37,6 +37,18 @@ extends Resource
 @export var boss_hold: float = 0.0
 @export var patch_dps: float = 0.0
 @export var patch_time: float = 0.0
+## Bone Pit: the skeleton it raises and how many of its own may stand at once.
+@export var minion: MinionData
+@export var minion_cap: int = 0
+## Soul Siphon: the beam's ramp (more damage over ramp_time s on the same enemy) and how many burn at once;
+## soul_heal: the fortress heals this much per kill by the beam (Soul Harvester; 10 a wave at most).
+@export var ramp_bonus: float = 0.0
+@export var ramp_time: float = 3.0
+@export var beam_targets: int = 1
+@export var soul_heal: int = 0
+## Ossuary: souls to release its blast, and the skeletons the release raises (Bone Storm).
+@export var souls_needed: int = 0
+@export var release_minions: int = 0
 ## Watchtower: how far its aura reaches (0: as far as it attacks).
 @export var aura_radius: float = 0.0
 ## Watchtower: towers within its aura have this much more range (0.15 = +15%).
@@ -91,6 +103,14 @@ func describe_changes(before: TowerTier) -> String:
 		parts.append("Snare holds %.1f s → %.1f s" % [before.snare_hold, snare_hold])
 	if not is_equal_approx(aura_range_bonus, before.aura_range_bonus):
 		parts.append("Towers nearby +%d%% range" % roundi(aura_range_bonus * 100.0))
+	if minion_cap != before.minion_cap:
+		parts.append("%d skeletons at a time" % minion_cap)
+	if minion != null and before.minion != null and minion.max_health != before.minion.max_health:
+		parts.append("Skeleton HP %d → %d" % [before.minion.max_health, minion.max_health])
+	if beam_targets > before.beam_targets:
+		parts.append("Burns %d enemies" % beam_targets)
+	if souls_needed != before.souls_needed:
+		parts.append("Blast after %d souls" % souls_needed)
 	if large_blast and not before.large_blast:
 		parts.append("Heavy shells")
 	return ", ".join(parts)

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MinionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/minion_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"pit_bomber"
+display_name = "Plague Bomber"
+max_health = 75
+damage = 7
+attack_cooldown = 0.9
+move_speed = 110.0
+lifetime = 25.0
+burst_damage = 50
+burst_radius = 70.0

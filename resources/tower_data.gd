@@ -4,9 +4,11 @@ extends Resource
 ## The fields below are level 1; `tiers` holds the upgrades (levels 2, 3, ...), each with its price and
 ## full stats. Gameplay reads a level's stats through stats_for().
 
-## What the tower does: shoots (the default; the Hawk Perch too), lays snares (Trap Layer) or only lifts
-## the towers around it (Watchtower: it shoots only once an evolution gives it damage).
-enum Kind { SHOOTER, TRAP, AURA }
+## What the tower does: shoots (the default; the Hawk Perch too), lays snares (Trap Layer), only lifts
+## the towers around it (Watchtower: it shoots only once an evolution gives it damage), raises skeletons
+## (Bone Pit), burns one enemy with a beam (Soul Siphon: `damage` is damage per second) or gathers the
+## souls of the dead nearby and releases them in a blast (Ossuary).
+enum Kind { SHOOTER, TRAP, AURA, PIT, BEAM, OSSUARY }
 
 ## Selects the tower's animations ("<id>_idle", "<id>_fire", "<id>_build"; upgraded levels add
 ## "_2" / "_3": "<id>_idle_2").
@@ -77,6 +79,18 @@ enum Kind { SHOOTER, TRAP, AURA }
 ## Watchtower: a hero within its aura deals this much more damage.
 @export var hero_bonus: float = 0.0
 
+@export_group("Necromancer (level 1)")
+## Bone Pit: the skeleton it raises and how many of its own may stand.
+@export var minion: MinionData
+@export var minion_cap: int = 0
+## Soul Siphon: the beam gains `ramp_bonus` more damage over `ramp_time` s on one enemy; beam_targets
+## enemies burn at once.
+@export var ramp_bonus: float = 0.0
+@export var ramp_time: float = 3.0
+@export var beam_targets: int = 1
+## Ossuary: souls it needs to release its blast.
+@export var souls_needed: int = 0
+
 @export_group("Upgrades")
 ## Level 2, 3, ... in order.
 @export var tiers: Array[TowerTier] = []
@@ -113,6 +127,12 @@ func stats_for(level: int) -> TowerTier:
 		_level_one.snares = snares
 		_level_one.snare_hold = snare_hold
 		_level_one.boss_hold = boss_hold
+		_level_one.minion = minion
+		_level_one.minion_cap = minion_cap
+		_level_one.ramp_bonus = ramp_bonus
+		_level_one.ramp_time = ramp_time
+		_level_one.beam_targets = beam_targets
+		_level_one.souls_needed = souls_needed
 		_level_one.aura_radius = aura_radius
 		_level_one.aura_range_bonus = aura_range_bonus
 		_level_one.hero_bonus = hero_bonus

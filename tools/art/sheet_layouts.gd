@@ -607,7 +607,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {
@@ -651,6 +651,51 @@ const HUNTRESS_TOWERS: Dictionary = {
 		["signal_fire_fire", 33, 4, 12.0, false],
 		["marksmans_roost_idle", 34, 4, 5.0, true],
 		["marksmans_roost_fire", 35, 4, 12.0, false],
+	],
+}
+
+## The Necromancer's towers (M9, necro_towers_art.gd): the Huntress's towers' layout.
+const NECRO_TOWERS: Dictionary = {
+	"png": "res://assets/sprites/towers/necro_towers.png",
+	"frames": "res://entities/towers/necro_tower_frames.tres",
+	"size": Vector2i(64, 96),
+	"anims": [
+		["bone_pit_idle", 0, 4, 5.0, true],
+		["bone_pit_fire", 1, 4, 12.0, false],
+		["bone_pit_build", 2, 6, 10.0, false],
+		["bone_pit_sell", 3, 6, 10.0, false],
+		["bone_pit_idle_2", 4, 4, 5.0, true],
+		["bone_pit_fire_2", 5, 4, 12.0, false],
+		["bone_pit_idle_3", 6, 4, 5.0, true],
+		["bone_pit_fire_3", 7, 4, 12.0, false],
+		["charnel_gate_idle", 8, 4, 5.0, true],
+		["charnel_gate_fire", 9, 4, 12.0, false],
+		["plague_pit_idle", 10, 4, 5.0, true],
+		["plague_pit_fire", 11, 4, 12.0, false],
+		["soul_siphon_idle", 12, 4, 5.0, true],
+		["soul_siphon_fire", 13, 4, 12.0, false],
+		["soul_siphon_build", 14, 6, 10.0, false],
+		["soul_siphon_sell", 15, 6, 10.0, false],
+		["soul_siphon_idle_2", 16, 4, 5.0, true],
+		["soul_siphon_fire_2", 17, 4, 12.0, false],
+		["soul_siphon_idle_3", 18, 4, 5.0, true],
+		["soul_siphon_fire_3", 19, 4, 12.0, false],
+		["soul_harvester_idle", 20, 4, 5.0, true],
+		["soul_harvester_fire", 21, 4, 12.0, false],
+		["wither_beam_idle", 22, 4, 5.0, true],
+		["wither_beam_fire", 23, 4, 12.0, false],
+		["ossuary_idle", 24, 4, 5.0, true],
+		["ossuary_fire", 25, 4, 12.0, false],
+		["ossuary_build", 26, 6, 10.0, false],
+		["ossuary_sell", 27, 6, 10.0, false],
+		["ossuary_idle_2", 28, 4, 5.0, true],
+		["ossuary_fire_2", 29, 4, 12.0, false],
+		["ossuary_idle_3", 30, 4, 5.0, true],
+		["ossuary_fire_3", 31, 4, 12.0, false],
+		["bone_storm_idle", 32, 4, 5.0, true],
+		["bone_storm_fire", 33, 4, 12.0, false],
+		["death_knell_idle", 34, 4, 5.0, true],
+		["death_knell_fire", 35, 4, 12.0, false],
 	],
 }
 

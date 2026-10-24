@@ -3,7 +3,7 @@ extends SceneTree
 ## not a pass/fail test): where it ended (won, or lost in chapter c at row r), the fights and waves
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
-##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress] [--quiet]
+##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--quiet]
 ##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
@@ -61,6 +61,14 @@ const HUNTRESS_PLANS: Dictionary = {
 	"drowned_marsh": [["archer", 4], ["cannon", 1], ["trap_layer", 3], ["hawk_perch", 5], ["watchtower", 0], ["hawk_perch", 2],
 		["trap_layer", 6]],
 }
+const NECRO_PLANS: Dictionary = {
+	"prototype_arena": [["archer", 4], ["bone_pit", 9], ["ossuary", 7], ["archer", 8], ["soul_siphon", 5], ["bone_pit", 2],
+		["ossuary", 6], ["cannon", 0], ["soul_siphon", 3], ["bone_pit", 1]],
+	"drowned_marsh": [["archer", 4], ["cannon", 1], ["bone_pit", 3], ["soul_siphon", 5], ["ossuary", 0], ["bone_pit", 2],
+		["soul_siphon", 6]],
+}
+## The "mixed" plan of each new hero (--hero-kind).
+const HERO_PLANS: Dictionary = {"huntress": HUNTRESS_PLANS, "necromancer": NECRO_PLANS}
 const EARLY_BUILDS: int = 6
 ## The bot's relic ranking (best first): what helps a bot that doesn't play around trade-offs.
 const RELIC_PREFERENCE: Array[StringName] = [&"twin_banners", &"glass_banner", &"phoenix_feather", &"drowned_bell",
@@ -273,8 +281,8 @@ func _describe(level: Level) -> String:
 
 ## The plan's builds on this level: a hand-made one, "all <tower>" or "braziers first".
 func _plan_for(level_name: String) -> Array:
-	if _hero_kind == "huntress" and _plan_name == "mixed":
-		return HUNTRESS_PLANS[level_name]
+	if HERO_PLANS.has(_hero_kind) and _plan_name == "mixed":
+		return HERO_PLANS[_hero_kind][level_name]
 	if PLANS.has(_plan_name):
 		return PLANS[_plan_name][level_name]
 	var mixed: Array = PLANS["mixed"][level_name]

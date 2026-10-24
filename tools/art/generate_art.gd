@@ -14,6 +14,7 @@ const HeroArt: GDScript = preload("res://tools/art/hero_art.gd")
 const HuntressArt: GDScript = preload("res://tools/art/huntress_art.gd")
 const NecromancerArt: GDScript = preload("res://tools/art/necromancer_art.gd")
 const SkeletonArt: GDScript = preload("res://tools/art/skeleton_art.gd")
+const NecroTowersArt: GDScript = preload("res://tools/art/necro_towers_art.gd")
 const HuntressTowersArt: GDScript = preload("res://tools/art/huntress_towers_art.gd")
 const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
 const HoundArt: GDScript = preload("res://tools/art/hound_art.gd")
@@ -59,6 +60,7 @@ func _initialize() -> void:
 		"skeleton": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).sheet_rows(), Layouts.SKELETON["size"]), Layouts.SKELETON["png"]),
 		"soul_bolt": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).soul_bolt_rows(), Layouts.SOUL_BOLT["size"]), Layouts.SOUL_BOLT["png"]),
 		"huntress_towers": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS["size"]), Layouts.HUNTRESS_TOWERS["png"]),
+		"necro_towers": func() -> void: _save(_sheet(NecroTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.NECRO_TOWERS["size"]), Layouts.NECRO_TOWERS["png"]),
 		"huntress_fx": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).fx_rows(), Layouts.HUNTRESS_FX["size"]), Layouts.HUNTRESS_FX["png"]),
 		"swing": func() -> void: _save(_sheet(EffectsArt.new().swing_rows(), Layouts.SWING["size"]), Layouts.SWING["png"]),
 		"swing_long": func() -> void: _save(_sheet(EffectsArt.new().swing_long_rows(), Layouts.SWING_LONG["size"]), Layouts.SWING_LONG["png"]),

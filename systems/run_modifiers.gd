@@ -33,6 +33,8 @@ const HERO_MARK_TIME: StringName = &"hero.mark_time"
 ## The Necromancer's minions: more health (a share), and more of them at once (flat, her own raised ones).
 const MINION_HEALTH: StringName = &"minion.health"
 const MINION_CAP: StringName = &"minion.cap"
+## Soul Feast: HP the hero regains whenever a skeleton of hers falls.
+const HERO_SOUL_FEAST: StringName = &"hero.soul_feast"
 const TOWER_DAMAGE: StringName = &"damage"
 const TOWER_FIRE_INTERVAL: StringName = &"fire_interval"
 const TOWER_RANGE: StringName = &"range"
@@ -83,6 +85,8 @@ const RELIC_IRON_TITHE: StringName = &"iron_tithe"
 const RELIC_SECOND_OATH: StringName = &"second_oath"
 ## Hero: every 5th bolt is a fan of three.
 const RELIC_QUIVER: StringName = &"quiver_of_plenty"
+## Ossuaries: a kill by a skeleton counts twice.
+const RELIC_RELIQUARY: StringName = &"reliquary_of_bones"
 
 var _taken: Array[UpgradeData] = []
 var _flat: Dictionary = {}

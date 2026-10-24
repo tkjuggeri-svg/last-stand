@@ -22,6 +22,8 @@ const GOLD_TEXT_COLOR: Color = UiColors.GOLD
 ## Where an enemy's damage number starts, from its feet.
 const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -44)
 ## A boss's death: the game runs at this speed for this many real seconds, and the camera shakes.
+## The most fortress HP Soul Harvesters mend in a wave.
+const SOUL_HEAL_CAP: int = 10
 const BOSS_HIT_STOP_SCALE: float = 0.25
 const BOSS_HIT_STOP_TIME: float = 0.5
 const BOSS_SHAKE: float = 8.0
@@ -47,6 +49,8 @@ var minions: MinionPool
 var _run_over: bool = false
 var _encounter_mode: bool = false
 ## True while a previous chapter's upgrades are put back (their instant effects already happened).
+## Fortress HP mended by Soul Harvesters this wave (SOUL_HEAL_CAP at most).
+var _soul_healed: int = 0
 var _carrying_in: bool = false
 var _reward: FightReward
 ## Canvas layers that were showing when the level was set inactive (shown again on activation).
@@ -67,6 +71,7 @@ func _ready() -> void:
 		modifiers.upgrade_added.connect(_on_upgrade_added)
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
+		spawner.wave_started.connect(func(_n: int) -> void: _soul_healed = 0)
 		spawner.enemy_spawned.connect(func(enemy: Enemy) -> void: enemy.damage_reported.connect(_show_damage))
 
 
@@ -76,6 +81,11 @@ func _make_minion_pool() -> void:
 	minions.parent_node = _effects
 	minions.modifiers = modifiers
 	add_child(minions)
+	if builder != null:
+		builder.minion_pool = minions
+		builder.tower_slew.connect(_on_tower_slew)
+	minions.minion_fell.connect(_on_minion_fell)
+	minions.minion_struck.connect(_on_minion_struck)
 
 
 func _exit_tree() -> void:
@@ -149,6 +159,30 @@ func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 		hero.damage_bonus_at = builder.hero_bonus_at
 		if hero_data.raise_minion != null:
 			hero.slew.connect(func(at: Vector2) -> void: _raise_for_hero(hero, hero_data, at))
+
+
+## Soul Feast: a skeleton of the hero's fell, and she regains HP.
+func _on_minion_fell(minion: Minion) -> void:
+	var hero: Hero = minion.anchor as Hero if is_instance_valid(minion.anchor) else null
+	var heal: int = RunModifiers.value_int(modifiers, 0, [RunModifiers.HERO_SOUL_FEAST])
+	if hero != null and heal > 0 and not hero.health.is_dead():
+		hero.health.heal(heal)
+
+
+## The Reliquary of Bones: a kill by a skeleton gives an Ossuary's soul a second time.
+func _on_minion_struck(_minion: Minion, enemy: Enemy, killed: bool) -> void:
+	if killed and builder != null and RunModifiers.relic(modifiers, RunModifiers.RELIC_RELIQUARY):
+		builder.enemy_died(enemy.global_position)
+
+
+## A Soul Harvester's beam killed: the fortress mends a little (a few a wave).
+func _on_tower_slew(tower: Tower, _enemy: Enemy) -> void:
+	var heal: int = tower.get_stats().soul_heal
+	if heal <= 0 or fortress == null or _soul_healed >= SOUL_HEAL_CAP:
+		return
+	var healed: int = mini(heal, SOUL_HEAL_CAP - _soul_healed)
+	_soul_healed += healed
+	fortress.health.heal(healed)
 
 
 ## A kill by the hero's bolt raises a skeleton where the enemy fell (up to the hero's cap).
@@ -274,6 +308,8 @@ func _stop() -> bool:
 
 
 func _on_enemy_killed(enemy: Enemy) -> void:
+	if builder != null:
+		builder.enemy_died(enemy.global_position)  # Ossuaries gather its soul
 	var at: Vector2 = _effects.to_local(enemy.global_position)
 	if enemy.data.death_effect != null:
 		var effect: Node2D = enemy.data.death_effect.instantiate()

@@ -37,7 +37,7 @@ func _test_data() -> void:
 		for synergy: TowerSynergy in data.synergies:
 			good = good and ids.has(synergy.partner_id) and synergy.partner_id != data.id and not synergy.display_name.is_empty() \
 				and not synergy.describe_bonus().is_empty() and synergy.reach > 0.0
-	_check("each of the %d towers (but the Watchtower) has one pair bonus, with another real tower" % all.size(), good and all.size() == 8)
+	_check("each of the %d towers (but the Watchtower) has one pair bonus, with another real tower" % all.size(), good and all.size() == 11)
 
 
 func _test_rules() -> void:

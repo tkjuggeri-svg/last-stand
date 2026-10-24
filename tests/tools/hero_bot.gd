@@ -12,7 +12,7 @@ const CLOSE_ENOUGH: float = 40.0
 ## Dash away when HP drops below this share and an enemy is this close.
 const LOW_HEALTH: float = 0.35
 const DANGER_RANGE: float = 70.0
-## A ranged hero (the Huntress) keeps this far from the nearest enemy: backs off inside the first, walks
+## A ranged hero (the Huntress, the Necromancer: her kills raise skeletons) keeps this far from the nearest enemy: backs off inside the first, walks
 ## up outside the second, and shoots whatever is furthest along its lane within bolt range.
 const KITE_MIN: float = 150.0
 const KITE_MAX: float = 260.0

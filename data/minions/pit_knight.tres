@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MinionData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/minion_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"pit_knight"
+display_name = "Bone Knight"
+max_health = 150
+damage = 9
+attack_cooldown = 0.9
+move_speed = 110.0
+lifetime = 25.0
+burst_damage = 0
+burst_radius = 0.0

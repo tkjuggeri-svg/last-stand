@@ -33,10 +33,19 @@ func _init(resolution: int = 1) -> void:
 	detail = resolution
 
 
+## The towers of this sheet, and the evolutions of one (a subclass draws other towers on the same layout).
+func kinds() -> Array[String]:
+	return TOWERS
+
+
+func evolutions_of(kind: String) -> Array:
+	return EVOLUTIONS[kind]
+
+
 ## Rows in the order of sheet_layouts.HUNTRESS_TOWERS.
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
-	for kind: String in TOWERS:
+	for kind: String in kinds():
 		rows.append(_row(kind, 1, "idle"))
 		rows.append(_row(kind, 1, "fire"))
 		rows.append(_build_row(kind, false))
@@ -44,7 +53,7 @@ func sheet_rows() -> Array[Array]:
 		for level: int in [2, 3]:
 			rows.append(_row(kind, level, "idle"))
 			rows.append(_row(kind, level, "fire"))
-		for evolution: String in EVOLUTIONS[kind]:
+		for evolution: String in evolutions_of(kind):
 			rows.append(_row(kind, 3, "idle", evolution))
 			rows.append(_row(kind, 3, "fire", evolution))
 	return rows
