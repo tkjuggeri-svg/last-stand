@@ -26,6 +26,10 @@ const HERO_LIVES: StringName = &"hero.lives"
 const HERO_DASH_COOLDOWN: StringName = &"hero.dash_cooldown"
 ## Damage per second of the burning ground a dash leaves (0 = no trail).
 const HERO_DASH_TRAIL: StringName = &"hero.dash_trail"
+## The Huntress's bolt: extra enemies it passes through, and her Mark's bonus and duration.
+const HERO_BOLT_PIERCE: StringName = &"hero.bolt_pierce"
+const HERO_MARK_BONUS: StringName = &"hero.mark_bonus"
+const HERO_MARK_TIME: StringName = &"hero.mark_time"
 const TOWER_DAMAGE: StringName = &"damage"
 const TOWER_FIRE_INTERVAL: StringName = &"fire_interval"
 const TOWER_RANGE: StringName = &"range"
@@ -53,6 +57,8 @@ const MERCHANT_PRICES: StringName = &"economy.merchant_prices"
 const QUARTERMASTER_PRICES: StringName = &"economy.quartermaster_prices"
 ## How long a tower's burning ground lasts.
 const TOWER_BURN_DURATION: StringName = &"burn_duration"
+## How long a Trap Layer's snare holds.
+const TOWER_SNARE_HOLD: StringName = &"snare_hold"
 ## Instant effects (UpgradeData.instant_effect): heal the fortress by effect_amount of its max HP.
 const INSTANT_REPAIR_FORTRESS: StringName = &"repair_fortress"
 # Relic rules (RelicData.rule), carried out by RelicEffects and the systems named.
@@ -72,6 +78,8 @@ const RELIC_DROWNED_BELL: StringName = &"drowned_bell"
 ## Fortress: no repairs of any kind.
 const RELIC_IRON_TITHE: StringName = &"iron_tithe"
 const RELIC_SECOND_OATH: StringName = &"second_oath"
+## Hero: every 5th bolt is a fan of three.
+const RELIC_QUIVER: StringName = &"quiver_of_plenty"
 
 var _taken: Array[UpgradeData] = []
 var _flat: Dictionary = {}

@@ -305,6 +305,7 @@ func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
 	stats.attack_range = modifiers.apply(base.attack_range * (1.0 + _aura_range), RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
 	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
+	stats.snare_hold = modifiers.apply(base.snare_hold, RunModifiers.tower_stats(RunModifiers.TOWER_SNARE_HOLD, data.id))
 	stats.burn_dps = modifiers.apply(base.burn_dps, RunModifiers.tower_stats(RunModifiers.TOWER_BURN, data.id))
 	stats.burn_duration = modifiers.apply(base.burn_duration, RunModifiers.tower_stats(RunModifiers.TOWER_BURN_DURATION, data.id))
 

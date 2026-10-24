@@ -12,6 +12,12 @@ const CLOSE_ENOUGH: float = 40.0
 ## Dash away when HP drops below this share and an enemy is this close.
 const LOW_HEALTH: float = 0.35
 const DANGER_RANGE: float = 70.0
+## A ranged hero (the Huntress) keeps this far from the nearest enemy: backs off inside the first, walks
+## up outside the second, and shoots whatever is furthest along its lane within bolt range.
+const KITE_MIN: float = 150.0
+const KITE_MAX: float = 260.0
+## Shoot only this far inside the bolt's range.
+const BOLT_MARGIN: float = 20.0
 ## Where it waits between waves.
 const HOME: Vector2 = Vector2(-90, 80)
 
@@ -34,6 +40,9 @@ func step(modifiers: RunModifiers) -> void:
 	if enemies.is_empty():
 		_walk_to(HOME, 8.0)
 		return
+	if _hero.data != null and _hero.data.attack_kind == HeroData.AttackKind.BOLT:
+		_step_ranged(enemies)
+		return
 	var nearest: Enemy = _nearest(enemies)
 	var hp: float = float(_hero.health.current_health) / _hero.health.max_health
 	if hp < LOW_HEALTH:
@@ -48,6 +57,35 @@ func step(modifiers: RunModifiers) -> void:
 	# Swing at anything in reach (the target, or something in the way).
 	if nearest.global_position.distance_to(_hero.global_position) <= SWING_RANGE * _reach:
 		_hero.attack(nearest.global_position)
+
+
+## The ranged policy: kite at KITE_MIN to KITE_MAX from the nearest enemy, loose bolts at the leader.
+func _step_ranged(enemies: Array[Enemy]) -> void:
+	var nearest: Enemy = _nearest(enemies)
+	var distance: float = nearest.global_position.distance_to(_hero.global_position)
+	var hp: float = float(_hero.health.current_health) / _hero.health.max_health
+	if hp < LOW_HEALTH and distance < DANGER_RANGE:
+		_hero.dash(_hero.global_position - nearest.global_position)
+	if distance < KITE_MIN or hp < LOW_HEALTH:
+		_steer((_hero.global_position - nearest.global_position).normalized() if hp >= LOW_HEALTH
+			else (HOME - _hero.global_position).normalized())
+	else:
+		_walk_to(_leader(enemies).global_position, KITE_MAX)
+	var reach: float = _hero.data.bolt_range * _reach - BOLT_MARGIN
+	var aim: Enemy = _leader(enemies)
+	if aim.global_position.distance_to(_hero.global_position) > reach:
+		aim = nearest
+	if aim.global_position.distance_to(_hero.global_position) <= reach:
+		_hero.attack(aim.global_position)
+
+
+## The enemy furthest along its lane.
+func _leader(enemies: Array[Enemy]) -> Enemy:
+	var best: Enemy = enemies[0]
+	for enemy: Enemy in enemies:
+		if enemy.get_lane_progress() > best.get_lane_progress():
+			best = enemy
+	return best
 
 
 ## Lets go of every key (call when the run ends).

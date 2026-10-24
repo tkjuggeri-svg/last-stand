@@ -28,6 +28,9 @@ const BOLT_SCENE: PackedScene = preload("res://entities/hero/hero_bolt.tscn")
 ## Where a bolt leaves the crossbow: this far (px) along the aim, at chest height.
 const MUZZLE_DISTANCE: float = 18.0
 const MUZZLE_HEIGHT: float = -14.0
+## Quiver of Plenty: every this-many bolts is a fan of three, the side ones this far (rad) off the aim.
+const QUIVER_EVERY: int = 5
+const QUIVER_FAN: float = 0.21
 const REACH_TIERS: Array[float] = [1.0, 1.15, 1.3, 1.45, 1.6]
 const BLINKS_PER_SECOND: float = 6.0
 ## Game feel (M8.5, display only): a landed hit and a hit taken stop time this long (s) and shake the
@@ -52,6 +55,7 @@ const DEATH_SHAKE: Vector2 = Vector2(5.0, 0.4)
 
 ## Extra damage the hero deals where it stands, as a share (a Watchtower's: set by the Level).
 var damage_bonus_at: Callable = Callable()
+var _bolts_fired: int = 0
 var _attack_time_left: float = 0.0
 ## The last direction the hero moved in: a dash from standing still goes this way.
 var _last_direction: Vector2 = Vector2.DOWN
@@ -133,16 +137,28 @@ func attack(target_position: Vector2) -> void:
 
 ## The Huntress's attack: a bolt along the aim, her animation and no sword arc.
 func _fire_bolt(direction: Vector2) -> void:
-	var bolt: HeroBolt = BOLT_SCENE.instantiate()
 	var aim: Vector2 = direction.normalized() if not direction.is_zero_approx() else Vector2.DOWN
-	var bonus: float = float(damage_bonus_at.call(global_position)) if damage_bonus_at.is_valid() else 0.0
-	bolt.launch(global_position + Vector2(0, MUZZLE_HEIGHT) + aim * MUZZLE_DISTANCE, aim, roundi(_attack_hitbox.damage * (1.0 + bonus)), data,
-		RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH]))
-	bolt.hit.connect(_on_bolt_hit)
-	add_child(bolt)
+	_bolts_fired += 1
+	_loose_bolt(aim)
+	if RunModifiers.relic(modifiers, RunModifiers.RELIC_QUIVER) and _bolts_fired % QUIVER_EVERY == 0:
+		_loose_bolt(aim.rotated(QUIVER_FAN))
+		_loose_bolt(aim.rotated(-QUIVER_FAN))
 	_sprite.face(aim)
 	_sprite.play_state("attack", true)
 	Sfx.play(self, &"hero_bolt")
+
+
+## One bolt along `aim`, with the run's upgrades (range, pierce, Mark) and a Watchtower's bonus.
+func _loose_bolt(aim: Vector2) -> void:
+	var bolt: HeroBolt = BOLT_SCENE.instantiate()
+	var bonus: float = float(damage_bonus_at.call(global_position)) if damage_bonus_at.is_valid() else 0.0
+	bolt.reach_scale = RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH])
+	bolt.extra_pierce = RunModifiers.value_int(modifiers, 0, [RunModifiers.HERO_BOLT_PIERCE])
+	bolt.mark_bonus = RunModifiers.value(modifiers, data.mark_bonus, [RunModifiers.HERO_MARK_BONUS])
+	bolt.mark_time = RunModifiers.value(modifiers, data.mark_time, [RunModifiers.HERO_MARK_TIME])
+	bolt.launch(global_position + Vector2(0, MUZZLE_HEIGHT) + aim * MUZZLE_DISTANCE, aim, roundi(_attack_hitbox.damage * (1.0 + bonus)), data)
+	bolt.hit.connect(_on_bolt_hit)
+	add_child(bolt)
 
 
 ## Dashes toward `direction` (zero: the way the hero last moved). Hits are ignored while it lasts.

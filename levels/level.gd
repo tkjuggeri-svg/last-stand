@@ -106,20 +106,33 @@ func carry_in(carry: ChapterCarry, repair: float) -> void:
 	health.set_current_health(carry.fortress_health + (roundi(health.max_health * repair) if fortress.can_repair() else 0))
 
 
-## Sets up the run's hero (M9): the build menu holds the shared towers and this hero's own (the towers
+## Sets up the run's hero (M9): the card and relic offers hold the shared ones and this hero's own (the other heroes' leave them), the build menu holds the shared towers and this hero's own (the towers
 ## exclusive to another hero in `roster` leave it), and the hero's damage rises under Watchtowers.
 func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 	if hero_data == null:
 		return
 	var others: Array[TowerData] = []
+	var other_cards: Array[UpgradeData] = []
+	var other_relics: Array[RelicData] = []
 	for other: HeroData in roster:
 		if other != hero_data:
 			others.append_array(other.exclusive_towers)
+			other_cards.append_array(other.exclusive_cards)
+			other_relics.append_array(other.exclusive_relics)
 	var catalog: Array[TowerData] = builder.catalog.filter(func(t: TowerData) -> bool: return not others.has(t))
 	for tower: TowerData in hero_data.exclusive_towers:
 		if not catalog.has(tower):
 			catalog.append(tower)
 	builder.catalog = catalog
+	if offers != null:
+		offers.pool = offers.pool.filter(func(c: UpgradeData) -> bool: return not other_cards.has(c))
+		for card: UpgradeData in hero_data.exclusive_cards:
+			if not offers.pool.has(card):
+				offers.pool.append(card)
+		offers.relic_pool = offers.relic_pool.filter(func(r: RelicData) -> bool: return not other_relics.has(r))
+		for relic: RelicData in hero_data.exclusive_relics:
+			if not offers.relic_pool.has(relic):
+				offers.relic_pool.append(relic)
 	var hero: Hero = get_node_or_null("Hero") as Hero
 	if hero != null:
 		hero.damage_bonus_at = builder.hero_bonus_at

@@ -99,6 +99,10 @@ func _measures(catalog: Array[TowerData]) -> Dictionary:
 	_measure(m, "hero HP", [RunModifiers.HERO_MAX_HEALTH], HERO["health"], func(s: RunModifiers) -> float: return s.apply(HERO["health"], [RunModifiers.HERO_MAX_HEALTH]))
 	_measure(m, "hero swing time", [RunModifiers.HERO_ATTACK_COOLDOWN], HERO["cooldown"], func(s: RunModifiers) -> float: return s.apply(HERO["cooldown"], [RunModifiers.HERO_ATTACK_COOLDOWN]))
 	_measure(m, "hero reach", [RunModifiers.HERO_REACH], 1.0, func(s: RunModifiers) -> float: return s.apply(1.0, [RunModifiers.HERO_REACH]))
+	# The Huntress's bolt (pierce 1, her Mark 15% for 3 s).
+	_measure(m, "hero bolt enemies hit", [RunModifiers.HERO_BOLT_PIERCE], 2.0, func(s: RunModifiers) -> float: return 2.0 + s.apply_int(0, [RunModifiers.HERO_BOLT_PIERCE]))
+	_measure(m, "hero mark strength", [RunModifiers.HERO_MARK_BONUS, RunModifiers.HERO_MARK_TIME], 0.45, func(s: RunModifiers) -> float:
+		return s.apply(0.15, [RunModifiers.HERO_MARK_BONUS]) * s.apply(3.0, [RunModifiers.HERO_MARK_TIME]))
 	_measure(m, "hero lives", [RunModifiers.HERO_LIVES], HERO["lives"], func(s: RunModifiers) -> float: return s.apply(HERO["lives"], [RunModifiers.HERO_LIVES]))
 	_measure(m, "dash cooldown", [RunModifiers.HERO_DASH_COOLDOWN], HERO["dash"], func(s: RunModifiers) -> float:
 		return maxf(s.apply(HERO["dash"], [RunModifiers.HERO_DASH_COOLDOWN]), HERO["min_dash"]))
@@ -117,6 +121,9 @@ func _measures(catalog: Array[TowerData]) -> Dictionary:
 		if tier.slow_duration > 0.0:
 			_measure(m, "%s slow time" % id, [RunModifiers.TOWER_SLOW_DURATION], tier.slow_duration, func(s: RunModifiers) -> float:
 				return s.apply(tier.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, id)))
+		if tier.snare_hold > 0.0:
+			_measure(m, "%s snare hold" % id, [RunModifiers.TOWER_SNARE_HOLD], tier.snare_hold, func(s: RunModifiers) -> float:
+				return s.apply(tier.snare_hold, RunModifiers.tower_stats(RunModifiers.TOWER_SNARE_HOLD, id)))
 		_measure(m, "%s enemies hit per shot" % id, [RunModifiers.TOWER_PIERCE], 1.0 + tier.pierce, func(s: RunModifiers) -> float:
 			return 1.0 + s.apply_int(tier.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, id)))
 	_measure(m, "fortress HP", [RunModifiers.FORTRESS_MAX_HEALTH], 100.0, func(s: RunModifiers) -> float: return s.apply(100.0, [RunModifiers.FORTRESS_MAX_HEALTH]))

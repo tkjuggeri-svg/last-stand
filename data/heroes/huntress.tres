@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=7 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/huntress_frames.tres" id="2_frames"]
@@ -6,6 +6,13 @@
 [ext_resource type="Resource" path="res://data/towers/trap_layer.tres" id="4_trap"]
 [ext_resource type="Resource" path="res://data/towers/hawk_perch.tres" id="5_hawk"]
 [ext_resource type="Resource" path="res://data/towers/watchtower.tres" id="6_watch"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="7_card"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="8_relic"]
+[ext_resource type="Resource" path="res://data/upgrades/barbed_bolts.tres" id="9_barbed"]
+[ext_resource type="Resource" path="res://data/upgrades/quick_hands.tres" id="10_quick"]
+[ext_resource type="Resource" path="res://data/upgrades/snare_mastery.tres" id="11_snare"]
+[ext_resource type="Resource" path="res://data/upgrades/hunters_mark.tres" id="12_mark"]
+[ext_resource type="Resource" path="res://data/relics/quiver_of_plenty.tres" id="13_quiver"]
 
 [resource]
 script = ExtResource("1_data")
@@ -26,3 +33,5 @@ bolt_pierce = 1
 mark_bonus = 0.15
 mark_time = 3.0
 exclusive_towers = Array[ExtResource("3_tower")]([ExtResource("4_trap"), ExtResource("5_hawk"), ExtResource("6_watch")])
+exclusive_cards = Array[ExtResource("7_card")]([ExtResource("9_barbed"), ExtResource("10_quick"), ExtResource("11_snare"), ExtResource("12_mark")])
+exclusive_relics = Array[ExtResource("8_relic")]([ExtResource("13_quiver")])

@@ -3,7 +3,7 @@ extends SceneTree
 ## not a pass/fail test): where it ended (won, or lost in chapter c at row r), the fights and waves
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
-##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--quiet]
+##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress] [--quiet]
 ##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
@@ -55,6 +55,12 @@ const PLANS: Dictionary = {
 			["frost", 6]],
 	},
 }
+const HUNTRESS_PLANS: Dictionary = {
+	"prototype_arena": [["archer", 4], ["hawk_perch", 9], ["trap_layer", 7], ["archer", 8], ["watchtower", 5], ["hawk_perch", 2],
+		["trap_layer", 6], ["cannon", 0], ["hawk_perch", 3], ["trap_layer", 1]],
+	"drowned_marsh": [["archer", 4], ["cannon", 1], ["trap_layer", 3], ["hawk_perch", 5], ["watchtower", 0], ["hawk_perch", 2],
+		["trap_layer", 6]],
+}
 const EARLY_BUILDS: int = 6
 ## The bot's relic ranking (best first): what helps a bot that doesn't play around trade-offs.
 const RELIC_PREFERENCE: Array[StringName] = [&"twin_banners", &"glass_banner", &"phoenix_feather", &"drowned_bell",
@@ -75,6 +81,8 @@ const MAX_SECONDS: float = 3600.0
 var _path: String = "balanced"
 var _plan_name: String = "mixed"
 var _hero_mode: String = "bot"
+## --hero-kind=knight|huntress: whose run is played (the "mixed" plan then builds that hero's towers).
+var _hero_kind: String = "knight"
 var _quiet: bool = false
 var _protect_ch1: bool = false
 var _trace: bool = false
@@ -105,6 +113,8 @@ func _initialize() -> void:
 			_path = arg.trim_prefix("--path=")
 		elif arg.begins_with("--plan="):
 			_plan_name = arg.trim_prefix("--plan=")
+		elif arg.begins_with("--hero-kind="):
+			_hero_kind = arg.trim_prefix("--hero-kind=")
 		elif arg.begins_with("--hero="):
 			_hero_mode = arg.trim_prefix("--hero=")
 		elif arg == "--quiet":
@@ -143,6 +153,7 @@ func _initialize() -> void:
 func _play(seed_value: int) -> String:
 	if _first_kit:
 		(root.get_node("SaveManager") as SaveManagerNode).profile = SaveProfile.new()
+	(root.get_node("SaveManager") as SaveManagerNode).profile.hero = _hero_kind
 	var main: Node = (load(MAIN) as PackedScene).instantiate()
 	main.set("run_seed", seed_value)
 	root.add_child(main)
@@ -262,6 +273,8 @@ func _describe(level: Level) -> String:
 
 ## The plan's builds on this level: a hand-made one, "all <tower>" or "braziers first".
 func _plan_for(level_name: String) -> Array:
+	if _hero_kind == "huntress" and _plan_name == "mixed":
+		return HUNTRESS_PLANS[level_name]
 	if PLANS.has(_plan_name):
 		return PLANS[_plan_name][level_name]
 	var mixed: Array = PLANS["mixed"][level_name]

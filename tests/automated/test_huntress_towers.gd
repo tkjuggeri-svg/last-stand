@@ -106,6 +106,8 @@ func _test_trap() -> void:
 	traps.throw(tower, bait, stats)
 	bait.free()
 	_check("a lying snare counts toward the limit", traps.count() == 1 and not traps.can_throw(stats))
+	await _frames(2500)  # no one steps on it: it expires and frees a place
+	_check("a snare that is gone frees a place", traps.count() == 0 and traps.can_throw(stats))
 	level.queue_free()
 	await process_frame
 

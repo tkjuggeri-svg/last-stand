@@ -1,6 +1,6 @@
 # M9: Heroes & Relics (design proposal)
 
-> **Status: approved (section 10). Stage 1 built; stages 2-4 to do.** The numbers are starting points
+> **Status: approved (section 10). Stages 1 and 2 built; 3-4 to do.** The numbers are starting points
 > for the balance tools (`map_balance.gd`, `balance_report.gd`).
 
 ## 0. Summary
@@ -259,3 +259,26 @@ playtest build `m9-playtest-1`.
   `HeroAttack` component with `SwordAttack` / `BoltAttack`, `TowerData.kind`, the hero picker with
   locked heroes and prices, and the Knight's Bulwark passive (it changes Knight behaviour, so it comes
   with the Knight cards that raise it).
+
+**Stage 2 as built** (the Huntress; suite passes; the Knight's map-balance rows are identical to before M9):
+- **Hero:** `data/heroes/huntress.tres` (75 HP, speed 215, bolt 9 damage every 0.55 s, range 340, pierces 1,
+  Mark +15% for 3 s). `HeroBolt` (`entities/hero/hero_bolt.gd`) is stopped by shields like a tower's shot.
+  `Hero` fires it when `HeroData.attack_kind` is BOLT. Her sheet comes from `tools/art/huntress_art.gd`
+  (the Knight's poses, other clothes).
+- **Mark:** `EnemyStatus.mark()`; towers' shots and traps deal `marked_damage()` (shots only: blasts,
+  burning ground and arrow rain don't get the bonus yet).
+- **Towers** (`TowerData.kind`: SHOOTER, TRAP, AURA; own sheets via `TowerData.frames`): Trap Layer (`Snare`,
+  held enemies can still fight; Bear Pit, Caltrop Field), Hawk Perch (`from_above` skips shields; Falconer,
+  Eye of the Hunt), Watchtower (aura range for towers, +10% hero damage, Signal Fire, Marksman's Roost: renamed
+  from "Sniper's Nest", which is the Archer's evolution). Trap Layer and Hawk Perch have pair bonuses (Pinned
+  prey, Flushed prey); the Watchtower, a support tower, has none (test relaxed).
+- **Hero catalogs and pools:** `HeroData.exclusive_towers / _cards / _relics`; `Level.apply_hero()` gives the
+  build menu and the offers the shared content plus the hero's own. The Knight's exclusives: Brazier, Frost,
+  Ballista and the four sword cards (Q5).
+- **Cards:** Barbed Bolts, Quick Hands, Snare Mastery, Hunter's Mark; relic: Quiver of Plenty. War Room: the
+  Huntress is one unlock (60 shards, needs the first boss beaten) with her towers, cards and relic; the hero
+  panel cycles the heroes owned.
+- **Balance** (`map_balance.gd --seeds=1-8 --hero-kind=...`, balanced path, plan mixed): Huntress 5.6 rows
+  cleared per run, Knight 5.1 (target: within +-20%).
+- **Not yet:** Falcon's Hood (comes with the combo evolutions, stage 4), the Knight's new cards and relics and
+  Bulwark, the War Room portrait, the `HeroAttack` split (the bolt is a branch in `Hero` for now).

@@ -12,7 +12,11 @@ var _lying: Array[Snare] = []
 
 ## Snares still lying (springing or expiring ones leave the count).
 func count() -> int:
-	_lying = _lying.filter(func(snare: Snare) -> bool: return is_instance_valid(snare))
+	var alive: Array[Snare] = []
+	for snare: Variant in _lying:  # untyped: a sprung snare is already freed
+		if is_instance_valid(snare):
+			alive.append(snare)
+	_lying = alive
 	return _lying.size()
 
 

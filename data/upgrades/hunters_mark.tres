@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="UpgradeData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/upgrades/hunters_mark.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="3_up"]
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("2_mod")
+stat = &"hero.mark_bonus"
+flat = 0.1
+
+[sub_resource type="Resource" id="Mod_1"]
+script = ExtResource("2_mod")
+stat = &"hero.mark_time"
+flat = 2.0
+
+[resource]
+script = ExtResource("3_up")
+id = &"hunters_mark"
+display_name = "Hunter's Mark"
+description = "Your Mark is 10% stronger and lasts 2 s longer."
+icon = ExtResource("1_icon")
+modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0"), SubResource("Mod_1")])

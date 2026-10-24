@@ -12,6 +12,14 @@ const SHIELDBEARER: EnemyData = preload("res://data/enemies/shieldbearer.tres")
 const BOARD: UnlockBoard = preload("res://data/meta/unlock_board.tres")
 const RUN: RunData = preload("res://data/run/run.tres")
 const ARCHER: TowerData = preload("res://data/towers/archer.tres")
+const KNIGHT: HeroData = preload("res://data/heroes/knight.tres")
+const TRAP: TowerData = preload("res://data/towers/trap_layer.tres")
+const BARBED: UpgradeData = preload("res://data/upgrades/barbed_bolts.tres")
+const QUICK: UpgradeData = preload("res://data/upgrades/quick_hands.tres")
+const SNARE_CARD: UpgradeData = preload("res://data/upgrades/snare_mastery.tres")
+const MARK_CARD: UpgradeData = preload("res://data/upgrades/hunters_mark.tres")
+const QUIVER: RelicData = preload("res://data/relics/quiver_of_plenty.tres")
+const HONED: UpgradeData = preload("res://data/upgrades/honed_blade.tres")
 
 var _failures: int = 0
 
@@ -20,6 +28,7 @@ func _initialize() -> void:
 	_test_data()
 	await _test_bolt()
 	await _test_mark_on_towers()
+	await _test_cards()
 	_test_unlock()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -102,6 +111,69 @@ func _test_mark_on_towers() -> void:
 	level.add_child(shot2)
 	await _frames(20)
 	_check("...and the base damage to an unmarked one", full - plain.get_health().current_health == damage)
+	level.queue_free()
+	await process_frame
+
+
+func _test_cards() -> void:
+	var roster: Array[HeroData] = [KNIGHT, HUNTRESS]
+	var level: Level = _level()
+	level.apply_hero(HUNTRESS, roster)
+	await _frames(2)
+	var offers: UpgradeOffers = level.offers
+	_check("her offers hold her four cards and her relic, not the sword cards", offers.pool.has(BARBED) and offers.pool.has(QUICK)
+		and offers.pool.has(SNARE_CARD) and offers.pool.has(MARK_CARD) and offers.relic_pool.has(QUIVER) and not offers.pool.has(HONED))
+	var knight_level: Level = _level()
+	knight_level.apply_hero(KNIGHT, roster)
+	await _frames(2)
+	_check("the Knight's offers hold the sword cards and none of hers", knight_level.offers.pool.has(HONED) and not knight_level.offers.pool.has(BARBED)
+		and not knight_level.offers.relic_pool.has(QUIVER))
+	knight_level.queue_free()
+	var mods: RunModifiers = level.modifiers
+	var hero: Hero = level.get_node("Hero")
+	mods.add_upgrade(QUICK)
+	_check("Quick Hands: a bolt every 0.44 s", is_equal_approx(mods.apply(HUNTRESS.attack_cooldown, [RunModifiers.HERO_ATTACK_COOLDOWN]), 0.44))
+	mods.add_upgrade(BARBED)
+	var line: Array[Enemy] = []
+	for i: int in 4:
+		line.append(_enemy(level, GHOUL, Vector2(-150 + i * 40, 100)))
+	hero.attack(Vector2(200, 100))
+	await _frames(40)
+	var hit: int = line.filter(func(e: Enemy) -> bool: return e.get_health().current_health < e.get_health().max_health).size()
+	_check("Barbed Bolts: a bolt goes through 3 enemies (hit %d of 4)" % hit, hit == 3)
+	mods.add_upgrade(MARK_CARD)
+	await _frames(40)
+	hero.attack(Vector2(200, 100))
+	await _frames(20)
+	_check("Hunter's Mark: +25% for 5 s", is_equal_approx(line[0].get_status().get_mark_bonus(), 0.25))
+	await _frames(240)
+	_check("...and still marked after 4 s", line[0].get_status().is_marked())
+	var tower_level: Level = _level()
+	tower_level.apply_hero(HUNTRESS, roster)
+	await _frames(2)
+	(tower_level.get_node("%Economy") as Economy).earn(1000, Economy.Source.KILL)
+	var slot: BuildSlot = tower_level.builder.get_slots()[3]
+	tower_level.builder.build(slot, TRAP)
+	tower_level.modifiers.add_upgrade(SNARE_CARD)
+	_check("Snare Mastery: a snare holds 1.7 s (%.1f)" % slot.tower.get_stats().snare_hold, is_equal_approx(slot.tower.get_stats().snare_hold, 1.7))
+	tower_level.queue_free()
+	level.queue_free()
+	await process_frame
+	await _test_quiver()
+
+
+## Quiver of Plenty: the fifth bolt is a fan of three.
+func _test_quiver() -> void:
+	var level: Level = _level()
+	await _frames(2)
+	var hero: Hero = level.get_node("Hero")
+	level.modifiers.add_upgrade(QUIVER)
+	var counts: Array[int] = []
+	for _i: int in 5:
+		hero.attack(Vector2(200, 100))
+		counts.append(hero.get_children().filter(func(n: Node) -> bool: return n is HeroBolt and not n.is_queued_for_deletion()).size())
+		await _frames(40)
+	_check("Quiver of Plenty: bolts in the air after each shot %s: the 5th fires 3" % [counts], counts == [1, 1, 1, 1, 3])
 	level.queue_free()
 	await process_frame
 

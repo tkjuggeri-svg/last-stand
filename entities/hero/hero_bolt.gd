@@ -24,16 +24,24 @@ var _hitbox_damage: int = 0
 @onready var _hitbox: Hitbox = %Hitbox
 
 
-## Call before adding it to the tree: where from, which way, how hard and far, and what it marks with.
-func launch(from: Vector2, direction: Vector2, damage: int, data: HeroData, reach_scale: float = 1.0) -> void:
+## Set before adding it to the tree (the run's upgrades): range scale, extra pierce, the Mark's bonus
+## and time (default: the hero data's).
+var reach_scale: float = 1.0
+var extra_pierce: int = 0
+var mark_bonus: float = -1.0
+var mark_time: float = -1.0
+
+
+## Call before adding it to the tree: where from, which way, how hard, and the hero's bolt stats.
+func launch(from: Vector2, direction: Vector2, damage: int, data: HeroData) -> void:
 	top_level = true
 	position = from
 	_direction = direction.normalized() if not direction.is_zero_approx() else Vector2.RIGHT
 	_speed = data.bolt_speed
 	_range_left = data.bolt_range * reach_scale
-	_pierce_left = data.bolt_pierce + 1
-	_mark_bonus = data.mark_bonus
-	_mark_time = data.mark_time
+	_pierce_left = data.bolt_pierce + extra_pierce + 1
+	_mark_bonus = data.mark_bonus if mark_bonus < 0.0 else mark_bonus
+	_mark_time = data.mark_time if mark_time < 0.0 else mark_time
 	_hitbox_damage = damage
 
 

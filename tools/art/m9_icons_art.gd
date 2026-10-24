@@ -1,0 +1,95 @@
+extends RefCounted
+## The M9 card and relic icons (dev-time art generator): 32x32, one subject each on a transparent
+## ground with the 1 px dark outline, light from the top-left. Barbed Bolts, Quick Hands, Snare Mastery,
+## Hunter's Mark (cards) and Quiver of Plenty (relic).
+
+const Canvas: GDScript = preload("res://tools/art/canvas.gd")
+const P: GDScript = preload("res://tools/art/palette.gd")
+
+const SIZE: Vector2i = Vector2i(32, 32)
+## Icon id -> drawing method (and where it is saved).
+const ICONS: Dictionary = {
+	"barbed_bolts": "res://assets/sprites/ui/upgrades/barbed_bolts.png",
+	"quick_hands": "res://assets/sprites/ui/upgrades/quick_hands.png",
+	"snare_mastery": "res://assets/sprites/ui/upgrades/snare_mastery.png",
+	"hunters_mark": "res://assets/sprites/ui/upgrades/hunters_mark.png",
+	"quiver_of_plenty": "res://assets/sprites/ui/relics/quiver_of_plenty.png",
+}
+
+
+func icon(id: String) -> Image:
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	call("_" + id, c)
+	c.finish()
+	return c.image
+
+
+func _bolt(c: Canvas, from: Vector2, to: Vector2) -> void:
+	c.part()
+	c.capsule(from, to, 1.1, P.WOOD, 0.1)
+	var dir: Vector2 = (to - from).normalized()
+	c.part()
+	c.polygon(PackedVector2Array([to + dir * 4.0, to + Vector2(-dir.y, dir.x) * 2.0, to - Vector2(-dir.y, dir.x) * 2.0]), P.STEEL, Vector3(-0.3, -0.4, 1))
+	c.part()
+	var across: Vector2 = Vector2(-dir.y, dir.x)
+	for k: int in 2:
+		var at: Vector2 = from + dir * (1.5 + k * 2.0)
+		c.line(at, at + across * 2.4 - dir * 1.5, P.BANNER[3])
+		c.line(at, at - across * 2.4 - dir * 1.5, P.BANNER[3])
+
+
+func _barbed_bolts(c: Canvas) -> void:
+	_bolt(c, Vector2(5, 26), Vector2(24, 7))
+	c.part()
+	for t: float in [0.5, 0.7]:
+		var at: Vector2 = Vector2(5, 26).lerp(Vector2(24, 7), t)
+		c.line(at, at + Vector2(3, 2.5), P.STEEL[4])
+		c.line(at, at + Vector2(-2.5, -3), P.STEEL[4])
+
+
+func _quick_hands(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(17, 17), Vector2(7, 6.5), P.SKIN, 0.0, 0.1)
+	for k: int in 4:
+		c.capsule(Vector2(14 + k * 3.0, 14), Vector2(14 + k * 3.0, 8 - (k % 2)), 1.4, P.SKIN, 0.1)
+	c.capsule(Vector2(11, 18), Vector2(7, 14), 1.5, P.SKIN, 0.1)
+	c.part(true)
+	for k: int in 3:
+		c.line(Vector2(2, 20 + k * 3), Vector2(8, 20 + k * 3), P.BONE[3])
+
+
+func _snare_mastery(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 19), Vector2(11, 7), P.LEATHER, 0.0, 0.0)
+	c.ellipse(Vector2(16, 19), Vector2(7, 4), P.DIRT, 0.0, -0.3)
+	for k: int in 8:
+		var a: float = TAU * k / 8.0
+		var base: Vector2 = Vector2(16 + cos(a) * 9.0, 19 + sin(a) * 5.5)
+		c.part()
+		c.line(base, base + Vector2(cos(a) * 1.5, sin(a) * 1.0 - 4.0), P.STEEL[4])
+	c.part()
+	c.capsule(Vector2(16, 12), Vector2(16, 6), 1.2, P.LEATHER, 0.0)
+
+
+func _hunters_mark(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 16), Vector2(10, 10), P.TABARD, 0.0, 0.1)
+	c.ellipse(Vector2(16, 16), Vector2(6.5, 6.5), P.DIRT, 0.0, -0.4)
+	c.part()
+	c.rect(Rect2i(15, 2, 2, 28), P.TABARD[4])
+	c.rect(Rect2i(2, 15, 28, 2), P.TABARD[4])
+	c.part()
+	c.ellipse(Vector2(16, 16), Vector2(2, 2), P.GOLD, 0.0, 0.3)
+
+
+func _quiver_of_plenty(c: Canvas) -> void:
+	for k: int in 5:
+		var x: float = 9.0 + k * 3.5
+		c.part()
+		c.line(Vector2(x, 14), Vector2(x - 6.0 + k * 3.0, 3), P.WOOD[4])
+		c.px(roundi(x - 6.0 + k * 3.0), 2, P.STEEL[4])
+	c.part()
+	c.capsule(Vector2(16, 12), Vector2(15, 27), 5.0, P.LEATHER, 0.0)
+	c.part()
+	c.line(Vector2(11, 14), Vector2(20, 14), P.GOLD[2])
+	c.line(Vector2(11.5, 23), Vector2(19.5, 23), P.GOLD[2])

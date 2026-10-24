@@ -20,6 +20,9 @@ enum AttackKind { SWORD, BOLT }
 @export var knockback: float = 12.0
 ## The towers only this hero builds (the build menu shows the shared ones and these).
 @export var exclusive_towers: Array[TowerData] = []
+## The cards and relics only this hero is offered (the other heroes' offers leave them out).
+@export var exclusive_cards: Array[UpgradeData] = []
+@export var exclusive_relics: Array[RelicData] = []
 ## The hero's sprite sheet (null: the scene's own).
 @export var frames: SpriteFrames
 @export var attack_kind: AttackKind = AttackKind.SWORD
