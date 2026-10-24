@@ -1,7 +1,8 @@
 # Art resolution: double the detail? (decide before M10's biome art)
 
-**Status: proposal, not approved, not implemented.** The costs are estimates from the current art code
-and sheets. Nothing changes until the open questions (section 6) are answered.
+**Status: decided by what was built: option A1 with the sharp-bilinear upscale** (section 7). The art
+pack's integration moved the play field to double resolution, the user chose smooth scaling for 1080p,
+and the characters and grounds were redrawn in code at that resolution (`docs/ART_HANDOFF.md`).
 
 ## 0. Summary
 
@@ -160,3 +161,14 @@ separate screens and HUD frames it doesn't.
 | Q4 | If A2: a whole-map view, or bigger maps to keep scrolling? | Try the whole-map view on the Crypt Road first. It might suit a tower defense, but the hero gets small. |
 | Q5 | Should the knight's concept fidelity (soft shading, a real lion) be the target for the play field, or for portraits only? | **Portraits**: at 20×37 art px the play-field knight carries the silhouette and colours, the portrait the detail. |
 | Q6 | Who judges "too low in detail"? | Outside players: the optional itch demo (M8.5) or the next playtest round, before spending a milestone on A. |
+
+## 7. Decisions (after the art pack)
+
+| # | Decision | From |
+|---|---|---|
+| Q1 | **A1**: 1 art px = 1 world px on the 1280×720 base. The art pack delivered most of the world at double resolution; the hero, enemies, bosses and grounds are drawn in code at the same resolution (`Canvas.detail`). | the art pack's integration, the user's "fix it ourselves" |
+| Q2 | Decided before M10, so every new biome is drawn at double resolution. | |
+| Q3 | **1080p with the sharp-bilinear upscale** (`Display`, the main scene: rendered at 2x, filtered down; a setting, on by default). It costs about half the frame rate at 1080p; chapter 1's last wave, every tower evolved, still keeps a 73 fps 1% low on an Intel Iris Xe. | the user ("smooth upscaling") |
+| Q4 | Not applicable (no A2). | |
+| Q5 | The play field gets the detail the double resolution allows (the knight's visor, mail, lion); portraits can still add more. | |
+| Q6 | Outside players judge it at the next playtest. | |

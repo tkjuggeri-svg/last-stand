@@ -4,6 +4,10 @@ extends RefCounted
 ## pixel is snapped to a hand-picked colour ramp, so nothing is ever blurred or anti-aliased.
 ## Each drawn shape belongs to a "part"; finish() darkens a back part where a front part overlaps it
 ## (crisp interior contours) and adds the 1 px dark outline around the whole silhouette.
+## With `detail` > 1 (the double-resolution world sprites, docs/ART_HANDOFF.md) the image is `detail`
+## times bigger: shapes keep their art-pixel coordinates but are rasterised that much finer, single
+## pixels (px, rect, grid, line strokes) become detail x detail blocks, and contours and the outline
+## stay 1 image pixel thin.
 
 const OUTLINE: Color = Color("1a141f")
 const SHADOW: Color = Color(0.0, 0.0, 0.0, 0.34)
@@ -15,7 +19,10 @@ const DIRS_8: Array[Vector2i] = [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1)
 const BAYER_4: Array[int] = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]
 
 var image: Image
+## The image's size in its own pixels (art size x detail).
 var size: Vector2i
+## Image pixels per art pixel.
+var detail: int = 1
 ## How much brighter (+) or darker (-) shading comes out, applied before picking a ramp colour.
 var exposure: float = 0.0
 ## Shifts everything drawn from now on (e.g. a second copy of a figure). Reset it to ZERO after use.
@@ -28,11 +35,12 @@ var _part: int = 0
 var _soft_parts: Dictionary = {}
 
 
-func _init(width: int, height: int) -> void:
-	size = Vector2i(width, height)
-	image = Image.create_empty(width, height, false, Image.FORMAT_RGBA8)
+func _init(width: int, height: int, resolution: int = 1) -> void:
+	detail = resolution
+	size = Vector2i(width, height) * detail
+	image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
 	_owner = PackedInt32Array()
-	_owner.resize(width * height)
+	_owner.resize(size.x * size.y)
 	part()
 
 
@@ -69,7 +77,9 @@ static func light_of(normal: Vector3) -> float:
 
 ## A rounded volume (a squashed sphere): heads, bellies, shoulder plates, bushes.
 ## flat squashes the bulge (0 = sphere, 1 = flat disc lit from the front).
-func ellipse(center: Vector2, radius: Vector2, ramp: Array, flat: float = 0.0, bias: float = 0.0) -> void:
+func ellipse(art_center: Vector2, art_radius: Vector2, ramp: Array, flat: float = 0.0, bias: float = 0.0) -> void:
+	var center: Vector2 = art_center * detail
+	var radius: Vector2 = art_radius * detail
 	for y: int in range(floori(center.y - radius.y), ceili(center.y + radius.y) + 1):
 		for x: int in range(floori(center.x - radius.x), ceili(center.x + radius.x) + 1):
 			var d: Vector2 = (Vector2(x + 0.5, y + 0.5) - center) / radius
@@ -77,11 +87,14 @@ func ellipse(center: Vector2, radius: Vector2, ramp: Array, flat: float = 0.0, b
 			if q > 1.0:
 				continue
 			var normal: Vector3 = Vector3(d.x, d.y, sqrt(1.0 - q) + flat * 2.0)
-			_put(x, y, shade(ramp, light_of(normal) + bias + exposure))
+			_put_fine(x, y, shade(ramp, light_of(normal) + bias + exposure))
 
 
 ## A tube between two points (limbs, swords, poles) shaded around its axis.
-func capsule(a: Vector2, b: Vector2, radius: float, ramp: Array, bias: float = 0.0) -> void:
+func capsule(art_a: Vector2, art_b: Vector2, art_radius: float, ramp: Array, bias: float = 0.0) -> void:
+	var a: Vector2 = art_a * detail
+	var b: Vector2 = art_b * detail
+	var radius: float = art_radius * detail
 	var lo: Vector2 = a.min(b) - Vector2(radius, radius)
 	var hi: Vector2 = a.max(b) + Vector2(radius, radius)
 	for y: int in range(floori(lo.y), ceili(hi.y) + 1):
@@ -92,19 +105,26 @@ func capsule(a: Vector2, b: Vector2, radius: float, ramp: Array, bias: float = 0
 			var q: float = d.length_squared()
 			if q > 1.0:
 				continue
-			_put(x, y, shade(ramp, light_of(Vector3(d.x, d.y, sqrt(1.0 - q))) + bias + exposure))
+			_put_fine(x, y, shade(ramp, light_of(Vector3(d.x, d.y, sqrt(1.0 - q))) + bias + exposure))
 
 
-## A thin hard line (1 px), e.g. a bowstring, a crack, a blade edge.
-func line(a: Vector2, b: Vector2, color: Color) -> void:
-	var steps: int = maxi(ceili(maxf(absf(b.x - a.x), absf(b.y - a.y))), 1)
+## A thin hard line (1 art px), e.g. a bowstring, a crack, a blade edge. A `thin` line is 1 image px
+## wide whatever the detail (fine engraving on a double-resolution sprite).
+func line(a: Vector2, b: Vector2, color: Color, thin: bool = false) -> void:
+	var width: int = 1 if thin else detail
+	var steps: int = maxi(ceili(maxf(absf(b.x - a.x), absf(b.y - a.y)) * detail), 1)
 	for i: int in steps + 1:
-		var p: Vector2 = a.lerp(b, float(i) / steps)
-		_put(floori(p.x), floori(p.y), color)
+		var p: Vector2 = a.lerp(b, float(i) / steps) * detail
+		for dy: int in width:
+			for dx: int in width:
+				_put_fine(floori(p.x - width * 0.5 + 0.5) + dx, floori(p.y - width * 0.5 + 0.5) + dy, color)
 
 
 ## A flat-coloured polygon (cloth, banners, roof planes). Shaded by its own normal if a ramp is given.
-func polygon(points: PackedVector2Array, ramp: Array, normal: Vector3 = Vector3(0, 0, 1), dither: bool = false) -> void:
+func polygon(art_points: PackedVector2Array, ramp: Array, normal: Vector3 = Vector3(0, 0, 1), dither: bool = false) -> void:
+	var points: PackedVector2Array = PackedVector2Array()
+	for p: Vector2 in art_points:
+		points.append(p * detail)
 	var box: Rect2 = Rect2(points[0], Vector2.ZERO)
 	for p: Vector2 in points:
 		box = box.expand(p)
@@ -112,13 +132,18 @@ func polygon(points: PackedVector2Array, ramp: Array, normal: Vector3 = Vector3(
 	for y: int in range(floori(box.position.y), ceili(box.end.y) + 1):
 		for x: int in range(floori(box.position.x), ceili(box.end.x) + 1):
 			if Geometry2D.is_point_in_polygon(Vector2(x + 0.5, y + 0.5), points):
-				_put(x, y, shade(ramp, value, x, y, dither))
+				_put_fine(x, y, shade(ramp, value, x, y, dither))
 
 
 ## A vertical cylinder seen from the 3/4 view: an elliptic top face and a curved front.
 ## Used for towers, columns and barrels. top_ramp may be empty (open top drawn by the caller).
-func cylinder(center_x: float, top_y: float, bottom_y: float, radius: float, cap: float, ramp: Array,
+func cylinder(art_x: float, art_top: float, art_bottom: float, art_radius: float, art_cap: float, ramp: Array,
 		top_ramp: Array = [], dither: bool = true) -> void:
+	var center_x: float = art_x * detail
+	var top_y: float = art_top * detail
+	var bottom_y: float = art_bottom * detail
+	var radius: float = art_radius * detail
+	var cap: float = art_cap * detail
 	for y: int in range(floori(top_y - cap), ceili(bottom_y + cap) + 1):
 		for x: int in range(floori(center_x - radius), ceili(center_x + radius) + 1):
 			var dx: float = (x + 0.5 - center_x) / radius
@@ -130,23 +155,25 @@ func cylinder(center_x: float, top_y: float, bottom_y: float, radius: float, cap
 				continue
 			# The front wall: lit across its curve, a touch darker toward the ground.
 			var value: float = light_of(Vector3(dx, 0.15, bulge)) - 0.12 * (yy - top_y) / maxf(bottom_y - top_y, 1.0)
-			_put(x, y, shade(ramp, value + exposure, x, y, dither))
+			_put_fine(x, y, shade(ramp, value + exposure, x, y, dither))
 	if not top_ramp.is_empty():
-		ellipse(Vector2(center_x, top_y), Vector2(radius, cap), top_ramp, 1.2)
+		ellipse(Vector2(art_x, art_top), Vector2(art_radius, art_cap), top_ramp, 1.2)
 
 
 ## A box seen from the 3/4 view: a lit top face and a darker front (south) face of the given height.
-func block(top: Rect2, height: float, top_ramp: Array, front_ramp: Array, dither: bool = true) -> void:
+func block(art_top: Rect2, art_height: float, top_ramp: Array, front_ramp: Array, dither: bool = true) -> void:
+	var top: Rect2 = Rect2(art_top.position * detail, art_top.size * detail)
+	var height: float = art_height * detail
 	var t: float = light_of(Vector3(0, -0.2, 1)) + exposure
 	for y: int in range(floori(top.position.y), ceili(top.end.y)):
 		for x: int in range(floori(top.position.x), ceili(top.end.x)):
 			var edge: float = 0.08 if x == floori(top.position.x) or y == floori(top.position.y) else 0.0
-			_put(x, y, shade(top_ramp, t + edge, x, y, dither))
+			_put_fine(x, y, shade(top_ramp, t + edge, x, y, dither))
 	var f: float = light_of(Vector3(-0.1, 0.35, 0.9)) + exposure
 	for y: int in range(ceili(top.end.y), ceili(top.end.y + height)):
 		for x: int in range(floori(top.position.x), ceili(top.end.x)):
 			var fade: float = -0.1 * (y - top.end.y) / maxf(height, 1.0)
-			_put(x, y, shade(front_ramp, f + fade, x, y, dither))
+			_put_fine(x, y, shade(front_ramp, f + fade, x, y, dither))
 
 
 ## Fills a rectangle with one colour.
@@ -170,8 +197,28 @@ func grid(rows: Array, at: Vector2i, keys: Dictionary) -> void:
 				_put(at.x + x, at.y + y, keys[key])
 
 
+## A hand-drawn grid in image pixels (detail on a double-resolution sprite): `at` is in art px, each
+## character one image pixel.
+func fine_grid(rows: Array, at: Vector2, keys: Dictionary) -> void:
+	var origin: Vector2i = Vector2i((at * detail).round())
+	for y: int in rows.size():
+		var row: String = rows[y]
+		for x: int in row.length():
+			var key: String = row[x]
+			if key != "." and keys.has(key):
+				_put_fine(origin.x + x, origin.y + y, keys[key])
+
+
+## One image pixel at art position `at` (rounded to the image grid).
+func fine_px(at: Vector2, color: Color) -> void:
+	var f: Vector2i = Vector2i((at * detail).floor())
+	_put_fine(f.x, f.y, color)
+
+
 ## Darkens (amount > 0) or lightens (< 0) the pixels already drawn inside a circle, e.g. scorch marks.
-func tint_circle(center: Vector2, radius: float, color: Color, amount: float) -> void:
+func tint_circle(art_center: Vector2, art_radius: float, color: Color, amount: float) -> void:
+	var center: Vector2 = art_center * detail
+	var radius: float = art_radius * detail
 	for y: int in range(floori(center.y - radius), ceili(center.y + radius) + 1):
 		for x: int in range(floori(center.x - radius), ceili(center.x + radius) + 1):
 			if Vector2(x + 0.5, y + 0.5).distance_to(center) > radius or not _inside(x, y):
@@ -181,19 +228,25 @@ func tint_circle(center: Vector2, radius: float, color: Color, amount: float) ->
 				image.set_pixel(x, y, Color(c.lerp(color, amount), c.a))
 
 
-## Removes pixels (holes, breaches, missing merlons).
+## Removes pixels (holes, breaches, missing merlons): one art pixel.
 func erase(x: int, y: int) -> void:
-	if _inside(x, y):
-		image.set_pixel(x, y, Color(0, 0, 0, 0))
-		_owner[y * size.x + x] = 0
+	for dy: int in detail:
+		for dx: int in detail:
+			var fx: int = x * detail + dx
+			var fy: int = y * detail + dy
+			if _inside(fx, fy):
+				image.set_pixel(fx, fy, Color(0, 0, 0, 0))
+				_owner[fy * size.x + fx] = 0
 
 
+## The colour at the middle of an art pixel.
 func get_color(x: int, y: int) -> Color:
-	return image.get_pixel(x, y) if _inside(x, y) else Color(0, 0, 0, 0)
+	var f: Vector2i = Vector2i(x, y) * detail + Vector2i(Vector2(detail, detail) * 0.5)
+	return image.get_pixelv(f) if _inside(f.x, f.y) else Color(0, 0, 0, 0)
 
 
 func is_filled(x: int, y: int) -> bool:
-	return _inside(x, y) and image.get_pixel(x, y).a > 0.0
+	return get_color(x, y).a > 0.0
 
 
 # ---------------------------------------------------------------- finishing
@@ -207,7 +260,9 @@ func finish(contours: bool = true, outline_color: Color = OUTLINE) -> Image:
 
 
 ## A soft oval ground shadow, only where nothing is drawn yet (call after finish()).
-func ground_shadow(center: Vector2, radius: Vector2, color: Color = SHADOW) -> void:
+func ground_shadow(art_center: Vector2, art_radius: Vector2, color: Color = SHADOW) -> void:
+	var center: Vector2 = art_center * detail
+	var radius: Vector2 = art_radius * detail
 	for y: int in range(floori(center.y - radius.y), ceili(center.y + radius.y) + 1):
 		for x: int in range(floori(center.x - radius.x), ceili(center.x + radius.x) + 1):
 			var d: Vector2 = (Vector2(x + 0.5, y + 0.5) - center) / radius
@@ -252,9 +307,17 @@ func _draw_outline(outline_color: Color) -> void:
 					break
 
 
+## One art pixel (a detail x detail block).
 func _put(x: int, y: int, color: Color) -> void:
-	x += offset.x
-	y += offset.y
+	for dy: int in detail:
+		for dx: int in detail:
+			_put_fine(x * detail + dx, y * detail + dy, color)
+
+
+## One image pixel.
+func _put_fine(x: int, y: int, color: Color) -> void:
+	x += offset.x * detail
+	y += offset.y * detail
 	if not _inside(x, y):
 		return
 	if color.a < 1.0:

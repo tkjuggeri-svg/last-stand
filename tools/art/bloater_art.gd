@@ -18,6 +18,9 @@ const BLOATLING_FEET: Vector2 = Vector2(12, 20)
 const WALK_FRAMES: int = 6
 const ATTACK_FRAMES: int = 6
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
 var _size: Vector2i = BLOATER_SIZE
 var _feet: Vector2 = BLOATER_FEET
 var _k: float = 1.0
@@ -26,7 +29,8 @@ var _eyes: Array[Color] = P.EYES_SPLITTER
 
 
 ## small = the Bloatling.
-func _init(small: bool = false) -> void:
+func _init(small: bool = false, resolution: int = 1) -> void:
+	detail = resolution
 	if small:
 		_size = BLOATLING_SIZE
 		_feet = BLOATLING_FEET
@@ -105,7 +109,7 @@ func _attack_pose(i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, pose: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(_size.x, _size.y)
+	var c: Canvas = Canvas.new(_size.x, _size.y, detail)
 	if facing == "side":
 		_draw_side(c, pose)
 	else:
@@ -245,7 +249,7 @@ func _death_frames() -> Array[Image]:
 
 ## The burst: a gas cloud billowing out and thinning (dithered away), over the flattened husk.
 func _burst(step: int) -> Image:
-	var c: Canvas = Canvas.new(_size.x, _size.y)
+	var c: Canvas = Canvas.new(_size.x, _size.y, detail)
 	# The husk: a burst sack of skin on the ground.
 	c.part()
 	c.ellipse(_at(Vector2(0, -2.5)), Vector2(8.0, 2.6) * _k + Vector2(0.5, 0.4), P.BLOAT.slice(0, 4), 0.0, -0.1)
@@ -253,10 +257,10 @@ func _burst(step: int) -> Image:
 	c.ellipse(_at(Vector2(-2, -3.5)), Vector2(2.4, 1.2) * _k + Vector2(0.3, 0.2), P.BLOAT.slice(1, 5), 0.0, 0.0)
 	c.finish()
 	var img: Image = c.image
-	var centre: Vector2 = _at(Vector2(0, -12.0 - step * 1.5))
-	var radius: float = (10.0 + step * 2.5) * _k
-	for y: int in _size.y:
-		for x: int in _size.x:
+	var centre: Vector2 = _at(Vector2(0, -12.0 - step * 1.5)) * detail
+	var radius: float = (10.0 + step * 2.5) * _k * detail
+	for y: int in c.size.y:
+		for x: int in c.size.x:
 			var d: float = Vector2(x + 0.5, y + 0.5).distance_to(centre) / radius
 			if d > 1.0:
 				continue
@@ -270,6 +274,7 @@ func _burst(step: int) -> Image:
 		for k: int in 6:
 			var a: float = TAU * k / 6.0 + 0.4
 			var p: Vector2i = Vector2i((centre + Vector2(cos(a), sin(a) * 0.7) * radius * 1.1).round())
-			if p.x >= 0 and p.y >= 0 and p.x < _size.x and p.y < _size.y:
-				img.set_pixelv(p, P.BLOAT[3])
+			for f: Vector2i in [p, p + Vector2i(1, 0), p + Vector2i(0, 1), p + Vector2i(1, 1)].slice(0, detail * detail):
+				if f.x >= 0 and f.y >= 0 and f.x < c.size.x and f.y < c.size.y:
+					img.set_pixelv(f, P.BLOAT[3])
 	return img

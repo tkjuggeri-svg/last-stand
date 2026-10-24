@@ -1,6 +1,6 @@
 class_name GameSettings
 ## The player's settings (static, no autoload): window mode, the volume of the Master, Music and SFX
-## audio buses, the screen shake and the damage numbers (M8.5), and the key/mouse bindings of every rebindable action. Saved to a ConfigFile in
+## audio buses, the screen shake and the damage numbers (M8.5), smooth pixel scaling (Display), and the key/mouse bindings of every rebindable action. Saved to a ConfigFile in
 ## user:// on every change; Main loads and applies them at startup. Defaults come from the project
 ## (its input map, full volume, windowed).
 
@@ -23,6 +23,7 @@ static var _fullscreen: bool = false
 static var _volumes: Dictionary = {}
 static var _screen_shake: float = 1.0
 static var _damage_numbers: bool = true
+static var _smooth_scaling: bool = true
 
 
 ## Reads the saved settings (if any) and applies them: window mode, volumes, bindings.
@@ -32,6 +33,7 @@ static func load_and_apply() -> void:
 	_fullscreen = loaded and bool(config.get_value("display", "fullscreen", false))
 	_screen_shake = float(config.get_value("display", "screen_shake", 1.0)) if loaded else 1.0
 	_damage_numbers = bool(config.get_value("display", "damage_numbers", true)) if loaded else true
+	_smooth_scaling = bool(config.get_value("display", "smooth_scaling", true)) if loaded else true
 	for bus: StringName in BUSES:
 		_volumes[bus] = float(config.get_value("audio", String(bus), 1.0)) if loaded else 1.0
 	reset_bindings()
@@ -54,6 +56,7 @@ static func save() -> void:
 	config.set_value("display", "fullscreen", _fullscreen)
 	config.set_value("display", "screen_shake", _screen_shake)
 	config.set_value("display", "damage_numbers", _damage_numbers)
+	config.set_value("display", "smooth_scaling", _smooth_scaling)
 	for bus: StringName in BUSES:
 		config.set_value("audio", String(bus), get_volume(bus))
 	for action: StringName in ACTIONS:
@@ -92,6 +95,17 @@ static func shows_damage_numbers() -> bool:
 
 static func set_damage_numbers(on: bool) -> void:
 	_damage_numbers = on
+	save()
+
+
+## Even, slightly soft pixels at window sizes that aren't a whole multiple of 720p (Display), or the
+## crisp, uneven nearest-neighbour stretch.
+static func smooth_scaling() -> bool:
+	return _smooth_scaling
+
+
+static func set_smooth_scaling(on: bool) -> void:
+	_smooth_scaling = on
 	save()
 
 

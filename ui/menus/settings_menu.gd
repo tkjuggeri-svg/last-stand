@@ -1,6 +1,6 @@
 class_name SettingsMenu
 extends PanelContainer
-## Settings: fullscreen or windowed, screen shake (full, reduced, off) and damage numbers, Master /
+## Settings: fullscreen or windowed, smooth pixel scaling, screen shake (full, reduced, off) and damage numbers, Master /
 ## Music / SFX volume, and two bindings for every
 ## rebindable action (click a binding, then press a key or mouse button; Esc cancels). Every change
 ## is applied and saved at once through GameSettings. UI only: GameSettings owns the rules.
@@ -15,6 +15,7 @@ var _listening_action: StringName = &""
 var _listening_slot: int = 0
 
 @onready var _fullscreen: CheckButton = %Fullscreen
+@onready var _smooth: CheckButton = %SmoothScaling
 @onready var _shake: OptionButton = %ShakeOption
 @onready var _damage_numbers: CheckButton = %DamageNumbers
 @onready var _bindings: GridContainer = %Bindings
@@ -26,6 +27,7 @@ var _listening_slot: int = 0
 func _ready() -> void:
 	hide()
 	_fullscreen.toggled.connect(GameSettings.set_fullscreen)
+	_smooth.toggled.connect(GameSettings.set_smooth_scaling)
 	_shake.item_selected.connect(func(index: int) -> void: GameSettings.set_screen_shake(GameSettings.SHAKE_LEVELS[index]))
 	_damage_numbers.toggled.connect(GameSettings.set_damage_numbers)
 	for bus: StringName in _sliders:
@@ -37,6 +39,7 @@ func _ready() -> void:
 
 func open() -> void:
 	_fullscreen.set_pressed_no_signal(GameSettings.is_fullscreen())
+	_smooth.set_pressed_no_signal(GameSettings.smooth_scaling())
 	_shake.select(maxi(GameSettings.SHAKE_LEVELS.find(GameSettings.get_screen_shake()), 0))
 	_damage_numbers.set_pressed_no_signal(GameSettings.shows_damage_numbers())
 	for bus: StringName in _sliders:

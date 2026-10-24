@@ -7,7 +7,8 @@ Copies the pack's sheets listed in its manifests/layouts-required.json (frame si
 double the game's layouts: checked), the spawn buildings and the title art; rebuilds the two prop
 sheets in the GAME's frame order (the pack's order is only a proposal: PROP_MAP below maps them by
 meaning; a prop the pack lacks is the game's own frame doubled with nearest-neighbour, a marked
-stopgap). Never installs templates/, previews/ or the pack's map grounds (texture bases, not maps).
+stopgap). Never installs templates/, previews/, the pack's map grounds (texture bases, not maps) or its
+characters (hero, enemies, bosses: drawn in code again at the same resolution, see docs/ART_HANDOFF.md).
 Run from the project folder; afterwards: godot --import, build_sprite_frames.gd, the test suite.
 """
 import json
@@ -39,6 +40,9 @@ SINGLES = ["assets/sprites/environment/crypt.png", "assets/sprites/environment/d
            "assets/sprites/ui/title_scene.png"]
 NEVER = ("assets/sprites/environment/prototype_arena_ground.png", "assets/sprites/environment/drowned_marsh_ground.png",
          "assets/sprites/environment/props.png", "assets/sprites/environment/marsh_props.png")
+# Code-drawn at the pack's resolution (tools/art/generate_art.gd, Layouts.FINE): the pack's versions had
+# front-facing side and back views, idle-like attacks and the wrong eye colours.
+CODE_DRAWN = ("assets/sprites/hero/", "assets/sprites/enemies/")
 
 
 def main() -> None:
@@ -48,7 +52,7 @@ def main() -> None:
     installed = []
     for sheet in sheets:
         path = sheet["path"]
-        if path in NEVER:
+        if path in NEVER or path.startswith(CODE_DRAWN):
             continue
         src = pack / path
         image = Image.open(src)

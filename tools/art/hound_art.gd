@@ -14,6 +14,14 @@ const RUN_FRAMES: int = 6
 const ATTACK_FRAMES: int = 6
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 ## Rows in the order of sheet_layouts.HOUND.
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
@@ -113,7 +121,7 @@ func frame(facing: String, pose: Dictionary) -> Image:
 
 
 func _draw(facing: String, pose: Dictionary) -> Canvas:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	match facing:
 		"down":
 			_draw_front(c, pose)
@@ -360,8 +368,8 @@ func _death_frames() -> Array[Image]:
 	frames.append(lying)
 	for step: int in 3:
 		var dissolving: Image = lying.duplicate() as Image
-		Undead.crumble(dissolving, step)
-		Undead.soul(dissolving, step, Vector2(17, 23))
+		Undead.crumble(dissolving, step, detail)
+		Undead.soul(dissolving, step, Vector2(17, 23), 1.0, detail)
 		frames.append(dissolving)
 	return frames
 
@@ -380,8 +388,8 @@ func _lying() -> Image:
 	var used: Rect2i = body.get_used_rect()
 	var region: Image = body.get_region(used)
 	region.resize(used.size.x, maxi(roundi(used.size.y * 0.62), 1), Image.INTERPOLATE_NEAREST)
-	var out: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var out: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	out.image.blend_rect(region, Rect2i(Vector2i.ZERO, region.get_size()),
-		Vector2i(floori((SIZE.x - region.get_width()) / 2.0), int(FEET.y) + 1 - region.get_height()))
+		Vector2i(floori((out.size.x - region.get_width()) / 2.0), (int(FEET.y) + 1) * detail - region.get_height()))
 	out.ground_shadow(Vector2(16, FEET.y - 1), Vector2(11, 2.2))
 	return out.image

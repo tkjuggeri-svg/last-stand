@@ -17,6 +17,14 @@ const ATTACK_FRAMES: int = 6
 const HEAL_FRAMES: int = 6
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 ## Rows in the order of sheet_layouts.MIRE_PRIEST.
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
@@ -105,7 +113,7 @@ func _heal_pose(facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, pose: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	var side: bool = facing == "side"
 	var hand: Vector2 = (pose["hand"] as Vector2) + Vector2(0, -float(pose["lift"])) + (pose["body"] as Vector2)
 	# The staff: from the ground beside it, up through the hand, to a crooked hook above the head.
@@ -218,9 +226,13 @@ func _soft(img: Image, hook: Vector2, pose: Dictionary) -> void:
 			_plot(img, Vector2i((Vector2(16, 22) + Vector2(cos(a) * r, sin(a) * r * 0.5)).round()), Color(P.SOUL[4] if k % 2 == 0 else P.SOUL[3], 0.9 - ring * 0.3))
 
 
+## One art pixel `p` (a detail x detail block of the image).
 func _plot(img: Image, p: Vector2i, color: Color) -> void:
-	if p.x >= 0 and p.y >= 0 and p.x < img.get_width() and p.y < img.get_height():
-		img.set_pixelv(p, color)
+	for dy: int in detail:
+		for dx: int in detail:
+			var f: Vector2i = p * detail + Vector2i(dx, dy)
+			if f.x >= 0 and f.y >= 0 and f.x < img.get_width() and f.y < img.get_height():
+				img.set_pixelv(f, color)
 
 
 # ---------------------------------------------------------------- death
@@ -246,7 +258,7 @@ func _death_frames() -> Array[Image]:
 	frames.append(knelt.duplicate() as Image)
 	for step: int in 3:
 		var dissolving: Image = knelt.duplicate() as Image
-		Undead.crumble(dissolving, step)
-		Undead.soul(dissolving, step, Vector2(16, 20))
+		Undead.crumble(dissolving, step, detail)
+		Undead.soul(dissolving, step, Vector2(16, 20), 1.0, detail)
 		frames.append(dissolving)
 	return frames

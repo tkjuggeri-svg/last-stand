@@ -8,7 +8,8 @@ extends SceneTree
 ## Vsync is switched off so the numbers show the real headroom. --no-towers leaves the whole wave
 ## alive (the worst case for enemies on screen); --empty measures the scene without a wave.
 ## Prints FPS (average, 1% low), process and physics time per frame, and the most enemies and shots
-## on screen at once.
+## on screen at once. --display runs the level inside the game's Display at its smooth scaling (at
+## 1080p: rendered at 2x and filtered down) to measure what that costs.
 
 const TOWERS: Array[int] = [0, 2, 3, 0, 4, 2, 0, 1, 2, 4]  # catalog index per slot (archer, cannon, ...)
 
@@ -20,6 +21,7 @@ var _empty: bool = false
 var _lights: bool = true
 var _chapter_2: bool = false
 var _evolved: bool = false
+var _display: bool = false
 
 
 func _initialize() -> void:
@@ -36,6 +38,8 @@ func _initialize() -> void:
 			_chapter_2 = true
 		elif arg == "--evolved":
 			_evolved = true
+		elif arg == "--display":
+			_display = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var chapter: ChapterData = (load("res://data/run/run.tres") as RunData).chapters[1 if _chapter_2 else 0]
 	var level: Level = chapter.level_scene.instantiate()
@@ -46,7 +50,13 @@ func _initialize() -> void:
 		finale.health_multiplier *= chapter.fight_health_scale
 		spawner.waves = [finale, WaveData.new()]
 	WaveFixtures.no_upgrades(level)
-	root.add_child(level)
+	if _display:
+		var display: Display = (load("res://main/display.tscn") as PackedScene).instantiate()
+		display.content = null
+		root.add_child(display)
+		display.get_game_viewport().add_child(level)
+	else:
+		root.add_child(level)
 	for _i: int in 3:
 		await process_frame
 	(level.get_node("Fortress") as Fortress).health.setup(100000)  # it must not fall mid-measurement

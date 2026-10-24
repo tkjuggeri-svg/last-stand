@@ -22,11 +22,22 @@ text = "Settings"
 horizontal_alignment = 1
 theme_type_variation = &"TitleLabel"
 
-[node name="Fullscreen" type="CheckButton" parent="Margin/Box"]
+[node name="DisplayRow" type="HBoxContainer" parent="Margin/Box"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Fullscreen" type="CheckButton" parent="Margin/Box/DisplayRow"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Fullscreen"
+
+[node name="SmoothScaling" type="CheckButton" parent="Margin/Box/DisplayRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+tooltip_text = "Even pixels at window sizes that aren't a multiple of 720p (slightly soft)"
+text = "Smooth pixels"
 
 [node name="FeelRow" type="HBoxContainer" parent="Margin/Box"]
 layout_mode = 2

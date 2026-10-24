@@ -193,6 +193,7 @@ Built as `m8.5-playtest` (not yet playtested). The optional itch.io demo is left
 ---
 
 ## M9 — Heroes & Relics
+Design: `docs/M9_HEROES.md` (proposal, waiting for answers to its open questions).
 2–3 heroes with distinct playstyles (e.g. the knight, a ranged hero, a summoner) and relics: rare items that change the rules of a run rather than add stats. (Relics were pulled forward into M7.5; M9 adds more of them and hero-specific ones.)
 - [ ] **Each hero has their own towers.** The Archer and the Cannon stay shared by every hero; each hero also has 2–3 **exclusive towers** that fit their playstyle. The Knight (today's hero) keeps the **Brazier**, the **Frost** tower and the **Bone Ballista**. Examples for new heroes (not final):
   - **Hunter** (a ranged hero): **Trap Layer** (traps on the road), **Hawk Perch**.
@@ -208,7 +209,7 @@ Built as `m8.5-playtest` (not yet playtested). The optional itch.io demo is left
 ---
 
 ## M10 — Maps & Biomes
-Before the first new biome: decide the art resolution (proposal `docs/M10_ART_RESOLUTION.md`: keep today's resolution with high-detail close-ups, or redraw everything at double resolution).
+Art resolution decided (`docs/M10_ART_RESOLUTION.md` section 7): every biome is drawn at double resolution (1 art px = 1 world px), like the world since the art pack.
 At least **9 biomes in 3 tiers of 3**: tier 1 for chapter 1 (easy), tier 2 for chapter 2 (medium), tier 3 for a new chapter 3 (hard). Each run picks one biome per tier: at random, or the player chooses between two roads at the end of a chapter. The Graveyard is tier 1 and the Drowned Marsh tier 2 (pulled forward into M7.5).
 Every biome has:
 - its own map and lane layout;
@@ -247,7 +248,7 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M8.5** (demo polish: one UI style, 47 synthesized sound effects, hit-stop / screen shake / damage numbers / knockback, the title key art, colour by enemy role and the grayscale check) is implemented autonomously on top of M8 (with the shard pace adjusted) and built as `m8.5-playtest`; nothing since `m7.5-playtest-3` has been played by hand. Report: `docs/M8_5_BUILD_REPORT.md`. Waiting for playtest feedback; don't start M9.
+**M9** (heroes and relics): the design proposal `docs/M9_HEROES.md` waits for answers to its open questions; nothing is built yet. Before it: the art pack integrated at double resolution, with the characters and grounds redrawn in code and smooth scaling at 1080p (`docs/ART_HANDOFF.md`). M8.5 is built as `m8.5-playtest` (report `docs/M8_5_BUILD_REPORT.md`); nothing since `m7.5-playtest-3` has been played by hand.
 
 ---
 

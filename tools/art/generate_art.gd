@@ -35,9 +35,9 @@ const RelicArt: GDScript = preload("res://tools/art/relic_art.gd")
 const TitleArt: GDScript = preload("res://tools/art/title_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
-## so a regeneration can't overwrite them. Their drawing code stays for reference.
-const HAND_DRAWN: Array[String] = ["hero", "swing", "swing_long", "ghoul", "hound", "brute", "cultist", "cultist_fx",
-	"gravelord", "colossus", "lich", "tollkeeper", "bloater", "bloatling", "mire_priest", "shieldbearer", "spark", "dust",
+## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
+## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
+const HAND_DRAWN: Array[String] = ["swing", "swing_long", "spark", "dust",
 	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
 	"explosion", "explosion_large", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 
@@ -49,22 +49,22 @@ func _initialize() -> void:
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=").split(",")
 	var jobs: Dictionary = {
-		"hero": func() -> void: _save(_sheet(HeroArt.new().sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
+		"hero": func() -> void: _save(_sheet(HeroArt.new(Layouts.FINE).sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
 		"swing": func() -> void: _save(_sheet(EffectsArt.new().swing_rows(), Layouts.SWING["size"]), Layouts.SWING["png"]),
 		"swing_long": func() -> void: _save(_sheet(EffectsArt.new().swing_long_rows(), Layouts.SWING_LONG["size"]), Layouts.SWING_LONG["png"]),
-		"ghoul": func() -> void: _save(_sheet(GhoulArt.new().sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),
-		"hound": func() -> void: _save(_sheet(HoundArt.new().sheet_rows(), Layouts.HOUND["size"]), Layouts.HOUND["png"]),
-		"brute": func() -> void: _save(_sheet(BruteArt.new().sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),
-		"cultist": func() -> void: _save(_sheet(CultistArt.new().sheet_rows(), Layouts.CULTIST["size"]), Layouts.CULTIST["png"]),
-		"cultist_fx": func() -> void: _save(_sheet(CultistArt.new().fx_rows(), Layouts.CULTIST_FX["size"]), Layouts.CULTIST_FX["png"]),
-		"gravelord": func() -> void: _save(_sheet(GravelordArt.new().sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
-		"colossus": func() -> void: _save(_sheet(ColossusArt.new().sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
-		"lich": func() -> void: _save(_sheet(LichArt.new().sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
-		"bloater": func() -> void: _save(_sheet(BloaterArt.new().sheet_rows(), Layouts.BLOATER["size"]), Layouts.BLOATER["png"]),
-		"bloatling": func() -> void: _save(_sheet(BloaterArt.new(true).sheet_rows(), Layouts.BLOATLING["size"]), Layouts.BLOATLING["png"]),
-		"mire_priest": func() -> void: _save(_sheet(MirePriestArt.new().sheet_rows(), Layouts.MIRE_PRIEST["size"]), Layouts.MIRE_PRIEST["png"]),
-		"shieldbearer": func() -> void: _save(_sheet(ShieldbearerArt.new().sheet_rows(), Layouts.SHIELDBEARER["size"]), Layouts.SHIELDBEARER["png"]),
-		"tollkeeper": func() -> void: _save(_sheet(TollkeeperArt.new().sheet_rows(), Layouts.TOLLKEEPER["size"]), Layouts.TOLLKEEPER["png"]),
+		"ghoul": func() -> void: _save(_sheet(GhoulArt.new(Layouts.FINE).sheet_rows(), Layouts.GHOUL["size"]), Layouts.GHOUL["png"]),
+		"hound": func() -> void: _save(_sheet(HoundArt.new(Layouts.FINE).sheet_rows(), Layouts.HOUND["size"]), Layouts.HOUND["png"]),
+		"brute": func() -> void: _save(_sheet(BruteArt.new(Layouts.FINE).sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),
+		"cultist": func() -> void: _save(_sheet(CultistArt.new(Layouts.FINE).sheet_rows(), Layouts.CULTIST["size"]), Layouts.CULTIST["png"]),
+		"cultist_fx": func() -> void: _save(_sheet(CultistArt.new(Layouts.FINE).fx_rows(), Layouts.CULTIST_FX["size"]), Layouts.CULTIST_FX["png"]),
+		"gravelord": func() -> void: _save(_sheet(GravelordArt.new(Layouts.FINE).sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
+		"colossus": func() -> void: _save(_sheet(ColossusArt.new(Layouts.FINE).sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
+		"lich": func() -> void: _save(_sheet(LichArt.new(Layouts.FINE).sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
+		"bloater": func() -> void: _save(_sheet(BloaterArt.new(false, Layouts.FINE).sheet_rows(), Layouts.BLOATER["size"]), Layouts.BLOATER["png"]),
+		"bloatling": func() -> void: _save(_sheet(BloaterArt.new(true, Layouts.FINE).sheet_rows(), Layouts.BLOATLING["size"]), Layouts.BLOATLING["png"]),
+		"mire_priest": func() -> void: _save(_sheet(MirePriestArt.new(Layouts.FINE).sheet_rows(), Layouts.MIRE_PRIEST["size"]), Layouts.MIRE_PRIEST["png"]),
+		"shieldbearer": func() -> void: _save(_sheet(ShieldbearerArt.new(Layouts.FINE).sheet_rows(), Layouts.SHIELDBEARER["size"]), Layouts.SHIELDBEARER["png"]),
+		"tollkeeper": func() -> void: _save(_sheet(TollkeeperArt.new(Layouts.FINE).sheet_rows(), Layouts.TOLLKEEPER["size"]), Layouts.TOLLKEEPER["png"]),
 		"spark": func() -> void: _save(_sheet([EffectsArt.new().spark_frames()], Layouts.HIT_SPARK["size"]), Layouts.HIT_SPARK["png"]),
 		"dust": func() -> void: _save(_sheet([EffectsArt.new().dust_frames()], Layouts.DUST["size"]), Layouts.DUST["png"]),
 		"fortress": func() -> void: _save(_sheet([FortressArt.new().sheet_frames()], Layouts.FORTRESS["size"]), Layouts.FORTRESS["png"]),
@@ -151,7 +151,7 @@ func _ground() -> Image:
 	var floor_node: ColorRect = level.get_node("Floor")
 	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
 	level.free()
-	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+	return EnvironmentArt.new().ground(floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE)
 
 
 ## The Drowned Marsh's ground, baked the same way plus its pools (the Water node's polygons).
@@ -163,7 +163,7 @@ func _marsh_ground() -> Image:
 	var floor_node: ColorRect = level.get_node("Floor")
 	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
 	level.free()
-	return MarshArt.new().ground(floor_rect, lanes, pools, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE))
+	return MarshArt.new().ground(floor_rect, lanes, pools, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE)
 
 
 ## Every Path2D named Lane* as a polyline in level coordinates.

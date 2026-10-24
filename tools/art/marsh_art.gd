@@ -19,13 +19,18 @@ const RIPPLE_SIZE: Vector2i = Vector2i(32, 16)
 const LANE_HALF: float = 8.5
 const BOARDWALK_NEAR: float = 14.0
 
+## Image pixels per art pixel of the ground being baked (set by ground()).
+var detail: int = 1
+
 
 # ---------------------------------------------------------------- ground
 
-## Bakes the floor and the wall band. band and scale are in world px; returns the image in art px.
+## Bakes the floor and the wall band. band and scale are in world px; returns the image in art px, or
+## `fine_px` image pixels per art pixel (the same layout, drawn finer: see EnvironmentArt.ground).
 ## Lanes are polylines and pools polygons, in world px.
 func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[PackedVector2Array], keep_world: Vector2,
-		band: int, scale: float) -> Image:
+		band: int, scale: float, fine_px: int = 1) -> Image:
+	detail = fine_px
 	var origin: Vector2 = floor_rect.position - Vector2(band, band)
 	var size: Vector2i = Vector2i(((floor_rect.size + Vector2(band, band) * 2.0) / scale).round())
 	var floor_art: Rect2i = Rect2i(Vector2i(int(band / scale), int(band / scale)), Vector2i((floor_rect.size / scale).round()))
@@ -47,7 +52,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[Pac
 			box = box.expand(p)
 		pool_boxes.append(box.grow(BOARDWALK_NEAR + 4.0))
 	var keep: Vector2 = (keep_world - origin) / scale
-	var img: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var img: Image = Image.create_empty(size.x * detail, size.y * detail, false, Image.FORMAT_RGBA8)
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 4321
 	var noise: FastNoiseLite = FastNoiseLite.new()
@@ -62,13 +67,16 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[Pac
 
 	var water_field: PackedFloat32Array = PackedFloat32Array()
 	water_field.resize(size.x * size.y)
-	for y: int in size.y:
-		for x: int in size.x:
-			var p: Vector2 = Vector2(x + 0.5, y + 0.5)
-			var n: float = noise.get_noise_2d(x, y)
-			var fine: float = noise.get_noise_2d(x * 3.1, y * 3.1)
+	for y: int in size.y * detail:
+		for x: int in size.x * detail:
+			# p is in art px; x and y are image pixels (dithering and the finest patterns follow them).
+			var p: Vector2 = Vector2(x + 0.5, y + 0.5) / detail
+			var at: Vector2 = Vector2(x, y) / detail
+			var n: float = noise.get_noise_2d(at.x, at.y)
+			var fine: float = noise.get_noise_2d(at.x * 3.1, at.y * 3.1)
 			var water_d: float = _water_distance(p, pools, pool_boxes) + fine * 1.2
-			water_field[y * size.x + x] = water_d
+			if x % detail == 0 and y % detail == 0:
+				water_field[floori(float(y) / detail) * size.x + floori(float(x) / detail)] = water_d
 			var lane_d: float = INF
 			var nearest: Array = lanes[0]
 			var apron_d: float = INF
@@ -84,7 +92,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[Pac
 			var path_d: float = minf(minf(lane_d - LANE_HALF, clearing_d), apron_d)
 			var color: Color
 			if path_d < -0.5:
-				color = _causeway(p, n, lane_d, nearest, keep, water_d, rng)
+				color = _causeway(p, Vector2i(x, y), n, lane_d, nearest, keep, water_d, rng)
 			elif water_d < 0.0:
 				color = _water(x, y, -water_d, n, waves)
 			elif path_d < 1.2:
@@ -93,7 +101,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[Pac
 				# The shore: wet black mud, lighter where it dries.
 				color = Canvas.shade(P.MUD, 0.3 + water_d * 0.2 + n * 0.2, x, y, true)
 			else:
-				var soggy: float = bog.get_noise_2d(x, y)
+				var soggy: float = bog.get_noise_2d(at.x, at.y)
 				var value: float = 0.45 + n * 0.45 + fine * 0.12
 				if soggy > 0.42:
 					# A sodden bog patch: the grass gives way to dark, wet earth.
@@ -117,7 +125,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], pools_world: Array[Pac
 	_shore_reeds(img, water_field, size, lanes, rng)
 	_lily_pads(img, in_water, rng)
 	_grass_details(img, on_land, rng)
-	EnvironmentArt.new().wall_band(img, floor_art)
+	EnvironmentArt.new().wall_band(img, floor_art, detail)
 	return img
 
 
@@ -137,13 +145,14 @@ func _water_distance(p: Vector2, pools: Array[PackedVector2Array], boxes: Array[
 
 
 ## Murky water: dark in the deep middle, lighter in the shallows, with wind ripples catching the light.
+## x and y are image pixels, depth in art px.
 func _water(x: int, y: int, depth: float, n: float, waves: FastNoiseLite) -> Color:
 	var value: float = 0.62 - minf(depth / 16.0, 1.0) * 0.48 + n * 0.08
 	if depth < 2.0:
 		value = 0.7  # the bright line where the water meets the mud
 	var color: Color = Canvas.shade(P.WATER.slice(0, 6), value, x, y, true)
 	# Ripples: short horizontal glints where the wave noise crests (light from the top-left sky).
-	var crest: float = waves.get_noise_2d(x * 0.6, y * 2.2)
+	var crest: float = waves.get_noise_2d(float(x) / detail * 0.6, float(y) / detail * 2.2)
 	if crest > 0.42 and depth > 2.5:
 		color = P.WATER[5] if crest > 0.55 else P.WATER[4]
 	return color
@@ -151,9 +160,10 @@ func _water(x: int, y: int, depth: float, n: float, waves: FastNoiseLite) -> Col
 
 ## The lanes: trodden mud with puddles; boardwalks of planks where they pass close to the water, and
 ## cobbles where they meet the fortress.
-func _causeway(p: Vector2, n: float, lane_d: float, lane: Array, keep: Vector2, water_d: float, rng: RandomNumberGenerator) -> Color:
-	var x: int = int(p.x)
-	var y: int = int(p.y)
+func _causeway(p: Vector2, px: Vector2i, n: float, lane_d: float, lane: Array, keep: Vector2, water_d: float,
+		rng: RandomNumberGenerator) -> Color:
+	var x: int = px.x
+	var y: int = px.y
 	var gate: Vector2 = lane[lane.size() - 1]
 	if p.distance_to(gate + (gate - keep).normalized() * 6.0) < 13.0 and p.distance_to(keep) > 26.0:
 		var cell: Vector2i = Vector2i(floori(p.x / 3.0 + (floori(p.y / 3.0) % 2) * 0.5), floori(p.y / 3.0))
@@ -179,7 +189,7 @@ func _causeway(p: Vector2, n: float, lane_d: float, lane: Array, keep: Vector2, 
 	var color: Color = Canvas.shade(P.DIRT.slice(0, 4), value, x, y, true)
 	if n > 0.38 and lane_d < 5.0:
 		color = P.WATER[3] if n > 0.45 else P.MUD[1]  # puddles in the ruts
-	elif rng.randf() < 0.012:
+	elif rng.randf() < 0.012 / detail:
 		color = P.DIRT[4]  # pebble
 	return color
 
@@ -199,25 +209,25 @@ func _segment_direction(p: Vector2, points: Array) -> Vector2:
 
 ## Reeds stand in clumps along the shore (in the shallows and on the mud), leaning with the wind.
 func _shore_reeds(img: Image, water_field: PackedFloat32Array, size: Vector2i, lanes: Array[Array], rng: RandomNumberGenerator) -> void:
-	for i: int in 2200:
+	for i: int in 2200 * detail:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		var d: float = water_field[int(p.y) * size.x + int(p.x)]
 		if d < -4.0 or d > 3.0:
 			continue
 		if lanes.any(func(lane: Array) -> bool: return _distance_to_polyline(p, lane) < 11.0):
 			continue
-		var tip: Vector2i = Vector2i(p)
-		var height: int = rng.randi_range(2, 5)
+		var tip: Vector2i = Vector2i(p * detail)
+		var height: int = rng.randi_range(2, 5) * detail
 		for k: int in height:
-			var lean: int = 1 if k >= height - 1 and i % 2 == 0 else 0
-			_plot(img, tip + Vector2i(lean, -k), P.REED[1 + mini(k, 3)] if k > 0 else P.REED[0])
+			var lean: int = 1 if k >= height - detail and i % 2 == 0 else 0
+			_plot(img, tip + Vector2i(lean, -k), P.REED[1 + mini(floori(float(k) / detail), 3)] if k > 0 else P.REED[0])
 		if i % 7 == 0:
 			_plot(img, tip + Vector2i(0, -height), P.WOOD[2])  # a cattail head
 
 
 ## Lily pads float in clusters on the open water (never touching the shore).
 func _lily_pads(img: Image, in_water: Callable, rng: RandomNumberGenerator) -> void:
-	var size: Vector2i = img.get_size()
+	var size: Vector2i = Vector2i(Vector2(img.get_size()) / detail)
 	for i: int in 180:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if not in_water.call(p, 5.0):
@@ -226,22 +236,22 @@ func _lily_pads(img: Image, in_water: Callable, rng: RandomNumberGenerator) -> v
 		for k: int in count:
 			var at: Vector2i = Vector2i(p) + Vector2i(rng.randi_range(-4, 4), rng.randi_range(-2, 2))
 			for d: Vector2i in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, -1), Vector2i(1, -1)]:
-				_plot(img, at + d, P.LILY[2])
-			_plot(img, at + Vector2i(-1, -1), P.LILY[3])
-			_plot(img, at + Vector2i(0, 1), P.LILY[0])
-			_plot(img, at + Vector2i(1, 1), P.LILY[0])
+				_plot_art(img, at + d, P.LILY[2])
+			_plot_art(img, at + Vector2i(-1, -1), P.LILY[3])
+			_plot_art(img, at + Vector2i(0, 1), P.LILY[0])
+			_plot_art(img, at + Vector2i(1, 1), P.LILY[0])
 			if rng.randf() < 0.15:
-				_plot(img, at + Vector2i(0, -1), Color("c8c2a8"))  # a pale flower
+				_plot_art(img, at + Vector2i(0, -1), Color("c8c2a8"))  # a pale flower
 
 
 ## Tufts, a few toadstools and twigs on the grass.
 func _grass_details(img: Image, on_land: Callable, rng: RandomNumberGenerator) -> void:
-	var size: Vector2i = img.get_size()
-	for i: int in 2400:
+	var size: Vector2i = Vector2i(Vector2(img.get_size()) / detail)
+	for i: int in 2400 * detail:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if not on_land.call(p):
 			continue
-		var tip: Vector2i = Vector2i(p)
+		var tip: Vector2i = Vector2i(p * detail)
 		_plot(img, tip + Vector2i(0, 1), P.MARSH_GRASS[0])
 		_plot(img, tip, P.MARSH_GRASS[4])
 		_plot(img, tip + Vector2i(1, -1), P.MARSH_GRASS[5])
@@ -252,16 +262,16 @@ func _grass_details(img: Image, on_land: Callable, rng: RandomNumberGenerator) -
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if not on_land.call(p):
 			continue
-		_plot(img, Vector2i(p), Color("b8a888"))  # a pale toadstool cap
-		_plot(img, Vector2i(p) + Vector2i(1, 0), Color("8f8068"))
-		_plot(img, Vector2i(p) + Vector2i(0, 1), P.MARSH_GRASS[0])
+		_plot_art(img, Vector2i(p), Color("b8a888"))  # a pale toadstool cap
+		_plot_art(img, Vector2i(p) + Vector2i(1, 0), Color("8f8068"))
+		_plot_art(img, Vector2i(p) + Vector2i(0, 1), P.MARSH_GRASS[0])
 	for i: int in 30:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if not on_land.call(p):
 			continue
 		var dir: Vector2i = [Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, -1)][rng.randi_range(0, 2)]
-		for step: int in rng.randi_range(3, 5):
-			_plot(img, Vector2i(p) + dir * step, P.DEAD_WOOD[2])
+		for step: int in rng.randi_range(3, 5) * detail:
+			_plot(img, Vector2i(p * detail) + dir * step, P.DEAD_WOOD[2])
 
 
 func _distance_to_polyline(p: Vector2, points: Array) -> float:
@@ -274,6 +284,13 @@ func _distance_to_polyline(p: Vector2, points: Array) -> float:
 func _plot(img: Image, p: Vector2i, color: Color) -> void:
 	if p.x >= 0 and p.y >= 0 and p.x < img.get_width() and p.y < img.get_height():
 		img.set_pixelv(p, color)
+
+
+## One art pixel (a detail x detail block of image pixels).
+func _plot_art(img: Image, p: Vector2i, color: Color) -> void:
+	for dy: int in detail:
+		for dx: int in detail:
+			_plot(img, p * detail + Vector2i(dx, dy), color)
 
 
 # ---------------------------------------------------------------- props

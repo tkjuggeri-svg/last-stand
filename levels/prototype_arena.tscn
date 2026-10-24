@@ -199,9 +199,9 @@ color = Color(0.16, 0.24, 0.14, 1)
 unique_name_in_owner = true
 z_index = -1
 position = Vector2(-932, -532)
-scale = Vector2(2, 2)
 script = ExtResource("36_tiled_ground")
 texture = ExtResource("7_ground")
+tile_size = Vector2i(128, 128)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.64, 0.66, 0.8, 1)

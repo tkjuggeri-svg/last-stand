@@ -16,12 +16,17 @@ const CRYPT_SIZE: Vector2i = Vector2i(64, 64)
 const SLOT_SIZE: Vector2i = Vector2i(28, 20)
 const MOTE_SIZE: Vector2i = Vector2i(4, 4)
 
+## Image pixels per art pixel of the ground being baked (set by ground()).
+var detail: int = 1
+
 
 # ---------------------------------------------------------------- ground
 
-## Bakes the floor and the wall band. band and scale are in world px; returns the image in art px.
-## Each lane is a polyline in world px (from its crypt to the fortress).
-func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, band: int, scale: float) -> Image:
+## Bakes the floor and the wall band. band and scale are in world px; returns the image in art px, or
+## `fine` image pixels per art pixel (the layout is the same; edges, dithering, tufts, ruts and mortar
+## are drawn that much finer). Each lane is a polyline in world px (from its crypt to the fortress).
+func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, band: int, scale: float, fine_px: int = 1) -> Image:
+	detail = fine_px
 	var origin: Vector2 = floor_rect.position - Vector2(band, band)
 	var size: Vector2i = Vector2i(((floor_rect.size + Vector2(band, band) * 2.0) / scale).round())
 	var floor_art: Rect2i = Rect2i(Vector2i(int(band / scale), int(band / scale)), Vector2i((floor_rect.size / scale).round()))
@@ -32,7 +37,7 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, b
 			lane.append((p - origin) / scale)
 		lanes.append(lane)
 	var keep: Vector2 = (keep_world - origin) / scale
-	var img: Image = Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
+	var img: Image = Image.create_empty(size.x * detail, size.y * detail, false, Image.FORMAT_RGBA8)
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = 1234
 	var noise: FastNoiseLite = FastNoiseLite.new()
@@ -45,11 +50,13 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, b
 	moss.seed = 31
 	moss.frequency = 0.03
 
-	for y: int in size.y:
-		for x: int in size.x:
-			var p: Vector2 = Vector2(x + 0.5, y + 0.5)
-			var n: float = noise.get_noise_2d(x, y)
-			var fine: float = noise.get_noise_2d(x * 3.1, y * 3.1)
+	for y: int in size.y * detail:
+		for x: int in size.x * detail:
+			# p is in art px; x and y are image pixels (dithering and the finest patterns follow them).
+			var p: Vector2 = Vector2(x + 0.5, y + 0.5) / detail
+			var at: Vector2 = Vector2(x, y) / detail
+			var n: float = noise.get_noise_2d(at.x, at.y)
+			var fine: float = noise.get_noise_2d(at.x * 3.1, at.y * 3.1)
 			var lane_d: float = INF
 			var apron_d: float = INF
 			var nearest: Array = lanes[0]
@@ -66,12 +73,12 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, b
 			var path_d: float = minf(minf(lane_d - 8.5, clearing_d), apron_d)
 			var color: Color
 			if path_d < -0.5:
-				color = _dirt(p, n, lane_d, nearest, keep, rng)
+				color = _dirt(p, Vector2i(x, y), n, lane_d, nearest, keep, rng)
 			elif path_d < 1.2:
 				color = P.DIRT[1] if (x + y) % 3 != 0 else P.GRASS[1]  # ragged edge where grass meets the path
 			else:
-				var dry: float = patches.get_noise_2d(x, y)
-				var mossy: float = moss.get_noise_2d(x, y)
+				var dry: float = patches.get_noise_2d(at.x, at.y)
+				var mossy: float = moss.get_noise_2d(at.x, at.y)
 				var value: float = 0.45 + n * 0.45 + fine * 0.12
 				if dry > 0.32:
 					color = Canvas.shade(P.GRASS_DRY, value, x, y, true)
@@ -88,14 +95,15 @@ func ground(floor_rect: Rect2, lanes_world: Array[Array], keep_world: Vector2, b
 		return (lanes.any(func(lane: Array) -> bool: return _distance_to_polyline(p, lane) < 12.0) or p.distance_to(keep) < 42.0
 			or not Rect2(floor_art).grow(-3).has_point(p))
 	_grass_details(img, keep_out, rng, patches)
-	wall_band(img, floor_art)
+	wall_band(img, floor_art, detail)
 	return img
 
 
-## Lane and clearing dirt: worn ruts along the lane, pebbles, puddles, cobbles at the gate.
-func _dirt(p: Vector2, n: float, lane_d: float, lane: Array, keep: Vector2, rng: RandomNumberGenerator) -> Color:
-	var x: int = int(p.x)
-	var y: int = int(p.y)
+## Lane and clearing dirt: worn ruts along the lane, pebbles, puddles, cobbles at the gate. p in art px,
+## `px` the image pixel.
+func _dirt(p: Vector2, px: Vector2i, n: float, lane_d: float, lane: Array, keep: Vector2, rng: RandomNumberGenerator) -> Color:
+	var x: int = px.x
+	var y: int = px.y
 	var value: float = 0.5 + n * 0.35
 	# Two cart ruts follow the lane.
 	if lane_d > 2.0 and lane_d < 3.6:
@@ -110,22 +118,24 @@ func _dirt(p: Vector2, n: float, lane_d: float, lane: Array, keep: Vector2, rng:
 		if in_x < 0.28 or in_y < 0.3:
 			return P.DIRT[0]
 		return P.STONE[3] if (cell.x * 7 + cell.y * 3) % 4 != 0 else P.STONE[2]
-	if rng.randf() < 0.014:
+	if rng.randf() < 0.014 / detail:
 		return P.DIRT[5]  # pebble
-	if rng.randf() < 0.01:
+	if rng.randf() < 0.01 / detail:
 		return P.DIRT[0]
 	return color
 
 
 ## Tufts, flowers, twigs and stones on the grass, plus a few scattered bones.
+## Positions are picked in art px; tufts, flowers, twigs and pebbles are drawn in image pixels (finer
+## and more of them at a higher detail), bones at their art size.
 func _grass_details(img: Image, keep_out: Callable, rng: RandomNumberGenerator, patches: FastNoiseLite) -> void:
-	var size: Vector2i = img.get_size()
-	for i: int in 2600:
+	var size: Vector2i = Vector2i(Vector2(img.get_size()) / detail)
+	for i: int in 2600 * detail:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if keep_out.call(p):
 			continue
 		var dry: bool = patches.get_noise_2d(p.x, p.y) > 0.3
-		var tip: Vector2i = Vector2i(p)
+		var tip: Vector2i = Vector2i(p * detail)
 		var light: Color = P.GRASS_DRY[3] if dry else P.GRASS[5]
 		var mid: Color = P.GRASS_DRY[2] if dry else P.GRASS[4]
 		# A small tuft: dark root, lit blades leaning to the right (wind).
@@ -135,32 +145,32 @@ func _grass_details(img: Image, keep_out: Callable, rng: RandomNumberGenerator, 
 		if i % 3 == 0:
 			_plot(img, tip + Vector2i(-1, 0), mid)
 			_plot(img, tip + Vector2i(-1, -1), light if i % 2 == 0 else mid)
-	for i: int in 70:
+	for i: int in 70 * detail:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if keep_out.call(p):
 			continue
 		var bloom: Color = [Color("8a7ea8"), Color("c8c2a8"), Color("9c5a5a")][i % 3]
-		_plot(img, Vector2i(p), bloom)
-		_plot(img, Vector2i(p) + Vector2i(0, 1), P.GRASS[2])
+		_plot(img, Vector2i(p * detail), bloom)
+		_plot(img, Vector2i(p * detail) + Vector2i(0, 1), P.GRASS[2])
 	for i: int in 60:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if not keep_out.call(p):
-			_pebble(img, Vector2i(p), rng.randi_range(1, 2))
+			_pebble(img, Vector2i(p * detail), rng.randi_range(1, 2) * detail)
 	for i: int in 30:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if keep_out.call(p):
 			continue
 		var dir: Vector2i = [Vector2i(1, 0), Vector2i(1, 1), Vector2i(1, -1)][rng.randi_range(0, 2)]
-		for step: int in rng.randi_range(3, 5):
-			_plot(img, Vector2i(p) + dir * step, P.WOOD[1])
-		_plot(img, Vector2i(p) + dir * 2 + Vector2i(0, -1), P.WOOD[2])
+		for step: int in rng.randi_range(3, 5) * detail:
+			_plot(img, Vector2i(p * detail) + dir * step, P.WOOD[1])
+		_plot(img, Vector2i(p * detail) + dir * 2 * detail + Vector2i(0, -1), P.WOOD[2])
 	for i: int in 10:
 		var p: Vector2 = Vector2(rng.randf_range(0, size.x), rng.randf_range(0, size.y))
 		if keep_out.call(p):
 			continue
 		for d: Vector2i in [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(-1, -1), Vector2i(3, 1)]:
-			_plot(img, Vector2i(p) + d, P.BONE[2])
-		_plot(img, Vector2i(p) + Vector2i(1, 1), P.GRASS[0])
+			_plot_art(img, Vector2i(p) + d, P.BONE[2])
+		_plot_art(img, Vector2i(p) + Vector2i(1, 1), P.GRASS[0])
 
 
 func _pebble(img: Image, at: Vector2i, radius: int) -> void:
@@ -176,18 +186,21 @@ func _pebble(img: Image, at: Vector2i, radius: int) -> void:
 ## The arena wall: on the north side its south face shows (3/4 view), elsewhere only its top with
 ## battlements on the inner rim; it casts a shadow onto the floor below and to the right. Every level's
 ## ground uses it (the marsh's too).
-func wall_band(img: Image, floor_art: Rect2i) -> void:
+## `d` = image pixels per art pixel: the courses, flagstones and merlons keep their art size, the
+## mortar, joints and the shadow's steps get finer.
+func wall_band(img: Image, floor_art_px: Rect2i, d: int = 1) -> void:
 	var size: Vector2i = img.get_size()
-	var face_height: int = 9
+	var floor_art: Rect2i = Rect2i(floor_art_px.position * d, floor_art_px.size * d)
+	var face_height: int = 9 * d
 	for y: int in size.y:
 		for x: int in size.x:
 			var p: Vector2i = Vector2i(x, y)
 			if floor_art.has_point(p):
 				# Cast shadow from the north and west walls (light from the top-left).
-				var from_top: int = y - floor_art.position.y
-				var from_left: int = x - floor_art.position.x
-				var from_right: int = floor_art.end.x - 1 - x
-				var from_bottom: int = floor_art.end.y - 1 - y
+				var from_top: float = float(y - floor_art.position.y) / d
+				var from_left: float = float(x - floor_art.position.x) / d
+				var from_right: float = float(floor_art.end.x - 1 - x) / d
+				var from_bottom: float = float(floor_art.end.y - 1 - y) / d
 				var shade: float = 0.0
 				if from_top < 6:
 					shade = maxf(shade, 0.5 - from_top * 0.08)
@@ -199,32 +212,34 @@ func wall_band(img: Image, floor_art: Rect2i) -> void:
 					img.set_pixel(x, y, img.get_pixel(x, y).lerp(P.OUTLINE, shade))
 				continue
 			var color: Color
-			var north: bool = y < floor_art.position.y and x >= floor_art.position.x - 2 and x < floor_art.end.x + 2
+			var north: bool = y < floor_art.position.y and x >= floor_art.position.x - 2 * d and x < floor_art.end.x + 2 * d
 			var rim: int = floor_art.position.y - 1 - y
 			if north and rim < face_height:
 				# The north wall's face: masonry courses, moss at the foot.
 				var row: int = face_height - 1 - rim
-				var stagger: int = 3 if floori(row / 3.0) % 2 == 1 else 0
-				var mortar: bool = row % 3 == 2 or (x + stagger) % 7 == 0
-				var value: float = 0.55 - row * 0.03 + (0.06 if (x * 13 + floori(row / 3.0) * 7) % 5 == 0 else 0.0)
+				var course: int = floori(row / (3.0 * d))
+				var stagger: int = 3 * d if course % 2 == 1 else 0
+				var mortar: bool = row % (3 * d) == 3 * d - 1 or (x + stagger) % (7 * d) == 0
+				var value: float = 0.55 - float(row) / d * 0.03 + (0.06 if (floori(float(x) / d) * 13 + course * 7) % 5 == 0 else 0.0)
 				color = P.STONE[1] if mortar else Canvas.shade(P.STONE.slice(1, 6), value, x, y, true)
-				if rim < 2 and (x * 3 + y) % 4 != 0:
+				if rim < 2 * d and (x * 3 + y) % 4 != 0:
 					color = P.MOSS[1] if (x + y) % 2 == 0 else P.MOSS[0]
-				if row == 0:
+				if row < d:
 					color = P.STONE[5]  # lit coping edge
 			else:
 				# Wall top: big flagstones, lit, with merlons along the floor side.
-				var rx: int = floori((x + (floori(y / 6.0) % 2) * 5) / 10.0)
-				var ry: int = floori(y / 6.0)
-				var joint: bool = y % 6 == 5 or (x + (ry % 2) * 5) % 10 == 9
+				var ry: int = floori(y / (6.0 * d))
+				var rx: int = floori((x + (ry % 2) * 5 * d) / (10.0 * d))
+				var joint: bool = y % (6 * d) == 6 * d - 1 or (x + (ry % 2) * 5 * d) % (10 * d) == 10 * d - 1
 				color = P.STONE[2] if joint else Canvas.shade(P.STONE.slice(2, 7), 0.55 + ((rx * 7 + ry * 3) % 4) * 0.06, x, y, true)
 				var inner: int = _distance_to_floor(p, floor_art)
-				if inner <= 2 and not north:
+				if inner <= 3 * d - 1 and not north:
 					var along: int = x if (y < floor_art.position.y or y >= floor_art.end.y) else y
-					color = P.STONE[5] if floori(along / 3.0) % 2 == 0 else P.STONE[1]
-					if inner == 0 and floori(along / 3.0) % 2 == 0:
+					var merlon: bool = floori(along / (3.0 * d)) % 2 == 0
+					color = P.STONE[5] if merlon else P.STONE[1]
+					if inner < d and merlon:
 						color = P.STONE[3]
-				elif north and rim == face_height:
+				elif north and rim >= face_height and rim < face_height + d:
 					color = P.STONE[1]
 			img.set_pixel(x, y, color)
 
@@ -245,6 +260,13 @@ func _distance_to_polyline(p: Vector2, points: Array) -> float:
 func _plot(img: Image, p: Vector2i, color: Color) -> void:
 	if p.x >= 0 and p.y >= 0 and p.x < img.get_width() and p.y < img.get_height():
 		img.set_pixelv(p, color)
+
+
+## One art pixel (a detail x detail block of image pixels).
+func _plot_art(img: Image, p: Vector2i, color: Color) -> void:
+	for dy: int in detail:
+		for dx: int in detail:
+			_plot(img, p * detail + Vector2i(dx, dy), color)
 
 
 # ---------------------------------------------------------------- props

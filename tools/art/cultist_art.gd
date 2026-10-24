@@ -17,6 +17,14 @@ const RELEASE_FRAME: int = 6
 const FX_SIZE: Vector2i = Vector2i(16, 16)
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 ## Rows in the order of sheet_layouts.CULTIST.
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
@@ -125,7 +133,7 @@ func _attack_pose(facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, pose: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	if facing == "side":
 		_draw_side(c, pose)
 	else:
@@ -289,15 +297,15 @@ func _death_frames() -> Array[Image]:
 	frames.append(heap)
 	for step: int in 3:
 		var fading: Image = heap.duplicate() as Image
-		Undead.crumble(fading, step)
-		Undead.soul(fading, step, Vector2(16, 22))
+		Undead.crumble(fading, step, detail)
+		Undead.soul(fading, step, Vector2(16, 22), 1.0, detail)
 		frames.append(fading)
 	return frames
 
 
 ## The empty robe in a heap on the ground, the hood on top.
 func _heap() -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	c.part()
 	c.ellipse(Vector2(16, 26), Vector2(7.5, 2.6), P.CULT_ROBE, 0.4, -0.05)
 	c.part()
@@ -316,7 +324,7 @@ func _heap() -> Image:
 func fx_rows() -> Array[Array]:
 	var bolt: Array[Image] = []
 	for f: int in 2:
-		var c: Canvas = Canvas.new(FX_SIZE.x, FX_SIZE.y)
+		var c: Canvas = Canvas.new(FX_SIZE.x, FX_SIZE.y, detail)
 		c.part(true)
 		c.ellipse(Vector2(8, 8), Vector2(3.6, 3.4), P.WITCHFIRE.slice(1, 4), 0.0, 0.2)
 		c.ellipse(Vector2(7.5, 7.5), Vector2(1.8, 1.7), P.WITCHFIRE.slice(3, 5), 0.0, 0.3)
@@ -325,7 +333,7 @@ func fx_rows() -> Array[Array]:
 		bolt.append(c.finish(false))
 	var burst: Array[Image] = []
 	for f: int in 4:
-		var c: Canvas = Canvas.new(FX_SIZE.x, FX_SIZE.y)
+		var c: Canvas = Canvas.new(FX_SIZE.x, FX_SIZE.y, detail)
 		c.part(true)
 		var r: float = 2.5 + f * 1.6
 		for a: int in 10:

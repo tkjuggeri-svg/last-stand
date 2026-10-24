@@ -11,6 +11,14 @@ const Kit: GDScript = preload("res://tools/art/boss_art_kit.gd")
 const FEET: Vector2 = Kit.FEET
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 func sheet_rows() -> Array[Array]:
 	return Kit.sheet_rows(self, ["brace", "charge", "stun"])
 
@@ -90,7 +98,7 @@ func pose(state: String, facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, p: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y)
+	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y, detail)
 	if facing == "side":
 		_draw_side(c, p)
 	else:

@@ -4,9 +4,11 @@ extends RefCounted
 ## Animations are [name, row, frame_count, fps, loop]. Sizes are in the sheet's own pixels. The world
 ## sprites are hand-drawn at double resolution (docs/ART_HANDOFF.md): one sheet pixel = 1 world pixel,
 ## sprite nodes at scale 1. The code-drawn art still in use (the grounds, a few small effects) keeps
-## one art pixel = 2 world pixels (ART_SCALE).
+## one art pixel = 2 world pixels (ART_SCALE). World sprites drawn in code at the double resolution
+## (Canvas detail FINE) are art-pixel drawings rasterised twice as fine, so they match the hand-drawn ones.
 
 const ART_SCALE: int = 2
+const FINE: int = 2
 
 const HERO: Dictionary = {
 	"png": "res://assets/sprites/hero/hero.png",

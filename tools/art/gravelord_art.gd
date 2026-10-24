@@ -12,6 +12,14 @@ const FEET: Vector2 = Kit.FEET
 const STAFF_LENGTH: float = 30.0
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 func sheet_rows() -> Array[Array]:
 	return Kit.sheet_rows(self, ["cast"])
 
@@ -76,7 +84,7 @@ func pose(state: String, facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, p: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y)
+	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y, detail)
 	p["side"] = facing == "side"
 	match facing:
 		"down":

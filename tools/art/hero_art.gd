@@ -21,6 +21,60 @@ const FIELD: Array[Color] = [Color("2a0e0e"), Color("4a1a16"), Color("6b2a1e"), 
 const HELM: Vector2 = Vector2(16, 11)
 const HELM_RADIUS: Vector2 = Vector2(5.6, 5.4)
 
+## The shield's rampant lion at double resolution (image pixels; g gold, h highlight, d shade).
+const LION: Array[String] = [
+	".hh.....",
+	"hggh..d.",
+	".ggg.g..",
+	"..gggg..",
+	"..dggg..",
+	"...gggd.",
+	"..gg.gg.",
+	".gd...g.",
+	".g....gd",
+]
+## The lion seen three-quarters on the side view's squeezed shield.
+const LION_SIDE: Array[String] = [
+	".hh..",
+	"hgg..",
+	".ggg.",
+	"..gg.",
+	"..dgg",
+	"..gg.",
+	".gd.g",
+	".g..g",
+]
+const LION_KEYS: Dictionary = {"g": P.GOLD[3], "h": P.GOLD[4], "d": P.GOLD[1]}
+## The visor at double resolution: k slit, g / G / d the gold frame (light to dark), h breathing holes.
+const VISOR_FRONT: Array[String] = [
+	"..hhhhhhhhhhhhhh..",
+	".GGGGGGGGGGGGGGGG.",
+	"GkkkkkkkkkkkkkkkkG",
+	"dkkkkkkkkkkkkkkkkd",
+	".dddddddddddddddd.",
+	"..................",
+	".....s.s....s.s...",
+	"....s.s.s..s.s.s..",
+	".....s.s....s.s...",
+]
+const VISOR_SIDE: Array[String] = [
+	".hhhhhhhhh",
+	"GGGGGGGGGG",
+	"kkkkkkkkkk",
+	"kkkkkkkkkd",
+	"dddddddd..",
+	"..........",
+	"....s.s...",
+	".....s.s..",
+]
+
+## Image pixels per art pixel: 2 for the double-resolution sheet the game uses (64x80 frames).
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
 
 ## Rows in the order of sheet_layouts.HERO.
 func sheet_rows() -> Array[Array]:
@@ -136,7 +190,7 @@ func _dash_pose(facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, pose: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	match facing:
 		"down":
 			_draw_down(c, pose)
@@ -256,7 +310,12 @@ func _tabard(c: Canvas, o: Vector2, hem: float, back: bool) -> void:
 		Vector2(19.0 + sway, 27.4) + o, Vector2(17.6, 28.8) + o, Vector2(16.0, 27.6) + o, Vector2(14.4, 28.8) + o,
 		Vector2(13.0 - sway, 27.4) + o, Vector2(11.6, 28.4) + o]), P.TABARD, Vector3(-0.15, -0.1, 1))
 	if back:
-		c.line(Vector2(16, 19) + o, Vector2(16, 23) + o, P.TABARD[1])
+		c.line(Vector2(16, 19) + o, Vector2(16, 23) + o, P.TABARD[1], c.detail > 1)
+	if c.detail > 1:
+		# Folds falling from the belt and a gold trim along the neckline.
+		for x: float in [13.9, 18.1]:
+			c.line(Vector2(x, 26.2) + o, Vector2(x + (x - 16.0) * 0.08, 28.0) + o, P.TABARD[1], true)
+		c.line(Vector2(12.9, 18.4) + o, Vector2(19.1, 18.4) + o, P.GOLD[2], true)
 
 
 ## The brown belt with a steel buckle at `buckle`.
@@ -287,7 +346,11 @@ func _helm(c: Canvas, center: Vector2, facing: String, crest_sway: float) -> voi
 	c.ellipse(center, HELM_RADIUS, P.STEEL, 0.0, -0.06)
 	var cx: int = roundi(center.x)
 	var cy: int = roundi(center.y)
-	match facing:
+	if c.detail > 1:
+		_helm_fine(c, cx, cy, facing)
+	match "" if c.detail > 1 else facing:
+		"":
+			pass
 		"down":
 			# The visor: a dark slit framed in gold, the brow lit, breathing holes below.
 			c.rect(Rect2i(cx - 4, cy, 9, 1), P.OUTLINE)
@@ -319,6 +382,8 @@ func _helm(c: Canvas, center: Vector2, facing: String, crest_sway: float) -> voi
 			c.polygon(PackedVector2Array([center + Vector2(2.4, -4.4), center + Vector2(1.2, -7.4),
 				center + Vector2(-1.6, -8.0), center + Vector2(-4.4 - crest_sway, -6.6), center + Vector2(-5.8 - crest_sway, -3.4),
 				center + Vector2(-3.6, -3.4), center + Vector2(-1.0, -5.0)]), P.TABARD, Vector3(-0.2, -0.6, 1))
+	if c.detail > 1:
+		_crest_strands(c, center, facing, crest_sway)
 
 
 func _arm_offset(pose: Dictionary) -> Vector2:
@@ -364,6 +429,9 @@ func _kite_face(c: Canvas, center: Vector2, width: float) -> void:
 	c.part()
 	c.polygon(_kite(center, w, 1.0), P.STEEL, Vector3(-0.3, -0.3, 1))
 	c.polygon(_kite(center, w - 1.0, 0.82), FIELD, Vector3(-0.1, -0.2, 1))
+	if c.detail > 1:
+		c.fine_grid(LION if width >= 0.9 else LION_SIDE, center - Vector2(4.0 if width >= 0.9 else 2.5, 4.5) / c.detail, LION_KEYS)
+		return
 	var cx: int = roundi(center.x)
 	var cy: int = roundi(center.y)
 	for p: Vector2i in [Vector2i(0, -3), Vector2i(1, -2), Vector2i(0, -1), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(1, 2)]:
@@ -421,7 +489,7 @@ func _death_frames() -> Array[Image]:
 
 ## The side pose turned onto the ground (rotating by 90 degrees keeps the pixel grid intact).
 func _lying(settle: int) -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	var pose: Dictionary = _base_pose()
 	pose["hem"] = 1.0
 	pose["angle"] = 20.0 if settle == 0 else 5.0
@@ -431,8 +499,8 @@ func _lying(settle: int) -> Image:
 	var body: Image = c.image
 	body.rotate_90(CLOCKWISE)
 	var used: Rect2i = body.get_used_rect()
-	var out: Canvas = Canvas.new(SIZE.x, SIZE.y)
-	var at: Vector2i = Vector2i(floori((SIZE.x - used.size.x) / 2.0), int(FEET.y) + 1 - used.size.y + settle)
+	var out: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
+	var at: Vector2i = Vector2i(floori((SIZE.x * detail - used.size.x) / 2.0), (int(FEET.y) + 1 + settle) * detail - used.size.y)
 	out.image.blend_rect(body, used, at)
 	out.ground_shadow(Vector2(16, FEET.y - 1), Vector2(12, 2.6))
 	return out.image
@@ -444,3 +512,39 @@ func _tint(img: Image, color: Color, amount: float) -> void:
 			var c: Color = img.get_pixel(x, y)
 			if c.a > 0.5:
 				img.set_pixel(x, y, Color(c.lerp(color, amount), c.a))
+
+
+# ---------------------------------------------------------------- double-resolution detail
+
+## The visor, breathing holes and the gorget's mail drawn in image pixels.
+func _helm_fine(c: Canvas, cx: int, cy: int, facing: String) -> void:
+	var keys: Dictionary = {"h": P.GOLD[3], "G": P.GOLD[2], "d": P.GOLD[1], "k": P.OUTLINE, "s": P.STEEL[1]}
+	match facing:
+		"down":
+			c.fine_grid(VISOR_FRONT, Vector2(cx - 4.5, cy - 1.0), keys)
+			c.line(Vector2(cx + 0.25, cy + 2.0), Vector2(cx + 0.25, cy + 4.5), P.STEEL[2], true)
+		"up":
+			c.line(Vector2(cx - 3.0, cy + 3.25), Vector2(cx + 4.0, cy + 3.25), P.STEEL[1], true)
+			c.line(Vector2(cx - 2.5, cy + 2.75), Vector2(cx + 3.5, cy + 2.75), P.STEEL[4], true)
+		_:
+			c.fine_grid(VISOR_SIDE, Vector2(cx + 1.0, cy - 1.0), keys)
+	# The mail at the gorget: rows of rings, offset every other row.
+	for fy: int in 4:
+		for fx: int in 14:
+			if (fx + fy) % 2 == 0:
+				c.fine_px(Vector2(cx - 3, cy + 5) + Vector2(fx, fy) / c.detail, P.DARK_STEEL[3] if fy % 2 == 0 else P.DARK_STEEL[1])
+
+
+## Feather strands through the crest.
+func _crest_strands(c: Canvas, center: Vector2, facing: String, sway: float) -> void:
+	match facing:
+		"down":
+			c.line(center + Vector2(-0.7, -4.4), center + Vector2(-0.6, -7.4 - sway * 0.3), P.TABARD[2], true)
+			c.line(center + Vector2(0.9, -4.4), center + Vector2(1.2, -7.2), P.TABARD[2], true)
+			c.line(center + Vector2(-1.2, -5.6), center + Vector2(-0.8, -7.8), P.TABARD[4], true)
+		"up":
+			c.line(center + Vector2(-0.5, -7.2), center + Vector2(-0.5, 0.6), P.TABARD[2], true)
+			c.line(center + Vector2(0.75, -7.2), center + Vector2(0.75, 0.6), P.TABARD[4], true)
+		_:
+			c.line(center + Vector2(1.6, -5.0), center + Vector2(-4.0 - sway, -5.8), P.TABARD[2], true)
+			c.line(center + Vector2(0.8, -6.6), center + Vector2(-3.6 - sway, -6.4), P.TABARD[4], true)

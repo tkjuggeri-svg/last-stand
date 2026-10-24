@@ -16,6 +16,14 @@ const WALK_FRAMES: int = 6
 const ATTACK_FRAMES: int = 6
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 ## Rows in the order of sheet_layouts.SHIELDBEARER.
 func sheet_rows() -> Array[Array]:
 	var rows: Array[Array] = []
@@ -71,7 +79,7 @@ func _attack_pose(i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, pose: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(SIZE.x, SIZE.y)
+	var c: Canvas = Canvas.new(SIZE.x, SIZE.y, detail)
 	match facing:
 		"down":
 			_draw_front(c, pose)
@@ -216,7 +224,7 @@ func _death_frames() -> Array[Image]:
 	frames.append(fallen)
 	for step: int in 3:
 		var dissolving: Image = fallen.duplicate() as Image
-		Undead.crumble(dissolving, step)
-		Undead.soul(dissolving, step, Vector2(16, 16))
+		Undead.crumble(dissolving, step, detail)
+		Undead.soul(dissolving, step, Vector2(16, 16), 1.0, detail)
 		frames.append(dissolving)
 	return frames

@@ -41,23 +41,28 @@ static func _row(art: RefCounted, state: String, facing: String) -> Array[Image]
 static func robe(c: Canvas, ramp: Array, cx: float, top_y: float, bottom_y: float, top: float, bottom: float,
 		sway: float, bias: float = 0.0) -> void:
 	c.part()
-	for y: int in range(floori(top_y), ceili(bottom_y)):
-		var t: float = (y + 0.5 - top_y) / (bottom_y - top_y)
+	# Rasterised in image pixels, so a double-resolution canvas gets a smooth flare.
+	var d: int = c.detail
+	for fy: int in range(floori(top_y * d), ceili(bottom_y) * d):
+		var y: float = (fy + 0.5) / d
+		var t: float = (y - top_y) / (bottom_y - top_y)
 		var half: float = lerpf(top, bottom, t)
 		var mid: float = cx + sway * t
-		for x: int in range(floori(mid - half), ceili(mid + half)):
-			var nx: float = (x + 0.5 - mid) / half
+		for fx: int in range(floori((mid - half) * d), ceili((mid + half) * d)):
+			var x: float = (fx + 0.5) / d
+			var nx: float = (x - mid) / half
 			if absf(nx) > 1.0:
 				continue
-			if y == ceili(bottom_y) - 1 and posmod(x + roundi(sway * 2.0), 3) == 0:
+			if floori(y) == ceili(bottom_y) - 1 and posmod(floori(x) + roundi(sway * 2.0), 3) == 0:
 				continue
-			c.px(x, y, Canvas.shade(ramp, Canvas.light_of(Vector3(nx, -0.15, sqrt(1.0 - nx * nx))) + bias))
+			c.fine_px(Vector2(x, y), Canvas.shade(ramp, Canvas.light_of(Vector3(nx, -0.15, sqrt(1.0 - nx * nx))) + bias))
 
 
 ## The big death: a pale flash, a stagger, the collapse (`fallen`), then the remains crumble while a
 ## large soul rises. `upright` and `stagger` are full frames of the figure.
 static func death(upright: Image, stagger: Image, fallen: Image, soul_at: Vector2) -> Array[Image]:
 	var frames: Array[Image] = []
+	var detail: int = roundi(float(upright.get_width()) / SIZE.x)
 	var flash: Image = upright.duplicate() as Image
 	Undead.tint(flash, Color("f4f8ee"), 0.6)
 	frames.append(flash)
@@ -68,11 +73,11 @@ static func death(upright: Image, stagger: Image, fallen: Image, soul_at: Vector
 	frames.append(fallen)
 	for step: int in 3:
 		var crumbling: Image = fallen.duplicate() as Image
-		Undead.crumble(crumbling, step)
-		Undead.soul(crumbling, step, soul_at, 2.2)
+		Undead.crumble(crumbling, step, detail)
+		Undead.soul(crumbling, step, soul_at, 2.2, detail)
 		frames.append(crumbling)
-	var last: Image = Image.create_empty(SIZE.x, SIZE.y, false, Image.FORMAT_RGBA8)
-	Undead.soul(last, 2, soul_at - Vector2(0, 14), 1.4)
+	var last: Image = Image.create_empty(upright.get_width(), upright.get_height(), false, Image.FORMAT_RGBA8)
+	Undead.soul(last, 2, soul_at - Vector2(0, 14), 1.4, detail)
 	frames.append(last)
 	return frames
 
@@ -82,7 +87,7 @@ static func lying(figure: Image, shadow_radius: float) -> Image:
 	var body: Image = figure.duplicate() as Image
 	body.rotate_90(CLOCKWISE)
 	var used: Rect2i = body.get_used_rect()
-	var out: Canvas = Canvas.new(SIZE.x, SIZE.y)
-	out.image.blend_rect(body, used, Vector2i(floori((SIZE.x - used.size.x) / 2.0), int(FEET.y) + 1 - used.size.y))
+	var out: Canvas = Canvas.new(SIZE.x, SIZE.y, roundi(float(figure.get_width()) / SIZE.x))
+	out.image.blend_rect(body, used, Vector2i(floori((out.size.x - used.size.x) / 2.0), (int(FEET.y) + 1) * out.detail - used.size.y))
 	out.ground_shadow(Vector2(32, FEET.y - 1), Vector2(shadow_radius, 3.4))
 	return out.image

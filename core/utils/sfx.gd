@@ -77,7 +77,9 @@ static func _start(node: Node, entry: SfxEntry) -> void:
 	_playing[id] = int(_playing.get(id, 0)) + 1
 	player.tree_exiting.connect(func() -> void: _playing[id] = maxi(int(_playing.get(id, 1)) - 1, 0))
 	player.connect(&"finished", player.queue_free)
-	node.get_tree().root.add_child(player)
+	# In the node's own viewport: positional sounds are heard from that viewport's camera (the game runs
+	# inside Display's SubViewport).
+	node.get_viewport().add_child(player)
 	player.call(&"play")
 
 

@@ -5,7 +5,7 @@ extends Node2D
 ## lantern re-shaded the whole arena, with tiles only the few under it (about 5 ms per frame saved).
 
 @export var texture: Texture2D
-## Tile size in texture pixels (art px).
+## Tile size in texture pixels (the grounds are baked at 1 texture px per world px).
 @export var tile_size: Vector2i = Vector2i(64, 64)
 
 

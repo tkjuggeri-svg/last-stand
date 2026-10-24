@@ -16,6 +16,14 @@ const FLESH: Array[Color] = [Color("2a2f2c"), Color("4a554e"), Color("6f7d70"), 
 const VERDIGRIS: Array[Color] = [Color("1f3d34"), Color("2f6b5a"), Color("4f9a80"), Color("82c4a6")]
 
 
+## Image pixels per art pixel: Layouts.FINE (2) for the double-resolution sheets the game uses.
+var detail: int = 1
+
+
+func _init(resolution: int = 1) -> void:
+	detail = resolution
+
+
 func sheet_rows() -> Array[Array]:
 	return Kit.sheet_rows(self, ["toll"])
 
@@ -60,7 +68,7 @@ func pose(state: String, facing: String, i: int) -> Dictionary:
 # ---------------------------------------------------------------- frames
 
 func frame(facing: String, p: Dictionary) -> Image:
-	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y)
+	var c: Canvas = Canvas.new(Kit.SIZE.x, Kit.SIZE.y, detail)
 	var lift: Vector2 = Vector2(0, float(p["bob"]))
 	p["lift"] = lift
 	p["side"] = facing == "side"

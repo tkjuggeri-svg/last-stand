@@ -1,9 +1,11 @@
 # Art pack integration (branch `art/handoff-integration`)
 
-**Status: installed for review on its own branch, not merged into `main`.** The pack calls itself "a
-comprehensive first-pass art pack, not an engine-tested, production-final replacement", and the
-review below agrees: it is not ready to ship as is. Every gameplay and timing test passes; one art test
-(grayscale readability of three bosses) fails.
+**Status: integrated, with the review's fixes (section 8).** The pack calls itself "a comprehensive
+first-pass art pack, not an engine-tested, production-final replacement". From it the game keeps the
+towers and their shots, the effects, the fortress, the props, the spawns, the build slot and the title
+art. The characters it delivered had the defects in section 6, so the hero, the enemies and the
+bosses are drawn in code again, at the pack's resolution. The map grounds are redrawn the same way. At
+1080p the game now renders at 2x and filters down, so the pixels stay even. Every test passes.
 
 Source: `LAST_STAND_CLAUDE_CODE_HANDOFF.zip` (149 files, every SHA-256 in its `SHA256SUMS.txt`
 checked). Its own structural validator passes: 33 sheets, 1,465 animation frames, two warnings (the
@@ -128,7 +130,7 @@ Reviewed and fine:
 - the spawns;
 - the title art.
 
-## 7. Tests run on this branch
+## 7. Tests run on this branch (first pass)
 
 - **The pack's validator:** PASS (33 sheets, 1,465 frames).
 - **`tests/run_tests.sh`:** every automated test except one passes. That includes gameplay, timing,
@@ -140,3 +142,15 @@ Reviewed and fine:
   - a Drowned Marsh fight;
   - each at 720p and 1080p;
   - the title screen.
+
+## 8. After the review (decisions: fix it ourselves, smooth scaling, redraw the grounds)
+
+| Problem (sections 4-6) | What was done |
+|---|---|
+| The hero's and the enemies' animation defects, eye colours, a tiny Hound | The hero, the 9 enemy sheets and the 4 bosses are drawn in code again at the pack's frame sizes: `Canvas` gained a `detail` (image pixels per art pixel). The existing poses (true profiles, the shield's back from behind, one sword in the attack, the dash lunge, deaths built from 90-degree turns), shapes and role-coloured eyes are rasterised twice as fine, with 1 px outlines. The hero has fine engraving on top: the visor, the gorget's mail, the crest's strands, a lion on the shield, the tabard's folds and gold trim. Anchors and frame sizes are unchanged, so no scene changed. |
+| Gravelord, Lich and Tollkeeper too dark in grayscale | Fixed by the same redraw: `test_readability` passes. |
+| The map grounds still at 2 world px per pixel | Both grounds are baked at 1 texture px per world px (`EnvironmentArt.ground` / `MarshArt.ground` with `fine_px`). The layout is sampled in art space, so roads, pools and the clearing stay where they are; dithering, grass tufts, reeds, twigs, ruts, cobbles, planks and the wall's mortar are drawn in fine pixels. `TiledGround` now at scale 1 with 128 px tiles. |
+| Uneven pixels at 1080p | `Display` (`main/display.tscn`, the new main scene) runs Main inside a SubViewport. With smooth scaling (a setting, on by default) it renders at the next whole multiple of 720p (2x at 1080p) and filters that down to the window. At 720p, 1440p and 4K it renders 1:1. Cost: on this Intel Iris Xe at 1080p, chapter 1's last wave with every tower evolved runs at 142 fps on average (1% low 73) against 266 (117) without; players can switch it off. |
+| Card and relic icons with invented IDs | Kept the game's icons. Compared side by side, the game's icon for each real card and relic is specific, while the pack's 37 repeat themselves: three identical bombs, three bows, three coins, two crowns, three flags, two crystals. Only `long_reach` shares a name with a real card. |
+
+The installer now skips the character sheets too, so rerunning it for a later pack can't overwrite them.
