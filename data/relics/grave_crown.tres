@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/grave_crown.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_up"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("2_mod")
+stat = &"minion.health"
+percent = 0.25
+
+[resource]
+script = ExtResource("3_up")
+rule = &"grave_crown"
+price = 260
+id = &"grave_crown"
+display_name = "Grave Crown"
+description = "Your skeletons have 25% more health, and a level-3 Bone Pit may evolve into the Legion. Needs a Bone Pit."
+icon = ExtResource("1_icon")
+category = 1
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])

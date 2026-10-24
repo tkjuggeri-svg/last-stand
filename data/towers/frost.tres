@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="1_data"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_4uqr0"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
@@ -53,6 +54,24 @@ slow_duration = 3.0
 slow_area = 56.0
 shatter_bonus = 0.25
 
+[sub_resource type="Resource" id="Combo_stillwater"]
+script = ExtResource("9_evolution")
+id = &"stillwater"
+display_name = "Stillwater"
+description = "The Hourglass's patience: every 10 s a pulse of cold freezes every enemy in reach for 1 s (a boss 0.3 s)."
+requires_relic = &"hourglass"
+frames = ExtResource("combo_frames")
+cost = 420
+damage = 14
+fire_interval = 0.9
+attack_range = 220.0
+slow_factor = 0.35
+slow_duration = 3.2
+slow_area = 48.0
+pulse_interval = 10.0
+pulse_freeze = 1.0
+boss_pulse_freeze = 0.3
+
 [resource]
 script = ExtResource("1_data")
 id = &"frost"
@@ -73,3 +92,4 @@ slow_duration = 2.0
 tiers = Array[ExtResource("3_4uqr0")]([SubResource("Resource_4uqr0"), SubResource("Resource_110pk")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_glacier_spire"), SubResource("Resource_evo_shatter_shrine")])
 synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])
+combo = SubResource("Combo_stillwater")

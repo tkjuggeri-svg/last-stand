@@ -9,17 +9,24 @@ extends Node2D
 
 ## Seconds between two ignitions of what stands in it.
 const TICK: float = 0.25
+## The fire leaps this far (px) to a neighbour, once per SPREAD_EVERY seconds.
+const SPREAD_RADIUS: float = 60.0
+const SPREAD_EVERY: float = 1.0
 ## An enemy keeps burning this long after it leaves the fire.
 const AFTERBURN: float = 1.0
 const FADE_TIME: float = 0.4
 const EXPLOSION_SCENE: PackedScene = preload("res://entities/towers/explosion.tscn")
 const SOUL_FRAMES: SpriteFrames = preload("res://entities/effects/soul_burst_frames.tres")
 
+## Heart of the Pyre: the fire also leaps to one enemy next to a burning one (once a second).
+var spreads: bool = false
+
 var _dps: float = 6.0
 var _radius: float = 40.0
 var _duration: float = 3.0
 var _duration_full: float = 3.0
 var _tick_left: float = 0.0
+var _spread_left: float = 0.0
 var _burst_damage: int = 0
 var _burst_radius: float = 0.0
 ## Enemies on the soul fire whose death is watched.
@@ -68,6 +75,19 @@ func _physics_process(delta: float) -> void:
 		_watch(on_fire)
 	for enemy: Enemy in on_fire:
 		enemy.get_status().ignite(_dps, TICK + AFTERBURN)
+	_spread_left -= TICK
+	if spreads and _spread_left <= 0.0:
+		_spread_left = SPREAD_EVERY
+		for burning: Enemy in on_fire:
+			_leap(burning)
+
+
+## One enemy near `from` that isn't burning yet catches its fire.
+func _leap(from: Enemy) -> void:
+	for neighbour: Enemy in EnemyQuery.in_circle(get_world_2d(), from.global_position, SPREAD_RADIUS):
+		if neighbour != from and not neighbour.get_status().is_burning():
+			neighbour.get_status().ignite(_dps, SPREAD_EVERY + AFTERBURN)
+			return
 
 
 func get_radius() -> float:

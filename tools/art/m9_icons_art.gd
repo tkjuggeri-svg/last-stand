@@ -19,6 +19,8 @@ const ICONS: Dictionary = {
 	"soul_feast": "res://assets/sprites/ui/upgrades/soul_feast.png",
 	"dark_bargain": "res://assets/sprites/ui/upgrades/dark_bargain.png",
 	"reliquary_of_bones": "res://assets/sprites/ui/relics/reliquary_of_bones.png",
+	"falcons_hood": "res://assets/sprites/ui/relics/falcons_hood.png",
+	"grave_crown": "res://assets/sprites/ui/relics/grave_crown.png",
 }
 
 
@@ -152,3 +154,22 @@ func _reliquary_of_bones(c: Canvas) -> void:
 	c.part()
 	c.polygon(PackedVector2Array([Vector2(5, 12), Vector2(16, 5), Vector2(27, 12)]), P.GOLD, Vector3(-0.3, -0.5, 1))
 	_skull(c, Vector2(16, 21), 3.4)
+
+
+func _falcons_hood(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 17), Vector2(10, 11), P.LEATHER, 0.0, 0.0)
+	c.ellipse(Vector2(16, 20), Vector2(5.5, 6.5), P.CULT_DARK, 0.0, -0.3)
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(13, 6), Vector2(16, 1), Vector2(19, 6)]), P.TABARD, Vector3(-0.2, -0.5, 1))
+	c.part(true)
+	c.px(14, 18, P.GOLD[4])
+	c.px(18, 18, P.GOLD[4])
+
+
+func _grave_crown(c: Canvas) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(4, 24), Vector2(6, 9), Vector2(11, 17), Vector2(16, 6), Vector2(21, 17), Vector2(26, 9), Vector2(28, 24)]), P.BONE, Vector3(-0.3, -0.5, 1))
+	c.line(Vector2(4, 24), Vector2(28, 24), P.GOLD[2])
+	c.part(true)
+	c.ellipse(Vector2(16, 17), Vector2(2, 2.4), P.SOUL, 0.0, 0.3)

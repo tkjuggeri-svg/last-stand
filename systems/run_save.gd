@@ -19,7 +19,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		var tower: Tower = slots[i].tower
 		if tower != null:
 			towers.append({"slot": i, "tower": tower.data.resource_path, "level": mini(tower.get_level(), tower.data.max_level()),
-				"evolution": tower.data.evolutions.find(tower.get_evolution()) if tower.is_evolved() else -1, "invested": tower.invested})
+				"evolution": tower.data.all_evolutions().find(tower.get_evolution()) if tower.is_evolved() else -1, "invested": tower.invested})
 	return {
 		"version": VERSION,
 		"seed": run.seed_value,

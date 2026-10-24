@@ -21,7 +21,7 @@ static func for_level(data: TowerData, level: int = 1) -> Texture2D:
 
 ## The icon of an evolved tower (its own idle art; the base tower's top level if it has none).
 static func for_evolution(data: TowerData, evolution: TowerEvolution) -> Texture2D:
-	var frames: SpriteFrames = _frames_of(data)
+	var frames: SpriteFrames = evolution.frames if evolution.frames != null else _frames_of(data)
 	var anim: StringName = StringName("%s_idle" % evolution.id)
 	return for_animation(anim, frames) if frames.has_animation(anim) else for_level(data, data.max_level())
 

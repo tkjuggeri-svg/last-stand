@@ -17,6 +17,10 @@ enum Attack {
 	CONE,  ## an instant blast: `damage` to every enemy in range within cone_angle of the target
 }
 
+## A combo branch (TowerData.combo) is offered only while the run holds the relic with this rule.
+@export var requires_relic: StringName = &""
+## Its own animations ("<id>_idle", "<id>_fire") when they are not in the tower's sheet.
+@export var frames: SpriteFrames
 @export var id: StringName = &""
 @export var display_name: String = ""
 @export_multiline var description: String = ""
@@ -50,6 +54,21 @@ enum Attack {
 ## Every other tower within range fires this much faster (0.25 = 25% more shots); several boosts on
 ## one tower don't stack.
 @export var boost_fire_rate: float = 0.0
+@export_group("Combo effects")
+## Heart of the Pyre: the burning ground's fire also leaps to one enemy next to a burning one.
+@export var burn_spreads: bool = false
+## Stillwater: every pulse_interval seconds every enemy in range freezes for pulse_freeze (a boss: boss_pulse_freeze).
+@export var pulse_interval: float = 0.0
+@export var pulse_freeze: float = 0.0
+@export var boss_pulse_freeze: float = 0.0
+## Headsman's Bolt: its shots kill any non-boss left under this share of its HP.
+@export_range(0.0, 1.0) var execute_below: float = 0.0
+## Sky Tyrant: its dives carry off any non-boss left with at most this much HP.
+@export var carry_off_hp: int = 0
+## Legion: each raising makes this many skeletons (0: one).
+@export var minions_per_raise: int = 0
+## Banner Guard: archers within its reach shoot through this many more enemies.
+@export var aura_pierce: int = 0
 @export_group("Drag")
 ## The bolt's first enemy is dragged back this far along its lane (a boss: x boss_drag_factor).
 @export var drag_distance: float = 0.0
@@ -86,4 +105,16 @@ func key_numbers() -> String:
 		lines.append("Towers in range fire %d%% faster" % roundi(boost_fire_rate * 100.0))
 	if drag_distance > 0.0:
 		lines.append("Drags back %d px" % roundi(drag_distance))
+	if burn_spreads:
+		lines.append("Its fire leaps to a neighbour")
+	if pulse_interval > 0.0:
+		lines.append("Every %d s: freezes all in range for %s s" % [roundi(pulse_interval), String.num(pulse_freeze, 1)])
+	if execute_below > 0.0:
+		lines.append("Kills what it leaves under %d%% HP" % roundi(execute_below * 100.0))
+	if carry_off_hp > 0:
+		lines.append("Carries off enemies left with %d HP or less" % carry_off_hp)
+	if minions_per_raise > 1:
+		lines.append("Skeletons rise %d at a time" % minions_per_raise)
+	if aura_pierce > 0:
+		lines.append("Archers in reach pierce %d more" % aura_pierce)
 	return "\n".join(lines)

@@ -96,10 +96,21 @@ enum Kind { SHOOTER, TRAP, AURA, PIT, BEAM, OSSUARY }
 @export var tiers: Array[TowerTier] = []
 ## The two level-4 branches offered at the highest level (TowerEvolution); the choice is permanent.
 @export var evolutions: Array[TowerEvolution] = []
+## The combo evolution (M9): a third branch offered beside the two above only while the run holds the
+## relic it names (TowerEvolution.requires_relic).
+@export var combo: TowerEvolution
 ## Pair bonuses: each active while a partner tower stands within its reach (TowerSynergy).
 @export var synergies: Array[TowerSynergy] = []
 
 var _level_one: TowerTier
+
+
+## The two branches and the combo, in this order (an evolved tower's saved index points into it).
+func all_evolutions() -> Array[TowerEvolution]:
+	var all: Array[TowerEvolution] = evolutions.duplicate()
+	if combo != null:
+		all.append(combo)
+	return all
 
 
 func max_level() -> int:

@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
@@ -46,6 +47,19 @@ attack_range = 340.0
 mark_bonus = 0.15
 mark_time = 3.0
 
+[sub_resource type="Resource" id="Combo_sky_tyrant"]
+script = ExtResource("4_evo")
+id = &"sky_tyrant"
+display_name = "Sky Tyrant"
+description = "Falcon's Hood: a great crowned eagle that carries off any enemy its dive leaves with 40 HP or less (not bosses)."
+requires_relic = &"falcons_hood"
+frames = ExtResource("combo_frames")
+cost = 450
+damage = 30
+fire_interval = 1.2
+attack_range = 350.0
+carry_off_hp = 40
+
 [resource]
 script = ExtResource("2_data")
 scene = ExtResource("1_scene")
@@ -66,3 +80,4 @@ projectile_frames = ExtResource("6_fx")
 tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
 evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
 synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])
+combo = SubResource("Combo_sky_tyrant")

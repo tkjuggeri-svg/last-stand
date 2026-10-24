@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/falcons_hood.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_mod"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_up"]
+
+[sub_resource type="Resource" id="Mod_0"]
+script = ExtResource("2_mod")
+stat = &"tower.hawk_perch.range"
+percent = 0.15
+
+[resource]
+script = ExtResource("3_up")
+rule = &"falcons_hood"
+price = 260
+id = &"falcons_hood"
+display_name = "Falcon's Hood"
+description = "Hawk Perches reach 15% further, and a level-3 Hawk Perch may evolve into the Sky Tyrant. Needs a Hawk Perch."
+icon = ExtResource("1_icon")
+category = 1
+rarity = 1
+stackable = false
+modifiers = Array[ExtResource("2_mod")]([SubResource("Mod_0")])

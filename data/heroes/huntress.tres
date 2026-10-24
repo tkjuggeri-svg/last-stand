@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="HeroData" load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/relics/falcons_hood.tres" id="14_hood"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/huntress_frames.tres" id="2_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="3_tower"]
 [ext_resource type="Resource" path="res://data/towers/trap_layer.tres" id="4_trap"]
@@ -34,4 +35,4 @@ mark_bonus = 0.15
 mark_time = 3.0
 exclusive_towers = Array[ExtResource("3_tower")]([ExtResource("4_trap"), ExtResource("5_hawk"), ExtResource("6_watch")])
 exclusive_cards = Array[ExtResource("7_card")]([ExtResource("9_barbed"), ExtResource("10_quick"), ExtResource("11_snare"), ExtResource("12_mark")])
-exclusive_relics = Array[ExtResource("8_relic")]([ExtResource("13_quiver")])
+exclusive_relics = Array[ExtResource("8_relic")]([ExtResource("13_quiver"), ExtResource("14_hood")])

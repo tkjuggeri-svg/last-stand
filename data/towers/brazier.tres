@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_3dkr6"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_84c1e"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_afn0k"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
@@ -54,6 +55,22 @@ burn_radius = 46.0
 burn_duration = 3.5
 boost_fire_rate = 0.5
 
+[sub_resource type="Resource" id="Combo_heart_of_the_pyre"]
+script = ExtResource("9_evolution")
+id = &"heart_of_the_pyre"
+display_name = "Heart of the Pyre"
+description = "Ember Heart's fire, turned up: the burning ground also leaps to a neighbour of each burning enemy."
+requires_relic = &"ember_heart"
+frames = ExtResource("combo_frames")
+cost = 480
+damage = 0
+fire_interval = 1.3
+attack_range = 150.0
+burn_dps = 40.0
+burn_radius = 50.0
+burn_duration = 4.0
+burn_spreads = true
+
 [resource]
 script = ExtResource("2_84c1e")
 id = &"brazier"
@@ -76,3 +93,4 @@ burn_duration = 2.5
 tiers = Array[ExtResource("3_afn0k")]([SubResource("Resource_eo0ol"), SubResource("Resource_0pj21")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_pyre_of_souls"), SubResource("Resource_evo_beacon_flame")])
 synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])
+combo = SubResource("Combo_heart_of_the_pyre")

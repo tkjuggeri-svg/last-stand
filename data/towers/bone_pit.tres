@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
@@ -56,6 +57,21 @@ attack_range = 200.0
 minion = ExtResource("m_pit_bomber")
 minion_cap = 4
 
+[sub_resource type="Resource" id="Combo_legion"]
+script = ExtResource("4_evo")
+id = &"legion"
+display_name = "Legion"
+description = "Grave Crown: the dead rise in pairs, up to 6 at a time."
+requires_relic = &"grave_crown"
+frames = ExtResource("combo_frames")
+cost = 450
+damage = 0
+fire_interval = 4.0
+attack_range = 200.0
+minion_cap = 6
+minions_per_raise = 2
+minion = ExtResource("m_pit_skeleton_3")
+
 [resource]
 script = ExtResource("2_data")
 scene = ExtResource("1_scene")
@@ -75,3 +91,4 @@ minion_cap = 3
 tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
 evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
 synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])
+combo = SubResource("Combo_legion")

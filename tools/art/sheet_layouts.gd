@@ -607,7 +607,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {
@@ -696,6 +696,27 @@ const NECRO_TOWERS: Dictionary = {
 		["bone_storm_fire", 33, 4, 12.0, false],
 		["death_knell_idle", 34, 4, 5.0, true],
 		["death_knell_fire", 35, 4, 12.0, false],
+	],
+}
+
+## The six combo evolutions (M9, combo_towers_art.gd): an idle and a fire row each, 64x96 frames.
+const COMBO_TOWERS: Dictionary = {
+	"png": "res://assets/sprites/towers/combo_towers.png",
+	"frames": "res://entities/towers/combo_tower_frames.tres",
+	"size": Vector2i(64, 96),
+	"anims": [
+		["heart_of_the_pyre_idle", 0, 4, 5.0, true],
+		["heart_of_the_pyre_fire", 1, 4, 12.0, false],
+		["stillwater_idle", 2, 4, 5.0, true],
+		["stillwater_fire", 3, 4, 12.0, false],
+		["headsmans_bolt_idle", 4, 4, 5.0, true],
+		["headsmans_bolt_fire", 5, 4, 12.0, false],
+		["sky_tyrant_idle", 6, 4, 5.0, true],
+		["sky_tyrant_fire", 7, 4, 12.0, false],
+		["legion_idle", 8, 4, 5.0, true],
+		["legion_fire", 9, 4, 12.0, false],
+		["banner_guard_idle", 10, 4, 5.0, true],
+		["banner_guard_fire", 11, 4, 12.0, false],
 	],
 }
 

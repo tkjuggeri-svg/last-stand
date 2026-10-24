@@ -131,12 +131,17 @@ func upgrade(slot: BuildSlot) -> bool:
 	return true
 
 
-## The two branches the slot's tower can take now (empty: no tower, below level 3, or evolved).
+## The branches the slot's tower can take now: the two, and its combo while the run holds the relic it
+## needs (empty: no tower, below level 3, or evolved).
 func evolution_options(slot: BuildSlot) -> Array[TowerEvolution]:
 	if slot == null or slot.is_empty() or slot.tower.is_evolved() or not slot.tower.is_max_level() or not can_evolve() \
 			or not evolution_unlocked(slot.tower.data):
 		return []
-	return slot.tower.data.evolutions.duplicate()
+	var options: Array[TowerEvolution] = slot.tower.data.evolutions.duplicate()
+	var combo: TowerEvolution = slot.tower.data.combo
+	if combo != null and RunModifiers.relic(modifiers, combo.requires_relic):
+		options.append(combo)
+	return options
 
 
 ## False under the Siege Ledger relic: no tower may evolve.
@@ -171,13 +176,14 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 	if not evolution_unlocked(tower.data):
 		upgrade_failed.emit(slot, EVOLUTIONS_LOCKED)
 		return false
-	if not tower.is_max_level() or index < 0 or index >= tower.data.evolutions.size():
+	var options: Array[TowerEvolution] = evolution_options(slot)
+	if not tower.is_max_level() or index < 0 or index >= options.size():
 		upgrade_failed.emit(slot, NOT_YET)
 		return false
 	if tower.is_building():
 		upgrade_failed.emit(slot, UNDER_CONSTRUCTION)
 		return false
-	var evolution: TowerEvolution = tower.data.evolutions[index]
+	var evolution: TowerEvolution = options[index]
 	var cost: int = evolution_cost(evolution)
 	if not economy.try_spend(cost):
 		upgrade_failed.emit(slot, NOT_ENOUGH_GOLD)
@@ -212,6 +218,7 @@ func refresh_boosts() -> void:
 				boost = maxf(boost, evolution.boost_fire_rate)
 		tower.set_fire_rate_boost(boost)
 		tower.set_aura_range(_aura_range_for(tower, towers))
+		tower.set_pierce_bonus(_banner_pierce_for(tower, towers))
 		tower.set_synergies(TowerSynergies.active_for(tower, towers))
 
 
@@ -226,11 +233,31 @@ func _aura_range_for(tower: Tower, towers: Array[Tower]) -> float:
 	return bonus
 
 
+## What every new tower gets: the run's modifiers, the minion pool and the beam's kill report.
+func _equip(tower: Tower) -> void:
+	tower.modifiers = modifiers
+	tower.minion_pool = minion_pool
+	tower.slew.connect(func(t: Tower, enemy: Enemy) -> void: tower_slew.emit(t, enemy))
+
+
 ## An enemy died at `at`: every Ossuary within its reach takes `souls` souls.
 func enemy_died(at: Vector2, souls: int = 1) -> void:
 	for tower: Tower in get_towers():
 		if tower.data.kind == TowerData.Kind.OSSUARY and tower.global_position.distance_to(at) <= tower.get_attack_range():
 			tower.add_souls(souls)
+
+
+## The best Banner Guard pierce that reaches `tower` (an archer; none from itself).
+func _banner_pierce_for(tower: Tower, towers: Array[Tower]) -> int:
+	if tower.data.id != &"archer":
+		return 0
+	var bonus: int = 0
+	for guard: Tower in towers:
+		var evolution: TowerEvolution = guard.get_evolution()
+		if guard != tower and evolution != null and evolution.aura_pierce > 0 \
+				and guard.global_position.distance_to(tower.global_position) <= guard.get_attack_range():
+			bonus = maxi(bonus, evolution.aura_pierce)
+	return bonus
 
 
 ## How much more damage a hero at `point` deals under the Watchtowers in reach (0 = none; the best counts).
@@ -255,9 +282,7 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 		return false
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
-	tower.modifiers = modifiers
-	tower.minion_pool = minion_pool
-	tower.slew.connect(func(t: Tower, enemy: Enemy) -> void: tower_slew.emit(t, enemy))
+	_equip(tower)
 	tower.invested = cost
 	slot.place(tower)
 	refresh_boosts()
@@ -272,13 +297,14 @@ func restore(slot: BuildSlot, data: TowerData, level: int, evolution: int, inves
 		return false
 	var tower: Tower = data.scene.instantiate()
 	tower.data = data
-	tower.modifiers = modifiers
+	_equip(tower)
 	tower.invested = invested
 	slot.place(tower)
 	tower.finish_building()
 	tower.set_level(mini(level, data.max_level()))
-	if evolution >= 0 and evolution < data.evolutions.size():
-		tower.evolve(data.evolutions[evolution])
+	var all: Array[TowerEvolution] = data.all_evolutions()
+	if evolution >= 0 and evolution < all.size():
+		tower.evolve(all[evolution])
 	refresh_boosts()
 	tower_built.emit(slot, tower)
 	return true

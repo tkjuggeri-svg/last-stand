@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_mq2bg"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_yybw4"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_7ea86"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
@@ -48,6 +49,20 @@ fire_interval = 0.8
 attack_range = 320.0
 pierce = 2
 
+[sub_resource type="Resource" id="Combo_headsmans_bolt"]
+script = ExtResource("9_evolution")
+id = &"headsmans_bolt"
+display_name = "Headsman's Bolt"
+description = "The Executioner's Mark in the bolt: whatever it leaves under a quarter of its HP dies (not bosses)."
+requires_relic = &"executioners_mark"
+frames = ExtResource("combo_frames")
+cost = 650
+damage = 52
+fire_interval = 2.4
+attack_range = 340.0
+pierce = 5
+execute_below = 0.25
+
 [resource]
 script = ExtResource("2_yybw4")
 id = &"ballista"
@@ -68,3 +83,4 @@ pierce = 3
 tiers = Array[ExtResource("3_7ea86")]([SubResource("Resource_6glx1"), SubResource("Resource_hmakn")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_harpoon"), SubResource("Resource_evo_repeater")])
 synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])
+combo = SubResource("Combo_headsmans_bolt")

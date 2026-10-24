@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="HeroData" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+[ext_resource type="Resource" path="res://data/relics/grave_crown.tres" id="16_crown"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/necromancer_frames.tres" id="2_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/soul_bolt_frames.tres" id="3_bolt"]
 [ext_resource type="Resource" path="res://data/minions/skeleton.tres" id="4_skeleton"]
@@ -41,4 +42,4 @@ mark_bonus = 0.0
 mark_time = 3.0
 exclusive_towers = Array[ExtResource("5_tower")]([ExtResource("6_pit"), ExtResource("7_siphon"), ExtResource("8_ossuary")])
 exclusive_cards = Array[ExtResource("9_card")]([ExtResource("11_c1"), ExtResource("12_c2"), ExtResource("13_c3"), ExtResource("14_c4")])
-exclusive_relics = Array[ExtResource("10_relic")]([ExtResource("15_rel")])
+exclusive_relics = Array[ExtResource("10_relic")]([ExtResource("15_rel"), ExtResource("16_crown")])

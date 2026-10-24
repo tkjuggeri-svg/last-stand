@@ -56,6 +56,10 @@ var _shared_level: int = 0
 var _weapon: TowerWeapon = TowerWeapon.new()
 var _traps: TowerTraps = TowerTraps.new()
 var _beam: TowerBeam
+## Banner Guard: extra pierce from an archer nearby (TowerBuilder keeps it up to date).
+var _pierce_bonus: int = 0
+## Stillwater: seconds to the next freezing pulse.
+var _pulse_left: float = 0.0
 ## The Ossuary: souls gathered since its last blast.
 var _souls: int = 0
 ## Watchtower: more range for the towers around it (TowerBuilder keeps it up to date); 0 = none.
@@ -115,6 +119,7 @@ func _physics_process(delta: float) -> void:
 		_build_left = 0.0
 		construction_finished.emit()
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
+	_pulse(delta)
 	if not _acts():
 		return
 	if not _sight.is_valid_target(self, _target):
@@ -201,6 +206,14 @@ func get_evolution() -> TowerEvolution:
 	return _evolution
 
 
+## Banner Guard's aura on this tower: `bonus` more pierce (TowerBuilder gives the best one in reach).
+func set_pierce_bonus(bonus: int) -> void:
+	if bonus == _pierce_bonus:
+		return
+	_pierce_bonus = bonus
+	_stats = _effective_stats()
+
+
 ## Watchtower's aura on this tower: `bonus` more range (TowerBuilder gives the best one in reach).
 func set_aura_range(bonus: float) -> void:
 	if is_equal_approx(bonus, _aura_range):
@@ -218,6 +231,9 @@ func get_aura_range() -> float:
 func evolve(evolution: TowerEvolution) -> void:
 	assert(_evolution == null, "A tower evolves only once")
 	_evolution = evolution
+	if evolution.frames != null:
+		_sprite.sprite_frames = evolution.frames
+	_pulse_left = evolution.pulse_interval
 	set_level(data.max_level() + 1)
 	if evolution.shatter_bonus > 0.0:
 		var aura: ShatterAura = (load(SHATTER_AURA_PATH) as PackedScene).instantiate()
@@ -340,6 +356,7 @@ func _stats_from(base: TowerTier) -> TowerTier:
 		_apply_modifiers(stats, base)
 	for synergy: TowerSynergy in _synergies:
 		synergy.apply_to(stats)
+	stats.pierce += _pierce_bonus
 	return stats
 
 
@@ -399,13 +416,28 @@ func _fire() -> void:
 		Sfx.play(self, data.fire_sound)
 
 
+## Stillwater: a pulse of cold now and then freezes everything in reach (a boss only briefly).
+func _pulse(delta: float) -> void:
+	if _evolution == null or _evolution.pulse_interval <= 0.0 or _silence.is_silenced():
+		return
+	_pulse_left -= delta
+	if _pulse_left > 0.0:
+		return
+	_pulse_left = _evolution.pulse_interval
+	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, get_attack_range()):
+		enemy.get_status().freeze(_evolution.boss_pulse_freeze if enemy.data.is_boss else _evolution.pulse_freeze)
+	_sprite.play(_anim("fire"))
+
+
 ## A Bone Pit raises a skeleton between itself and its target (unless all its own are standing).
 func _raise_skeleton(stats: TowerTier) -> void:
 	if minion_pool == null or minion_pool.count_for(self) >= stats.minion_cap:
 		return  # wait for one to fall
 	_cooldown_left = stats.fire_interval
 	var spot: Vector2 = _target.global_position + (global_position - _target.global_position).limit_length(RAISE_LEAD)
-	minion_pool.raise(stats.minion, spot, self, stats.minion_cap, self)
+	var count: int = maxi(_evolution.minions_per_raise, 1) if _evolution != null else 1
+	for i: int in count:
+		minion_pool.raise(stats.minion, spot + Vector2(0, (i - (count - 1) * 0.5) * 14.0), self, stats.minion_cap, self)
 	_sprite.play(_anim("fire"))
 
 

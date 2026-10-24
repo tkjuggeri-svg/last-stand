@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="1_data"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="2_scene"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_56gh1"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
@@ -50,6 +51,21 @@ targeting = 2
 rain_strikes = 3
 rain_interval = 0.25
 
+[sub_resource type="Resource" id="Combo_banner_guard"]
+script = ExtResource("9_evolution")
+id = &"banner_guard"
+display_name = "Banner Guard"
+description = "Twin Banners flying: it shoots 2 at a time through 1 more enemy, and archers in its reach pierce 1 more."
+requires_relic = &"twin_banners"
+frames = ExtResource("combo_frames")
+cost = 450
+damage = 18
+fire_interval = 0.65
+attack_range = 240.0
+targets = 2
+pierce = 1
+aura_pierce = 1
+
 [resource]
 script = ExtResource("1_data")
 id = &"archer"
@@ -64,3 +80,4 @@ muzzle_offset = Vector2(14, -48)
 tiers = Array[ExtResource("3_56gh1")]([SubResource("Resource_56gh1"), SubResource("Resource_41dcb")])
 evolutions = Array[ExtResource("9_evolution")]([SubResource("Resource_evo_sniper_nest"), SubResource("Resource_evo_volley_tower")])
 synergies = Array[ExtResource("20_synergy_script")]([ExtResource("21_synergy")])
+combo = SubResource("Combo_banner_guard")

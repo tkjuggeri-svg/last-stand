@@ -255,7 +255,20 @@ func _strike(enemy: Enemy, travel: Vector2) -> bool:
 	var hit: bool = enemy.receive_hit(_hitbox) if data.from_above else enemy.receive_shot(_hitbox, travel)
 	if hit:
 		enemy.get_status().mark(stats.mark_bonus, stats.mark_time)
+		_finish_off(enemy)
 	return hit
+
+
+## Headsman's Bolt and Sky Tyrant: a non-boss left under the line is killed outright (the Hawk
+## carries it off).
+func _finish_off(enemy: Enemy) -> void:
+	if evolution == null or not enemy.is_alive() or enemy.data.is_boss:
+		return
+	var health: HealthComponent = enemy.get_health()
+	var under_share: bool = evolution.execute_below > 0.0 and health.current_health <= health.max_health * evolution.execute_below
+	var carried: bool = evolution.carry_off_hp > 0 and health.current_health <= evolution.carry_off_hp
+	if under_share or carried:
+		health.take_damage(health.current_health)
 
 
 ## Burning ground where a shell lands (hellfire upgrade, the brazier). It outlives the shot, so it
@@ -265,6 +278,7 @@ func _leave_burn() -> void:
 		return
 	var zone: BurnZone = BURN_ZONE_SCENE.instantiate()
 	zone.setup(stats.burn_dps, stats.burn_radius, stats.burn_duration)
+	zone.spreads = evolution != null and evolution.burn_spreads
 	if evolution != null and evolution.death_burst_damage > 0:
 		zone.set_death_burst(evolution.death_burst_damage, evolution.death_burst_radius)
 	zone.top_level = true

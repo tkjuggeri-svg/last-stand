@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="UnlockData" format=3]
 
 [ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Resource" path="res://data/relics/grave_crown.tres" id="r_rel2"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
 [ext_resource type="Resource" path="res://data/heroes/necromancer.tres" id="r_hero"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="s_tower"]
@@ -19,10 +20,10 @@
 script = ExtResource("1_unlock")
 id = &"hero_necromancer"
 display_name = "The Necromancer"
-description = "A new hero: a soul bolt whose kills raise skeletons to fight for you, and the Bone Pit, Soul Siphon and Ossuary, four cards and a relic. Not stronger, different."
+description = "A new hero: a soul bolt whose kills raise skeletons to fight for you, and the Bone Pit, Soul Siphon and Ossuary, four cards and two relics. Not stronger, different."
 cost = 90
 requires_first = "chapter:Chapter 2 reached"
 heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])
 towers = Array[ExtResource("s_tower")]([ExtResource("r_pit"), ExtResource("r_siphon"), ExtResource("r_ossuary")])
 cards = Array[ExtResource("s_card")]([ExtResource("r_c1"), ExtResource("r_c2"), ExtResource("r_c3"), ExtResource("r_c4")])
-relics = Array[ExtResource("s_relic")]([ExtResource("r_rel")])
+relics = Array[ExtResource("s_relic")]([ExtResource("r_rel"), ExtResource("r_rel2")])
