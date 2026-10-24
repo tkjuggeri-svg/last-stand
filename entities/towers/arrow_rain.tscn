@@ -15,7 +15,7 @@ z_index = -1
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -20)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("4_frames")
 animation = &"arrow_rain"
 

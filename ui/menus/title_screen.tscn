@@ -35,6 +35,7 @@ grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_shade")
 expand_mode = 1
+visible = false
 
 [node name="Menu" type="MarginContainer" parent="."]
 unique_name_in_owner = true
@@ -43,8 +44,8 @@ anchor_bottom = 1.0
 offset_right = 560.0
 grow_vertical = 2
 theme_override_constants/margin_left = 64
-theme_override_constants/margin_top = 56
 theme_override_constants/margin_bottom = 48
+theme_override_constants/margin_top = 250
 
 [node name="Box" type="VBoxContainer" parent="Menu"]
 layout_mode = 2
@@ -55,12 +56,14 @@ layout_mode = 2
 theme_type_variation = &"TitleLabel"
 theme_override_font_sizes/font_size = 96
 text = "LAST STAND"
+visible = false
 
 [node name="Tagline" type="Label" parent="Menu/Box"]
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 text = "The last fortress. One knight.
 Every night is worse."
+visible = false
 
 [node name="Space" type="Control" parent="Menu/Box"]
 custom_minimum_size = Vector2(0, 24)

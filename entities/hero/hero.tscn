@@ -39,7 +39,7 @@ shape = SubResource("CircleShape2D_body")
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, 2)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("13_ripple")
 animation = &"ripple"
 autoplay = "ripple"
@@ -49,7 +49,7 @@ unique_name_in_owner = true
 process_mode = 3
 material = SubResource("ShaderMaterial_flash")
 position = Vector2(0, -16)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_frames")
 animation = &"idle_down"
 autoplay = "idle_down"
@@ -79,7 +79,7 @@ polygon = PackedVector2Array(0, 0, 43.7, -52.1, 61.6, -28.7, 68, 0, 61.6, 28.7, 
 [node name="AttackVisual" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 visible = false
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("6_swing")
 animation = &"swing_0"
 
@@ -104,7 +104,7 @@ process_mode = 3
 visible = false
 z_index = 1
 position = Vector2(0, -14)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("9_spark")
 animation = &"spark"
 

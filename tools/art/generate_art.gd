@@ -34,6 +34,12 @@ const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const RelicArt: GDScript = preload("res://tools/art/relic_art.gd")
 const TitleArt: GDScript = preload("res://tools/art/title_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
+## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
+## so a regeneration can't overwrite them. Their drawing code stays for reference.
+const HAND_DRAWN: Array[String] = ["hero", "swing", "swing_long", "ghoul", "hound", "brute", "cultist", "cultist_fx",
+	"gravelord", "colossus", "lich", "tollkeeper", "bloater", "bloatling", "mire_priest", "shieldbearer", "spark", "dust",
+	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
+	"explosion", "explosion_large", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 
 
 func _initialize() -> void:
@@ -97,6 +103,10 @@ func _initialize() -> void:
 		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
 	}
 	for job_name: String in jobs:
+		if HAND_DRAWN.has(job_name):
+			if only.has(job_name):
+				print("skipped %s: hand-drawn art (docs/ART_HANDOFF.md); its code art is no longer used" % job_name)
+			continue
 		if only.is_empty() or only.has(job_name):
 			(jobs[job_name] as Callable).call()
 	quit()

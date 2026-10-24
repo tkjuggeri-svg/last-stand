@@ -1,14 +1,17 @@
 extends RefCounted
 ## Spritesheet layouts shared by generate_art.gd (which draws the sheets) and
 ## build_sprite_frames.gd (which slices them into SpriteFrames).
-## Animations are [name, row, frame_count, fps, loop]. One art pixel = 2 world pixels (ART_SCALE).
+## Animations are [name, row, frame_count, fps, loop]. Sizes are in the sheet's own pixels. The world
+## sprites are hand-drawn at double resolution (docs/ART_HANDOFF.md): one sheet pixel = 1 world pixel,
+## sprite nodes at scale 1. The code-drawn art still in use (the grounds, a few small effects) keeps
+## one art pixel = 2 world pixels (ART_SCALE).
 
 const ART_SCALE: int = 2
 
 const HERO: Dictionary = {
 	"png": "res://assets/sprites/hero/hero.png",
 	"frames": "res://entities/hero/hero_frames.tres",
-	"size": Vector2i(32, 40),
+	"size": Vector2i(64, 80),
 	"anims": [
 		["idle_down", 0, 4, 5.0, true],
 		["idle_up", 1, 4, 5.0, true],
@@ -30,7 +33,7 @@ const HERO: Dictionary = {
 const SWING: Dictionary = {
 	"png": "res://assets/sprites/effects/swing.png",
 	"frames": "res://entities/hero/swing_frames.tres",
-	"size": Vector2i(72, 72),
+	"size": Vector2i(144, 144),
 	"anims": [
 		["swing_0", 0, 4, 24.0, false],
 		["swing_1", 1, 4, 24.0, false],
@@ -47,7 +50,7 @@ const SWING: Dictionary = {
 const SWING_LONG: Dictionary = {
 	"png": "res://assets/sprites/effects/swing_long.png",
 	"frames": "res://entities/hero/swing_long_frames.tres",
-	"size": Vector2i(128, 128),
+	"size": Vector2i(256, 256),
 	"anims": [
 		["swing_0_1", 0, 4, 24.0, false],
 		["swing_1_1", 1, 4, 24.0, false],
@@ -87,7 +90,7 @@ const SWING_LONG: Dictionary = {
 const GHOUL: Dictionary = {
 	"png": "res://assets/sprites/enemies/ghoul.png",
 	"frames": "res://entities/enemies/ghoul_frames.tres",
-	"size": Vector2i(32, 32),
+	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 5.0, true],
 		["idle_up", 1, 4, 5.0, true],
@@ -107,7 +110,7 @@ const GHOUL: Dictionary = {
 const HOUND: Dictionary = {
 	"png": "res://assets/sprites/enemies/hound.png",
 	"frames": "res://entities/enemies/hound_frames.tres",
-	"size": Vector2i(32, 32),
+	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -127,7 +130,7 @@ const HOUND: Dictionary = {
 const BRUTE: Dictionary = {
 	"png": "res://assets/sprites/enemies/brute.png",
 	"frames": "res://entities/enemies/brute_frames.tres",
-	"size": Vector2i(48, 48),
+	"size": Vector2i(96, 96),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
 		["idle_up", 1, 4, 4.0, true],
@@ -147,7 +150,7 @@ const BRUTE: Dictionary = {
 const CULTIST: Dictionary = {
 	"png": "res://assets/sprites/enemies/cultist.png",
 	"frames": "res://entities/enemies/cultist_frames.tres",
-	"size": Vector2i(32, 32),
+	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -166,7 +169,7 @@ const CULTIST: Dictionary = {
 const CULTIST_FX: Dictionary = {
 	"png": "res://assets/sprites/enemies/cultist_fx.png",
 	"frames": "res://entities/enemies/cultist_fx_frames.tres",
-	"size": Vector2i(16, 16),
+	"size": Vector2i(32, 32),
 	"anims": [["bolt", 0, 2, 10.0, true], ["burst", 1, 4, 18.0, false]],
 }
 
@@ -176,7 +179,7 @@ const CULTIST_FX: Dictionary = {
 const GRAVELORD: Dictionary = {
 	"png": "res://assets/sprites/enemies/gravelord.png",
 	"frames": "res://entities/enemies/bosses/gravelord_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
 		["idle_up", 1, 4, 4.0, true],
@@ -198,7 +201,7 @@ const GRAVELORD: Dictionary = {
 const COLOSSUS: Dictionary = {
 	"png": "res://assets/sprites/enemies/colossus.png",
 	"frames": "res://entities/enemies/bosses/colossus_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
 		["idle_up", 1, 4, 4.0, true],
@@ -226,7 +229,7 @@ const COLOSSUS: Dictionary = {
 const LICH: Dictionary = {
 	"png": "res://assets/sprites/enemies/lich.png",
 	"frames": "res://entities/enemies/bosses/lich_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
 		["idle_up", 1, 4, 4.0, true],
@@ -248,7 +251,7 @@ const LICH: Dictionary = {
 const TOLLKEEPER: Dictionary = {
 	"png": "res://assets/sprites/enemies/tollkeeper.png",
 	"frames": "res://entities/enemies/bosses/tollkeeper_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
 		["idle_up", 1, 4, 4.0, true],
@@ -269,14 +272,14 @@ const TOLLKEEPER: Dictionary = {
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
-	"size": Vector2i(16, 16),
+	"size": Vector2i(32, 32),
 	"anims": [["spark", 0, 4, 24.0, false]],
 }
 
 const DUST: Dictionary = {
 	"png": "res://assets/sprites/effects/dust.png",
 	"frames": "res://entities/effects/dust_frames.tres",
-	"size": Vector2i(24, 24),
+	"size": Vector2i(48, 48),
 	"anims": [["dust", 0, 6, 14.0, false]],
 }
 
@@ -287,7 +290,7 @@ const DUST: Dictionary = {
 const TOWERS: Dictionary = {
 	"png": "res://assets/sprites/towers/towers.png",
 	"frames": "res://entities/towers/tower_frames.tres",
-	"size": Vector2i(32, 48),
+	"size": Vector2i(64, 96),
 	"anims": [
 		["archer_idle", 0, 4, 5.0, true],
 		["archer_fire", 1, 4, 12.0, false],
@@ -359,7 +362,7 @@ const TOWERS: Dictionary = {
 const PROJECTILES: Dictionary = {
 	"png": "res://assets/sprites/towers/projectiles.png",
 	"frames": "res://entities/towers/projectile_frames.tres",
-	"size": Vector2i(12, 12),
+	"size": Vector2i(24, 24),
 	"anims": [
 		["arrow_0", 0, 1, 1.0, false],
 		["arrow_1", 1, 1, 1.0, false],
@@ -405,7 +408,7 @@ const PROJECTILES: Dictionary = {
 const EXPLOSION: Dictionary = {
 	"png": "res://assets/sprites/effects/explosion.png",
 	"frames": "res://entities/effects/explosion_frames.tres",
-	"size": Vector2i(56, 56),
+	"size": Vector2i(112, 112),
 	"anims": [["explosion", 0, 7, 16.0, false]],
 }
 
@@ -413,7 +416,7 @@ const EXPLOSION: Dictionary = {
 const EXPLOSION_LARGE: Dictionary = {
 	"png": "res://assets/sprites/effects/explosion_large.png",
 	"frames": "res://entities/effects/explosion_large_frames.tres",
-	"size": Vector2i(72, 72),
+	"size": Vector2i(144, 144),
 	"anims": [["explosion_large", 0, 7, 16.0, false]],
 }
 
@@ -421,7 +424,7 @@ const EXPLOSION_LARGE: Dictionary = {
 const FROST_NOVA: Dictionary = {
 	"png": "res://assets/sprites/effects/frost_nova.png",
 	"frames": "res://entities/effects/frost_nova_frames.tres",
-	"size": Vector2i(48, 48),
+	"size": Vector2i(96, 96),
 	"anims": [["frost_nova", 0, 6, 16.0, false]],
 }
 
@@ -429,7 +432,7 @@ const FROST_NOVA: Dictionary = {
 const BURN: Dictionary = {
 	"png": "res://assets/sprites/effects/burn.png",
 	"frames": "res://entities/effects/burn_frames.tres",
-	"size": Vector2i(48, 32),
+	"size": Vector2i(96, 64),
 	"anims": [["burn", 0, 4, 10.0, true], ["soul_burn", 1, 4, 10.0, true]],
 }
 
@@ -437,7 +440,7 @@ const BURN: Dictionary = {
 const SOUL_BURST: Dictionary = {
 	"png": "res://assets/sprites/effects/soul_burst.png",
 	"frames": "res://entities/effects/soul_burst_frames.tres",
-	"size": Vector2i(56, 56),
+	"size": Vector2i(112, 112),
 	"anims": [["soul_burst", 0, 7, 16.0, false]],
 }
 
@@ -445,7 +448,7 @@ const SOUL_BURST: Dictionary = {
 const EVOLUTION_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/evolution_fx.png",
 	"frames": "res://entities/effects/evolution_fx_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [["arrow_rain", 0, 5, 16.0, false]],
 }
 
@@ -453,7 +456,7 @@ const EVOLUTION_FX: Dictionary = {
 const GRAPESHOT: Dictionary = {
 	"png": "res://assets/sprites/effects/grapeshot.png",
 	"frames": "res://entities/effects/grapeshot_frames.tres",
-	"size": Vector2i(64, 64),
+	"size": Vector2i(128, 128),
 	"anims": [["grapeshot_0", 0, 4, 18.0, false], ["grapeshot_1", 1, 4, 18.0, false], ["grapeshot_2", 2, 4, 18.0, false],
 		["grapeshot_3", 3, 4, 18.0, false], ["grapeshot_4", 4, 4, 18.0, false], ["grapeshot_5", 5, 4, 18.0, false],
 		["grapeshot_6", 6, 4, 18.0, false], ["grapeshot_7", 7, 4, 18.0, false]],
@@ -463,7 +466,7 @@ const GRAPESHOT: Dictionary = {
 const STATUS: Dictionary = {
 	"png": "res://assets/sprites/effects/status.png",
 	"frames": "res://entities/effects/status_frames.tres",
-	"size": Vector2i(24, 28),
+	"size": Vector2i(48, 56),
 	"anims": [["frozen", 0, 2, 3.0, true], ["shattered", 1, 4, 8.0, true], ["beacon_ember", 2, 4, 8.0, true],
 		["silenced", 3, 4, 6.0, true]],
 }
@@ -471,7 +474,7 @@ const STATUS: Dictionary = {
 const FROST_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/frost.png",
 	"frames": "res://entities/effects/frost_frames.tres",
-	"size": Vector2i(20, 20),
+	"size": Vector2i(40, 40),
 	"anims": [["frost_burst", 0, 5, 16.0, false], ["frost_aura", 1, 4, 6.0, true]],
 }
 
@@ -481,7 +484,7 @@ const FROST_FX: Dictionary = {
 const BLOATER: Dictionary = {
 	"png": "res://assets/sprites/enemies/bloater.png",
 	"frames": "res://entities/enemies/bloater_frames.tres",
-	"size": Vector2i(40, 40),
+	"size": Vector2i(80, 80),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -499,7 +502,7 @@ const BLOATER: Dictionary = {
 const BLOATLING: Dictionary = {
 	"png": "res://assets/sprites/enemies/bloatling.png",
 	"frames": "res://entities/enemies/bloatling_frames.tres",
-	"size": Vector2i(24, 24),
+	"size": Vector2i(48, 48),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -517,7 +520,7 @@ const BLOATLING: Dictionary = {
 const MIRE_PRIEST: Dictionary = {
 	"png": "res://assets/sprites/enemies/mire_priest.png",
 	"frames": "res://entities/enemies/mire_priest_frames.tres",
-	"size": Vector2i(32, 32),
+	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -538,7 +541,7 @@ const MIRE_PRIEST: Dictionary = {
 const SHIELDBEARER: Dictionary = {
 	"png": "res://assets/sprites/enemies/shieldbearer.png",
 	"frames": "res://entities/enemies/shieldbearer_frames.tres",
-	"size": Vector2i(32, 32),
+	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
 		["idle_up", 1, 4, 6.0, true],
@@ -557,7 +560,7 @@ const SHIELDBEARER: Dictionary = {
 const RIPPLE: Dictionary = {
 	"png": "res://assets/sprites/effects/ripple.png",
 	"frames": "res://entities/effects/ripple_frames.tres",
-	"size": Vector2i(32, 16),
+	"size": Vector2i(64, 32),
 	"anims": [["ripple", 0, 4, 6.0, true]],
 }
 
@@ -567,7 +570,7 @@ const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEAR
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {
 	"png": "res://assets/sprites/towers/build_slot.png",
-	"size": Vector2i(28, 20),
+	"size": Vector2i(56, 40),
 }
 
 ## Single-row sheet used directly by a Sprite2D (hframes): healthy, damaged, badly damaged, destroyed.
@@ -575,7 +578,7 @@ const BUILD_SLOT: Dictionary = {
 ## (art rect 24,40 - 72,88); walls, towers and roofs rise above it.
 const FORTRESS: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress.png",
-	"size": Vector2i(96, 96),
+	"size": Vector2i(192, 192),
 	"frames_count": 4,
 }
 
@@ -583,7 +586,7 @@ const FORTRESS: Dictionary = {
 const FORTRESS_FX: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress_fx.png",
 	"frames": "res://entities/fortress/fortress_fx_frames.tres",
-	"size": Vector2i(16, 24),
+	"size": Vector2i(32, 48),
 	"anims": [
 		["banner", 0, 4, 6.0, true],
 		["banner_torn", 1, 4, 6.0, true],

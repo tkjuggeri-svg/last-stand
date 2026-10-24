@@ -13,7 +13,7 @@ script = ExtResource("1_slot")
 [node name="Pad" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 z_index = -1
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 texture = ExtResource("2_pad")
 hframes = 2
 

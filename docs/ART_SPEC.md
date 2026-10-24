@@ -9,9 +9,10 @@ the game loads. Rerun it after changing a layout. The rules behind it are in `AR
   **one row per animation**, frames left to right, in the row order below. Unused cells stay empty.
   Same file name and place as the table says. A sheet with a different frame size or row order needs
   its layout changed too: tell me.
-- **Art pixels:** sizes here are in art pixels. In the game one art pixel is **2 world pixels**
-  (every sprite node has `scale = 2`), which is 2 / 3 / 4 / 6 screen pixels at 720p / 1080p / 1440p /
-  4K. Draw at 1×, no anti-aliasing, no half-transparent edges (except soft effects: smoke, glows).
+- **Pixels:** the world sprites are hand-drawn at double resolution (`docs/ART_HANDOFF.md`): sizes here
+  are the sheet's own pixels, and **one sheet pixel is one world pixel** (sprite nodes at `scale = 1`),
+  which is 1 / 1.5 / 2 / 3 screen pixels at 720p / 1080p / 1440p / 4K (1080p is uneven: see the art
+  resolution proposal). No anti-aliasing, no half-transparent edges on characters (soft effects may).
 - **Where it stands:** a character's **feet** (the middle of where it touches the ground) must be at
   the anchor pixel in every frame, so it doesn't jitter between frames or slide when it turns. The
   game places that anchor on the character's position.
@@ -22,7 +23,7 @@ the game loads. Rerun it after changing a layout. The rules behind it are in `AR
 - **No ground shadow** on characters (the game draws it). Towers, props and buildings include theirs.
 - **Outline:** a 1 px dark outline `#1a141f` around characters, light from the top left, the palette in
   `tools/art/palette.gd` (ART_DIRECTION 5: enemies' eyes in their role's colour).
-- **Size against the body:** a character's opaque width should stay within 8 world px (4 art px) of
+- **Size against the body:** a character's opaque width should stay within 8 world px of
   its collision circle (`test_visuals` checks the hero and the Ghoul), and readable without colour
   (`test_readability`: brightness contrast against the ground of its map).
 - **Rights:** your own work or CC0 only, logged in `assets/CREDITS.md` (project rule 3).
@@ -39,9 +40,9 @@ the game loads. Rerun it after changing a layout. The rules behind it are in `AR
 
 
 - File: `assets/sprites/hero/hero.png`
-- Frame: **32×40 art px** (64×80 world px)
-- Feet anchor: **(16, 35)** in the frame (art px from its top-left)
-- Sheet: 13 rows × up to 6 frames = 192×520 px
+- Frame: **64×80 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 70)** in the frame (px from its top-left)
+- Sheet: 13 rows × up to 6 frames = 384×1040 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -66,8 +67,8 @@ The attack is 4 frames at 20 fps: wind-up, the cut, follow-through, recover; the
 Sword swing trail in 8 directions: swing_0 points right, then every 45 degrees clockwise.
 
 - File: `assets/sprites/effects/swing.png`
-- Frame: **72×72 art px** (144×144 world px)
-- Sheet: 8 rows × up to 4 frames = 288×576 px
+- Frame: **144×144 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 8 rows × up to 4 frames = 576×1152 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -87,8 +88,8 @@ Drawn at the hero's centre; its reach matches the 68 world px sword arc (gamepla
 Long Reach swing trails ("swing_<direction>_<tier>", tier 1-4 = reach x1.15 .. x1.6), 128x128.
 
 - File: `assets/sprites/effects/swing_long.png`
-- Frame: **128×128 art px** (256×256 world px)
-- Sheet: 32 rows × up to 4 frames = 512×4096 px
+- Frame: **256×256 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 32 rows × up to 4 frames = 1024×8192 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -132,10 +133,10 @@ Long Reach swing trails ("swing_<direction>_<tier>", tier 1-4 = reach x1.15 .. x
 
 
 - File: `assets/sprites/enemies/ghoul.png`
-- Frame: **32×32 art px** (64×64 world px)
-- Feet anchor: **(16, 28)** in the frame (art px from its top-left)
+- Frame: **64×64 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 56)** in the frame (px from its top-left)
 - Body radius 12.0 world px (its collision circle)
-- Sheet: 10 rows × up to 7 frames = 224×320 px
+- Sheet: 10 rows × up to 7 frames = 448×640 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -155,10 +156,10 @@ Long Reach swing trails ("swing_<direction>_<tier>", tier 1-4 = reach x1.15 .. x
 The Grave Hound: same rows as the Ghoul; "walk" is a fast gallop. Attack: 4 wind-up frames at 16 fps = the data's 0.25 s, then the bite.
 
 - File: `assets/sprites/enemies/hound.png`
-- Frame: **32×32 art px** (64×64 world px)
-- Feet anchor: **(16, 28)** in the frame (art px from its top-left)
+- Frame: **64×64 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 56)** in the frame (px from its top-left)
 - Body radius 10.0 world px (its collision circle)
-- Sheet: 10 rows × up to 7 frames = 224×320 px
+- Sheet: 10 rows × up to 7 frames = 448×640 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -178,10 +179,10 @@ The Grave Hound: same rows as the Ghoul; "walk" is a fast gallop. Attack: 4 wind
 The Brute: 48x48 frames (feet on art row 44). A slow, heavy walk; attack: 6 wind-up frames at 10 fps = the data's 0.6 s, then the slam and a recover frame.
 
 - File: `assets/sprites/enemies/brute.png`
-- Frame: **48×48 art px** (96×96 world px)
-- Feet anchor: **(24, 44)** in the frame (art px from its top-left)
+- Frame: **96×96 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(48, 88)** in the frame (px from its top-left)
 - Body radius 18.0 world px (its collision circle)
-- Sheet: 10 rows × up to 8 frames = 384×480 px
+- Sheet: 10 rows × up to 8 frames = 768×960 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -201,10 +202,10 @@ The Brute: 48x48 frames (feet on art row 44). A slow, heavy walk; attack: 6 wind
 The Cultist: same rows as the Ghoul; the walk is a glide. Attack: 6 wind-up frames at 12 fps = the data's 0.5 s (the witchfire swells overhead), then the release and a recover frame.
 
 - File: `assets/sprites/enemies/cultist.png`
-- Frame: **32×32 art px** (64×64 world px)
-- Feet anchor: **(16, 28)** in the frame (art px from its top-left)
+- Frame: **64×64 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 56)** in the frame (px from its top-left)
 - Body radius 10.0 world px (its collision circle)
-- Sheet: 10 rows × up to 8 frames = 256×320 px
+- Sheet: 10 rows × up to 8 frames = 512×640 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -224,8 +225,8 @@ The Cultist: same rows as the Ghoul; the walk is a glide. Attack: 6 wind-up fram
 The Cultist's witchfire bolt (flying, looped) and its burst.
 
 - File: `assets/sprites/enemies/cultist_fx.png`
-- Frame: **16×16 art px** (32×32 world px)
-- Sheet: 2 rows × up to 4 frames = 64×32 px
+- Frame: **32×32 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 2 rows × up to 4 frames = 128×64 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -237,10 +238,10 @@ The Cultist's witchfire bolt (flying, looped) and its burst.
 Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its death bursts) and its Bloatlings (24x24, the same creature drawn small); the Mire Priest (its heal: 0-3 the staff rises, the telegraph; 4-5 the pulse); the Shieldbearer (its shield always toward where it walks).
 
 - File: `assets/sprites/enemies/bloater.png`
-- Frame: **40×40 art px** (80×80 world px)
-- Feet anchor: **(20, 35)** in the frame (art px from its top-left)
+- Frame: **80×80 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(40, 70)** in the frame (px from its top-left)
 - Body radius 15.0 world px (its collision circle)
-- Sheet: 10 rows × up to 7 frames = 280×400 px
+- Sheet: 10 rows × up to 7 frames = 560×800 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -260,10 +261,10 @@ Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its d
 
 
 - File: `assets/sprites/enemies/bloatling.png`
-- Frame: **24×24 art px** (48×48 world px)
-- Feet anchor: **(12, 20)** in the frame (art px from its top-left)
+- Frame: **48×48 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(24, 40)** in the frame (px from its top-left)
 - Body radius 8.0 world px (its collision circle)
-- Sheet: 10 rows × up to 7 frames = 168×240 px
+- Sheet: 10 rows × up to 7 frames = 336×480 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -283,10 +284,10 @@ Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its d
 
 
 - File: `assets/sprites/enemies/mire_priest.png`
-- Frame: **32×32 art px** (64×64 world px)
-- Feet anchor: **(16, 28)** in the frame (art px from its top-left)
+- Frame: **64×64 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 56)** in the frame (px from its top-left)
 - Body radius 10.0 world px (its collision circle)
-- Sheet: 13 rows × up to 7 frames = 224×416 px
+- Sheet: 13 rows × up to 7 frames = 448×832 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -309,10 +310,10 @@ Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its d
 
 
 - File: `assets/sprites/enemies/shieldbearer.png`
-- Frame: **32×32 art px** (64×64 world px)
-- Feet anchor: **(16, 28)** in the frame (art px from its top-left)
+- Frame: **64×64 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(32, 56)** in the frame (px from its top-left)
 - Body radius 13.0 world px (its collision circle)
-- Sheet: 10 rows × up to 7 frames = 224×320 px
+- Sheet: 10 rows × up to 7 frames = 448×640 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -334,10 +335,10 @@ Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its d
 Bosses: 64x64 frames (feet on art row 58, boss_art_kit.gd). Attack: 6 wind-up frames at 10 fps = the data's 0.6 s, then the blow. Abilities: "cast" is 6 frames at 5 fps = the 1.2 s telegraph. The Gravelord (wave 5): raises the dead.
 
 - File: `assets/sprites/enemies/gravelord.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Feet anchor: **(32, 58)** in the frame (art px from its top-left)
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(64, 116)** in the frame (px from its top-left)
 - Body radius 24.0 world px (its collision circle)
-- Sheet: 13 rows × up to 8 frames = 512×832 px
+- Sheet: 13 rows × up to 8 frames = 1024×1664 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -360,10 +361,10 @@ Bosses: 64x64 frames (feet on art row 58, boss_art_kit.gd). Attack: 6 wind-up fr
 The Bone Colossus (wave 10): braces (looped through the 1.0 s telegraph), charges, is stunned.
 
 - File: `assets/sprites/enemies/colossus.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Feet anchor: **(32, 58)** in the frame (art px from its top-left)
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(64, 116)** in the frame (px from its top-left)
 - Body radius 28.0 world px (its collision circle)
-- Sheet: 19 rows × up to 8 frames = 512×1216 px
+- Sheet: 19 rows × up to 8 frames = 1024×2432 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -392,10 +393,10 @@ The Bone Colossus (wave 10): braces (looped through the 1.0 s telegraph), charge
 The Lich Warden (wave 15): wards the enemies around it.
 
 - File: `assets/sprites/enemies/lich.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Feet anchor: **(32, 58)** in the frame (art px from its top-left)
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(64, 116)** in the frame (px from its top-left)
 - Body radius 22.0 world px (its collision circle)
-- Sheet: 13 rows × up to 8 frames = 512×832 px
+- Sheet: 13 rows × up to 8 frames = 1024×1664 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -418,10 +419,10 @@ The Lich Warden (wave 15): wards the enemies around it.
 The Tollkeeper (chapter 2's boss, M7): the toll heaves the bell up and swings it.
 
 - File: `assets/sprites/enemies/tollkeeper.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Feet anchor: **(32, 58)** in the frame (art px from its top-left)
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Feet anchor: **(64, 116)** in the frame (px from its top-left)
 - Body radius 26.0 world px (its collision circle)
-- Sheet: 13 rows × up to 8 frames = 512×832 px
+- Sheet: 13 rows × up to 8 frames = 1024×1664 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -446,8 +447,8 @@ The Tollkeeper (chapter 2's boss, M7): the toll heaves the bell up and swings it
 The three towers (32x48 art = 64x96 world px; the base rests on art row 45, the sprite is placed so that is +4 world px below the slot centre). Per tower: idle, fire, build (rising in scaffolding) and sell (dismantled into rubble, played by the TowerDismantle effect); levels 2 and 3 add their own idle and fire ("<id>_idle_2", ...).
 
 - File: `assets/sprites/towers/towers.png`
-- Frame: **32×48 art px** (64×96 world px)
-- Sheet: 60 rows × up to 6 frames = 192×2880 px
+- Frame: **64×96 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 60 rows × up to 6 frames = 384×5760 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -517,8 +518,8 @@ The three towers (32x48 art = 64x96 world px; the base rests on art row 45, the 
 Arrows in 8 directions (arrow_0 points right, then every 45 degrees clockwise), cannonball, frost bolt.
 
 - File: `assets/sprites/towers/projectiles.png`
-- Frame: **12×12 art px** (24×24 world px)
-- Sheet: 37 rows × up to 4 frames = 48×444 px
+- Frame: **24×24 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 37 rows × up to 4 frames = 96×888 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -565,7 +566,7 @@ Arrows in 8 directions (arrow_0 points right, then every 45 degrees clockwise), 
 Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 
 - File: `assets/sprites/towers/build_slot.png`
-- Frame: **28×20 art px** (56×40 world px)
+- Frame: **56×40 px** (= world px: the sprite is drawn at scale 1)
 
 ## Effects
 
@@ -574,8 +575,8 @@ Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is clos
 
 
 - File: `assets/sprites/effects/hit_spark.png`
-- Frame: **16×16 art px** (32×32 world px)
-- Sheet: 1 rows × up to 4 frames = 64×16 px
+- Frame: **32×32 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 4 frames = 128×32 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -586,8 +587,8 @@ Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is clos
 
 
 - File: `assets/sprites/effects/dust.png`
-- Frame: **24×24 art px** (48×48 world px)
-- Sheet: 1 rows × up to 6 frames = 144×24 px
+- Frame: **48×48 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 6 frames = 288×48 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -598,8 +599,8 @@ Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is clos
 
 
 - File: `assets/sprites/effects/explosion.png`
-- Frame: **56×56 art px** (112×112 world px)
-- Sheet: 1 rows × up to 7 frames = 392×56 px
+- Frame: **112×112 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 7 frames = 784×112 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -610,8 +611,8 @@ Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is clos
 The big shells' blast (cannon level 3): 72x72 art = a 144 px blast.
 
 - File: `assets/sprites/effects/explosion_large.png`
-- Frame: **72×72 art px** (144×144 world px)
-- Sheet: 1 rows × up to 7 frames = 504×72 px
+- Frame: **144×144 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 7 frames = 1008×144 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -622,8 +623,8 @@ The big shells' blast (cannon level 3): 72x72 art = a 144 px blast.
 The frost nova (frost level 3): 48x48 art = a 96 px ring.
 
 - File: `assets/sprites/effects/frost_nova.png`
-- Frame: **48×48 art px** (96×96 world px)
-- Sheet: 1 rows × up to 6 frames = 288×48 px
+- Frame: **96×96 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 6 frames = 576×96 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -634,8 +635,8 @@ The frost nova (frost level 3): 48x48 art = a 96 px ring.
 
 
 - File: `assets/sprites/effects/frost.png`
-- Frame: **20×20 art px** (40×40 world px)
-- Sheet: 2 rows × up to 5 frames = 100×40 px
+- Frame: **40×40 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 2 rows × up to 5 frames = 200×80 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -647,8 +648,8 @@ The frost nova (frost level 3): 48x48 art = a 96 px ring.
 Burning ground (looping): hellfire shells and the brazier's fire.
 
 - File: `assets/sprites/effects/burn.png`
-- Frame: **48×32 art px** (96×64 world px)
-- Sheet: 2 rows × up to 4 frames = 192×64 px
+- Frame: **96×64 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 2 rows × up to 4 frames = 384×128 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -660,8 +661,8 @@ Burning ground (looping): hellfire shells and the brazier's fire.
 Evolution effects (evolution_art.gd). The soul burst (Pyre of Souls): 56x56 art.
 
 - File: `assets/sprites/effects/soul_burst.png`
-- Frame: **56×56 art px** (112×112 world px)
-- Sheet: 1 rows × up to 7 frames = 392×56 px
+- Frame: **112×112 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 7 frames = 784×112 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -672,8 +673,8 @@ Evolution effects (evolution_art.gd). The soul burst (Pyre of Souls): 56x56 art.
 Arrow rain (Volley Tower): 64x64 art = a 128 px shower.
 
 - File: `assets/sprites/effects/evolution_fx.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Sheet: 1 rows × up to 5 frames = 320×64 px
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 5 frames = 640×128 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -684,8 +685,8 @@ Arrow rain (Volley Tower): 64x64 art = a 128 px shower.
 The grapeshot blast (Grapeshot Battery) in 8 directions (grapeshot_0 right, then clockwise).
 
 - File: `assets/sprites/effects/grapeshot.png`
-- Frame: **64×64 art px** (128×128 world px)
-- Sheet: 8 rows × up to 4 frames = 256×512 px
+- Frame: **128×128 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 8 rows × up to 4 frames = 512×1024 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -703,8 +704,8 @@ The grapeshot blast (Grapeshot Battery) in 8 directions (grapeshot_0 right, then
 Status marks: an enemy frozen solid, a vulnerable enemy's cracked rune, a boosted tower's ember.
 
 - File: `assets/sprites/effects/status.png`
-- Frame: **24×28 art px** (48×56 world px)
-- Sheet: 4 rows × up to 4 frames = 96×112 px
+- Frame: **48×56 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 4 rows × up to 4 frames = 192×224 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -718,8 +719,8 @@ Status marks: an enemy frozen solid, a vulnerable enemy's cracked rune, a booste
 Rings around the hero wading in marsh water (marsh_art.gd), 32x16 art, looping.
 
 - File: `assets/sprites/effects/ripple.png`
-- Frame: **32×16 art px** (64×32 world px)
-- Sheet: 1 rows × up to 4 frames = 128×16 px
+- Frame: **64×32 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 1 rows × up to 4 frames = 256×32 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -732,7 +733,7 @@ Rings around the hero wading in marsh water (marsh_art.gd), 32x16 art, looping.
 Single-row sheet used directly by a Sprite2D (hframes): healthy, damaged, badly damaged, destroyed. 3/4 view: the 48x48 footprint (= the 96 px collision box) is the lower part of each 96x96 frame (art rect 24,40 - 72,88); walls, towers and roofs rise above it.
 
 - File: `assets/sprites/fortress/fortress.png`
-- Frame: **96×96 art px** (192×192 world px)
+- Frame: **192×192 px** (= world px: the sprite is drawn at scale 1)
 - One row of **4 frames** (no animation: the game picks a frame)
 
 ### Fortress Fx
@@ -740,8 +741,8 @@ Single-row sheet used directly by a Sprite2D (hframes): healthy, damaged, badly 
 Animated pieces placed on the fortress: waving banners, fires (damage) and wall braziers.
 
 - File: `assets/sprites/fortress/fortress_fx.png`
-- Frame: **16×24 art px** (32×48 world px)
-- Sheet: 4 rows × up to 6 frames = 96×96 px
+- Frame: **32×48 px** (= world px: the sprite is drawn at scale 1)
+- Sheet: 4 rows × up to 6 frames = 192×192 px
 
 | Row | Animation | Frames | Speed (fps) | Loops |
 |---|---|---|---|---|
@@ -754,12 +755,12 @@ Animated pieces placed on the fortress: waving banners, fires (damage) and wall 
 
 | Image | File | Size (art px) | Notes |
 |---|---|---|---|
-| Graveyard props | `assets/sprites/environment/props.png` | 12 frames of 32×48 | standing on art row 44 |
-| Marsh props | `assets/sprites/environment/marsh_props.png` | 8 frames of 32×48 | standing on art row 44 |
-| Crypt (spawn) | `assets/sprites/environment/crypt.png` | 64×64 | standing on art row 60 |
-| Drowned chapel (spawn) | `assets/sprites/environment/drowned_chapel.png` | 64×64 | standing on art row 60 |
-| Crypt Road ground | `assets/sprites/environment/prototype_arena_ground.png` | 682×482 | the whole map, baked from the level's roads: drawn to match `levels/prototype_arena.tscn` |
-| Drowned Marsh ground | `assets/sprites/environment/drowned_marsh_ground.png` | 942×682 | the same, with the pools |
+| Graveyard props | `assets/sprites/environment/props.png` | 12 frames of 64×96 | standing on row 88; frame order = the game's (`environment_art.gd` PROPS: tomb_round, tomb_cross, tomb_tall, grave_mound, dead_tree, dead_tree_small, bush, rocks, lantern, broken_pillar, bones, fence) |
+| Marsh props | `assets/sprites/environment/marsh_props.png` | 8 frames of 64×96 | standing on row 88; order = `marsh_art.gd` PROPS: reeds, cattails, willow, stump, sunken_boat, marsh_lantern, drowned_tomb, mushrooms |
+| Crypt (spawn) | `assets/sprites/environment/crypt.png` | 128×128 | standing on row 120 |
+| Drowned chapel (spawn) | `assets/sprites/environment/drowned_chapel.png` | 128×128 | standing on row 120 |
+| Crypt Road ground | `assets/sprites/environment/prototype_arena_ground.png` | 682×482 (2 world px each: still code art) | the whole map, baked from the level's roads: drawn to match `levels/prototype_arena.tscn` |
+| Drowned Marsh ground | `assets/sprites/environment/drowned_marsh_ground.png` | 942×682 (2 world px each) | the same, with the pools |
 | UI frames, buttons, bars | `assets/sprites/ui/*.png` | drawn at 1×, saved at **2×** | 9-slice textures (8 art px corners); the theme uses them |
 | Card icons | `assets/sprites/ui/upgrades/<id>.png` | 16×16, saved at 2× | one per card |
 | Relic icons | `assets/sprites/ui/relics/<id>.png` | 16×16, saved at 2× | one per relic |

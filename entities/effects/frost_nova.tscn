@@ -8,6 +8,6 @@ z_index = -1
 script = ExtResource("1_effect")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_frames")
 animation = &"frost_nova"

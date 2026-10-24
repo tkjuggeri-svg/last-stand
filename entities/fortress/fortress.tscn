@@ -29,7 +29,7 @@ shape = SubResource("RectangleShape2D_body")
 [node name="Sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(0, -32)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 texture = ExtResource("4_texture")
 hframes = 4
 
@@ -39,7 +39,7 @@ process_mode = 3
 
 [node name="BannerSW" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-38, -30)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
@@ -48,7 +48,7 @@ metadata/until_look = 3
 
 [node name="BannerSE" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(58, -30)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
@@ -57,7 +57,7 @@ metadata/until_look = 2
 
 [node name="BannerKeep" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(10, -119)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
@@ -66,7 +66,7 @@ metadata/until_look = 3
 
 [node name="BrazierW" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-20, -2)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"brazier"
 autoplay = "brazier"
@@ -74,7 +74,8 @@ frame_progress = 0.39
 metadata/until_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/BrazierW"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.62, 0.32, 1)
 energy = 0.45
 texture = ExtResource("7_light")
@@ -82,7 +83,7 @@ texture_scale = 1.2
 
 [node name="BrazierE" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(20, -2)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"brazier"
 autoplay = "brazier"
@@ -90,7 +91,8 @@ frame_progress = 0.65
 metadata/until_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/BrazierE"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.62, 0.32, 1)
 energy = 0.45
 texture = ExtResource("7_light")
@@ -98,7 +100,7 @@ texture_scale = 1.2
 
 [node name="Fire1" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, -108)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -107,15 +109,16 @@ metadata/from_look = 1
 metadata/until_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire1"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
 texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire1"]
-position = Vector2(0, -6)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
 amount = 6
 lifetime = 1.8
 texture = ExtResource("6_smoke")
@@ -132,7 +135,7 @@ color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire2" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(6, -98)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -141,15 +144,16 @@ metadata/from_look = 2
 metadata/until_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire2"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
 texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire2"]
-position = Vector2(0, -6)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
 amount = 6
 lifetime = 1.8
 texture = ExtResource("6_smoke")
@@ -166,7 +170,7 @@ color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire3" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-48, -108)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -175,15 +179,16 @@ metadata/from_look = 2
 metadata/until_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire3"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
 texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire3"]
-position = Vector2(0, -6)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
 amount = 6
 lifetime = 1.8
 texture = ExtResource("6_smoke")
@@ -200,7 +205,7 @@ color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire4" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(28, -2)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -208,7 +213,8 @@ frame_progress = 0.39
 metadata/from_look = 2
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire4"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
@@ -216,7 +222,7 @@ texture_scale = 0.9
 
 [node name="Fire5" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-8, -60)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -224,15 +230,16 @@ frame_progress = 0.52
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire5"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
 texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire5"]
-position = Vector2(0, -6)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
 amount = 6
 lifetime = 1.8
 texture = ExtResource("6_smoke")
@@ -249,7 +256,7 @@ color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire6" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(12, -56)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -257,7 +264,8 @@ frame_progress = 0.65
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire6"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
@@ -265,7 +273,7 @@ texture_scale = 0.9
 
 [node name="Fire7" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-44, -24)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -273,7 +281,8 @@ frame_progress = 0.78
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire7"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
@@ -281,7 +290,7 @@ texture_scale = 0.9
 
 [node name="Fire8" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, 14)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -289,15 +298,16 @@ frame_progress = 0.91
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire8"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
 texture_scale = 0.9
 
 [node name="Smoke" type="CPUParticles2D" parent="LookDecor/Fire8"]
-position = Vector2(0, -6)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
 amount = 6
 lifetime = 1.8
 texture = ExtResource("6_smoke")
@@ -314,7 +324,7 @@ color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire9" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-44, 20)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -322,7 +332,8 @@ frame_progress = 0.04
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire9"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
@@ -330,7 +341,7 @@ texture_scale = 0.9
 
 [node name="Fire10" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(48, -82)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -338,7 +349,8 @@ frame_progress = 0.30
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire10"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")
@@ -346,7 +358,7 @@ texture_scale = 0.9
 
 [node name="Fire11" type="AnimatedSprite2D" parent="LookDecor"]
 position = Vector2(-48, -82)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
 autoplay = "fire"
@@ -354,7 +366,8 @@ frame_progress = 0.70
 metadata/from_look = 3
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire11"]
-position = Vector2(0, 6)
+position = Vector2(0, 12)
+scale = Vector2(2, 2)
 color = Color(1, 0.55, 0.25, 1)
 energy = 0.5
 texture = ExtResource("7_light")

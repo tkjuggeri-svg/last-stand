@@ -9,19 +9,19 @@ script = ExtResource("1_effect")
 
 [node name="Body" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -24)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_body")
 animation = &"death"
 
 [node name="Dust" type="AnimatedSprite2D" parent="."]
 position = Vector2(-28, 16)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("3_dust")
 animation = &"dust"
 
 [node name="Dust2" type="AnimatedSprite2D" parent="."]
 position = Vector2(30, 18)
-scale = Vector2(2, 2)
+scale = Vector2(1, 1)
 sprite_frames = ExtResource("3_dust")
 animation = &"dust"
 frame = 1

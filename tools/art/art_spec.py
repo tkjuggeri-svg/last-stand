@@ -52,9 +52,10 @@ the game loads. Rerun it after changing a layout. The rules behind it are in `AR
   **one row per animation**, frames left to right, in the row order below. Unused cells stay empty.
   Same file name and place as the table says. A sheet with a different frame size or row order needs
   its layout changed too: tell me.
-- **Art pixels:** sizes here are in art pixels. In the game one art pixel is **2 world pixels**
-  (every sprite node has `scale = 2`), which is 2 / 3 / 4 / 6 screen pixels at 720p / 1080p / 1440p /
-  4K. Draw at 1×, no anti-aliasing, no half-transparent edges (except soft effects: smoke, glows).
+- **Pixels:** the world sprites are hand-drawn at double resolution (`docs/ART_HANDOFF.md`): sizes here
+  are the sheet's own pixels, and **one sheet pixel is one world pixel** (sprite nodes at `scale = 1`),
+  which is 1 / 1.5 / 2 / 3 screen pixels at 720p / 1080p / 1440p / 4K (1080p is uneven: see the art
+  resolution proposal). No anti-aliasing, no half-transparent edges on characters (soft effects may).
 - **Where it stands:** a character's **feet** (the middle of where it touches the ground) must be at
   the anchor pixel in every frame, so it doesn't jitter between frames or slide when it turns. The
   game places that anchor on the character's position.
@@ -65,7 +66,7 @@ the game loads. Rerun it after changing a layout. The rules behind it are in `AR
 - **No ground shadow** on characters (the game draws it). Towers, props and buildings include theirs.
 - **Outline:** a 1 px dark outline `#1a141f` around characters, light from the top left, the palette in
   `tools/art/palette.gd` (ART_DIRECTION 5: enemies' eyes in their role's colour).
-- **Size against the body:** a character's opaque width should stay within 8 world px (4 art px) of
+- **Size against the body:** a character's opaque width should stay within 8 world px of
   its collision circle (`test_visuals` checks the hero and the Ghoul), and readable without colour
   (`test_readability`: brightness contrast against the ground of its map).
 - **Rights:** your own work or CC0 only, logged in `assets/CREDITS.md` (project rule 3).
@@ -90,13 +91,17 @@ def parse_layouts(text):
     return sheets
 
 
-def feet_of(name):
+def feet_of(name, frame_width):
+    """The feet anchor in the sheet's pixels: the code art's FEET, scaled from its frame to this one."""
     if name not in FEET:
         return None
     file, const = FEET[name]
     text = (ROOT / "tools/art" / file).read_text()
     m = re.search(r'const %s: Vector2 = Vector2\(([\d.]+), ([\d.]+)\)' % const, text)
-    return (float(m.group(1)), float(m.group(2))) if m else None
+    size_const = const.replace("FEET", "SIZE")
+    size = re.search(r'const %s: Vector2i = Vector2i\((\d+), (\d+)\)' % size_const, text)
+    k = frame_width / int(size.group(1)) if size else 1
+    return (float(m.group(1)) * k, float(m.group(2)) * k) if m else None
 
 
 def enemy_offset(name):
@@ -112,10 +117,10 @@ def sheet_section(name, s):
     w, h = s["size"]
     lines = ["### %s" % name.replace("_", " ").title(), "", s["doc"], "",
              "- File: `%s`" % s["png"],
-             "- Frame: **%d×%d art px** (%d×%d world px)" % (w, h, w * 2, h * 2)]
-    feet = feet_of(name)
+             "- Frame: **%d×%d px** (= world px: the sprite is drawn at scale 1)" % (w, h)]
+    feet = feet_of(name, w)
     if feet:
-        lines.append("- Feet anchor: **(%g, %g)** in the frame (art px from its top-left)" % feet)
+        lines.append("- Feet anchor: **(%g, %g)** in the frame (px from its top-left)" % feet)
     data = enemy_offset(name)
     if data and data[1]:
         lines.append("- Body radius %s world px (its collision circle)" % data[1])
@@ -137,12 +142,12 @@ STATICS = """## Single images
 
 | Image | File | Size (art px) | Notes |
 |---|---|---|---|
-| Graveyard props | `assets/sprites/environment/props.png` | 12 frames of 32×48 | standing on art row 44 |
-| Marsh props | `assets/sprites/environment/marsh_props.png` | 8 frames of 32×48 | standing on art row 44 |
-| Crypt (spawn) | `assets/sprites/environment/crypt.png` | 64×64 | standing on art row 60 |
-| Drowned chapel (spawn) | `assets/sprites/environment/drowned_chapel.png` | 64×64 | standing on art row 60 |
-| Crypt Road ground | `assets/sprites/environment/prototype_arena_ground.png` | 682×482 | the whole map, baked from the level's roads: drawn to match `levels/prototype_arena.tscn` |
-| Drowned Marsh ground | `assets/sprites/environment/drowned_marsh_ground.png` | 942×682 | the same, with the pools |
+| Graveyard props | `assets/sprites/environment/props.png` | 12 frames of 64×96 | standing on row 88; frame order = the game's (`environment_art.gd` PROPS: tomb_round, tomb_cross, tomb_tall, grave_mound, dead_tree, dead_tree_small, bush, rocks, lantern, broken_pillar, bones, fence) |
+| Marsh props | `assets/sprites/environment/marsh_props.png` | 8 frames of 64×96 | standing on row 88; order = `marsh_art.gd` PROPS: reeds, cattails, willow, stump, sunken_boat, marsh_lantern, drowned_tomb, mushrooms |
+| Crypt (spawn) | `assets/sprites/environment/crypt.png` | 128×128 | standing on row 120 |
+| Drowned chapel (spawn) | `assets/sprites/environment/drowned_chapel.png` | 128×128 | standing on row 120 |
+| Crypt Road ground | `assets/sprites/environment/prototype_arena_ground.png` | 682×482 (2 world px each: still code art) | the whole map, baked from the level's roads: drawn to match `levels/prototype_arena.tscn` |
+| Drowned Marsh ground | `assets/sprites/environment/drowned_marsh_ground.png` | 942×682 (2 world px each) | the same, with the pools |
 | UI frames, buttons, bars | `assets/sprites/ui/*.png` | drawn at 1×, saved at **2×** | 9-slice textures (8 art px corners); the theme uses them |
 | Card icons | `assets/sprites/ui/upgrades/<id>.png` | 16×16, saved at 2× | one per card |
 | Relic icons | `assets/sprites/ui/relics/<id>.png` | 16×16, saved at 2× | one per relic |

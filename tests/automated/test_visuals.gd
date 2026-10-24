@@ -4,7 +4,9 @@ extends SceneTree
 ## Run all tests with tests/run_tests.sh, or this one: godot --headless --fixed-fps 60 --path . --script res://<this file>
 
 const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
-const ART_SCALE: Vector2 = Vector2(2, 2)
+## The world sprites are hand-drawn at double resolution: one sheet pixel = one world pixel, nodes at
+## scale 1 (docs/ART_HANDOFF.md).
+const ART_SCALE: Vector2 = Vector2(1, 1)
 ## How far (world px) a sprite's solid pixels may differ from its collision size.
 const FIT_TOLERANCE: float = 8.0
 
@@ -55,7 +57,7 @@ func _test_hero_animation() -> void:
 	await _frames(2)
 	var sprite: DirectionalSprite = hero.get_node("%Sprite")
 	var swing: AnimatedSprite2D = hero.get_node("%AttackVisual")
-	_check("hero art at 2x scale", sprite.scale == ART_SCALE and swing.scale == ART_SCALE)
+	_check("hero art at scale 1 (double-resolution sheets)", sprite.scale == ART_SCALE and swing.scale == ART_SCALE)
 	_check("hero idles facing down", sprite.animation == &"idle_down" and sprite.is_playing())
 
 	var expected: Dictionary = {"move_right": ["walk_side", false], "move_left": ["walk_side", true],
@@ -107,7 +109,7 @@ func _test_ghoul_and_effects() -> void:
 	var sprite: DirectionalSprite = ghoul.get_node("%Sprite")
 	var spark: AnimatedSprite2D = ghoul.get_node("%HitSpark")
 	var flash: ShaderMaterial = sprite.material
-	_check("ghoul art at 2x scale", sprite.scale == ART_SCALE and spark.scale == ART_SCALE)
+	_check("ghoul art at scale 1 (double-resolution sheets)", sprite.scale == ART_SCALE and spark.scale == ART_SCALE)
 	_check("ghoul walks right along the first lane segment", sprite.animation == &"walk_side" and not sprite.flip_h)
 	# First lane corner is at x = -300 (400 px from the start): then it walks down.
 	var frames: int = 0
