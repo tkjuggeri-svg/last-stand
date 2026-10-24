@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://entities/minions/minion.gd" id="1_minion"]
+[ext_resource type="SpriteFrames" path="res://entities/minions/skeleton_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://core/components/health_component.gd" id="3_health"]
+[ext_resource type="Script" path="res://core/components/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" path="res://core/components/hitbox.gd" id="5_hitbox"]
+[ext_resource type="Script" path="res://core/components/attacker_limit.gd" id="6_limit"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 9.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_attack"]
+radius = 18.0
+
+[node name="Minion" type="CharacterBody2D"]
+collision_layer = 256
+collision_mask = 1
+motion_mode = 1
+script = ExtResource("1_minion")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle"
+
+[node name="HealthComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_health")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health_component")]
+collision_layer = 0
+collision_mask = 32
+script = ExtResource("4_hurtbox")
+health_component = NodePath("../HealthComponent")
+
+[node name="HurtShape" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CircleShape2D_body")
+
+[node name="AttackerLimit" type="Node" parent="."]
+script = ExtResource("6_limit")
+
+[node name="AttackPivot" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="AttackHitbox" type="Area2D" parent="AttackPivot"]
+unique_name_in_owner = true
+position = Vector2(22, 0)
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("5_hitbox")
+
+[node name="AttackShape" type="CollisionShape2D" parent="AttackPivot/AttackHitbox"]
+unique_name_in_owner = true
+shape = SubResource("CircleShape2D_attack")
+disabled = true

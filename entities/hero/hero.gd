@@ -13,6 +13,8 @@ signal died
 signal revived
 ## Its sword landed a hit for `damage` (the Bloodpact relic heals from it).
 signal struck(damage: int)
+## Its bolt killed an enemy, which fell at `at` (the Necromancer raises a skeleton there).
+signal slew(at: Vector2)
 ## It lost `amount` HP (a hit got through).
 signal hurt(amount: int)
 
@@ -145,7 +147,7 @@ func _fire_bolt(direction: Vector2) -> void:
 		_loose_bolt(aim.rotated(-QUIVER_FAN))
 	_sprite.face(aim)
 	_sprite.play_state("attack", true)
-	Sfx.play(self, &"hero_bolt")
+	Sfx.play(self, data.bolt_sound)
 
 
 ## One bolt along `aim`, with the run's upgrades (range, pierce, Mark) and a Watchtower's bonus.
@@ -338,9 +340,11 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 	add_child(number)
 
 
-func _on_bolt_hit(_enemy: Enemy) -> void:
+func _on_bolt_hit(enemy: Enemy) -> void:
 	Sfx.play(self, &"hero_hit")
 	struck.emit(_attack_hitbox.damage)
+	if is_instance_valid(enemy) and not enemy.is_alive():
+		slew.emit(enemy.global_position)
 
 
 func _on_attack_landed(target: Hurtbox) -> void:

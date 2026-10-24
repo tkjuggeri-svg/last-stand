@@ -115,6 +115,7 @@ pause={
 2d_physics/layer_6="enemy_hitbox"
 2d_physics/layer_7="tower_range"
 2d_physics/layer_8="fortress_hitbox"
+2d_physics/layer_9="allies"
 
 [physics]
 

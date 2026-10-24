@@ -6,7 +6,6 @@ extends Node2D
 
 ## Close enough to the bolt's path to be hit, in px.
 const HIT_RADIUS: float = 10.0
-const LOOKS: String = "bolt_%d"
 
 ## Called back for each enemy hit (the hero's feedback and Bloodpact).
 signal hit(enemy: Enemy)
@@ -18,6 +17,8 @@ var _pierce_left: int = 0
 var _mark_bonus: float = 0.0
 var _mark_time: float = 0.0
 var _pierced: Array[Enemy] = []
+var _look: String = "bolt_%d"
+var _frames: SpriteFrames
 var _hitbox_damage: int = 0
 
 @onready var _sprite: AnimatedSprite2D = %Sprite
@@ -43,11 +44,15 @@ func launch(from: Vector2, direction: Vector2, damage: int, data: HeroData) -> v
 	_mark_bonus = data.mark_bonus if mark_bonus < 0.0 else mark_bonus
 	_mark_time = data.mark_time if mark_time < 0.0 else mark_time
 	_hitbox_damage = damage
+	_look = "%s_%%d" % data.bolt_look
+	_frames = data.bolt_frames
 
 
 func _ready() -> void:
 	_hitbox.damage = _hitbox_damage
-	_sprite.play(StringName(LOOKS % posmod(roundi(_direction.angle() / (PI / 4.0)), 8)))
+	if _frames != null:
+		_sprite.sprite_frames = _frames
+	_sprite.play(StringName(_look % posmod(roundi(_direction.angle() / (PI / 4.0)), 8)))
 
 
 func _physics_process(delta: float) -> void:

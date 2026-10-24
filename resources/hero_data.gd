@@ -26,7 +26,16 @@ enum AttackKind { SWORD, BOLT }
 ## The hero's sprite sheet (null: the scene's own).
 @export var frames: SpriteFrames
 @export var attack_kind: AttackKind = AttackKind.SWORD
+@export_group("Raising")
+## A kill the hero's bolt lands raises this minion where the enemy fell, up to `raise_cap` at once.
+@export var raise_minion: MinionData
+@export var raise_cap: int = 0
 @export_group("Bolt")
+## The bolt's own animations ("<look>_0".."<look>_7"); empty: the shared projectile sheet's "bolt".
+@export var bolt_frames: SpriteFrames
+@export var bolt_look: StringName = &"bolt"
+## Its sound (an Sfx id).
+@export var bolt_sound: StringName = &"hero_bolt"
 ## A bolt flies this far (px) at this speed and passes through this many enemies after the first.
 @export var bolt_range: float = 340.0
 @export var bolt_speed: float = 520.0

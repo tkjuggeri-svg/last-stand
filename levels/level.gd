@@ -41,6 +41,8 @@ const BOSS_SHAKE_TIME: float = 0.6
 @export var builder: TowerBuilder
 ## The between-waves gold sinks (a saved run keeps what was bought, M8).
 @export var quartermaster: Quartermaster
+## The level's minions (M9), made in _ready: a system every arena needs, so no scene lists it.
+var minions: MinionPool
 
 var _run_over: bool = false
 var _encounter_mode: bool = false
@@ -58,6 +60,7 @@ func _ready() -> void:
 	fortress.destroyed.connect(_on_fortress_destroyed)
 	if hero_lives != null:
 		hero_lives.out_of_lives.connect(func() -> void: _end_run(LossReason.HERO_KILLED))
+	_make_minion_pool()
 	if run_cycle != null:
 		run_cycle.all_waves_cleared.connect(_on_all_waves_cleared)
 	if modifiers != null:
@@ -65,6 +68,14 @@ func _ready() -> void:
 	if spawner != null:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 		spawner.enemy_spawned.connect(func(enemy: Enemy) -> void: enemy.damage_reported.connect(_show_damage))
+
+
+func _make_minion_pool() -> void:
+	minions = MinionPool.new()
+	minions.name = "MinionPool"
+	minions.parent_node = _effects
+	minions.modifiers = modifiers
+	add_child(minions)
 
 
 func _exit_tree() -> void:
@@ -136,6 +147,14 @@ func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 	var hero: Hero = get_node_or_null("Hero") as Hero
 	if hero != null:
 		hero.damage_bonus_at = builder.hero_bonus_at
+		if hero_data.raise_minion != null:
+			hero.slew.connect(func(at: Vector2) -> void: _raise_for_hero(hero, hero_data, at))
+
+
+## A kill by the hero's bolt raises a skeleton where the enemy fell (up to the hero's cap).
+func _raise_for_hero(hero: Hero, hero_data: HeroData, at: Vector2) -> void:
+	var cap: int = hero_data.raise_cap + RunModifiers.value_int(modifiers, 0, [RunModifiers.MINION_CAP])
+	minions.raise(hero_data.raise_minion, at, hero, cap, hero)
 
 
 ## Holds back what the run hasn't unlocked (M8): towers in the build menu, card and relic pools, which

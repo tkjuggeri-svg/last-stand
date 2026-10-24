@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+[ext_resource type="SpriteFrames" path="res://entities/hero/necromancer_frames.tres" id="2_frames"]
+[ext_resource type="SpriteFrames" path="res://entities/hero/soul_bolt_frames.tres" id="3_bolt"]
+[ext_resource type="Resource" path="res://data/minions/skeleton.tres" id="4_skeleton"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"necromancer"
+display_name = "The Necromancer"
+description = "The gravecaller: a soul bolt; every kill it lands raises a skeleton (3 at a time) that fights for her.\nWeak against single big targets: bosses, and skeletons die fast."
+max_health = 80
+move_speed = 195.0
+attack_damage = 6
+attack_cooldown = 0.45
+attack_duration = 0.12
+knockback = 4.0
+frames = ExtResource("2_frames")
+raise_minion = ExtResource("4_skeleton")
+raise_cap = 3
+bolt_frames = ExtResource("3_bolt")
+bolt_look = &"soul_bolt"
+bolt_sound = &"hero_soul_bolt"
+attack_kind = 1
+bolt_range = 220.0
+bolt_speed = 480.0
+bolt_pierce = 0
+mark_bonus = 0.0
+mark_time = 3.0

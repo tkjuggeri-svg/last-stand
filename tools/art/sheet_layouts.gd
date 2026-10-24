@@ -39,6 +39,38 @@ const HUNTRESS: Dictionary = {
 	"anims": HERO["anims"],
 }
 
+## The Necromancer (M9): the Knight's layout again.
+const NECROMANCER: Dictionary = {
+	"png": "res://assets/sprites/hero/necromancer.png",
+	"frames": "res://entities/hero/necromancer_frames.tres",
+	"size": HERO["size"],
+	"anims": HERO["anims"],
+}
+
+## The skeleton minion, side view facing right (the game mirrors it), 32x32 art.
+const SKELETON: Dictionary = {
+	"png": "res://assets/sprites/minions/skeleton.png",
+	"frames": "res://entities/minions/skeleton_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["idle", 0, 4, 5.0, true],
+		["walk", 1, 6, 10.0, true],
+		["attack", 2, 4, 16.0, false],
+		["death", 3, 5, 8.0, false],
+	],
+}
+
+## The Necromancer's soul bolt in 8 directions (soul_bolt_0 flies right, then every 45 degrees clockwise).
+const SOUL_BOLT: Dictionary = {
+	"png": "res://assets/sprites/hero/soul_bolt.png",
+	"frames": "res://entities/hero/soul_bolt_frames.tres",
+	"size": Vector2i(32, 32),
+	"anims": [
+		["soul_bolt_0", 0, 2, 12.0, true], ["soul_bolt_1", 1, 2, 12.0, true], ["soul_bolt_2", 2, 2, 12.0, true], ["soul_bolt_3", 3, 2, 12.0, true],
+		["soul_bolt_4", 4, 2, 12.0, true], ["soul_bolt_5", 5, 2, 12.0, true], ["soul_bolt_6", 6, 2, 12.0, true], ["soul_bolt_7", 7, 2, 12.0, true],
+	],
+}
+
 ## Sword swing trail in 8 directions: swing_0 points right, then every 45 degrees clockwise.
 const SWING: Dictionary = {
 	"png": "res://assets/sprites/effects/swing.png",
@@ -575,7 +607,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {

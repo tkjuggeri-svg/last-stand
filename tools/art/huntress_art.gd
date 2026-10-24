@@ -4,7 +4,10 @@ extends "res://tools/art/hero_art.gd"
 ## of the sword and shield. Her attack frames aim the crossbow along the facing and kick back on the
 ## shot (frame 1). Same frame size and anchors as the Knight (sheet_layouts.HERO).
 
-const SKIN_LIT: Color = Color("deae8a")
+## The hood's and the face's ramps and whether the eyes glow (the Necromancer, which extends this, changes them).
+var hood: Array = P.HOOD
+var skin: Array = P.SKIN
+var glow_eyes: bool = false
 
 
 func _init(resolution: int = 1) -> void:
@@ -39,30 +42,30 @@ func _attack_pose(facing: String, i: int) -> Dictionary:
 ## A hooded cloak: the hood's dome with a shadowed face opening (front, side), a pointed back (up).
 func _helm(c: Canvas, center: Vector2, facing: String, crest_sway: float) -> void:
 	c.part()
-	c.ellipse(center + Vector2(0, 5.0), Vector2(4.0, 2.4), P.HOOD)  # the cowl on the shoulders
+	c.ellipse(center + Vector2(0, 5.0), Vector2(4.0, 2.4), hood)  # the cowl on the shoulders
 	c.part()
-	c.ellipse(center, HELM_RADIUS, P.HOOD, 0.0, -0.05)
+	c.ellipse(center, HELM_RADIUS, hood, 0.0, -0.05)
 	var cx: int = roundi(center.x)
 	var cy: int = roundi(center.y)
 	match facing:
 		"down":
 			c.part()
-			c.ellipse(center + Vector2(0, 1.2), Vector2(3.4, 3.2), P.SKIN, 0.0, -0.1)
-			c.rect(Rect2i(cx - 3, cy - 1, 7, 1), P.HOOD[0])  # the hood's shadow over the brow
-			c.px(cx - 2, cy + 1, P.OUTLINE)
-			c.px(cx + 2, cy + 1, P.OUTLINE)
+			c.ellipse(center + Vector2(0, 1.2), Vector2(3.4, 3.2), skin, 0.0, -0.1)
+			c.rect(Rect2i(cx - 3, cy - 1, 7, 1), hood[0])  # the hood's shadow over the brow
+			c.px(cx - 2, cy + 1, P.SOUL[3] if glow_eyes else P.OUTLINE)
+			c.px(cx + 2, cy + 1, P.SOUL[3] if glow_eyes else P.OUTLINE)
 		"up":
 			c.part()
 			c.polygon(PackedVector2Array([center + Vector2(-1.8, -7.0), center + Vector2(0.6 + crest_sway * 0.3, -9.0),
-				center + Vector2(1.8, -5.0), center + Vector2(1.4, 1.0), center + Vector2(-1.4, 1.0)]), P.HOOD, Vector3(-0.2, -0.5, 1))
+				center + Vector2(1.8, -5.0), center + Vector2(1.4, 1.0), center + Vector2(-1.4, 1.0)]), hood, Vector3(-0.2, -0.5, 1))
 		_:
 			c.part()
-			c.ellipse(center + Vector2(2.2, 1.0), Vector2(2.4, 3.0), P.SKIN, 0.0, -0.1)
-			c.rect(Rect2i(cx, cy - 1, 6, 1), P.HOOD[0])
-			c.px(cx + 3, cy + 1, P.OUTLINE)
+			c.ellipse(center + Vector2(2.2, 1.0), Vector2(2.4, 3.0), skin, 0.0, -0.1)
+			c.rect(Rect2i(cx, cy - 1, 6, 1), hood[0])
+			c.px(cx + 3, cy + 1, P.SOUL[3] if glow_eyes else P.OUTLINE)
 			c.part()
 			c.polygon(PackedVector2Array([center + Vector2(-1.0, -4.6), center + Vector2(-4.6 - crest_sway * 0.3, -3.0),
-				center + Vector2(-5.2, 1.6), center + Vector2(-2.0, 2.4)]), P.HOOD, Vector3(-0.2, -0.3, 1))
+				center + Vector2(-5.2, 1.6), center + Vector2(-2.0, 2.4)]), hood, Vector3(-0.2, -0.3, 1))
 
 
 ## Leather shoulder straps instead of plate.
@@ -74,7 +77,7 @@ func _pauldron(c: Canvas, center: Vector2, _back: bool) -> void:
 ## The off hand on the crossbow's fore-end, where the Knight's shield was.
 func _kite_face(c: Canvas, center: Vector2, _width: float) -> void:
 	c.part()
-	c.ellipse(center + Vector2(0, -3.0), Vector2(1.6, 1.5), P.SKIN, 0.0, 0.1)
+	c.ellipse(center + Vector2(0, -3.0), Vector2(1.6, 1.5), skin, 0.0, 0.1)
 
 
 ## The quiver on her back (seen from behind), arrows' fletching above it.
