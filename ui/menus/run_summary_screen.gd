@@ -32,7 +32,8 @@ func open(summary: Dictionary) -> void:
 	_frame.title = RESULT_TITLES.get(String(summary.get("result", "lost")), "The run is over")
 	_where.text = "Chapter %d, row %d   -   seed %d" % [int(summary.get("chapter", 1)), int(summary.get("row", 0)), int(summary.get("seed", 0))]
 	var path: Array = summary.get("path", [])
-	_stats.text = "Path: %s\nKills: %d   Waves: %d   Time: %.1f min" % [
+	_stats.text = "Hero: %s\nPath: %s\nKills: %d   Waves: %d   Time: %.1f min" % [
+		String(summary.get("hero", "knight")).capitalize(),
 		" > ".join(path.map(func(kind: Variant) -> String: return String(kind).capitalize())) if not path.is_empty() else "-",
 		int(summary.get("kills", 0)), int(summary.get("waves", 0)), float(summary.get("minutes", 0.0))]
 	for child: Node in _icons.get_children():

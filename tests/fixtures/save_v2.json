@@ -1,0 +1,10 @@
+{
+	"version": 2,
+	"shards": 80,
+	"unlocks": ["brazier"],
+	"records": {"runs": 2, "wins": 0, "best": {"chapter": 1, "row": 5}, "bosses": [], "shards_total": 80, "history": []},
+	"firsts": [],
+	"hints_seen": ["build"],
+	"hints_off": false,
+	"run": {}
+}

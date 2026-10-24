@@ -5,10 +5,12 @@ extends RefCounted
 ## dictionary form (to_dict / from_dict); SaveManager reads and writes it. migrate() brings an older
 ## save up to CURRENT_VERSION step by step (a test loads tests/fixtures/save_v1.json).
 
-const CURRENT_VERSION: int = 2
+const CURRENT_VERSION: int = 3
 ## Version 1 (the M8 proposal) had permanent bonuses, dropped in version 2 (the user's rule: no
 ## permanent power). Their price per level, refunded when an old save is loaded.
 const V1_BONUS_PRICES: Dictionary = {"stores": [40, 80, 120], "mortar": [50, 100, 150]}
+## The hero a new run is played with (HeroData id); version 3 added it, older saves are the Knight's.
+const DEFAULT_HERO: String = "knight"
 ## How many finished runs the records keep.
 const HISTORY_SIZE: int = 10
 
@@ -32,6 +34,8 @@ var hints_seen: Array[String] = []
 var hints_off: bool = false
 ## The run in progress (RunResume's dictionary), empty when there is none.
 var run: Dictionary = {}
+## The hero picked for the next run (HeroData id).
+var hero: String = DEFAULT_HERO
 
 
 func has_unlock(id: String) -> bool:
@@ -46,7 +50,8 @@ func to_dict() -> Dictionary:
 	return {"version": CURRENT_VERSION, "shards": shards, "unlocks": unlocks,
 		"records": {"runs": runs, "wins": wins, "best": {"chapter": best_chapter, "row": best_row},
 			"bosses": bosses, "shards_total": shards_total, "history": history},
-		"firsts": firsts, "hints_seen": hints_seen, "hints_off": hints_off, "run": run}
+		"firsts": firsts, "hints_seen": hints_seen, "hints_off": hints_off, "run": run,
+		"hero": hero}
 
 
 ## A profile from a saved dictionary of any known version (migrated first).
@@ -69,6 +74,7 @@ static func from_dict(data: Dictionary) -> SaveProfile:
 	profile.firsts = _strings(d.get("firsts", []))
 	profile.hints_seen = _strings(d.get("hints_seen", []))
 	profile.hints_off = bool(d.get("hints_off", false))
+	profile.hero = str(d.get("hero", DEFAULT_HERO))
 	var saved_run: Variant = d.get("run", {})
 	profile.run = saved_run if saved_run is Dictionary else {}
 	return profile
@@ -80,6 +86,8 @@ static func migrate(data: Dictionary) -> Dictionary:
 	var version: int = int(d.get("version", 1))
 	if version < 2:
 		d = _v1_to_v2(d)
+	if version < 3:
+		d["hero"] = DEFAULT_HERO  # the Knight was the only hero
 	d["version"] = CURRENT_VERSION
 	return d
 

@@ -23,6 +23,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 	return {
 		"version": VERSION,
 		"seed": run.seed_value,
+		"hero": capture_hero_id(run),
 		"chapter": run.chapter_index,
 		"path": run.map.path.map(func(node: MapNode) -> int: return run.map.nodes.find(node)),
 		"cleared": run.cleared.duplicate(true),
@@ -42,13 +43,18 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 	}
 
 
+## The id of the run's hero ("" without one).
+static func capture_hero_id(run: RunStateNode) -> String:
+	return String(run.hero.id) if run.hero != null else ""
+
+
 ## Starts `saved`'s run again in `run` (its chapter, its map, the path walked so far). False (and
 ## nothing usable) if it can't be: another format, a chapter or a map node that doesn't exist.
 static func restore_run(run: RunStateNode, saved: Dictionary, run_data: RunData, unlocks: RunUnlocks) -> bool:
 	if int(saved.get("version", 0)) != VERSION or int(saved.get("chapter", -1)) < 0 \
 			or int(saved.get("chapter", -1)) >= run_data.chapters.size():
 		return false
-	run.start_run(run_data, int(saved.get("seed", 0)), unlocks)
+	run.start_run(run_data, int(saved.get("seed", 0)), unlocks, run_data.get_hero(str(saved.get("hero", ""))))
 	if int(saved.get("chapter", 0)) > 0:
 		run.set_chapter(int(saved.get("chapter", 0)))
 	for index: Variant in saved.get("path", []):

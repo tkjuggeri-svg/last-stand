@@ -11,6 +11,8 @@ signal quit_requested
 
 ## The unlock board the hub shows (the same one Main gives the runs).
 @export var unlock_board: UnlockBoard
+## The run the hub picks the hero of.
+var run_data: RunData
 
 @onready var _save: SaveManagerNode = get_node("/root/SaveManager")
 @onready var _title: TitleScreen = %TitleScreen
@@ -32,7 +34,7 @@ func _ready() -> void:
 	_summary.new_run_requested.connect(func() -> void: _leave(run_requested))
 	_save.changed.connect(func() -> void:
 		if _hub.visible:
-			_hub.refresh(_save.profile, unlock_board))
+			_hub.refresh(_save.profile, unlock_board, _hero()))
 
 
 ## True while one of its screens is shown.
@@ -48,7 +50,7 @@ func show_title() -> void:
 
 func show_hub() -> void:
 	hide_all()
-	_hub.open(_save.profile, unlock_board)
+	_hub.open(_save.profile, unlock_board, _hero())
 
 
 ## The end of a run (`summary`: RunSummary's, with its shard lines), faded in; `at_dark` (Main
@@ -59,6 +61,11 @@ func show_summary(summary: Dictionary, at_dark: Callable = Callable()) -> void:
 			at_dark.call()
 		hide_all()
 		_summary.open(summary))
+
+
+## The hero the next run is played with (null before Main gave the run's data).
+func _hero() -> HeroData:
+	return run_data.get_hero(_save.profile.hero) if run_data != null else null
 
 
 func hide_all() -> void:

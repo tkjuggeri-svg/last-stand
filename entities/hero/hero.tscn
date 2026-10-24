@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="11_light"]
 [ext_resource type="Script" path="res://entities/hero/hero_dash.gd" id="12_dash"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/ripple_frames.tres" id="13_ripple"]
+[ext_resource type="Resource" path="res://data/heroes/knight.tres" id="14_data"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -31,6 +32,7 @@ collision_layer = 2
 collision_mask = 9
 motion_mode = 1
 script = ExtResource("1_hero")
+data = ExtResource("14_data")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")

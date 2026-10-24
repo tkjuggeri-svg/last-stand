@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="HeroData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"knight"
+display_name = "The Knight"
+description = "The wall: swings a sword arc and holds the line in the crowd.\nWeak at range: cultists and being swarmed."
+max_health = 100
+move_speed = 200.0
+attack_damage = 10
+attack_cooldown = 0.4
+attack_duration = 0.12
+knockback = 12.0

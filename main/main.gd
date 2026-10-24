@@ -71,6 +71,7 @@ func _ready() -> void:
 	_pause_menu.quit_requested.connect(quit_game)
 	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
 	_front_end.unlock_board = unlock_board
+	_front_end.run_data = run_data
 	_front_end.run_requested.connect(_on_new_run_requested)
 	_front_end.continue_requested.connect(continue_run)
 	_front_end.quit_requested.connect(quit_game)
@@ -125,7 +126,7 @@ func get_map() -> RunMap:
 func start_run(seed_value: int = -1) -> void:
 	_close_screens()
 	var chosen: int = seed_value if seed_value >= 0 else (run_seed if run_seed >= 0 else randi())
-	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile))
+	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile), run_data.get_hero(_save.profile.hero))
 	_start_chapter()
 	if _run.unlocks.has_perk(&"muster"):
 		_map_flow.offer_muster()
@@ -169,6 +170,10 @@ func _close_screens() -> void:
 func _start_chapter(resume: Dictionary = {}) -> void:
 	_free_level()
 	_level = _run.get_chapter().level_scene.instantiate()
+	# Before the level is in the tree: the hero reads its data when it is ready.
+	var hero: Hero = _level.get_node_or_null("Hero") as Hero
+	if hero != null and _run.hero != null:
+		hero.data = _run.hero
 	_level.run_lost.connect(_on_level_run_lost)
 	add_child(_level)
 	_map_flow.play(_level)

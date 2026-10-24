@@ -1,8 +1,7 @@
 # M9: Heroes & Relics (design proposal)
 
-> **Status: proposal, not approved, not implemented.** The numbers are starting points for the balance
-> tools (`map_balance.gd`, `balance_report.gd`). Nothing is built until the open questions (section 9)
-> are answered; section 10 will hold the decisions.
+> **Status: approved (section 10). Stage 1 built; stages 2-4 to do.** The numbers are starting points
+> for the balance tools (`map_balance.gd`, `balance_report.gd`).
 
 ## 0. Summary
 
@@ -241,3 +240,22 @@ Measured with `map_balance.gd`: no archetype should win more than 1.5× the othe
 | Q7 | Do the archetype lean's weights (×1.6, ×2) fit, or should the lean be stronger (e.g. one guaranteed tag card per offer)? | **The soft weights first**, measured with `map_balance.gd`; a guaranteed card can follow if runs still feel random. |
 | Q8 | Playtest after stage 2 (the Huntress) before building the Necromancer? | **Yes**, a build `m9-playtest-1` after stage 2, if you want to play it; otherwise stages 2–4 straight through. |
 | Q9 | The art: the new heroes and their towers drawn in code at the double resolution (as the Knight now), or wait for an art pack? | **In code**, like everything since the art pack (`docs/ART_HANDOFF.md`): the pipeline exists and keeps the style consistent; a later art pack can replace sheets with the same layouts. |
+
+## 10. Decisions
+
+All recommendations of section 9 were approved. Q3: minions get a new `allies` physics layer (#9; the
+layer table in CLAUDE.md is updated in stage 3, when it is first used). Q8: pause after stage 2 for a
+playtest build `m9-playtest-1`.
+
+**Stage 1 as built** (the Knight plays exactly as before; the full suite passes):
+- `HeroData` (`resources/hero_data.gd`, `data/heroes/knight.tres`): id, name, description and the stats
+  the Hero scene reads in `_ready` (HP, speed, hit damage, cooldown, duration, knockback).
+  `RunData.heroes` lists the heroes of a run; the first is the default.
+- `RunState.hero` holds the run's hero; Main sets it on the level's Hero before the level enters the tree.
+  `RunSave` and `RunSummary` carry its id.
+- `SaveProfile` version 3 adds `hero` (the pick for the next run; older saves migrate to the Knight,
+  `tests/fixtures/save_v2.json`). The War Room shows the hero of the next run.
+- **Deferred to stage 2, where they are first needed** (CLAUDE.md rule 1, no scaffolding): the
+  `HeroAttack` component with `SwordAttack` / `BoltAttack`, `TowerData.kind`, the hero picker with
+  locked heroes and prices, and the Knight's Bulwark passive (it changes Knight behaviour, so it comes
+  with the Knight cards that raise it).

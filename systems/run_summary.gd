@@ -20,7 +20,8 @@ static func build(run: RunStateNode, level: Level, result: String) -> Dictionary
 			"boss":
 				bosses.append(String(fight.get("boss", "a boss")))
 	var node: MapNode = run.map.get_current() if run.map != null else null
-	var summary: Dictionary = {"result": result, "seed": run.seed_value, "chapter": run.chapter_index + 1,
+	var summary: Dictionary = {"result": result, "seed": run.seed_value,
+		"hero": String(run.hero.id) if run.hero != null else "", "chapter": run.chapter_index + 1,
 		"row": node.row if node != null else 0, "battles": battles, "elites": elites, "bosses": bosses,
 		"chapters_cleared": run.chapter_index + (1 if result == "won" else 0),
 		"path": run.map.path.map(func(n: MapNode) -> String: return RunMap.Kind.keys()[n.kind].to_lower()) if run.map != null else [],

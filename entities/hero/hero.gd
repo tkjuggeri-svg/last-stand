@@ -34,6 +34,8 @@ const HURT_STOP: float = 0.06
 const HURT_SHAKE: Vector2 = Vector2(3.0, 0.18)
 const DEATH_SHAKE: Vector2 = Vector2(5.0, 0.4)
 
+## The hero's stats (data/heroes/); they replace the values below when the hero is ready.
+@export var data: HeroData
 @export var move_speed: float = 200.0
 ## The run's upgrades (damage, speed, max HP, attack speed, reach). Null = base stats.
 @export var modifiers: RunModifiers
@@ -70,6 +72,7 @@ var _wading_speed: float = 1.0
 
 
 func _ready() -> void:
+	_apply_data()
 	_attack_visual.animation_finished.connect(_attack_visual.hide)
 	_hit_spark.animation_finished.connect(_hit_spark.hide)
 	_last_health = health.current_health
@@ -144,6 +147,18 @@ func is_wading() -> bool:
 ## The dash component (cooldown, for the HUD).
 func get_dash() -> HeroDash:
 	return _dash
+
+
+## The hero's own base stats from its data (none: the scene's values stay).
+func _apply_data() -> void:
+	if data == null:
+		return
+	health.setup(data.max_health)
+	_attack_hitbox.damage = data.attack_damage
+	move_speed = data.move_speed
+	attack_cooldown = data.attack_cooldown
+	attack_duration = data.attack_duration
+	knockback = data.knockback
 
 
 ## Max HP, swing damage and reach under the run's upgrades (re-read whenever they change).

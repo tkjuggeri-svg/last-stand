@@ -16,6 +16,8 @@ var map: RunMap
 var carry: ChapterCarry
 ## What this run may use (M8 unlocks; null = everything).
 var unlocks: RunUnlocks
+## The hero this run is played with (M9).
+var hero: HeroData
 ## What the run did, for its summary: the fights won ({chapter, row, kind, boss}), kills, waves
 ## fought, and when it started (msec).
 var cleared: Array[Dictionary] = []
@@ -25,10 +27,11 @@ var started_msec: int = 0
 
 
 ## A fresh run: chapter 1 and its map.
-func start_run(data: RunData, run_seed: int, run_unlocks: RunUnlocks = null) -> void:
+func start_run(data: RunData, run_seed: int, run_unlocks: RunUnlocks = null, run_hero: HeroData = null) -> void:
 	run_data = data
 	seed_value = run_seed
 	unlocks = run_unlocks
+	hero = run_hero if run_hero != null else (data.get_hero("") if data != null else null)
 	chapter_index = 0
 	carry = null
 	cleared.clear()

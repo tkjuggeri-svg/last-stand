@@ -14,6 +14,8 @@ signal reset_requested
 @onready var _shards: Label = %Shards
 @onready var _line: Label = %Line
 @onready var _unlocks: VBoxContainer = %Unlocks
+@onready var _hero_name: Label = %HeroName
+@onready var _hero_text: Label = %HeroText
 @onready var _records: Label = %Records
 @onready var _start_button: Button = %StartButton
 @onready var _tips_button: CheckButton = %TipsButton
@@ -31,14 +33,16 @@ func _ready() -> void:
 	_confirm.confirmed.connect(func() -> void: reset_requested.emit())
 
 
-func open(profile: SaveProfile, board: UnlockBoard) -> void:
-	refresh(profile, board)
+func open(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null) -> void:
+	refresh(profile, board, hero)
 	show()
 	_start_button.grab_focus.call_deferred()
 
 
-## Shows `profile` against `board`: shards, the line, every unlock's state, the records.
-func refresh(profile: SaveProfile, board: UnlockBoard) -> void:
+## Shows `profile` against `board`: shards, the line, the hero of the next run, every unlock's state, the records.
+func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null) -> void:
+	_hero_name.text = hero.display_name if hero != null else ""
+	_hero_text.text = hero.description if hero != null else ""
 	_shards.text = "Soul Shards: %d" % profile.shards
 	_line.text = "%s: \"%s\"" % [HubLines.SPEAKER, HubLines.line_for(profile)]
 	_tips_button.set_pressed_no_signal(not profile.hints_off)
