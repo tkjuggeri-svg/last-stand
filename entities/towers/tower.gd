@@ -43,6 +43,9 @@ var _synergies: Array[TowerSynergy] = []
 ## Twin Banners: a same-type tower's level shared with this one (0 = none); the better one counts.
 var _shared_level: int = 0
 var _weapon: TowerWeapon = TowerWeapon.new()
+var _traps: TowerTraps = TowerTraps.new()
+## Watchtower: more range for the towers around it (TowerBuilder keeps it up to date); 0 = none.
+var _aura_range: float = 0.0
 var _sight: TowerSight = TowerSight.new()
 var _stats: TowerTier
 var _build_left: float = 0.0
@@ -65,6 +68,8 @@ func _ready() -> void:
 		_active = false
 		set_physics_process(false)
 		return
+	if data.frames != null:
+		_sprite.sprite_frames = data.frames
 	_stats = _effective_stats()
 	_apply_range()
 	if modifiers != null:
@@ -92,6 +97,8 @@ func _physics_process(delta: float) -> void:
 		_build_left = 0.0
 		construction_finished.emit()
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
+	if not _acts():
+		return
 	if not _sight.is_valid_target(self, _target):
 		_target = _sight.pick_target(self)  # also forgets a target that died, left range or reached the fortress
 	if _target != null and _cooldown_left <= 0.0 and not _silence.is_silenced():
@@ -148,6 +155,19 @@ func is_evolved() -> bool:
 
 func get_evolution() -> TowerEvolution:
 	return _evolution
+
+
+## Watchtower's aura on this tower: `bonus` more range (TowerBuilder gives the best one in reach).
+func set_aura_range(bonus: float) -> void:
+	if is_equal_approx(bonus, _aura_range):
+		return
+	_aura_range = bonus
+	_stats = _effective_stats()
+	_apply_range()
+
+
+func get_aura_range() -> float:
+	return _aura_range
 
 
 ## Takes the level-4 branch (TowerBuilder does the paying and the checks): for good.
@@ -271,6 +291,7 @@ func _effective_stats() -> TowerTier:
 func _stats_from(base: TowerTier) -> TowerTier:
 	var stats: TowerTier = base.duplicate() as TowerTier
 	stats.fire_interval = base.fire_interval / (1.0 + _boost)
+	stats.attack_range = base.attack_range * (1.0 + _aura_range)
 	if modifiers != null:
 		_apply_modifiers(stats, base)
 	for synergy: TowerSynergy in _synergies:
@@ -281,7 +302,7 @@ func _stats_from(base: TowerTier) -> TowerTier:
 func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
 	stats.damage = modifiers.apply_int(base.damage, RunModifiers.tower_stats(RunModifiers.TOWER_DAMAGE, data.id))
 	stats.fire_interval = maxf(modifiers.apply(stats.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
-	stats.attack_range = modifiers.apply(base.attack_range, RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
+	stats.attack_range = modifiers.apply(base.attack_range * (1.0 + _aura_range), RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
 	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
 	stats.burn_dps = modifiers.apply(base.burn_dps, RunModifiers.tower_stats(RunModifiers.TOWER_BURN, data.id))
@@ -307,6 +328,15 @@ func _apply_range() -> void:
 ## delivers it.
 func _fire() -> void:
 	var stats: TowerTier = get_stats()
+	if data.kind == TowerData.Kind.TRAP:
+		if not _traps.can_throw(stats):
+			return  # all its snares are lying: wait for one to spring
+		_cooldown_left = stats.fire_interval
+		_traps.throw(self, _target, stats)
+		_sprite.play(_anim("fire"))
+		if data.fire_sound != &"":
+			Sfx.play(self, data.fire_sound)
+		return
 	_cooldown_left = stats.fire_interval
 	var targets: Array[Enemy] = [_target]
 	if stats.targets > 1:
@@ -319,6 +349,11 @@ func _fire() -> void:
 	_sprite.play(_anim("fire"))
 	if data.fire_sound != &"":
 		Sfx.play(self, data.fire_sound)
+
+
+## False for a tower that only lifts the others (a Watchtower that has no attack of its own).
+func _acts() -> bool:
+	return data.kind != TowerData.Kind.AURA or get_stats().damage > 0
 
 
 func _on_range_body_entered(body: Node2D) -> void:

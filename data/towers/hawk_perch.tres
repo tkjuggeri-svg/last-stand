@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
+[ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_frames.tres" id="5_frames"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/flushed_prey.tres" id="8_syn"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_fx_frames.tres" id="6_fx"]
+
+[sub_resource type="Resource" id="Tier_2"]
+script = ExtResource("3_tier")
+cost = 120
+damage = 23
+fire_interval = 1.45
+attack_range = 330.0
+
+[sub_resource type="Resource" id="Tier_3"]
+script = ExtResource("3_tier")
+cost = 200
+damage = 28
+fire_interval = 1.3
+attack_range = 340.0
+
+[sub_resource type="Resource" id="Evo_0"]
+script = ExtResource("4_evo")
+id = &"falconer"
+display_name = "Falconer"
+description = "Two hawks: every dive strikes two enemies."
+cost = 400
+damage = 28
+fire_interval = 1.3
+attack_range = 340.0
+targets = 2
+
+[sub_resource type="Resource" id="Evo_1"]
+script = ExtResource("4_evo")
+id = &"eye_of_the_hunt"
+display_name = "Eye of the Hunt"
+description = "The hawk marks what it strikes: towers deal 15% more to it for 3 s (the Huntress's Mark)."
+cost = 400
+damage = 30
+fire_interval = 1.3
+attack_range = 340.0
+mark_bonus = 0.15
+mark_time = 3.0
+
+[resource]
+script = ExtResource("2_data")
+scene = ExtResource("1_scene")
+frames = ExtResource("5_frames")
+id = &"hawk_perch"
+display_name = "Hawk Perch"
+description = "A hawk dives on the enemy furthest along the road. It strikes from above, so shields cannot stop it."
+cost = 75
+attack_range = 320.0
+damage = 18
+fire_interval = 1.6
+projectile_speed = 560.0
+projectile_look = &"hawk"
+muzzle_offset = Vector2(0, -66)
+fire_sound = &"hawk_dive"
+from_above = true
+projectile_frames = ExtResource("6_fx")
+tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
+evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
+synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])

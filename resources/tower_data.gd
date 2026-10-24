@@ -4,6 +4,10 @@ extends Resource
 ## The fields below are level 1; `tiers` holds the upgrades (levels 2, 3, ...), each with its price and
 ## full stats. Gameplay reads a level's stats through stats_for().
 
+## What the tower does: shoots (the default; the Hawk Perch too), lays snares (Trap Layer) or only lifts
+## the towers around it (Watchtower: it shoots only once an evolution gives it damage).
+enum Kind { SHOOTER, TRAP, AURA }
+
 ## Selects the tower's animations ("<id>_idle", "<id>_fire", "<id>_build"; upgraded levels add
 ## "_2" / "_3": "<id>_idle_2").
 @export var id: StringName = &""
@@ -15,6 +19,9 @@ extends Resource
 @export var build_time: float = 0.6
 ## The tower scene to build (all towers share one scene; the data decides how it looks and fights).
 @export var scene: PackedScene
+@export var kind: Kind = Kind.SHOOTER
+## Its animations when they are not in the shared tower sheet (null: entities/towers/tower_frames.tres).
+@export var frames: SpriteFrames
 
 @export_group("Attack")
 ## Enemies whose centre is within this many pixels of the tower's base are targeted.
@@ -33,6 +40,10 @@ extends Resource
 ## True: a bolt that flies straight along the ground line through its target (aimed with lead) out to
 ## the range, hitting up to 1 + pierce enemies on its way (the Bone Ballista). Overrides homing.
 @export var line_shot: bool = false
+## True: the shot strikes from above, so a shield can't stop it (the Hawk Perch's dive).
+@export var from_above: bool = false
+## The shot's own animations when they are not in the shared projectile sheet (the hawk).
+@export var projectile_frames: SpriteFrames
 ## Where shots leave the tower, relative to its base (the top of the bow, barrel or crystal).
 @export var muzzle_offset: Vector2 = Vector2(0, -48)
 ## Colour of the light the tower gives off at its muzzle (e.g. the frost crystal). Alpha 0 = no light.
@@ -53,6 +64,18 @@ extends Resource
 @export var burn_dps: float = 0.0
 @export var burn_radius: float = 40.0
 @export var burn_duration: float = 3.0
+
+@export_group("Snares and aura (level 1)")
+## Trap Layer: snares lying at a time, how long one holds an enemy (a boss: boss_hold).
+@export var snares: int = 0
+@export var snare_hold: float = 0.0
+@export var boss_hold: float = 0.0
+## Watchtower: how far its aura reaches (0: as far as it attacks), and what it gives.
+@export var aura_radius: float = 0.0
+## Watchtower: towers within its aura have this much more range.
+@export var aura_range_bonus: float = 0.0
+## Watchtower: a hero within its aura deals this much more damage.
+@export var hero_bonus: float = 0.0
 
 @export_group("Upgrades")
 ## Level 2, 3, ... in order.
@@ -87,6 +110,12 @@ func stats_for(level: int) -> TowerTier:
 		_level_one.burn_dps = burn_dps
 		_level_one.burn_radius = burn_radius
 		_level_one.burn_duration = burn_duration
+		_level_one.snares = snares
+		_level_one.snare_hold = snare_hold
+		_level_one.boss_hold = boss_hold
+		_level_one.aura_radius = aura_radius
+		_level_one.aura_range_bonus = aura_range_bonus
+		_level_one.hero_bonus = hero_bonus
 	return _level_one
 
 

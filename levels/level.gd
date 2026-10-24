@@ -106,6 +106,25 @@ func carry_in(carry: ChapterCarry, repair: float) -> void:
 	health.set_current_health(carry.fortress_health + (roundi(health.max_health * repair) if fortress.can_repair() else 0))
 
 
+## Sets up the run's hero (M9): the build menu holds the shared towers and this hero's own (the towers
+## exclusive to another hero in `roster` leave it), and the hero's damage rises under Watchtowers.
+func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
+	if hero_data == null:
+		return
+	var others: Array[TowerData] = []
+	for other: HeroData in roster:
+		if other != hero_data:
+			others.append_array(other.exclusive_towers)
+	var catalog: Array[TowerData] = builder.catalog.filter(func(t: TowerData) -> bool: return not others.has(t))
+	for tower: TowerData in hero_data.exclusive_towers:
+		if not catalog.has(tower):
+			catalog.append(tower)
+	builder.catalog = catalog
+	var hero: Hero = get_node_or_null("Hero") as Hero
+	if hero != null:
+		hero.damage_bonus_at = builder.hero_bonus_at
+
+
 ## Holds back what the run hasn't unlocked (M8): towers in the build menu, card and relic pools, which
 ## towers may evolve, and the Drill's free reroll. Call once it is ready, before the first fight.
 func apply_unlocks(unlocks: RunUnlocks) -> void:

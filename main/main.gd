@@ -178,6 +178,7 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	add_child(_level)
 	_map_flow.play(_level)
 	_hints.watch(_level)
+	_level.apply_hero(_run.hero, run_data.heroes)
 	_level.apply_unlocks(_run.unlocks)
 	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
 	_level.spawner.wave_cleared.connect(func(_n: int) -> void: _run.waves += 1)

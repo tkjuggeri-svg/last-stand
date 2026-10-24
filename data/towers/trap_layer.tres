@@ -1,0 +1,78 @@
+[gd_resource type="Resource" script_class="TowerData" format=3]
+
+[ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
+[ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
+[ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_frames.tres" id="5_frames"]
+[ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
+[ext_resource type="Resource" path="res://data/towers/synergies/pinned_prey.tres" id="8_syn"]
+
+[sub_resource type="Resource" id="Tier_2"]
+script = ExtResource("3_tier")
+cost = 100
+damage = 28
+fire_interval = 3.5
+attack_range = 160.0
+snares = 4
+snare_hold = 1.4
+
+[sub_resource type="Resource" id="Tier_3"]
+script = ExtResource("3_tier")
+cost = 170
+damage = 35
+fire_interval = 3.0
+attack_range = 170.0
+snares = 5
+snare_hold = 1.5
+
+[sub_resource type="Resource" id="Evo_0"]
+script = ExtResource("4_evo")
+id = &"bear_pit"
+display_name = "Bear Pit"
+description = "Iron jaws: a snare holds 2.5 s, and even a boss for 0.8 s."
+cost = 380
+damage = 40
+fire_interval = 3.0
+attack_range = 170.0
+snares = 5
+snare_hold = 2.5
+boss_hold = 0.8
+
+[sub_resource type="Resource" id="Evo_1"]
+script = ExtResource("4_evo")
+id = &"caltrop_field"
+display_name = "Caltrop Field"
+description = "A sprung snare becomes a spiked patch for 3 s: 12 damage a second, and enemies on it are slowed."
+cost = 380
+damage = 25
+fire_interval = 3.0
+attack_range = 170.0
+snares = 5
+snare_hold = 0.5
+patch_dps = 12.0
+patch_time = 3.0
+slow_factor = 0.6
+slow_duration = 0.5
+
+[resource]
+script = ExtResource("2_data")
+scene = ExtResource("1_scene")
+frames = ExtResource("5_frames")
+id = &"trap_layer"
+display_name = "Trap Layer"
+description = "Throws snares onto the road: the first enemy to step on one is held and hurt. Never stopped by shields."
+cost = 60
+attack_range = 150.0
+damage = 20
+fire_interval = 4.0
+projectile_speed = 400.0
+muzzle_offset = Vector2(0, -30)
+fire_sound = &"trap_throw"
+kind = 1
+snares = 3
+snare_hold = 1.2
+boss_hold = 0.0
+tiers = Array[ExtResource("3_tier")]([SubResource("Tier_2"), SubResource("Tier_3")])
+evolutions = Array[ExtResource("4_evo")]([SubResource("Evo_0"), SubResource("Evo_1")])
+synergies = Array[ExtResource("7_syn_script")]([ExtResource("8_syn")])

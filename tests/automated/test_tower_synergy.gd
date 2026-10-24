@@ -31,11 +31,13 @@ func _test_data() -> void:
 			ids.append(all.back().id)
 	var good: bool = true
 	for data: TowerData in all:
+		if data.kind == TowerData.Kind.AURA:
+			continue  # a Watchtower is the support: it lifts the others instead
 		good = good and data.synergies.size() == 1
 		for synergy: TowerSynergy in data.synergies:
 			good = good and ids.has(synergy.partner_id) and synergy.partner_id != data.id and not synergy.display_name.is_empty() \
 				and not synergy.describe_bonus().is_empty() and synergy.reach > 0.0
-	_check("each of the %d towers has one pair bonus, with another real tower" % all.size(), good and all.size() == 5)
+	_check("each of the %d towers (but the Watchtower) has one pair bonus, with another real tower" % all.size(), good and all.size() == 8)
 
 
 func _test_rules() -> void:

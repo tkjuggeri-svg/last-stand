@@ -30,8 +30,29 @@ extends Resource
 @export var burn_dps: float = 0.0
 @export var burn_radius: float = 40.0
 @export var burn_duration: float = 3.0
+## Trap Layer: snares lying at a time, how long one holds the first enemy (a boss: boss_hold), and the
+## spiked patch a snare becomes afterwards (damage per second for patch_time seconds; 0 = none).
+@export var snares: int = 0
+@export var snare_hold: float = 0.0
+@export var boss_hold: float = 0.0
+@export var patch_dps: float = 0.0
+@export var patch_time: float = 0.0
+## Watchtower: how far its aura reaches (0: as far as it attacks).
+@export var aura_radius: float = 0.0
+## Watchtower: towers within its aura have this much more range (0.15 = +15%).
+@export var aura_range_bonus: float = 0.0
+## Watchtower: a hero within its aura deals this much more damage (0.1 = +10%).
+@export var hero_bonus: float = 0.0
+## The Huntress's Mark: each hit marks the enemy (towers deal `mark_bonus` more to it for mark_time s).
+@export var mark_bonus: float = 0.0
+@export var mark_time: float = 0.0
 ## Shot speed at this level in px/s (0 = the TowerData's projectile_speed).
 @export var projectile_speed: float = 0.0
+
+
+## How far a Watchtower's aura reaches.
+func get_aura_radius() -> float:
+	return aura_radius if aura_radius > 0.0 else attack_range
 
 
 ## How fast this level's shots fly: projectile_speed, or `fallback` (the TowerData's) when it is 0.
@@ -64,6 +85,12 @@ func describe_changes(before: TowerTier) -> String:
 		parts.append("Burn %d/s → %d/s" % [roundi(before.burn_dps), roundi(burn_dps)])
 	if not is_equal_approx(burn_radius, before.burn_radius) and burn_dps > 0.0:
 		parts.append("Fire area %d → %d" % [roundi(before.burn_radius), roundi(burn_radius)])
+	if snares != before.snares:
+		parts.append("%d snares at a time" % snares)
+	if not is_equal_approx(snare_hold, before.snare_hold):
+		parts.append("Snare holds %.1f s → %.1f s" % [before.snare_hold, snare_hold])
+	if not is_equal_approx(aura_range_bonus, before.aura_range_bonus):
+		parts.append("Towers nearby +%d%% range" % roundi(aura_range_bonus * 100.0))
 	if large_blast and not before.large_blast:
 		parts.append("Heavy shells")
 	return ", ".join(parts)

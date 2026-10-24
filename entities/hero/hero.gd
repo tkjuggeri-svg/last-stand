@@ -50,6 +50,8 @@ const DEATH_SHAKE: Vector2 = Vector2(5.0, 0.4)
 ## How far (px) a sword hit pushes an enemy back along its lane (EnemyData.knockback_taken scales it).
 @export var knockback: float = 12.0
 
+## Extra damage the hero deals where it stands, as a share (a Watchtower's: set by the Level).
+var damage_bonus_at: Callable = Callable()
 var _attack_time_left: float = 0.0
 ## The last direction the hero moved in: a dash from standing still goes this way.
 var _last_direction: Vector2 = Vector2.DOWN
@@ -133,13 +135,14 @@ func attack(target_position: Vector2) -> void:
 func _fire_bolt(direction: Vector2) -> void:
 	var bolt: HeroBolt = BOLT_SCENE.instantiate()
 	var aim: Vector2 = direction.normalized() if not direction.is_zero_approx() else Vector2.DOWN
-	bolt.launch(global_position + Vector2(0, MUZZLE_HEIGHT) + aim * MUZZLE_DISTANCE, aim, _attack_hitbox.damage, data,
+	var bonus: float = float(damage_bonus_at.call(global_position)) if damage_bonus_at.is_valid() else 0.0
+	bolt.launch(global_position + Vector2(0, MUZZLE_HEIGHT) + aim * MUZZLE_DISTANCE, aim, roundi(_attack_hitbox.damage * (1.0 + bonus)), data,
 		RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH]))
 	bolt.hit.connect(_on_bolt_hit)
 	add_child(bolt)
 	_sprite.face(aim)
 	_sprite.play_state("attack", true)
-	Sfx.play(self, &"hero_swing")
+	Sfx.play(self, &"hero_bolt")
 
 
 ## Dashes toward `direction` (zero: the way the hero last moved). Hits are ignored while it lasts.

@@ -1,7 +1,11 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
 [ext_resource type="SpriteFrames" path="res://entities/hero/huntress_frames.tres" id="2_frames"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="3_tower"]
+[ext_resource type="Resource" path="res://data/towers/trap_layer.tres" id="4_trap"]
+[ext_resource type="Resource" path="res://data/towers/hawk_perch.tres" id="5_hawk"]
+[ext_resource type="Resource" path="res://data/towers/watchtower.tres" id="6_watch"]
 
 [resource]
 script = ExtResource("1_data")
@@ -21,3 +25,4 @@ bolt_speed = 520.0
 bolt_pierce = 1
 mark_bonus = 0.15
 mark_time = 3.0
+exclusive_towers = Array[ExtResource("3_tower")]([ExtResource("4_trap"), ExtResource("5_hawk"), ExtResource("6_watch")])

@@ -120,7 +120,7 @@ func _physics_process(delta: float) -> void:
 		var aim: Vector2 = _attack.get_aim_point() - global_position
 		if not aim.is_zero_approx():
 			_heading = aim.normalized()
-	elif lane != null:
+	elif lane != null and not _status.is_held():
 		velocity = _direction_along_lane() * get_move_speed()
 		if not velocity.is_zero_approx():
 			_heading = velocity.normalized()

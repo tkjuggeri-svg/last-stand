@@ -18,6 +18,8 @@ enum AttackKind { SWORD, BOLT }
 @export var attack_duration: float = 0.12
 ## How far (px) a hit pushes an enemy back along its lane.
 @export var knockback: float = 12.0
+## The towers only this hero builds (the build menu shows the shared ones and these).
+@export var exclusive_towers: Array[TowerData] = []
 ## The hero's sprite sheet (null: the scene's own).
 @export var frames: SpriteFrames
 @export var attack_kind: AttackKind = AttackKind.SWORD

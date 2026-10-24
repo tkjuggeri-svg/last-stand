@@ -22,6 +22,7 @@ var _freeze_left: float = 0.0
 var _vulnerable_left: float = 0.0
 var _vulnerability: float = 0.0
 ## The Huntress's Mark: the extra damage towers deal to it, and how long it still lasts.
+var _hold_left: float = 0.0
 var _mark_bonus: float = 0.0
 var _mark_left: float = 0.0
 ## Lane offset the enemy is being dragged back to (-1 = not dragged).
@@ -50,6 +51,7 @@ func tick(delta: float) -> void:
 	if _slow_left <= 0.0:
 		_slow_factor = 1.0
 	_freeze_left = maxf(_freeze_left - delta, 0.0)
+	_hold_left = maxf(_hold_left - delta, 0.0)
 	_mark_left = maxf(_mark_left - delta, 0.0)
 	if _mark_left <= 0.0:
 		_mark_bonus = 0.0
@@ -149,6 +151,16 @@ func is_vulnerable() -> bool:
 	return _vulnerable_left > 0.0
 
 
+## Held in place for `seconds` (a snare): it can't walk, but it can still fight what is in reach.
+func hold(seconds: float) -> void:
+	if seconds > 0.0:
+		_hold_left = maxf(_hold_left, seconds)
+
+
+func is_held() -> bool:
+	return _hold_left > 0.0
+
+
 ## Marks it for `seconds`: towers' shots deal `bonus` more (0.15 = +15%) to it. A new mark keeps the
 ## bigger bonus and the longer time.
 func mark(bonus: float, seconds: float) -> void:
@@ -161,6 +173,11 @@ func mark(bonus: float, seconds: float) -> void:
 
 func is_marked() -> bool:
 	return _mark_left > 0.0
+
+
+## `damage` with the Mark's bonus on top (what a tower's shot or trap deals to this enemy now).
+func marked_damage(damage: int) -> int:
+	return roundi(damage * (1.0 + get_mark_bonus()))
 
 
 ## The extra damage towers deal to it right now (0 when not marked).

@@ -575,7 +575,72 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+
+## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
+const HUNTRESS_TOWERS: Dictionary = {
+	"png": "res://assets/sprites/towers/huntress_towers.png",
+	"frames": "res://entities/towers/huntress_tower_frames.tres",
+	"size": Vector2i(64, 96),
+	"anims": [
+		["trap_layer_idle", 0, 4, 5.0, true],
+		["trap_layer_fire", 1, 4, 12.0, false],
+		["trap_layer_build", 2, 6, 10.0, false],
+		["trap_layer_sell", 3, 6, 10.0, false],
+		["trap_layer_idle_2", 4, 4, 5.0, true],
+		["trap_layer_fire_2", 5, 4, 12.0, false],
+		["trap_layer_idle_3", 6, 4, 5.0, true],
+		["trap_layer_fire_3", 7, 4, 12.0, false],
+		["bear_pit_idle", 8, 4, 5.0, true],
+		["bear_pit_fire", 9, 4, 12.0, false],
+		["caltrop_field_idle", 10, 4, 5.0, true],
+		["caltrop_field_fire", 11, 4, 12.0, false],
+		["hawk_perch_idle", 12, 4, 5.0, true],
+		["hawk_perch_fire", 13, 4, 12.0, false],
+		["hawk_perch_build", 14, 6, 10.0, false],
+		["hawk_perch_sell", 15, 6, 10.0, false],
+		["hawk_perch_idle_2", 16, 4, 5.0, true],
+		["hawk_perch_fire_2", 17, 4, 12.0, false],
+		["hawk_perch_idle_3", 18, 4, 5.0, true],
+		["hawk_perch_fire_3", 19, 4, 12.0, false],
+		["falconer_idle", 20, 4, 5.0, true],
+		["falconer_fire", 21, 4, 12.0, false],
+		["eye_of_the_hunt_idle", 22, 4, 5.0, true],
+		["eye_of_the_hunt_fire", 23, 4, 12.0, false],
+		["watchtower_idle", 24, 4, 5.0, true],
+		["watchtower_fire", 25, 4, 12.0, false],
+		["watchtower_build", 26, 6, 10.0, false],
+		["watchtower_sell", 27, 6, 10.0, false],
+		["watchtower_idle_2", 28, 4, 5.0, true],
+		["watchtower_fire_2", 29, 4, 12.0, false],
+		["watchtower_idle_3", 30, 4, 5.0, true],
+		["watchtower_fire_3", 31, 4, 12.0, false],
+		["signal_fire_idle", 32, 4, 5.0, true],
+		["signal_fire_fire", 33, 4, 12.0, false],
+		["marksmans_roost_idle", 34, 4, 5.0, true],
+		["marksmans_roost_fire", 35, 4, 12.0, false],
+	],
+}
+
+## The snare, the spiked patch and the hawk in 8 directions (hawk_0 flies right, then every 45 degrees clockwise).
+const HUNTRESS_FX: Dictionary = {
+	"png": "res://assets/sprites/towers/huntress_fx.png",
+	"frames": "res://entities/towers/huntress_fx_frames.tres",
+	"size": Vector2i(64, 64),
+	"anims": [
+		["snare_armed", 0, 2, 3.0, true],
+		["snare_sprung", 1, 3, 14.0, false],
+		["patch", 2, 4, 6.0, true],
+		["hawk_0", 3, 2, 12.0, true],
+		["hawk_1", 4, 2, 12.0, true],
+		["hawk_2", 5, 2, 12.0, true],
+		["hawk_3", 6, 2, 12.0, true],
+		["hawk_4", 7, 2, 12.0, true],
+		["hawk_5", 8, 2, 12.0, true],
+		["hawk_6", 9, 2, 12.0, true],
+		["hawk_7", 10, 2, 12.0, true],
+	],
+}
 
 ## Build slot pad for a Sprite2D (hframes 2): normal, highlighted (the hero is close).
 const BUILD_SLOT: Dictionary = {

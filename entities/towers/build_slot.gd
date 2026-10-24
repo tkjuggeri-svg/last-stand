@@ -132,6 +132,8 @@ func _dismantle(tower_data: TowerData) -> void:
 	var effect: Node2D = DISMANTLE_SCENE.instantiate()
 	var sprite: AnimatedSprite2D = effect.get_node("%Sprite")
 	var anim: StringName = StringName("%s_sell" % tower_data.id)
+	if tower_data.frames != null:
+		sprite.sprite_frames = tower_data.frames
 	if not sprite.sprite_frames.has_animation(anim):
 		effect.free()
 		return

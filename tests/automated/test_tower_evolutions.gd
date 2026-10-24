@@ -44,8 +44,8 @@ func _test_data() -> void:
 			complete = complete and evolution.id != &"" and not evolution.display_name.is_empty() and not evolution.description.is_empty()
 			priced = priced and evolution.cost >= levels_cost * 0.75 and evolution.cost <= levels_cost * 1.25
 			for state: String in ["idle", "fire"]:
-				art = art and TOWER_FRAMES.has_animation(StringName("%s_%s" % [evolution.id, state]))
-	_check("each of the %d towers has 2 complete evolutions, 10 different ones" % towers, complete and towers == 5 and ids.size() == 10)
+				art = art and (data.frames if data.frames != null else TOWER_FRAMES).has_animation(StringName("%s_%s" % [evolution.id, state]))
+	_check("each of the %d towers has 2 complete evolutions, 16 different ones" % towers, complete and towers == 8 and ids.size() == 16)
 	_check("each evolution costs about levels 1-3 combined (within 25%)", priced)
 	_check("each evolution has its own idle and fire art", art)
 

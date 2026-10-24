@@ -1,6 +1,10 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="2_tower"]
+[ext_resource type="Resource" path="res://data/towers/brazier.tres" id="3_brazier"]
+[ext_resource type="Resource" path="res://data/towers/frost.tres" id="4_frost"]
+[ext_resource type="Resource" path="res://data/towers/ballista.tres" id="5_ballista"]
 
 [resource]
 script = ExtResource("1_data")
@@ -13,3 +17,4 @@ attack_damage = 10
 attack_cooldown = 0.4
 attack_duration = 0.12
 knockback = 12.0
+exclusive_towers = Array[ExtResource("2_tower")]([ExtResource("3_brazier"), ExtResource("4_frost"), ExtResource("5_ballista")])

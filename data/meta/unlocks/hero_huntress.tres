@@ -3,12 +3,17 @@
 [ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
 [ext_resource type="Resource" path="res://data/heroes/huntress.tres" id="r_hero"]
+[ext_resource type="Script" path="res://resources/tower_data.gd" id="s_tower"]
+[ext_resource type="Resource" path="res://data/towers/trap_layer.tres" id="r_trap"]
+[ext_resource type="Resource" path="res://data/towers/hawk_perch.tres" id="r_hawk"]
+[ext_resource type="Resource" path="res://data/towers/watchtower.tres" id="r_watch"]
 
 [resource]
 script = ExtResource("1_unlock")
 id = &"hero_huntress"
 display_name = "The Huntress"
-description = "A new hero: a crossbow that marks enemies for your towers. Not stronger, different."
+description = "A new hero: a crossbow that marks enemies for your towers, and the Trap Layer, Hawk Perch and Watchtower. Not stronger, different."
 cost = 60
 requires_first = "boss:The Lich Warden"
 heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])
+towers = Array[ExtResource("s_tower")]([ExtResource("r_trap"), ExtResource("r_hawk"), ExtResource("r_watch")])

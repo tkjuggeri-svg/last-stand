@@ -14,23 +14,30 @@ const SHOWN_SIZE: Vector2i = Vector2i(64, 80)
 
 ## The icon of tower `data` at `level` (falls back to level 1 art).
 static func for_level(data: TowerData, level: int = 1) -> Texture2D:
+	var frames: SpriteFrames = _frames_of(data)
 	var anim: StringName = StringName("%s_idle" % data.id if level <= 1 else "%s_idle_%d" % [data.id, level])
-	return for_animation(anim if TOWER_FRAMES.has_animation(anim) else StringName("%s_idle" % data.id))
+	return for_animation(anim if frames.has_animation(anim) else StringName("%s_idle" % data.id), frames)
 
 
 ## The icon of an evolved tower (its own idle art; the base tower's top level if it has none).
 static func for_evolution(data: TowerData, evolution: TowerEvolution) -> Texture2D:
+	var frames: SpriteFrames = _frames_of(data)
 	var anim: StringName = StringName("%s_idle" % evolution.id)
-	return for_animation(anim) if TOWER_FRAMES.has_animation(anim) else for_level(data, data.max_level())
+	return for_animation(anim, frames) if frames.has_animation(anim) else for_level(data, data.max_level())
 
 
-static func for_animation(anim: StringName) -> Texture2D:
-	if not TOWER_FRAMES.has_animation(anim):
+static func for_animation(anim: StringName, frames: SpriteFrames = TOWER_FRAMES) -> Texture2D:
+	if not frames.has_animation(anim):
 		return null
-	var frame: AtlasTexture = TOWER_FRAMES.get_frame_texture(anim, 0) as AtlasTexture
+	var frame: AtlasTexture = frames.get_frame_texture(anim, 0) as AtlasTexture
 	if frame == null:
 		return null
 	var k: float = frame.region.size.x / ORIGINAL_WIDTH
 	var image: Image = frame.atlas.get_image().get_region(Rect2i(Rect2(frame.region.position + Vector2(0, ICON_TOP * k), ICON_SIZE * k)))
 	image.resize(SHOWN_SIZE.x, SHOWN_SIZE.y, Image.INTERPOLATE_NEAREST)
 	return ImageTexture.create_from_image(image)
+
+
+## The sheet `data`'s animations are in (its own, or the shared one).
+static func _frames_of(data: TowerData) -> SpriteFrames:
+	return data.frames if data.frames != null else TOWER_FRAMES

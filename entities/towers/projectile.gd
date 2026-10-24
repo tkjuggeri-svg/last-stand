@@ -32,7 +32,7 @@ const BURN_ZONE_SCENE: PackedScene = preload("res://entities/towers/burn_zone.ts
 const PIERCE_REACH: float = 160.0
 const PIERCE_HIT_RADIUS: float = 10.0
 ## Looks drawn in 8 directions ("arrow_0".."arrow_7"), never rotated.
-const DIRECTIONAL_LOOKS: Array[StringName] = [&"arrow", &"bolt", &"sniper_shot", &"harpoon"]
+const DIRECTIONAL_LOOKS: Array[StringName] = [&"arrow", &"bolt", &"sniper_shot", &"harpoon", &"hawk"]
 
 var data: TowerData
 ## The firing tower's stats at its level (damage, blast, slow, look).
@@ -119,6 +119,8 @@ func _ready() -> void:
 		set_physics_process(false)
 		return
 	_hitbox.damage = stats.damage
+	if data.projectile_frames != null:
+		_sprite.sprite_frames = data.projectile_frames
 	_update_look(_destination - position)
 	if _line:
 		_sprite.position = _muzzle  # a bolt flies level, at the height it was loosed from
@@ -194,8 +196,8 @@ func _impact() -> void:
 		queue_free()  # a fire glob: the burning ground it left does the work
 		return
 	if _target_alive() and not _lost:
-		_hitbox.damage = roundi(stats.damage * (1.0 + target.get_status().get_mark_bonus()))
-		if not target.receive_shot(_hitbox, _last_dir):
+		_hitbox.damage = target.get_status().marked_damage(stats.damage)
+		if not _strike(target, _last_dir):
 			queue_free()  # stopped by a shield (or already gone): no chill, no pierce
 			return
 		if stats.slow_factor < 1.0:
@@ -236,8 +238,8 @@ func _fly_line(step: float) -> void:
 		if _pierced.has(enemy):
 			continue
 		_pierced.append(enemy)
-		_hitbox.damage = roundi(stats.damage * (1.0 + enemy.get_status().get_mark_bonus()))
-		if not enemy.receive_shot(_hitbox, _line_dir):
+		_hitbox.damage = enemy.get_status().marked_damage(stats.damage)
+		if not _strike(enemy, _line_dir):
 			queue_free()  # a shield stops a piercing shot dead
 			return
 		if _pierced.size() == 1 and evolution != null and evolution.drag_distance > 0.0:
@@ -245,6 +247,15 @@ func _fly_line(step: float) -> void:
 		_pierce_left -= 1
 	if _pierce_left <= 0 or _line_left <= 0.0:
 		queue_free()
+
+
+## The shot reaches `enemy`: a dive from above ignores shields; a hit marks it when the tower marks
+## (the Hawk Perch's Eye of the Hunt). False if a shield stopped it.
+func _strike(enemy: Enemy, travel: Vector2) -> bool:
+	var hit: bool = enemy.receive_hit(_hitbox) if data.from_above else enemy.receive_shot(_hitbox, travel)
+	if hit:
+		enemy.get_status().mark(stats.mark_bonus, stats.mark_time)
+	return hit
 
 
 ## Burning ground where a shell lands (hellfire upgrade, the brazier). It outlives the shot, so it

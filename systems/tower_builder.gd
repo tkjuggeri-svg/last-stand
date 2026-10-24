@@ -207,7 +207,29 @@ func refresh_boosts() -> void:
 					and beacon.global_position.distance_to(tower.global_position) <= beacon.get_attack_range():
 				boost = maxf(boost, evolution.boost_fire_rate)
 		tower.set_fire_rate_boost(boost)
+		tower.set_aura_range(_aura_range_for(tower, towers))
 		tower.set_synergies(TowerSynergies.active_for(tower, towers))
+
+
+## The best Watchtower range bonus that reaches `tower` (none for the watchtowers themselves).
+func _aura_range_for(tower: Tower, towers: Array[Tower]) -> float:
+	if tower.data.kind == TowerData.Kind.AURA:
+		return 0.0
+	var bonus: float = 0.0
+	for watch: Tower in towers:
+		if watch.data.kind == TowerData.Kind.AURA and watch.global_position.distance_to(tower.global_position) <= watch.get_stats().get_aura_radius():
+			bonus = maxf(bonus, watch.get_stats().aura_range_bonus)
+	return bonus
+
+
+## How much more damage a hero at `point` deals under the Watchtowers in reach (0 = none; the best counts).
+func hero_bonus_at(point: Vector2) -> float:
+	var bonus: float = 0.0
+	for watch: Tower in get_towers():
+		if watch.data.kind == TowerData.Kind.AURA and not watch.is_building() \
+				and watch.global_position.distance_to(point) <= watch.get_stats().get_aura_radius():
+			bonus = maxf(bonus, watch.get_stats().hero_bonus)
+	return bonus
 
 
 func build(slot: BuildSlot, data: TowerData) -> bool:
