@@ -13,7 +13,7 @@
   and a boss. M10 adds a `tier`, an **environmental mechanic**, **1-2 unique enemies** and **its own boss**
   to each.
 - **Already built:** the Graveyard / Crypt Road (tier 1, needs its mechanic) and the Drowned Marsh (tier 2,
-  mechanic: wading pools). Seven biomes are new; the Marsh's tier 3 follow-up is chapter 3 itself.
+  mechanic: wading pools). Seven biomes are new.
 - **Choosing the road:** chapter 1's biome is drawn from the run's seed; after chapters 1 and 2 the player
   **picks one of two roads** (two biomes of the next tier, drawn from the seed), seeing each one's mechanic,
   enemies, boss and a difficulty note.
@@ -74,7 +74,7 @@ two events of its own beside the shared pool, and a ground, props and light in i
 |---|---|---|---|---|
 | **Ashen Keep** (stage 1) | a burned fortress, 4 roads, 8 slots (the walls are the arena) | **Falling walls:** a wall section near a lane collapses now and then (3 s warning), hurting everything below and burning out the nearest tower slot for the rest of the fight (it can be rebuilt for gold) | **Siege Ram** (slow, hits the fortress 3x as hard), **Black Knight** (a frontal shield and a side that is not) | the Fallen Marshal (a mounted charge, then a shield wall) |
 | **Sunless Mines** | a mine, 3 tunnels, 7 slots | **Cave-ins:** a tunnel section collapses for the rest of the wave and its enemies re-route through another road | **Burrower** (digs under the field and rises next to a tower), **Lamp Wight** (heals and lights its pack) | the Deep Warden (tunnels, raising rubble) |
-| **Pale Cathedral** | a ruined cathedral, 3 aisles, 8 slots | **Consecrated floor:** altars heal enemies standing near them (3 HP/s) unless a tower's blast or the hero covers the altar with fire; **holy light** weakens undead near them? (no: kept to healing) | **Chorister** (a buff aura: nearby enemies take 20% less), **Inquisitor** (marks the hero: it takes more damage from the dead nearby) | the Pale Bishop (the finale: wards, summons, a choir) |
+| **Pale Cathedral** | a ruined cathedral, 3 aisles, 8 slots | **Consecrated floor:** altars heal enemies standing near them (3 HP/s) unless a tower's blast or the hero covers the altar with fire; | **Chorister** (a buff aura: nearby enemies take 20% less), **Inquisitor** (marks the hero: it takes more damage from the dead nearby) | the Pale Bishop (the finale: wards, summons, a choir) |
 
 Every mechanic is **telegraphed, small, and a reason to place things differently**, never a surprise loss.
 The three tier-3 bosses are all "final bosses"; M11 can give each its ending.
