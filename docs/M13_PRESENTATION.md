@@ -64,3 +64,27 @@ As in the summary. The soak is the final gate before a release build.
 
 On 2026-10-25 the user's blanket permission settled this proposal: everything above stands as written, taken
 at the recommendation of each choice (from: recommendation). Save points: git tags `save/m13-<stage>`.
+
+## 9. As built
+
+- **Music:** 12 tracks from `tools/audio/music_recipes.gd` (key, scale, tempo, chords, voices) rendered by
+  `music_synth.gd` into `assets/audio/music/<id>.wav` (16 kHz mono loops, 25-58 s, 14 MB in all; the import
+  compresses them for the export). `Music` (`core/utils/music.gd`, a static class like `Sfx`, no autoload):
+  crossfade 1.2 s, remembers a track's position, ducks under the pause menu (`Music.set_ducked`). The import
+  does not keep a generated WAV's loop, so `Music` loops a copy. Wired: title, War Room, map, fights (by tier,
+  a descent keeps the third), boss, shop and events, ending (`finale`), victory, defeat, credits.
+  **Nobody has listened to it yet**: it was checked for level, clipping and seams, not for taste.
+- **Credits:** `CreditsScreen` from the title (a scrolling modal; "A game by Tony" and the Godot licence notice
+  are placeholders for the user to correct); music added to `assets/CREDITS.md`.
+- **Art:** the art pass itself was **not done** (it needs eyes on the result); `docs/ART_BACKLOG.md` lists what
+  an artist should take: boss side views, the biome enemies' own silhouettes, boss portraits, the M9 towers,
+  rubble, hazards, ending illustrations.
+- **Trailer:** `tests/tools/trailer_capture.gd` (18 frames and a storyboard in a real window) and
+  `docs/TRAILER.md`.
+- **Performance:** `perf_report.gd --biome=<id>` plays a biome's boss-fight last wave with every tower built.
+  All nine, 40 s each, 1280x720, vsync off: average 375-533 fps, 1% low 128-228 fps, worst frame 9.6-19 ms; the
+  heaviest is the Pale Cathedral (117 enemies at once). Nothing needed fixing.
+- **Soak:** `tests/tools/soak.sh [seeds] [limit]` plays `map_balance.gd` for every hero x path policy x
+  Pressure none/all and scans the output for errors: 18 combinations, seeds 1-2, SOAK PASSED. **Honest limit:**
+  the bot dies in chapter 1 or 2 and never reaches the late biomes, the endings or a descent, so the soak
+  covers the early game and Pressure, not the end; those are covered by the unit tests and need a human.

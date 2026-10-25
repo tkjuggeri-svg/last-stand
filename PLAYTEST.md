@@ -1,8 +1,9 @@
 # LAST STAND — Internal Playtest
 
-Thanks for playing! This is an early build: the pixel art and sound effects are in, but there is **no
-music yet**. The game opens on a title screen; **Play** leads to the War Room, where you start runs. A run is **two chapters** on a map of choices (about
-35–45 minutes if you win; the first chapter alone is about 15–20).
+Thanks for playing! This is an early build: the pixel art, sound effects and **music** are in (all
+made in code). The game opens on a title screen; **Play** leads to the War Room, where you start runs. A run
+is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
+minutes if you win; the first chapter alone is about 15-20).
 
 ## Running the build
 
@@ -16,6 +17,32 @@ music yet**. The game opens on a title screen; **Play** leads to the War Room, w
 **Building it (developers):** `tools/build_playtest.sh` runs the test suite, exports both platforms
 and zips them into `builds/`. It needs Godot 4.7.2's export templates (Editor → Manage Export
 Templates). `tools/build_playtest.sh --pack-check` checks the game data without the templates.
+
+## New in this build: biomes, a story, Pressure, Endless and music (M10-M13)
+
+- **Nine biomes in three tiers (M10):** after each chapter you choose between two roads of the next tier.
+  Tier 1: Crypt Road, Ember Orchard (dry grass that burns, you too), Bone Quarry (rockfalls). Tier 2: Drowned
+  Marsh, Frostbound Pass (blizzards), Gloam Wood (darkness). Tier 3: Ashen Keep (falling walls), Sunless Mines,
+  Pale Cathedral (consecrated ground heals the dead). Each has its own enemies and boss; the new biomes are
+  unlocked in the War Room. The new enemies are **recoloured placeholders**.
+- **A story (M11):** the War Room has three people (Quartermaster Dunmore, Sister Ilse, Orm the smith) who
+  comment on your last run and, when you press **Listen**, tell you more as you play. A place's first visit and
+  a boss's first appearance are told in a tip panel. The **Chronicle** (War Room) collects the foes, places,
+  stories and endings you have found. Beating the last boss gives one of **three endings** (by that boss),
+  and a secret fourth after seeing the others. Each biome has two events of its own (18 new ones).
+- **Pressure (M12):** after your first win the War Room has a **Pressure** button: ten difficulty switches
+  (tougher elites, no repairs, faster dead, blocked build slots, ...), each worth 1-2 points. More points pay
+  more shards (+10% a point) and earn a title (Watchman ... Last Light). No power, only difficulty.
+- **Endless (M12):** after the last boss's ending you may **Descend**: shorter chapters of the third tier, the
+  dead 30% tougher at each depth, a relic after every boss, until the fortress falls. The deepest descent is
+  recorded.
+- **Music and credits (M13):** twelve looping tracks (title, War Room, map, fights by tier, boss, shop, ending,
+  victory, defeat, credits). The Credits button is on the title screen. The music is untuned: please say
+  which tracks grate, drag on or don't fit.
+
+Feedback we would like: Does Pressure's first step (1-3 points) feel like a fair next challenge? Do the three
+roads of a tier feel different? Did you read the stories, and did they make you care? Is the music too loud,
+too repetitive, or wrong for a moment?
 
 ## New in this build: three heroes, combo evolutions and archetypes (M9)
 

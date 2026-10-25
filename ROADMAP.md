@@ -244,7 +244,7 @@ Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead 
 ---
 
 ## M13 — Audio & Presentation
-Design: `docs/M13_PRESENTATION.md`.
+Design: `docs/M13_PRESENTATION.md` (built except the art pass: music, credits, trailer capture, per-biome performance, the soak; see its "As built").
 Music, credits, final art polish (e.g. side views for the bosses, an art pass over everything added since M6 in the `ART_DIRECTION.md` style), trailer material, a performance pass and a bug bash. The shared UI style (M8), basic SFX, juice and the title screen come earlier (M8.5).
 
 **Done when:** a stranger can watch a 30 s clip and understand + want the game.
@@ -252,14 +252,10 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M9** (heroes and relics): `docs/M9_HEROES.md` approved; stages 1 (the hero as data, save v3) and 2 (the Huntress) are built, built as `m9-playtest-1` (waiting for playtest feedback); stages 3 (the Necromancer) and 4 (archetypes, combo evolutions) are built too; built as `m9-playtest-2` (waiting for playtest feedback). Before it: the art pack integrated at double resolution, with the characters and grounds redrawn in code and smooth scaling at 1080p (`docs/ART_HANDOFF.md`). M8.5 is built as `m8.5-playtest` (report `docs/M8_5_BUILD_REPORT.md`); nothing since `m7.5-playtest-3` has been played by hand.
-
----
-
-## Parking lot (not planned)
-Notes for a release, if and when we decide on one. We're making the best game we can first; none of this is scheduled.
-- **Store page key art** by a human artist (`CLAUDE.md` rule 3 allows only CC0 or self-made assets: a commissioned piece would need an exception there, with the rights logged in `assets/CREDITS.md`).
-- **AI content disclosure** for a store page (how the code and art were made).
-- **Controller support** (and a handheld-friendly UI).
-- **Signed store builds** (code signing, store build pipelines; the playtest presets and `tools/build_playtest.sh` exist since M6).
-- **Steam integration** (achievements, cloud saves; GodotSteam is an external dependency and needs explicit approval).
+**M9-M13 are built** (heroes, nine biomes in three tiers, the story and endings, Pressure and Endless, music and
+credits), each with its design doc's "As built" section and a git tag `save/m<N>-done`. The last playtest build
+is `m9-playtest-2`; `PLAYTEST.md` is up to date for a new one (`tools/build_playtest.sh`, needs the export
+templates). Waiting for a human playtest: the balance numbers come from a weak bot, the music has never been
+listened to, the story texts are first drafts, the new enemies are recoloured placeholders and the M9 towers and
+portraits are first-pass art (`docs/ART_BACKLOG.md`). Open: hero stories in the hero panel (M11), the Knight's
+extra cards and relics (M9), the art pass (M13).
