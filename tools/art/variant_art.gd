@@ -63,7 +63,7 @@ const VARIANTS: Dictionary = {
 		[P.BRUTE_SKIN, [Color("2a2824"), Color("443f38"), Color("615a4e"), Color("827a68"), Color("a89f88"), Color("cfc6ae")]],
 	]},	"quarry_colossus": {"art": "res://tools/art/colossus_art.gd", "maps": [
 		[P.BONE, [Color("2c2824"), Color("4a443c"), Color("6e665a"), Color("968c7c")]],
-		[P.HOUND_HIDE, [Color("3a1a14"), Color("5e2c1e"), Color("8a4428"), Color("b46a3a"), Color("d8945a"), Color("f0b880")]],
+		[P.HOUND_HIDE, [Color("2a2622"), Color("463f38"), Color("655c50"), Color("867b6a"), Color("a99d86"), Color("cfc4aa")]],
 	]},	"stalker": {"art": "res://tools/art/hound_art.gd", "maps": [
 		[P.HOUND_HIDE, [Color("16241c"), Color("24402e"), Color("3a5e44"), Color("5a8864"), Color("86b488"), Color("b8dcb0")]],
 	]},	"hollow_treant": {"art": "res://tools/art/brute_art.gd", "maps": [
@@ -76,7 +76,7 @@ const VARIANTS: Dictionary = {
 		[P.SOUL, [Color("6a4a10"), Color("b8841c"), Color("f0c040"), Color("ffe890"), Color("fff8d0")]],
 	]},	"inquisitor": {"art": "res://tools/art/shieldbearer_art.gd", "maps": [
 		[P.IRON_WORN, [Color("34323e"), Color("52505e"), Color("76748a"), Color("a09eb6"), Color("cccae0")]],
-		[P.RUST, [Color("4a1830"), Color("7a2850"), Color("a8407a"), Color("d068a0"), Color("f090c4")]],
+		[P.RUST, [Color("3a1424"), Color("66243f"), Color("94385c"), Color("c05882"), Color("e888a8")]],
 		[P.EYES_TANK, [Color("6e5410"), Color("c2a11b"), Color("ffe14a"), Color("fff6b0")]],
 	]},	"pale_bishop": {"art": "res://tools/art/lich_art.gd", "maps": [
 		[P.LICH_ROBE, [Color("3a3850"), Color("5a5878"), Color("827ea8"), Color("aaa6d0"), Color("d4d0f0"), Color("f4f2ff")]],
@@ -102,7 +102,26 @@ func sheet_rows(id: String) -> Array[Array]:
 		for frame: Image in row:
 			out.append(_remap(frame, mapping))
 		rows.append(out)
-	return rows
+	return _decorated(id, rows)
+
+
+## The rows with the variant's own features drawn on (variant_decor.gd), if it has any: each frame knows
+## its animation (from the sheet's layout) and its place in the cycle.
+func _decorated(id: String, rows: Array[Array]) -> Array[Array]:
+	var decor: RefCounted = (load("res://tools/art/variant_decor.gd") as GDScript).new(detail)
+	if not decor.call("has", id):
+		return rows
+	var layout: Dictionary = (load("res://tools/art/sheet_layouts.gd") as GDScript).get_script_constant_map()[id.to_upper()]
+	var names: Dictionary = {}
+	for anim: Array in layout["anims"]:
+		names[int(anim[1])] = String(anim[0])
+	var out: Array[Array] = []
+	for r: int in rows.size():
+		var row: Array[Image] = []
+		for c: int in rows[r].size():
+			row.append(decor.call("decorate", id, rows[r][c], names.get(r, "idle_down"), c, rows[r].size()))
+		out.append(row)
+	return out
 
 
 ## Colour (as an html string) -> colour, from each pair of ramps (step by step, scaled if the sizes differ).

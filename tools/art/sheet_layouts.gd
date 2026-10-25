@@ -43,26 +43,26 @@ const HUNTRESS: Dictionary = {
 const SIEGE_RAM: Dictionary = {
 	"png": "res://assets/sprites/enemies/siege_ram.png",
 	"frames": "res://entities/enemies/siege_ram_frames.tres",
-	"size": BRUTE["size"],
+	"size": BRUTE["size"] + Vector2i(24, 8),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": BRUTE["anims"],
 }
 const BLACK_KNIGHT: Dictionary = {
 	"png": "res://assets/sprites/enemies/black_knight.png",
 	"frames": "res://entities/enemies/black_knight_frames.tres",
-	"size": SHIELDBEARER["size"],
+	"size": SHIELDBEARER["size"] + Vector2i(16, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": SHIELDBEARER["anims"],
 }
 const FALLEN_MARSHAL: Dictionary = {
 	"png": "res://assets/sprites/enemies/fallen_marshal.png",
 	"frames": "res://entities/enemies/bosses/fallen_marshal_frames.tres",
-	"size": COLOSSUS["size"],
+	"size": COLOSSUS["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": COLOSSUS["anims"],
 }
 
 const CINDER_GHOUL: Dictionary = {
 	"png": "res://assets/sprites/enemies/cinder_ghoul.png",
 	"frames": "res://entities/enemies/cinder_ghoul_frames.tres",
-	"size": GHOUL["size"],
+	"size": GHOUL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": GHOUL["anims"],
 }
 
@@ -76,28 +76,28 @@ const SCARECROW: Dictionary = {
 const PYRE_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/pyre_warden.png",
 	"frames": "res://entities/enemies/bosses/pyre_warden_frames.tres",
-	"size": LICH["size"],
+	"size": LICH["size"] + Vector2i(16, 28),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": LICH["anims"],
 }
 
 const FROST_WRAITH: Dictionary = {
 	"png": "res://assets/sprites/enemies/frost_wraith.png",
 	"frames": "res://entities/enemies/frost_wraith_frames.tres",
-	"size": CULTIST["size"],
+	"size": CULTIST["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": CULTIST["anims"],
 }
 
 const RIME_BRUTE: Dictionary = {
 	"png": "res://assets/sprites/enemies/rime_brute.png",
 	"frames": "res://entities/enemies/rime_brute_frames.tres",
-	"size": BRUTE["size"],
+	"size": BRUTE["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": BRUTE["anims"],
 }
 
 const WINTER_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/winter_warden.png",
 	"frames": "res://entities/enemies/bosses/winter_warden_frames.tres",
-	"size": LICH["size"],
+	"size": LICH["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": LICH["anims"],
 }
 
@@ -111,21 +111,21 @@ const BURROWER: Dictionary = {
 const LAMP_WIGHT: Dictionary = {
 	"png": "res://assets/sprites/enemies/lamp_wight.png",
 	"frames": "res://entities/enemies/lamp_wight_frames.tres",
-	"size": MIRE_PRIEST["size"],
+	"size": MIRE_PRIEST["size"] + Vector2i(24, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": MIRE_PRIEST["anims"],
 }
 
 const DEEP_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/deep_warden.png",
 	"frames": "res://entities/enemies/bosses/deep_warden_frames.tres",
-	"size": TOLLKEEPER["size"],
+	"size": TOLLKEEPER["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": TOLLKEEPER["anims"],
 }
 
 const BONE_HURLER: Dictionary = {
 	"png": "res://assets/sprites/enemies/bone_hurler.png",
 	"frames": "res://entities/enemies/bone_hurler_frames.tres",
-	"size": CULTIST["size"],
+	"size": CULTIST["size"] + Vector2i(12, 8),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": CULTIST["anims"],
 }
 
@@ -139,49 +139,49 @@ const RUBBLE_BRUTE: Dictionary = {
 const QUARRY_COLOSSUS: Dictionary = {
 	"png": "res://assets/sprites/enemies/quarry_colossus.png",
 	"frames": "res://entities/enemies/bosses/quarry_colossus_frames.tres",
-	"size": COLOSSUS["size"],
+	"size": COLOSSUS["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": COLOSSUS["anims"],
 }
 
 const STALKER: Dictionary = {
 	"png": "res://assets/sprites/enemies/stalker.png",
 	"frames": "res://entities/enemies/stalker_frames.tres",
-	"size": HOUND["size"],
+	"size": HOUND["size"] + Vector2i(16, 8),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": HOUND["anims"],
 }
 
 const HOLLOW_TREANT: Dictionary = {
 	"png": "res://assets/sprites/enemies/hollow_treant.png",
 	"frames": "res://entities/enemies/hollow_treant_frames.tres",
-	"size": BRUTE["size"],
+	"size": BRUTE["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": BRUTE["anims"],
 }
 
 const HOLLOW_STAG: Dictionary = {
 	"png": "res://assets/sprites/enemies/hollow_stag.png",
 	"frames": "res://entities/enemies/bosses/hollow_stag_frames.tres",
-	"size": GRAVELORD["size"],
+	"size": GRAVELORD["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": GRAVELORD["anims"],
 }
 
 const CHORISTER: Dictionary = {
 	"png": "res://assets/sprites/enemies/chorister.png",
 	"frames": "res://entities/enemies/chorister_frames.tres",
-	"size": MIRE_PRIEST["size"],
+	"size": MIRE_PRIEST["size"] + Vector2i(16, 32),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": MIRE_PRIEST["anims"],
 }
 
 const INQUISITOR: Dictionary = {
 	"png": "res://assets/sprites/enemies/inquisitor.png",
 	"frames": "res://entities/enemies/inquisitor_frames.tres",
-	"size": SHIELDBEARER["size"],
+	"size": SHIELDBEARER["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": SHIELDBEARER["anims"],
 }
 
 const PALE_BISHOP: Dictionary = {
 	"png": "res://assets/sprites/enemies/pale_bishop.png",
 	"frames": "res://entities/enemies/bosses/pale_bishop_frames.tres",
-	"size": LICH["size"],
+	"size": LICH["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": LICH["anims"],
 }
 
