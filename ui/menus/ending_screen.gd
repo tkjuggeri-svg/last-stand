@@ -8,6 +8,7 @@ signal continued
 ## The player goes on: Endless, the next chapter one depth deeper.
 signal descend_requested
 
+@onready var _picture: TextureRect = %Picture
 @onready var _title: Label = %Title
 @onready var _text: Label = %Text
 @onready var _continue: Button = %ContinueButton
@@ -23,6 +24,8 @@ func _ready() -> void:
 
 
 func open(ending: EndingData, can_descend: bool = false) -> void:
+	_picture.texture = ending.illustration
+	_picture.visible = ending.illustration != null
 	_title.text = ending.title
 	_text.text = ending.text
 	_descend.visible = can_descend

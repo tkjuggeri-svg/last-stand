@@ -28,6 +28,7 @@ var _links: Array[Vector2] = []
 var _hovered: bool = false
 
 @onready var _pad: Sprite2D = %Pad
+@onready var _rubble: Sprite2D = %Rubble
 @onready var _prompt: Label = %Prompt
 @onready var _interact_area: Area2D = %InteractArea
 
@@ -46,7 +47,9 @@ func is_empty() -> bool:
 func lock() -> void:
 	locked = true
 	if _pad != null:
-		_pad.modulate = Color(0.45, 0.4, 0.4)
+		_pad.modulate = Color(0.55, 0.5, 0.5)
+	if _rubble != null:
+		_rubble.show()
 	_update_prompt()
 
 

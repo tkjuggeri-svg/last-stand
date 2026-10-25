@@ -29,6 +29,8 @@ const ColossusArt: GDScript = preload("res://tools/art/colossus_art.gd")
 const LichArt: GDScript = preload("res://tools/art/lich_art.gd")
 const TollkeeperArt: GDScript = preload("res://tools/art/tollkeeper_art.gd")
 const PortraitArt: GDScript = preload("res://tools/art/portrait_art.gd")
+const RubbleArt: GDScript = preload("res://tools/art/rubble_art.gd")
+const EndingArt: GDScript = preload("res://tools/art/ending_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
@@ -59,6 +61,10 @@ func _initialize() -> void:
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=").split(",")
 	var jobs: Dictionary = {
+		"endings": func() -> void:
+			for id: String in EndingArt.IDS:
+				_save(EndingArt.new(Layouts.FINE).scene(id), "res://assets/sprites/ui/endings/%s.png" % id),
+		"slot_rubble": func() -> void: _save(RubbleArt.new(Layouts.FINE).rubble(), "res://assets/sprites/towers/slot_rubble.png"),
 		"portraits": func() -> void: _save(_sheet(PortraitArt.new(Layouts.FINE).sheet_rows(), PortraitArt.SIZE * Layouts.FINE), "res://assets/sprites/ui/portraits.png"),
 		"hero": func() -> void: _save(_sheet(HeroArt.new(Layouts.FINE).sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
 		"huntress": func() -> void: _save(_sheet(HuntressArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS["size"]), Layouts.HUNTRESS["png"]),

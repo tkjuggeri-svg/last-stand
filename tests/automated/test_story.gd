@@ -127,6 +127,7 @@ func _test_screens() -> void:
 		var ending: EndingData = Story.ending_for(book, fresh, StringName(key))
 		every_boss = every_boss and ending != null and ending.boss == StringName(key)
 	_check("each tier-3 boss has its own ending", every_boss)
+	_check("every ending has its illustration (448 x 200)", book.endings.all(func(e: EndingData) -> bool: return e.illustration != null and e.illustration.get_size() == Vector2(448, 200)))
 	var screen: EndingScreen = (load("res://ui/menus/ending_screen.tscn") as PackedScene).instantiate()
 	root.add_child(screen)
 	await process_frame
@@ -135,6 +136,7 @@ func _test_screens() -> void:
 	screen.open(book.endings[0])
 	_check("the ending screen shows the title and text", screen.visible and (screen.find_child("Title", true, false) as Label).text == book.endings[0].title)
 	screen.get_continue_button().pressed.emit()
+	_check("the picture shows with the ending", (screen.find_child("Picture", true, false) as TextureRect).visible)
 	_check("Continue closes it and tells Main", not screen.visible and done == [true])
 	screen.queue_free()
 	await _test_chronicle(book)

@@ -9,3 +9,5 @@ extends Resource
 @export var title: String = ""
 @export_multiline var text: String = ""
 @export var secret: bool = false
+## A wide illustration shown over the text (assets/sprites/ui/endings/, tools/art/ending_art.gd); none: text only.
+@export var illustration: Texture2D

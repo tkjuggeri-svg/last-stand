@@ -22,3 +22,16 @@ What the code-drawn art could not do well, or did not get to. Each item names th
 - More prop variety per biome (12 instead of 8): `tools/art/biome_props_art.gd`.
 - The Hasty Waves countdown could have a small hourglass icon next to the Start button.
 - A grayscale-readability pass on the new biome grounds (`test_readability` passes, but only on the base ground).
+
+## Done in the art pass (M13 follow-up)
+
+Every item below was drawn in code and is a candidate for a hand-drawn replacement, not a gap any more:
+
+- The 21 biome enemies and bosses each have a signature feature on top of the recoloured base (`tools/art/variant_decor.gd`:
+  flames, straw, ice, lantern, bones, boulders, moss, antlers, halo and mitre, a battering ram, ...).
+- The six portraits have faces, hair, gear and rim light (`tools/art/portrait_art.gd`).
+- The Hawk Perch, Trap Layer and Watchtower are redrawn, and the Bone Pit, Soul Siphon and Ossuary have more detail.
+- Rubble for blocked slots (`tools/art/rubble_art.gd`) and four ending illustrations (`tools/art/ending_art.gd`).
+
+Still open: boss side views, boss portraits, the combo-evolution towers (small icons on a plinth), ice and ember hazard sprites.
+

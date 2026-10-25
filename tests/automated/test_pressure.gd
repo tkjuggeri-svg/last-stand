@@ -62,6 +62,7 @@ func _test_level_effects() -> void:
 	var failures: Array[String] = []
 	level.builder.build_failed.connect(func(_s: BuildSlot, _d: TowerData, reason: String) -> void: failures.append(reason))
 	level.economy.earn(500, Economy.Source.REFUND)
+	_check("the blocked slot shows its rubble, a free one doesn't", locked[0].get_node("%Rubble").visible and not level.builder.get_slots().filter(func(s: BuildSlot) -> bool: return not s.locked)[0].get_node("%Rubble").visible)
 	_check("...and nothing can be built there", not level.builder.build(locked[0], level.builder.catalog[0]) and failures == [TowerBuilder.SLOT_LOCKED])
 	level.fortress.health.take_damage(40)
 	var hurt: int = level.fortress.health.current_health

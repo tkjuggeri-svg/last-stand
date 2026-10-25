@@ -128,6 +128,7 @@ def quote(text):
 class Out:
     def __init__(self):
         self.ext = {}
+        self.textures = {}
         self.subs = []
         self.n = 0
 
@@ -135,6 +136,11 @@ class Out:
         if name not in self.ext:
             self.ext[name] = len(self.ext) + 1
         return self.ext[name]
+
+    def texture(self, path):
+        if path not in self.textures:
+            self.textures[path] = len(self.ext) + len(self.textures) + 100
+        return 'ExtResource("%d")' % self.textures[path]
 
     def sub(self, script, props):
         self.n += 1
@@ -172,8 +178,13 @@ def main():
              for c, p, f, t in LINES]
     beats = [out.sub("story_beat", {"id": '&"%s"' % i, "character": '&"%s"' % c, "title": quote(t), "text": quote(x),
                                     "order": str(o), "condition": cond(out, f)}) for i, c, o, t, f, x in BEATS]
-    endings = [out.sub("ending_data", {"id": '&"%s"' % i, "boss": '&"%s"' % b, "title": quote(t), "text": quote(x),
-                                       "secret": "true" if s else "false"}) for i, b, t, s, x in ENDINGS]
+    pictures = {"ending_marshal": "marshal", "ending_warden": "warden", "ending_bishop": "bishop", "ending_secret": "secret"}
+    endings = []
+    for i, b, t, s, x in ENDINGS:
+        props = {"id": '&"%s"' % i, "boss": '&"%s"' % b, "title": quote(t), "text": quote(x), "secret": "true" if s else "false"}
+        if i in pictures:
+            props["illustration"] = out.texture("res://assets/sprites/ui/endings/%s.png" % pictures[i])
+        endings.append(out.sub("ending_data", props))
     lore = []
     for key, (title, text, hint) in FOES.items():
         lore.append(out.sub("lore_entry", {"id": '&"foe_%s"' % key, "kind": "0", "key": '&"%s"' % key, "title": quote(title),
@@ -187,12 +198,13 @@ def main():
              "story_book": "res://resources/story_book.gd"}
     book_id = out.script("story_book")
     head = "".join('[ext_resource type="Script" path="%s" id="%d"]\n' % (paths[k], i) for k, i in out.ext.items())
+    head += "".join('[ext_resource type="Texture2D" path="%s" id="%d"]\n' % (path, i) for path, i in out.textures.items())
     body = ("[resource]\nscript = ExtResource(\"%d\")\ncharacters = %s\nlines = %s\nbeats = %s\nendings = %s\nlore = %s\n" % (
         book_id, array("StoryCharacter", chars), array("HubLine", lines), array("StoryBeat", beats),
         array("EndingData", endings), array("LoreEntry", lore)))
     # the book's own script was registered last, so the header (written after) includes it
     text = '[gd_resource type="Resource" script_class="StoryBook" load_steps=%d format=3]\n\n%s\n%s\n%s' % (
-        len(out.ext) + len(out.subs) + 1, head, "\n".join(out.subs), body)
+        len(out.ext) + len(out.textures) + len(out.subs) + 1, head, "\n".join(out.subs), body)
     path = os.path.join(ROOT, "data/story/story_book.tres")
     with open(path, "w") as f:
         f.write(text)

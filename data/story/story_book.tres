@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="StoryBook" load_steps=116 format=3]
+[gd_resource type="Resource" script_class="StoryBook" load_steps=120 format=3]
 
 [ext_resource type="Script" path="res://resources/story_character.gd" id="1"]
 [ext_resource type="Script" path="res://resources/hub_line.gd" id="2"]
@@ -7,6 +7,10 @@
 [ext_resource type="Script" path="res://resources/ending_data.gd" id="5"]
 [ext_resource type="Script" path="res://resources/lore_entry.gd" id="6"]
 [ext_resource type="Script" path="res://resources/story_book.gd" id="7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/endings/marshal.png" id="104"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/endings/warden.png" id="106"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/endings/bishop.png" id="107"]
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/endings/secret.png" id="108"]
 
 [sub_resource type="Resource" id="s1"]
 script = ExtResource("1")
@@ -393,6 +397,7 @@ boss = &"fallen_marshal"
 title = "The Marshal Rests"
 text = "The Fallen Marshal kneels in the ash, and for the first time in a hundred years he hears no orders. He sets his sword on the stones of the keep and the iron cools.\n\nLast Light's walls hold. In the war room, Orm lights a forge that has been cold since the Waking, and Dunmore, who does not say such things, writes one word in the ledger: Held."
 secret = false
+illustration = ExtResource("104")
 
 [sub_resource type="Resource" id="s64"]
 script = ExtResource("5")
@@ -401,6 +406,7 @@ boss = &"deep_warden"
 title = "The Deep Is Quiet"
 text = "The Deep Warden sinks into its own shadows and the mines go dark, truly dark, the kind the old miners called peace. The hum in the stone stops.\n\nAbove, the walls of Last Light stop shuddering. Ilse rings the ninth bell, and for once nothing answers it."
 secret = false
+illustration = ExtResource("106")
 
 [sub_resource type="Resource" id="s65"]
 script = ExtResource("5")
@@ -409,6 +415,7 @@ boss = &"pale_bishop"
 title = "The Last Toll"
 text = "The Pale Bishop's mouth opens to ring one more time, and no sound comes. The bells of the cathedral, nine for nine hours, are silent together.\n\nIn Last Light, Ilse sits down on the steps of the tower and laughs and cries and cannot stop. The dead are resting. All of them. At last."
 secret = false
+illustration = ExtResource("107")
 
 [sub_resource type="Resource" id="s66"]
 script = ExtResource("5")
@@ -417,6 +424,7 @@ boss = &""
 title = "The First Dawn"
 text = "Three times you ended the night, and the Waking learned your name. On the fourth, no horror waited at the end of the road: only a door, and beyond it, light that did not belong to any fire.\n\nSome say the Waking was never a curse but a long vigil, kept for something that has not yet come. The walls of Last Light stand. The bells ring nine. And somewhere very far away, someone wakes."
 secret = true
+illustration = ExtResource("108")
 
 [sub_resource type="Resource" id="s67"]
 script = ExtResource("6")
