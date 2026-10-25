@@ -11,6 +11,8 @@ extends Node
 signal map_shown
 ## A fight begins on the level (its first build phase).
 signal fight_started
+## A merchant or an event (not a fight) opens.
+signal quiet_scene_opened
 signal boss_beaten
 
 const STATUS_TEXT: String = "Gold %d    Fortress %d / %d    Lives %d"
@@ -101,8 +103,10 @@ func _enter_node(node: MapNode) -> void:
 		RunMap.Kind.MERCHANT:
 			_level.merchant.open()
 			merchant_screen.open(_level.merchant)
+			quiet_scene_opened.emit()
 		RunMap.Kind.EVENT, RunMap.Kind.SHRINE:
 			event_screen.open(node.event, _level.events)
+			quiet_scene_opened.emit()
 
 
 ## Bosses (and elite leaders) ignore the wave's health scale, so their groups carry the extra health.

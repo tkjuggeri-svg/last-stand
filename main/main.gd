@@ -79,6 +79,7 @@ func _ready() -> void:
 	_victory_screen.restart_requested.connect(_after_run)
 	_ending_screen.continued.connect(func() -> void:
 		_finish_run("won")
+		Music.play(self, &"victory")
 		_victory_screen.open(VICTORY_TEXT, _run.seed_value))
 	_ending_screen.descend_requested.connect(_pack_up_chapter)
 	_pause_menu.restart_requested.connect(_on_restart_requested)
@@ -91,6 +92,10 @@ func _ready() -> void:
 	_front_end.continue_requested.connect(continue_run)
 	_front_end.quit_requested.connect(quit_game)
 	_map_flow.map_shown.connect(_save_run)
+	_map_flow.map_shown.connect(func() -> void: Music.play(self, &"map"))
+	_map_flow.quiet_scene_opened.connect(func() -> void: Music.play(self, &"shop"))
+	_map_flow.fight_started.connect(_play_fight_music)
+	_pause_menu.visibility_changed.connect(func() -> void: Music.set_ducked(_pause_menu.visible))
 	_map_flow.boss_beaten.connect(_on_chapter_cleared)
 	_chapter_screen.continued.connect(_start_chapter)
 	_chapter_screen.road_chosen.connect(_on_road_chosen)
@@ -223,6 +228,16 @@ func _ending_of_run() -> EndingData:
 	return Story.ending_for(story_book, _save.profile, _finale_boss)
 
 
+## The fight's track: the boss's, else the tier's (a descent keeps the third).
+func _play_fight_music() -> void:
+	var node: MapNode = _map_flow.get_current_node()
+	if node != null and node.kind == RunMap.Kind.BOSS:
+		Music.play(self, &"boss")
+		return
+	var tier: int = 3 if _run.depth > 0 else clampi(run_data.tier_of(_run.get_chapter()), 1, 3)
+	Music.play(self, StringName("fight_%d" % tier))
+
+
 ## The Pressure the player switched on (only when the front end is in use and Pressure is open).
 func _chosen_pressure() -> Array[PressureData]:
 	if not forced_pressure.is_empty():
@@ -293,9 +308,11 @@ func _on_chapter_cleared() -> void:
 			# The run is finished (won) when the player stops here, or when the descent ends.
 			_save.profile.endings.append(String(ending.id))
 			_save.save_profile()
+			Music.play(self, &"finale")
 			_ending_screen.open(ending, true)
 		else:
 			_finish_run("won")
+			Music.play(self, &"victory")
 			_victory_screen.open(VICTORY_TEXT, _run.seed_value)
 		return
 	_pack_up_chapter()
@@ -388,4 +405,5 @@ func _on_seed_run_requested(seed_value: int) -> void:
 
 func _on_level_run_lost(reason: Level.LossReason) -> void:
 	_finish_run("lost")
+	Music.play(self, &"defeat")
 	_game_over_screen.open(LOSS_TEXT[reason], _run.seed_value)

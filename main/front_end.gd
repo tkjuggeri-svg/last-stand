@@ -50,11 +50,13 @@ func is_open() -> bool:
 ## The title: Continue when a run is saved, and any problem the save had.
 func show_title() -> void:
 	hide_all()
+	Music.play(self, &"title")
 	_title.open(not _save.profile.run.is_empty(), _save.load_problem)
 
 
 func show_hub() -> void:
 	hide_all()
+	Music.play(self, &"war_room")
 	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book, run_data.pressure_options if run_data != null else [])
 
 
