@@ -6,6 +6,13 @@ extends Resource
 
 @export var id: StringName = &""
 @export var display_name: String = ""
+## Which tier it belongs to (1 easy, 2 medium, 3 hard; M10). 0: its place in RunData.chapters (a run of
+## one biome per tier, as before).
+@export var tier: int = 0
+## For the road choice between two biomes: what the place is, its mechanic, and how it differs in difficulty.
+@export_multiline var blurb: String = ""
+@export_multiline var mechanic_text: String = ""
+@export var difficulty_note: String = ""
 ## The level every fight of the chapter is played on (it stays, with its towers, for the chapter).
 @export var level_scene: PackedScene
 @export_group("Map")

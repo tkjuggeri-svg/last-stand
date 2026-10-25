@@ -14,6 +14,8 @@ var evolving: Array[StringName] = []
 ## Events that must not come up on the map (not unlocked yet).
 var locked_events: Array[EventData] = []
 var perks: Array[StringName] = []
+## Biomes that may not be offered (not unlocked yet).
+var locked_biomes: Array[ChapterData] = []
 ## Nothing is held back.
 var everything: bool = false
 
@@ -39,6 +41,7 @@ static func for_profile(board: UnlockBoard, profile: SaveProfile) -> RunUnlocks:
 				run.perks.append(unlock.perk)
 		else:
 			run.locked_events.append_array(unlock.events)
+			run.locked_biomes.append_array(unlock.biomes)
 	return run
 
 

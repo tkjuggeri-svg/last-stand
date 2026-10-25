@@ -170,3 +170,18 @@ Stage 1 is the heaviest (the tier system and the first tier-3 biome); stages 2 a
 | Q9 | `ChapterData` keeps being the biome and gets a `tier` field (small change), or a new `BiomeData`/`TierData` layer (cleaner, bigger)? | **The field**: a biome is a chapter; no new layer until something needs it. |
 | Q10 | Stage 1 is the heaviest: the tier system, the road choice, chapter 3 (Ashen Keep with 2 enemies and a boss) and Open graves. Split it (tier system and the road choice with the existing biomes first, a playtest build, then chapter 3)? | **Split it into 1a and 1b**, with a playtest build between: 1a is rules and screens only; 1b is a whole new biome. |
 | Q11 | A new autoload, physics layer or input action? | **None needed.** (`allies` from M9 stays the last layer.) |
+
+## 10. Decisions
+
+On 2026-10-25 the user gave blanket permission to "push the project as far as you can" while away, so
+every open question was taken at its **recommendation** (from: recommendation, under that permission):
+Q1 as proposed, Q2 seed then player's choice, Q3 8 rows, Q4 unlocks as in section 3, Q5 art in code, Q6
+telegraphed hazards that may hurt the hero and towers, Q7 three finales, Q8 the Cathedral's altars heal, Q9
+the `tier` field on `ChapterData`, Q10 stage 1 split into 1a and 1b (no playtest build between: the user was
+away), Q11 nothing new in autoloads, layers or inputs. Save points are git tags `save/m10-<stage>`.
+
+**Stage 1a as built:** `ChapterData.tier` (0 = its place in the list), `blurb`, `mechanic_text`,
+`difficulty_note`; `RunData.tier_of/tier_count/biomes_of_tier/find_chapter`; `RunState.biomes`,
+`road_options()` (two unlocked biomes of the next tier from the seed, else the only one), `choose_road()`;
+`UnlockData.biomes` and `RunUnlocks.locked_biomes`; the chapter screen shows road cards when there is a
+choice; `RunSave` keeps the biome ids (older saves load as before); the run summary names the biomes.

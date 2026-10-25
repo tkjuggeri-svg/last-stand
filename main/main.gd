@@ -38,6 +38,8 @@ const CHAPTER_REPAIR: float = 0.5
 ## The summary of the last run that ended (M8; empty before), with its shards.
 var last_summary: Dictionary = {}
 
+## The roads offered on the chapter screen (empty: none to choose between).
+var _pending_roads: Array[ChapterData] = []
 var _level: Level
 
 @onready var _run: RunStateNode = get_node("/root/RunState")
@@ -78,6 +80,7 @@ func _ready() -> void:
 	_map_flow.map_shown.connect(_save_run)
 	_map_flow.boss_beaten.connect(_on_chapter_cleared)
 	_chapter_screen.continued.connect(_start_chapter)
+	_chapter_screen.road_chosen.connect(_on_road_chosen)
 	_feedback_screen.submitted.connect(_save_feedback)
 	_hints.enabled = uses_front_end()
 	if uses_front_end():
@@ -195,6 +198,16 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	_map_flow.show_map()
 
 
+## The road chosen on the chapter screen: its biome is the next chapter, which starts at once.
+func _on_road_chosen(index: int) -> void:
+	if index < 0 or index >= _pending_roads.size():
+		return
+	_run.choose_road(_pending_roads[index])
+	_pending_roads.clear()
+	_run.next_chapter()
+	_start_chapter()
+
+
 func _free_level() -> void:
 	if _level != null:
 		# Remove first so the old level never overlaps the new one, even for a frame.
@@ -221,12 +234,17 @@ func _on_chapter_cleared() -> void:
 	var carry: ChapterCarry = _level.carry_out(refund_ratio)
 	var cleared: String = _run.get_chapter().display_name
 	_run.carry = carry
-	_run.next_chapter()
+	var roads: Array[ChapterData] = _run.road_options()
+	_pending_roads.clear()
+	if roads.size() > 1:
+		_pending_roads.append_array(roads)
+	else:
+		_run.next_chapter()
 	_level.set_active(false)
 	var max_health: int = _level.fortress.health.max_health
 	var repair: float = CHAPTER_REPAIR if _level.fortress.can_repair() else 0.0  # none under Iron Tithe
-	_chapter_screen.open(cleared, _run.get_chapter().display_name, carry, refund_ratio, repair,
-		mini(carry.fortress_health + roundi(max_health * repair), max_health), max_health)
+	_chapter_screen.open(cleared, _run.get_chapter().display_name if _pending_roads.is_empty() else "", carry, refund_ratio, repair,
+		mini(carry.fortress_health + roundi(max_health * repair), max_health), max_health, _pending_roads)
 
 
 ## The feedback box was filled in: save the report with the run's state as it is now.

@@ -20,6 +20,8 @@ extends Resource
 @export var relics: Array[RelicData] = []
 @export var events: Array[EventData] = []
 @export var heroes: Array[HeroData] = []
+## Biomes this opens for the road choice (M10).
+@export var biomes: Array[ChapterData] = []
 ## A perk: "muster" (choose 1 of 2 common cards before the first fight) or "drill" (one free card
 ## reroll in each chapter).
 @export var perk: StringName = &""

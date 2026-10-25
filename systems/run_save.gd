@@ -25,6 +25,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		"seed": run.seed_value,
 		"hero": capture_hero_id(run),
 		"chapter": run.chapter_index,
+		"biomes": run.biomes.map(func(chapter: ChapterData) -> String: return String(chapter.id)),
 		"path": run.map.path.map(func(node: MapNode) -> int: return run.map.nodes.find(node)),
 		"cleared": run.cleared.duplicate(true),
 		"kills": run.kills,
@@ -55,8 +56,15 @@ static func restore_run(run: RunStateNode, saved: Dictionary, run_data: RunData,
 			or int(saved.get("chapter", -1)) >= run_data.chapters.size():
 		return false
 	run.start_run(run_data, int(saved.get("seed", 0)), unlocks, run_data.get_hero(str(saved.get("hero", ""))))
-	if int(saved.get("chapter", 0)) > 0:
-		run.set_chapter(int(saved.get("chapter", 0)))
+	# The roads taken (a save from before M10 has none: the seed's picks, as they were).
+	var saved_biomes: Array[ChapterData] = []
+	for id: Variant in saved.get("biomes", []):
+		var biome: ChapterData = run_data.find_chapter(StringName(str(id)))
+		if biome != null:
+			saved_biomes.append(biome)
+	if not saved_biomes.is_empty():
+		run.biomes = saved_biomes
+	run.set_chapter(int(saved.get("chapter", 0)))
 	for index: Variant in saved.get("path", []):
 		if int(index) < 0 or int(index) >= run.map.nodes.size():
 			return false
