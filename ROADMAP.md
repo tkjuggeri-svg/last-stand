@@ -193,23 +193,23 @@ Built as `m8.5-playtest` (not yet playtested). The optional itch.io demo is left
 ---
 
 ## M9 — Heroes & Relics
-Design: `docs/M9_HEROES.md` (proposal, waiting for answers to its open questions).
+Design: `docs/M9_HEROES.md` (approved; built in four stages, see its section 10).
 2–3 heroes with distinct playstyles (e.g. the knight, a ranged hero, a summoner) and relics: rare items that change the rules of a run rather than add stats. (Relics were pulled forward into M7.5; M9 adds more of them and hero-specific ones.)
-- [ ] **Each hero has their own towers.** The Archer and the Cannon stay shared by every hero; each hero also has 2–3 **exclusive towers** that fit their playstyle. The Knight (today's hero) keeps the **Brazier**, the **Frost** tower and the **Bone Ballista**. Examples for new heroes (not final):
+- [x] **Each hero has their own towers.** The Archer and the Cannon stay shared by every hero; each hero also has 2–3 **exclusive towers** that fit their playstyle. The Knight (today's hero) keeps the **Brazier**, the **Frost** tower and the **Bone Ballista**. Examples for new heroes (not final):
   - **Hunter** (a ranged hero): **Trap Layer** (traps on the road), **Hawk Perch**.
   - **Necromancer** (a summoner): **Bone Pit**, **Soul Siphon**.
   The build menu shows only the shared towers and the hero's own; balance (`map_balance.gd`) per hero.
-- [ ] **Hero-exclusive upgrade cards** (and relics) beside the shared pool: each hero's offers draw from the shared cards plus their own.
-- [ ] Hero choice at the start of a run (later tied to M8's unlocks).
-- [ ] **Intentional build archetypes:** fire, frost, hero (sword-led), economy, ... Cards, relics and towers are tagged by archetype, and the offers lean slightly toward an archetype the run has started on, so a run can commit to a plan instead of collecting random parts
-- [ ] **Combo evolutions:** a special evolution a tower only gets with a specific relic (e.g. a Brazier evolution with Ember Heart, a Frost one with Hourglass), shown on the evolution choice next to the two usual branches
+- [x] **Hero-exclusive upgrade cards** (and relics) beside the shared pool: each hero's offers draw from the shared cards plus their own.
+- [x] Hero choice at the start of a run (later tied to M8's unlocks).
+- [x] **Intentional build archetypes:** fire, frost, hero (sword-led), economy, ... Cards, relics and towers are tagged by archetype, and the offers lean slightly toward an archetype the run has started on, so a run can commit to a plan instead of collecting random parts
+- [x] **Combo evolutions:** a special evolution a tower only gets with a specific relic (e.g. a Brazier evolution with Ember Heart, a Frost one with Hourglass), shown on the evolution choice next to the two usual branches
 
 **Done when:** picking a different hero or finding a key relic changes how you play the run.
 
 ---
 
 ## M10 — Maps & Biomes
-Design: `docs/M10_BIOMES.md` (proposal, waiting for answers to its open questions).
+Design: `docs/M10_BIOMES.md` (approved on the recommendations; built: 9 biomes, see its "as built" sections).
 Art resolution decided (`docs/M10_ART_RESOLUTION.md` section 7): every biome is drawn at double resolution (1 art px = 1 world px), like the world since the art pack.
 At least **9 biomes in 3 tiers of 3**: tier 1 for chapter 1 (easy), tier 2 for chapter 2 (medium), tier 3 for a new chapter 3 (hard). Each run picks one biome per tier: at random, or the player chooses between two roads at the end of a chapter. The Graveyard is tier 1 and the Drowned Marsh tier 2 (pulled forward into M7.5).
 Every biome has:
@@ -219,15 +219,16 @@ Every biome has:
 - **its own boss**.
 
 Built in stages:
-- [ ] **Stage 1: the tier system and a third chapter.** Chapters draw their biome from a tier (`RunData` / `ChapterData`); the choice of road at a chapter's end; chapter 3 (tier 3) with its first biome, its enemies and boss, and its difficulty ramp; the Graveyard gets its environmental mechanic.
-- [ ] **Stage 2: a second biome per tier** (3 new biomes).
-- [ ] **Stage 3: the third biome per tier** (3 new biomes): 9 in all.
+- [x] **Stage 1: the tier system and a third chapter.** Chapters draw their biome from a tier (`RunData` / `ChapterData`); the choice of road at a chapter's end; chapter 3 (tier 3) with its first biome, its enemies and boss, and its difficulty ramp; the Graveyard gets its environmental mechanic.
+- [x] **Stage 2: a second biome per tier** (3 new biomes).
+- [x] **Stage 3: the third biome per tier** (3 new biomes): 9 in all.
 
 **Done when:** each map asks for a different defence plan, and two runs can cross different biomes.
 
 ---
 
 ## M11 — World & Story
+Design: `docs/M11_STORY.md` (approved on the recommendations; being built).
 Lore, characters, event texts for the run map, and an ending. The hub's characters (M8) become real characters with their own stories, still reacting to how each run went.
 
 **Done when:** a player knows why they fight and gets an ending for winning.
@@ -235,6 +236,7 @@ Lore, characters, event texts for the run map, and an ending. The hub's characte
 ---
 
 ## M12 — Longevity
+Design: `docs/M12_LONGEVITY.md`.
 Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead of plain difficulty levels: before a run the player turns on any mix of modifiers (e.g. tougher elites, no repairs, faster enemies, fewer slots, a stronger boss), each worth points; higher totals unlock rewards and records.
 
 **Done when:** a player who has won keeps finding a harder reason to play.
@@ -242,6 +244,7 @@ Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead 
 ---
 
 ## M13 — Audio & Presentation
+Design: `docs/M13_PRESENTATION.md`.
 Music, credits, final art polish (e.g. side views for the bosses, an art pass over everything added since M6 in the `ART_DIRECTION.md` style), trailer material, a performance pass and a bug bash. The shared UI style (M8), basic SFX, juice and the title screen come earlier (M8.5).
 
 **Done when:** a stranger can watch a 30 s clip and understand + want the game.
