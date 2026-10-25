@@ -32,6 +32,8 @@
 [ext_resource type="Resource" path="res://data/events/shrine_coins.tres" id="ev_shrine_coins"]
 [ext_resource type="Resource" path="res://data/events/shrine_hollow_walls.tres" id="ev_shrine_hollow_walls"]
 [ext_resource type="Resource" path="res://data/events/shrine_whispers.tres" id="ev_shrine_whispers"]
+[ext_resource type="Resource" path="res://data/events/reed_ferryman.tres" id="ev_reed_ferryman"]
+[ext_resource type="Resource" path="res://data/events/will_o_wisp.tres" id="ev_will_o_wisp"]
 
 [resource]
 script = ExtResource("1_chapter")
@@ -45,5 +47,5 @@ boss = ExtResource("boss")
 elite_weight = 18.0
 fight_health_scale = 1.6
 
-events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary")])
+events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary"), ExtResource("ev_reed_ferryman"), ExtResource("ev_will_o_wisp")])
 shrines = Array[ExtResource("s_event")]([ExtResource("ev_shrine_blood"), ExtResource("ev_shrine_ash"), ExtResource("ev_shrine_coins"), ExtResource("ev_shrine_hollow_walls"), ExtResource("ev_shrine_whispers")])

@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/fleet_step.tres" id="r0"]
+[ext_resource type="Resource" path="res://data/affixes/swarming.tres" id="r1"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 10
+amount = 1
+affix = ExtResource("r1")
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Take it"
+outcome = "Dash recharges 25% faster, but the next fight is swarming."
+effects = Array[ExtResource("3_effect")]([SubResource("E1"), SubResource("E2")])
+result_text = "It makes the path clear. It also makes you visible."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 0
+amount = 60
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Snuff it"
+outcome = "Free: +60 gold from the lamp's oil."
+effects = Array[ExtResource("3_effect")]([SubResource("E4")])
+result_text = "The dark comes closer, and with it, a feeling of being seen."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"lost_lantern"
+title = "The Lost Lantern"
+text = "A lantern hangs from a bough, lit, with no one to carry it."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C5"), SubResource("C6")])

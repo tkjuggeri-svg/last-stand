@@ -3,6 +3,9 @@
 # biome's content stays consistent and balance never means editing a dozen files. Waves come from
 # tools/make_waves.py (data/waves/<folder>/wave_01..15.tres). Run from the project folder:
 #   python3 tools/make_biome_data.py
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import make_events  # the biome events (M11) belong to each chapter's pool
 import os
 
 ROLE = {"grunt": 0, "fast": 1, "tank": 2, "ranged": 3, "support": 4, "splitter": 5, "boss": 6}
@@ -217,7 +220,7 @@ def write_chapter(c):
     ext.append('[ext_resource type="Resource" path="res://%s/boss.tres" id="boss"]' % d)
     for a in AFFIXES:
         ext.append('[ext_resource type="Resource" path="res://data/affixes/%s.tres" id="a_%s"]' % (a, a))
-    for e in EVENTS + SHRINES + c.get("own_events", []):
+    for e in EVENTS + SHRINES + (c.get("own_events", []) + make_events.BY_CHAPTER.get(c["id"], [])):
         ext.append('[ext_resource type="Resource" path="res://data/events/%s.tres" id="ev_%s"]' % (e, e))
     body = ['', '[resource]', 'script = ExtResource("1_chapter")', 'id = &"%s"' % c["id"], 'display_name = "%s"' % c["name"], 'tier = %d' % c["tier"], 'level_scene = ExtResource("2_level")',
             'blurb = "%s"' % c["blurb"], 'mechanic_text = "%s"' % c["mechanic"], 'difficulty_note = "%s"' % c["note"],
@@ -226,7 +229,7 @@ def write_chapter(c):
             'affixes = Array[ExtResource("s_affix")]([%s])' % ", ".join('ExtResource("a_%s")' % a for a in AFFIXES), 'boss = ExtResource("boss")']
     for k, v in c["extra"].items():
         body.append("%s = %s" % (k, fmt(v)))
-    body.append('events = Array[ExtResource("s_event")]([%s])' % ", ".join('ExtResource("ev_%s")' % e for e in EVENTS + c.get("own_events", [])))
+    body.append('events = Array[ExtResource("s_event")]([%s])' % ", ".join('ExtResource("ev_%s")' % e for e in EVENTS + (c.get("own_events", []) + make_events.BY_CHAPTER.get(c["id"], []))))
     body.append('shrines = Array[ExtResource("s_event")]([%s])' % ", ".join('ExtResource("ev_%s")' % e for e in SHRINES))
     open("data/run/%s.tres" % c["file"], "w").write("\n".join(ext + body) + "\n")
 

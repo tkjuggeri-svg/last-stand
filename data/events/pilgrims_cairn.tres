@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/affixes/ironclad.tres" id="r0"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 0
+amount = 60
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 10
+amount = 1
+affix = ExtResource("r0")
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Take the coins"
+outcome = "+60 gold, but the next fight's dead are ironclad."
+effects = Array[ExtResource("3_effect")]([SubResource("E1"), SubResource("E2")])
+result_text = "The coins are cold. Behind you, the cairn rattles."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 4
+amount = 3
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Add a coin"
+outcome = "Costs 30 gold. An upgrade choice of 3 cards."
+need = 1
+gold_cost = 30
+effects = Array[ExtResource("3_effect")]([SubResource("E4")])
+result_text = "The stone seems to lean toward you, just a little."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"pilgrims_cairn"
+title = "The Pilgrims' Cairn"
+text = "A heap of offerings, coins and candle stubs, piled under a leaning stone. Some of it is still warm."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C5"), SubResource("C6")])

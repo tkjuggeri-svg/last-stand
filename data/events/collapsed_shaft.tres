@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="r0"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 12
+amount = 3
+rare_only = true
+
+[sub_resource type="Resource" id="C2"]
+script = ExtResource("2_choice")
+label = "Clear it"
+outcome = "Fight one wave of what is ahead, now. Reward: a choice of 3 rare upgrades."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+result_text = ""
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="C4"]
+script = ExtResource("2_choice")
+label = "Brace the timbers"
+outcome = "Costs 40 gold. Fortress max HP +25 for the run."
+need = 1
+gold_cost = 40
+effects = Array[ExtResource("3_effect")]([SubResource("E3")])
+result_text = "Good timber holds. Yours will."
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"collapsed_shaft"
+title = "The Collapsed Shaft"
+text = "A shaft mouth half closed by rockfall. Something scrapes behind the stones."
+choices = Array[ExtResource("2_choice")]([SubResource("C2"), SubResource("C4"), SubResource("C5")])

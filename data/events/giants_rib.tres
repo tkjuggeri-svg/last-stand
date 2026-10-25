@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="r0"]
+[ext_resource type="Resource" path="res://data/affixes/swift.tres" id="r1"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 2
+amount = 6
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Chip off a piece"
+outcome = "Fortress max HP +25 for the run, but the fortress takes 6 damage."
+effects = Array[ExtResource("3_effect")]([SubResource("E1"), SubResource("E2")])
+result_text = "You carry the piece home. It hums all night."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 0
+amount = 30
+
+[sub_resource type="Resource" id="E5"]
+script = ExtResource("3_effect")
+type = 10
+amount = 1
+affix = ExtResource("r1")
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Listen to it"
+outcome = "Free: +30 gold, and the next fight is swift."
+effects = Array[ExtResource("3_effect")]([SubResource("E4"), SubResource("E5")])
+result_text = "It tells you something about the road. Mostly, hurry."
+
+[sub_resource type="Resource" id="C7"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"giants_rib"
+title = "The Giant's Rib"
+text = "A rib the height of a house stands in the quarry floor. Something hums inside it."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C6"), SubResource("C7")])

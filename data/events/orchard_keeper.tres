@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 7
+
+[sub_resource type="Resource" id="C2"]
+script = ExtResource("2_choice")
+label = "Pay him to tend a tower"
+outcome = "Costs 50 gold. The cheapest tower that can go up a level does, free."
+need = 3
+gold_cost = 50
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+result_text = "He works until the tower is greener than it should be."
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("3_effect")
+type = 11
+factor = 0.85
+
+[sub_resource type="Resource" id="C4"]
+script = ExtResource("2_choice")
+label = "Buy his firewood"
+outcome = "Costs 30 gold. The next merchant's prices x0.85."
+need = 1
+gold_cost = 30
+effects = Array[ExtResource("3_effect")]([SubResource("E3")])
+result_text = "Dry wood, and he knows who to sell it to."
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"orchard_keeper"
+title = "The Orchard Keeper"
+text = "A scorched man tends a tree that gave up fruit years ago. He offers to tend your towers, for a fee."
+choices = Array[ExtResource("2_choice")]([SubResource("C2"), SubResource("C4"), SubResource("C5")])

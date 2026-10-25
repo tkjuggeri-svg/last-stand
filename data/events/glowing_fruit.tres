@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/honed_blade.tres" id="r0"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 2
+amount = 8
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Eat it"
+outcome = "50% chance: sword damage +4 for the run. Otherwise the fortress takes 8 damage."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+chance = 0.5
+fail_effects = Array[ExtResource("3_effect")]([SubResource("E2")])
+fail_text = "You do not remember the rest. The fortress shows burn marks."
+result_text = "Warmth spreads through you. Your blade feels lighter."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 0
+amount = 60
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Carry it to the walls"
+outcome = "+60 gold: merchants pay for curiosities."
+effects = Array[ExtResource("3_effect")]([SubResource("E4")])
+result_text = "The glow does not fade. Someone will pay for that."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"glowing_fruit"
+title = "The Glowing Fruit"
+text = "An apple hangs from a blackened bough, glowing like a coal. It smells wonderful."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C5"), SubResource("C6")])

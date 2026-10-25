@@ -20,6 +20,7 @@ var _failures: int = 0
 func _initialize() -> void:
 	_test_data()
 	await _test_effects()
+	await _test_biome_events()
 	await _test_main_flow()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -27,7 +28,7 @@ func _initialize() -> void:
 
 func _test_data() -> void:
 	var chapter: ChapterData = RUN.chapters[0]
-	var events_ok: bool = chapter.events.size() == 6 and chapter.events.all(func(e: EventData) -> bool:
+	var events_ok: bool = chapter.events.size() == 8 and chapter.events.all(func(e: EventData) -> bool:
 		return not e.shrine and e.choices.size() >= 2 and e.choices.size() <= 3) \
 		and chapter.events.filter(func(e: EventData) -> bool: return e.rare).size() == 1
 	var shrines_ok: bool = chapter.shrines.size() == 5 and chapter.shrines.all(func(e: EventData) -> bool:
@@ -37,8 +38,51 @@ func _test_data() -> void:
 		told = told and not scene.title.is_empty() and not scene.text.is_empty()
 		for choice: EventChoice in scene.choices:
 			told = told and not choice.label.is_empty() and not choice.outcome.is_empty()
-	_check("chapter 1 has 5 events (2-3 answers), 1 rare one, and 5 shrines (a deal, Walk away)", events_ok and shrines_ok)
+	_check("chapter 1 has 7 events (2-3 answers), 1 rare one, and 5 shrines (a deal, Walk away)", events_ok and shrines_ok)
 	_check("every scene has a title and text, every answer says what it does", told)
+
+
+## The biome events (M11): two own events per chapter, well-formed, and every plain answer resolves.
+func _test_biome_events() -> void:
+	var base: Array[EventData] = RUN.chapters[0].events.slice(0, 6)
+	var formed: bool = true
+	var own_per_chapter: bool = true
+	var all_own: Array[EventData] = []
+	for chapter: ChapterData in RUN.chapters:
+		var own: Array[EventData] = chapter.events.filter(func(e: EventData) -> bool: return not base.has(e))
+		own_per_chapter = own_per_chapter and own.size() == 2
+		all_own.append_array(own)
+	for event: EventData in all_own:
+		formed = formed and not event.shrine and event.choices.size() >= 2 and event.choices.size() <= 3 and not event.title.is_empty()
+		for choice: EventChoice in event.choices:
+			formed = formed and not choice.label.is_empty() and not choice.outcome.is_empty()
+			for effect: EventEffect in choice.effects + choice.fail_effects:
+				formed = formed and (effect.type != EventEffect.Type.GRANT_UPGRADE or effect.upgrade != null) \
+					and (effect.type != EventEffect.Type.NEXT_FIGHTS_AFFIX or effect.affix != null)
+			formed = formed and (choice.chance >= 1.0 or not choice.fail_text.is_empty())
+	_check("each of the %d chapters has 2 events of its own (%d in all), well-formed" % [RUN.chapters.size(), all_own.size()], own_per_chapter and formed and all_own.size() == 18)
+	var level: Level = (load(ARENA) as PackedScene).instantiate()
+	(level.get_node("WaveSpawner") as WaveSpawner).waves = [WaveData.new()]
+	WaveFixtures.no_upgrades(level)
+	root.add_child(level)
+	await _frames(2)
+	var builder: TowerBuilder = level.get_node("%TowerBuilder")
+	builder.build(builder.get_slots()[3], ARCHER)
+	level.economy.earn(5000, Economy.Source.REFUND)
+	await _frames(60)
+	var resolved: int = 0
+	var plain: int = 0
+	for event: EventData in all_own:
+		for choice: EventChoice in event.choices:
+			var effects: Array[EventEffect] = choice.effects + choice.fail_effects
+			if effects.any(func(e: EventEffect) -> bool: return e.type in [EventEffect.Type.EXTRA_FIGHT, EventEffect.Type.UPGRADE_CHOICE, EventEffect.Type.RELIC_CHOICE]):
+				continue
+			plain += 1
+			if level.events.choice_blocker(choice).is_empty() and level.events.apply(choice) != null:
+				resolved += 1
+	_check("every plain biome answer can be taken and resolves (%d of %d)" % [resolved, plain], plain > 0 and resolved == plain)
+	level.queue_free()
+	await _frames(2)
 
 
 func _test_effects() -> void:

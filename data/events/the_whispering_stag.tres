@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 13
+amount = 2
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 5
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Meet its eyes"
+outcome = "35% chance: a choice of 2 relics. Otherwise the hero loses a life."
+need = 5
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+chance = 0.35
+fail_effects = Array[ExtResource("3_effect")]([SubResource("E2")])
+fail_text = "Its eyes are empty. You wake on the road, alone."
+result_text = "It lowers its antlers, and between them, something shines."
+
+[sub_resource type="Resource" id="C4"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"the_whispering_stag"
+title = "The Whispering Stag"
+text = "A white stag watches from the trees. It will not flee. It is listening."
+rare = true
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C4")])

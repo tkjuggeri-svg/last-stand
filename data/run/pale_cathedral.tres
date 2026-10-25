@@ -32,6 +32,8 @@
 [ext_resource type="Resource" path="res://data/events/shrine_coins.tres" id="ev_shrine_coins"]
 [ext_resource type="Resource" path="res://data/events/shrine_hollow_walls.tres" id="ev_shrine_hollow_walls"]
 [ext_resource type="Resource" path="res://data/events/shrine_whispers.tres" id="ev_shrine_whispers"]
+[ext_resource type="Resource" path="res://data/events/the_confessional.tres" id="ev_the_confessional"]
+[ext_resource type="Resource" path="res://data/events/the_alms_box.tres" id="ev_the_alms_box"]
 
 [resource]
 script = ExtResource("1_chapter")
@@ -48,5 +50,5 @@ affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_
 boss = ExtResource("boss")
 fight_health_scale = 2.0
 elite_weight = 18.0
-events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary")])
+events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary"), ExtResource("ev_the_confessional"), ExtResource("ev_the_alms_box")])
 shrines = Array[ExtResource("s_event")]([ExtResource("ev_shrine_blood"), ExtResource("ev_shrine_ash"), ExtResource("ev_shrine_coins"), ExtResource("ev_shrine_hollow_walls"), ExtResource("ev_shrine_whispers")])

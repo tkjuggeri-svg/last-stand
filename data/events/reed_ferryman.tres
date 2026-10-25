@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 11
+factor = 0.8
+
+[sub_resource type="Resource" id="C2"]
+script = ExtResource("2_choice")
+label = "Pay the fare"
+outcome = "Costs 40 gold. The next merchant's prices x0.8."
+need = 1
+gold_cost = 40
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+result_text = "He takes the coin without looking at it."
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("3_effect")
+type = 6
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 4
+amount = 3
+rare_only = true
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Ask for the truth"
+outcome = "Lose the most recent upgrade; an upgrade choice of 3 rare cards."
+need = 4
+effects = Array[ExtResource("3_effect")]([SubResource("E3"), SubResource("E4")])
+result_text = "He tells you something, and you forget something else."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"reed_ferryman"
+title = "The Reed Ferryman"
+text = "A figure poles a flat boat through the reeds, ignoring the dead that ride it."
+choices = Array[ExtResource("2_choice")]([SubResource("C2"), SubResource("C5"), SubResource("C6")])

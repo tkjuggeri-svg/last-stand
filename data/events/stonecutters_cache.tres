@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/affixes/siege.tres" id="r0"]
+[ext_resource type="Resource" path="res://data/upgrades/guild.tres" id="r1"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 0
+amount = 90
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 10
+amount = 1
+affix = ExtResource("r0")
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Break the lock"
+outcome = "70% chance: +90 gold. Otherwise nothing, and the next fight is siege."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+chance = 0.7
+fail_effects = Array[ExtResource("3_effect")]([SubResource("E2")])
+fail_text = "The roof comes down. The dead hear the noise."
+result_text = "A fistful of old coins and a cutter's apron."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r1")
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Take the hammers"
+outcome = "Tower upgrades cost 20% less for the run."
+effects = Array[ExtResource("3_effect")]([SubResource("E4")])
+result_text = "Good iron. The smith will know what to do with it."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"stonecutters_cache"
+title = "The Stonecutters' Cache"
+text = "A locked chest in a cave-in, half buried. Hammers lie beside it."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C5"), SubResource("C6")])

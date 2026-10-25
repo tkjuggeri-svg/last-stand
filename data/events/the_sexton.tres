@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/repairs.tres" id="r0"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 0
+amount = 100
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 2
+amount = 8
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Help him dig"
+outcome = "60% chance: +100 gold from what you turn up. Otherwise the fortress takes 8 damage."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+chance = 0.6
+fail_effects = Array[ExtResource("3_effect")]([SubResource("E2")])
+fail_text = "Something wakes in the hole. The fortress pays for it."
+result_text = "A coffin, and a ring in it. He pretends not to see."
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Pay for the Rites"
+outcome = "Costs 40 gold. Repair the fortress by 30%."
+need = 1
+gold_cost = 40
+effects = Array[ExtResource("3_effect")]([SubResource("E4")])
+result_text = "He mumbles over the walls, and something in them mends."
+
+[sub_resource type="Resource" id="C6"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"the_sexton"
+title = "The Sexton"
+text = "A sexton in a stained cassock digs a grave in the middle of the road. It is not for anyone yet."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C5"), SubResource("C6")])

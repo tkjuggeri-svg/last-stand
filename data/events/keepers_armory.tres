@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+[ext_resource type="Resource" path="res://data/upgrades/honed_blade.tres" id="r0"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 3
+upgrade = ExtResource("r0")
+
+[sub_resource type="Resource" id="C2"]
+script = ExtResource("2_choice")
+label = "Take the gleaming one"
+outcome = "Sword damage +4 for the run."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+result_text = "It was waiting. It does not feel like a gift."
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("3_effect")
+type = 7
+
+[sub_resource type="Resource" id="C4"]
+script = ExtResource("2_choice")
+label = "Pay the armourers' ghost"
+outcome = "Costs 80 gold. The cheapest tower that can go up a level does, free."
+need = 3
+gold_cost = 80
+effects = Array[ExtResource("3_effect")]([SubResource("E3")])
+result_text = "Something hammers in the dark, and your tower is stronger."
+
+[sub_resource type="Resource" id="C5"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"keepers_armory"
+title = "The Keepers' Armory"
+text = "A stone door ajar, behind it racks of weapons gone to rust. One still gleams."
+choices = Array[ExtResource("2_choice")]([SubResource("C2"), SubResource("C4"), SubResource("C5")])

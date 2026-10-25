@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="EventData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://resources/event_data.gd" id="1_event"]
+[ext_resource type="Script" path="res://resources/event_choice.gd" id="2_choice"]
+[ext_resource type="Script" path="res://resources/event_effect.gd" id="3_effect"]
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("3_effect")
+type = 4
+amount = 3
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("3_effect")
+type = 2
+amount = 12
+
+[sub_resource type="Resource" id="C3"]
+script = ExtResource("2_choice")
+label = "Follow it"
+outcome = "50% chance: an upgrade choice of 3 cards. Otherwise you lose 12 fortress HP in the mud."
+effects = Array[ExtResource("3_effect")]([SubResource("E1")])
+chance = 0.5
+fail_effects = Array[ExtResource("3_effect")]([SubResource("E2")])
+fail_text = "You come back late, and wet, and the walls have taken a beating."
+result_text = "It leads you to something worth finding."
+
+[sub_resource type="Resource" id="C4"]
+script = ExtResource("2_choice")
+label = "Walk on"
+outcome = "Nothing happens."
+effects = Array[ExtResource("3_effect")]([])
+result_text = "You leave it behind you."
+
+[resource]
+script = ExtResource("1_event")
+id = &"will_o_wisp"
+title = "The Wisp"
+text = "A pale light bobs in the reeds, just off the path. It seems to want to be followed."
+choices = Array[ExtResource("2_choice")]([SubResource("C3"), SubResource("C4")])
