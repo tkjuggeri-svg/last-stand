@@ -205,3 +205,32 @@ choice; `RunSave` keeps the biome ids (older saves load as before); the run summ
   2 does with chapter 1 protected (3.3); `fight_health_scale` 2.0 (not the proposal's 2.6) and waves starting at
   x0.6. The tool now takes a plan for any level (the hero's kit on the slots nearest the fortress).
 - **Left for later:** the Keep's own events (two were planned; it uses the shared pool), its own sounds.
+
+**Stages 2 and 3 as built** (the other six biomes; 9 in all, 3 per tier):
+
+| Tier | Biome | Mechanic (class) | Unique enemies | Boss |
+|---|---|---|---|---|
+| 1 | Crypt Road | Open Graves (`OpenGraves`) | - | Lich Warden (shared finale) |
+| 1 | Ember Orchard | Dry Grass (`DryGrass`: fire catches from burning ground and burning enemies; hurts the hero too) | Cinder Ghoul (fire where it falls), Scarecrow (decoy) | Pyre Warden |
+| 1 | Bone Quarry | Rockfall (`CaveIns`, two rocks) | Bone Hurler (silences a tower), Rubble Brute | Quarry Colossus |
+| 2 | Drowned Marsh | wading pools | Bloater, Mire Priest, Shieldbearer | Tollkeeper |
+| 2 | Frostbound Pass | Blizzard (`Blizzard`: -20% range, +10% enemy speed for 8 s) | Frost Wraith (chill ring), Rime Brute (slow-immune) | Winter Warden |
+| 2 | Gloam Wood (4 roads) | Gloom (`Gloom`: 70% range away from the 3 lamps) | Stalker (unseen beyond 90 px), Hollow Treant (mends) | Hollow Stag (roots) |
+| 3 | Ashen Keep | Falling Walls | Siege Ram, Black Knight | Fallen Marshal |
+| 3 | Sunless Mines | Cave-ins (`CaveIns`, rubble holds the dead) | Burrower (skips ahead), Lamp Wight (heals) | Deep Warden |
+| 3 | Pale Cathedral | Consecration (`Consecration`: altars heal, fire covers) | Chorister (-20% damage aura), Inquisitor (marks the hero) | Pale Bishop |
+
+- New plumbing: `EnemyData.decoy / slow_immune / stealth_range`, `HealthComponent.resist`, `Hero.chill / hold`,
+  `Tower.set_weather_range`, `Enemy.weather_speed`, `Groups.BURN_ZONES`, abilities `DeathFire`, `Chill` (a Toll with
+  a hero chill), `Burrow`, `Shard`, `Regen`, `ResistAura`, `MarkHero`, `Root`, bosses' `Freeze` (a Toll) and the
+  summon variants. `HazardData` per mechanic in `data/hazards/`.
+- Unlocks: each extra biome is a War Room unlock (40-120 shards, needing a boss beaten or a chapter reached) and
+  stays locked under the test harness (like perks), so tests and tools play Crypt Road, Marsh and Ashen Keep.
+- Enemy sprites are the base enemy's sheet in new colours (`variant_art.gd`), to be replaced by real art in M13's
+  pass; the Marsh's and the first biomes' ids and names are unchanged.
+- **Balance** (`map_balance.gd --biomes=<ids>`, 6 seeds, the bot; rows cleared): tier 1: Crypt Road 5.5, Ember
+  Orchard 4.2 (scale 0.6), Bone Quarry 3.7 (then 0.5), all with the generic plan; tier 2 (chapter 1 protected):
+  Marsh 10.5, Frostbound Pass 8.7 (scale 1.6 -> 1.5), Gloam Wood 8.2 (1.6 -> 1.45); tier 3 (chapters 1-2
+  protected): Ashen Keep 17.2, Sunless Mines 17.8, Pale Cathedral 17.8.
+- **Left out of the design:** ice patches on the Pass, buying lamps in the Gloam Wood (lamps are fixed), the
+  biomes' own events (M11 writes them), the Pass/Wood/Cathedral having only the shared sounds plus `gale`.

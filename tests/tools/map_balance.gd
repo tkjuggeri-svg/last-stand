@@ -90,6 +90,8 @@ var _path: String = "balanced"
 var _plan_name: String = "mixed"
 ## --biomes=a,b,c: the run crosses exactly these chapters (one per tier, by id) instead of the default three.
 var _biomes: Array[String] = []
+## --generic-plan: ignore the hand-made tower plans (every level gets the hero's kit on the slots nearest the fortress).
+var _generic_plan: bool = false
 var _hero_mode: String = "bot"
 ## --archetype=<tag>: the card policy takes a card (or relic) of this tag whenever one is offered, to see
 ## whether an archetype is much stronger or weaker than the rest.
@@ -129,6 +131,8 @@ func _initialize() -> void:
 			_path = arg.trim_prefix("--path=")
 		elif arg.begins_with("--plan="):
 			_plan_name = arg.trim_prefix("--plan=")
+		elif arg == "--generic-plan":
+			_generic_plan = true
 		elif arg.begins_with("--biomes="):
 			for id: String in arg.trim_prefix("--biomes=").split(","):
 				_biomes.append(id)
@@ -310,7 +314,7 @@ func _plan_for(level_name: String, level: Level = null) -> Array:
 		table = HERO_PLANS[_hero_kind]
 	elif PLANS.has(_plan_name):
 		table = PLANS[_plan_name]
-	if table.has(level_name):
+	if table.has(level_name) and not _generic_plan:
 		return table[level_name]
 	# A level without a hand-made plan (the newer biomes): the hero's towers on its slots, nearest to the
 	# fortress first (one per slot, the kit repeating).
