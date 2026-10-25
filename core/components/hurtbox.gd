@@ -3,6 +3,9 @@ extends Area2D
 ## An area that can be hurt. When a Hitbox enters it, the hitbox's damage goes to the HealthComponent.
 ## Set its collision mask to the hitbox layer it should react to (hero_hitbox, enemy_hitbox or fortress_hitbox).
 
+## A hit landed (after its damage was applied): who can react to being hit, and by what (the Knight's Crown of Thorns).
+signal hit_received(hitbox: Hitbox)
+
 @export var health_component: HealthComponent
 ## Seconds after a hit during which further hits are ignored (0 = none). Stops several attackers
 ## from stacking damage in the same moment.
@@ -44,6 +47,7 @@ func receive_hit(hitbox: Hitbox) -> bool:
 	if hitbox == null or is_invulnerable():
 		return false
 	health_component.take_damage(hitbox.damage)
+	hit_received.emit(hitbox)
 	if invulnerability_time > 0.0:
 		_invulnerable_left = invulnerability_time
 		set_physics_process(true)

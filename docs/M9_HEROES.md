@@ -333,3 +333,12 @@ other taunter in reach is next). Reach only: an enemy still walks its lane until
   economy (6.4), Necromancer summon 5.6 (5.0 without), Huntress traps 5.4 (5.4 without, down from 5.6 before her two new trap cards entered the pool). The ratio between best and worst is
   1.25. The tool is a weak instrument for this: its bot dies in chapter 1 after about four cards, so most
   archetypes change nothing; only a playtest can say how a plan feels.
+
+**Knight leftovers, built in the M13 follow-up:** the Bulwark passive (`HeroData.bulwark` 25%: while swinging, which means
+within the swing's cooldown, a hit does 25% less, through the hero's `damage_taken_multiplier`); the cards Shield Bash
+(a dash knocks the enemies it passes back 30 px, once per dash), Oathkeeper (one more sword hit on bosses),
+Rally (towers within 150 px of him fire 10% faster, `TowerBuilder.refresh_rally`) and Iron Will (Bulwark 45%); the relics
+Crown of Thorns (an enemy that hits him takes 8) and Banner of the Last Keep (the fortress takes 15% less while he stands).
+Data from `tools/make_knight_content.py`, icons in `tools/art/m9_icons_art.gd`, `test_knight`. Hero stories (Ser Aldric, Wren,
+Maren) are in the hero data and in the War Room's hero panel (portrait, a line, a "Their story" button).
+

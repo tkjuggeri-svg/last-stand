@@ -42,6 +42,8 @@ const BELL_RING_COLOR: Color = Color(0.85, 0.65, 0.35, 0.8)
 @export var bell_radius: float = 900.0
 @export var oath_respawn_delay: float = 1.0
 @export var oath_fortress_cost: int = 10
+@export var crown_thorns_damage: int = 8
+@export_range(0.0, 1.0) var banner_damage_cut: float = 0.15
 
 ## Seconds since the current wave started (Hourglass), and of combat toward the next toll.
 var _wave_time: float = 0.0
@@ -66,6 +68,7 @@ func _ready() -> void:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 	if hero != null:
 		hero.struck.connect(_on_hero_struck)
+		hero.hit_by.connect(_on_hero_hit_by)
 	if fortress != null:
 		if not fortress.is_node_ready():
 			await fortress.ready
@@ -78,6 +81,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_wave_time += delta
+	if fortress != null and modifiers.has_relic(RunModifiers.RELIC_BANNER_OF_THE_LAST_KEEP):
+		_apply_fortress_multiplier()
 	if not modifiers.has_relic(RunModifiers.RELIC_DROWNED_BELL) or run_cycle == null or run_cycle.get_phase() != RunCycle.Phase.COMBAT:
 		return
 	_bell_time += delta
@@ -99,13 +104,27 @@ func _physics_process(delta: float) -> void:
 ## The rules that stand while a relic is held (set again whenever a relic is taken).
 func _apply_standing_rules() -> void:
 	if fortress != null:
-		fortress.health.damage_taken_multiplier = glass_banner_damage_taken if modifiers.has_relic(RunModifiers.RELIC_GLASS_BANNER) else 1.0
+		_apply_fortress_multiplier()
 		if modifiers.has_relic(RunModifiers.RELIC_PHOENIX) and not _phoenix_granted:
 			_phoenix_granted = true  # once per chapter: this level's one reprieve
 			fortress.health.reprieves = 1
 		fortress.health.reprieve_health = maxi(roundi(fortress.health.max_health * phoenix_health), 1)
 	if hero_lives != null:
 		hero_lives.respawn_delay = oath_respawn_delay if modifiers.has_relic(RunModifiers.RELIC_SECOND_OATH) else _normal_respawn_delay
+
+
+## What the fortress takes of a hit: the Glass Banner makes it more, the Banner of the Last Keep less while the hero stands.
+func _apply_fortress_multiplier() -> void:
+	var share: float = glass_banner_damage_taken if modifiers.has_relic(RunModifiers.RELIC_GLASS_BANNER) else 1.0
+	if modifiers.has_relic(RunModifiers.RELIC_BANNER_OF_THE_LAST_KEEP) and hero != null and not hero.health.is_dead():
+		share *= 1.0 - banner_damage_cut
+	fortress.health.damage_taken_multiplier = share
+
+
+## Crown of Thorns: an enemy that hit the hero takes damage back.
+func _on_hero_hit_by(attacker: Enemy) -> void:
+	if modifiers.has_relic(RunModifiers.RELIC_CROWN_OF_THORNS) and is_instance_valid(attacker) and attacker.is_alive():
+		attacker.get_health().take_damage(crown_thorns_damage)
 
 
 func _on_enemy_spawned(enemy: Enemy) -> void:

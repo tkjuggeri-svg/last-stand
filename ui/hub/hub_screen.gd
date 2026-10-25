@@ -23,6 +23,9 @@ var _book: StoryBook
 var _pressure_options: Array[PressureData] = []
 var _pressure_selected: Array[String] = []
 
+# The hero shown in the panel (for their story).
+var _hero: HeroData
+
 @onready var _shards: Label = %Shards
 @onready var _cast: HBoxContainer = %Cast
 @onready var _chronicle_button: Button = %ChronicleButton
@@ -33,6 +36,10 @@ var _pressure_selected: Array[String] = []
 @onready var _unlocks: VBoxContainer = %Unlocks
 @onready var _hero_name: Label = %HeroName
 @onready var _hero_text: Label = %HeroText
+@onready var _hero_portrait: TextureRect = %HeroPortrait
+@onready var _hero_story_name: Label = %HeroStoryName
+@onready var _hero_story_button: Button = %HeroStoryButton
+@onready var _hero_story_line: Label = %HeroStoryLine
 @onready var _hero_prev: Button = %HeroPrev
 @onready var _hero_next: Button = %HeroNext
 @onready var _records: Label = %Records
@@ -51,6 +58,7 @@ func _ready() -> void:
 		_refresh_pressure_button()
 		pressure_changed.emit(ids))
 	_chronicle_button.pressed.connect(func() -> void: _chronicle.open(_profile, _book))
+	_hero_story_button.pressed.connect(_tell_hero_story)
 	_start_button.pressed.connect(func() -> void: start_requested.emit())
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
 	_hero_prev.pressed.connect(func() -> void: hero_cycled.emit(-1))
@@ -72,6 +80,7 @@ func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, ca
 	_hero_next.visible = can_cycle
 	_hero_name.text = hero.display_name if hero != null else ""
 	_hero_text.text = hero.description if hero != null else ""
+	_show_hero_story(hero)
 	_shards.text = "Soul Shards: %d" % profile.shards
 	_show_cast(profile, book)
 	_pressure_options = pressure
@@ -255,3 +264,34 @@ func _refresh_pressure_button() -> void:
 		if _pressure_selected.has(String(data.id)):
 			total += data.points
 	_pressure_button.text = "Pressure %d" % total if total > 0 else "Pressure"
+
+
+func _show_hero_story(hero: HeroData) -> void:
+	_hero = hero
+	var has_story: bool = hero != null and not hero.story_name.is_empty()
+	_hero_portrait.visible = has_story
+	_hero_story_name.visible = has_story
+	_hero_story_button.visible = has_story
+	_hero_story_line.visible = has_story
+	if not has_story:
+		return
+	_hero_portrait.texture = Portraits.texture(hero.portrait_index)
+	_hero_story_name.text = hero.story_name
+	_hero_story_line.text = hero.story_line
+
+
+func _tell_hero_story() -> void:
+	if _hero == null:
+		return
+	_beat_dialog.title = "%s, %s" % [_hero.story_name, _hero.display_name]
+	_beat_dialog.dialog_text = _hero.story_text
+	_beat_dialog.popup_centered(Vector2i(900, 0))
+
+
+## The hero story's button (tests).
+func get_hero_story_button() -> Button:
+	return _hero_story_button
+
+
+func get_hero_story_line() -> String:
+	return _hero_story_line.text

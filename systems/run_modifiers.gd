@@ -24,6 +24,12 @@ const HERO_ATTACK_COOLDOWN: StringName = &"hero.attack_cooldown"
 const HERO_REACH: StringName = &"hero.reach"
 const HERO_LIVES: StringName = &"hero.lives"
 const HERO_DASH_COOLDOWN: StringName = &"hero.dash_cooldown"
+## The Knight: Bulwark's share of a hit shrugged off while swinging (Iron Will adds to it), the px a dash
+## knocks enemies back (Shield Bash), extra sword hits on bosses (Oathkeeper), the fire rate towers near him gain (Rally).
+const HERO_BULWARK: StringName = &"hero.bulwark"
+const HERO_DASH_BASH: StringName = &"hero.dash_bash"
+const HERO_BOSS_HITS: StringName = &"hero.boss_hits"
+const HERO_RALLY: StringName = &"hero.rally"
 ## Damage per second of the burning ground a dash leaves (0 = no trail).
 const HERO_DASH_TRAIL: StringName = &"hero.dash_trail"
 ## The Huntress's bolt: extra enemies it passes through, and her Mark's bonus and duration.
@@ -85,6 +91,9 @@ const RELIC_IRON_TITHE: StringName = &"iron_tithe"
 const RELIC_SECOND_OATH: StringName = &"second_oath"
 ## Hero: every 5th bolt is a fan of three.
 const RELIC_QUIVER: StringName = &"quiver_of_plenty"
+## The Knight: enemies that hit him take damage back; the fortress takes less while he stands.
+const RELIC_CROWN_OF_THORNS: StringName = &"crown_of_thorns"
+const RELIC_BANNER_OF_THE_LAST_KEEP: StringName = &"banner_of_the_last_keep"
 ## Ossuaries: a kill by a skeleton counts twice.
 const RELIC_RELIQUARY: StringName = &"reliquary_of_bones"
 

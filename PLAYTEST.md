@@ -51,7 +51,7 @@ run is played with. Neither is stronger than the Knight, only different. Each he
 (the Archer and the Cannon are shared), **its own cards** and relics; the sword cards (Honed Blade, Long
 Reach, Battle Rhythm, Berserker's Oath) are the Knight's.
 
-- **The Knight** (free): sword, Brazier, Frost tower and Bone Ballista.
+- **The Knight** (free; Ser Aldric): sword, Brazier, Frost tower and Bone Ballista. **Bulwark:** while he swings he takes 25% less damage. His own cards: Shield Bash, Oathkeeper, Rally, Iron Will; relics: Crown of Thorns, Banner of the Last Keep. Each hero has a short story in the War Room's hero panel.
 - **The Huntress** (60 Soul Shards, after you beat chapter 1's boss): a crossbow bolt that passes through 1
   enemy and leaves a **Mark** (towers deal +15% to marked enemies for 3 s); 75 HP. Towers: **Trap Layer**
   (snares hold and hurt the first enemy to step on one), **Hawk Perch** (a hawk dives on the leader; shields

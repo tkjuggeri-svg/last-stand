@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/banner_of_the_last_keep.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_up"]
+
+[resource]
+script = ExtResource("3_up")
+rule = &"banner_of_the_last_keep"
+price = 260
+id = &"banner_of_the_last_keep"
+display_name = "Banner of the Last Keep"
+description = "While you stand, the fortress takes 15% less damage."
+icon = ExtResource("1_icon")
+category = 2
+rarity = 1
+stackable = false
+tags = Array[StringName]([&"fortress"])

@@ -43,3 +43,7 @@ mark_time = 3.0
 exclusive_towers = Array[ExtResource("5_tower")]([ExtResource("6_pit"), ExtResource("7_siphon"), ExtResource("8_ossuary")])
 exclusive_cards = Array[ExtResource("9_card")]([ExtResource("11_c1"), ExtResource("12_c2"), ExtResource("13_c3"), ExtResource("14_c4")])
 exclusive_relics = Array[ExtResource("10_relic")]([ExtResource("15_rel"), ExtResource("16_crown")])
+story_name = "Maren"
+story_line = "Maren was a bell-keeper's apprentice who learned that the dead can be asked, not only rung for."
+story_text = "Maren rang the ninth bell beside Sister Ilse until her hands bled. In the long nights she began to hear what answered, and to answer back. The Waking does not take orders, but the fallen will stand beside the living if they are asked quietly enough. Ilse does not approve, and lights a candle for her anyway."
+portrait_index = 2

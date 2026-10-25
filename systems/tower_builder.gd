@@ -27,6 +27,9 @@ const NOT_YET: String = "Evolves at level 3"
 const ALREADY_EVOLVED: String = "Already evolved"
 const NO_EVOLUTIONS: String = "Siege Ledger: no evolutions"
 const EVOLUTIONS_LOCKED: String = "Its evolutions are not unlocked yet (the War Room)"
+## Rally: towers this close to the hero (px) feel it; it is looked at this often (s).
+const RALLY_RADIUS: float = 150.0
+const RALLY_INTERVAL: float = 0.25
 ## Twin Banners: two towers of the same type at most this far apart share their best level.
 const TWIN_RANGE: float = 330.0
 
@@ -46,6 +49,10 @@ var unlocks: RunUnlocks = null
 ## Evolutions that cost nothing (a shrine's boon), used by the next ones.
 var free_evolutions: int = 0
 
+## The hero whose Rally card lifts the towers near him (set by the Level; null: no Rally).
+var rally_hero: Node2D
+
+var _rally_left: float = 0.0
 ## Slots the hero is currently inside, most recent last.
 var _nearby: Array[BuildSlot] = []
 
@@ -57,6 +64,13 @@ func _ready() -> void:
 		slot.hero_exited.connect(_on_slot_hero_exited)
 	if modifiers != null:
 		modifiers.changed.connect(refresh_boosts)  # a range upgrade can reach more towers
+
+
+func _physics_process(delta: float) -> void:
+	_rally_left -= delta
+	if _rally_left <= 0.0:
+		_rally_left = RALLY_INTERVAL
+		refresh_rally()
 
 
 func get_slots() -> Array[BuildSlot]:
@@ -196,6 +210,14 @@ func evolve(slot: BuildSlot, index: int) -> bool:
 	refresh_boosts()
 	tower_evolved.emit(slot, tower, evolution)
 	return true
+
+
+## The Knight's Rally: towers within RALLY_RADIUS of the hero fire faster by the card's bonus, the others not.
+func refresh_rally() -> void:
+	var bonus: float = RunModifiers.value(modifiers, 0.0, [RunModifiers.HERO_RALLY])
+	for tower: Tower in get_towers():
+		var near: bool = bonus > 0.0 and is_instance_valid(rally_hero) and tower.global_position.distance_to(rally_hero.global_position) <= RALLY_RADIUS
+		tower.set_rally(bonus if near else 0.0)
 
 
 ## Gives every tower the best Beacon Flame boost that reaches it (none for the beacons themselves),

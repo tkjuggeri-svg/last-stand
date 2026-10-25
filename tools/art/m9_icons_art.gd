@@ -23,6 +23,12 @@ const ICONS: Dictionary = {
 	"long_cord": "res://assets/sprites/ui/upgrades/long_cord.png",
 	"falcons_hood": "res://assets/sprites/ui/relics/falcons_hood.png",
 	"grave_crown": "res://assets/sprites/ui/relics/grave_crown.png",
+	"shield_bash": "res://assets/sprites/ui/upgrades/shield_bash.png",
+	"oathkeeper": "res://assets/sprites/ui/upgrades/oathkeeper.png",
+	"rally": "res://assets/sprites/ui/upgrades/rally.png",
+	"iron_will": "res://assets/sprites/ui/upgrades/iron_will.png",
+	"crown_of_thorns": "res://assets/sprites/ui/relics/crown_of_thorns.png",
+	"banner_of_the_last_keep": "res://assets/sprites/ui/relics/banner_of_the_last_keep.png",
 }
 
 
@@ -194,3 +200,65 @@ func _long_cord(c: Canvas) -> void:
 	c.part(true)
 	c.line(Vector2(4, 28), Vector2(10, 28), P.BONE[3])
 	c.line(Vector2(6, 30), Vector2(12, 30), P.BONE[3])
+
+
+## The Knight's cards and relics (M13 follow-up).
+func _shield_bash(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(18, 16), Vector2(9, 10), P.STEEL, 0.0, 0.1)
+	c.part()
+	c.ellipse(Vector2(18, 16), Vector2(3.5, 3.5), P.GOLD, 0.0, 0.3)
+	c.part(true)
+	for k: int in 3:
+		c.line(Vector2(2, 10 + k * 5), Vector2(8, 10 + k * 5), P.BONE[3])
+
+
+func _oathkeeper(c: Canvas) -> void:
+	c.part()
+	c.capsule(Vector2(16, 3), Vector2(16, 21), 2.0, P.STEEL, 0.1)
+	c.part()
+	c.rect(Rect2i(9, 21, 14, 3), P.GOLD[3])
+	c.part()
+	c.capsule(Vector2(16, 24), Vector2(16, 29), 1.5, P.LEATHER, 0.0)
+	c.part(true)
+	c.ellipse(Vector2(16, 9), Vector2(5, 3), P.GOLD, 0.0, 0.2)
+
+
+func _rally(c: Canvas) -> void:
+	c.part()
+	c.capsule(Vector2(8, 4), Vector2(8, 29), 1.4, P.WOOD, 0.0)
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(9, 5), Vector2(27, 8), Vector2(22, 13), Vector2(27, 18), Vector2(9, 16)]), P.TABARD, Vector3(-0.3, -0.4, 1))
+	c.part(true)
+	c.line(Vector2(12, 10), Vector2(21, 11), P.GOLD[2])
+
+
+func _iron_will(c: Canvas) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(6, 5), Vector2(26, 5), Vector2(26, 17), Vector2(16, 28), Vector2(6, 17)]), P.STEEL, Vector3(-0.3, -0.4, 1))
+	c.part()
+	c.rect(Rect2i(15, 7, 2, 16), P.GOLD[3])
+	c.rect(Rect2i(9, 12, 14, 2), P.GOLD[3])
+
+
+func _crown_of_thorns(c: Canvas) -> void:
+	c.part()
+	c.ellipse(Vector2(16, 20), Vector2(11, 5), P.GOLD, 0.0, 0.1)
+	c.part()
+	c.ellipse(Vector2(16, 20), Vector2(8, 2.5), P.DIRT, 0.0, -0.3)
+	for k: int in 5:
+		var x: float = 7.0 + k * 4.5
+		c.part()
+		c.polygon(PackedVector2Array([Vector2(x - 2.0, 19), Vector2(x, 7.0 + absi(k - 2) * 2.0), Vector2(x + 2.0, 19)]), P.STEEL, Vector3(-0.3, -0.4, 1))
+
+
+func _banner_of_the_last_keep(c: Canvas) -> void:
+	c.part()
+	c.capsule(Vector2(8, 3), Vector2(8, 29), 1.4, P.WOOD, 0.0)
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(9, 4), Vector2(27, 4), Vector2(27, 21), Vector2(18, 26), Vector2(9, 21)]), P.TABARD, Vector3(-0.3, -0.4, 1))
+	c.part(true)
+	c.rect(Rect2i(14, 12, 8, 7), P.STEEL[4])
+	c.rect(Rect2i(14, 10, 2, 2), P.STEEL[4])
+	c.rect(Rect2i(18, 10, 2, 2), P.STEEL[4])
+	c.rect(Rect2i(22, 10, 0, 2), P.STEEL[4])

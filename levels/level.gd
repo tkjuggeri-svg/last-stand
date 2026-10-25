@@ -157,6 +157,7 @@ func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 	var hero: Hero = get_node_or_null("Hero") as Hero
 	if hero != null:
 		hero.damage_bonus_at = builder.hero_bonus_at
+		builder.rally_hero = hero
 		if hero_data.raise_minion != null:
 			hero.slew.connect(func(at: Vector2) -> void: _raise_for_hero(hero, hero_data, at))
 

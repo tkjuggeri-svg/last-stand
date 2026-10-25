@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="RelicData" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/ui/relics/crown_of_thorns.png" id="1_icon"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="3_up"]
+
+[resource]
+script = ExtResource("3_up")
+rule = &"crown_of_thorns"
+price = 260
+id = &"crown_of_thorns"
+display_name = "Crown of Thorns"
+description = "Enemies that hit you take 8 damage back."
+icon = ExtResource("1_icon")
+category = 0
+rarity = 1
+stackable = false
+tags = Array[StringName]([&"blade"])

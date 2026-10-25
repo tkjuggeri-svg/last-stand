@@ -17,6 +17,8 @@ signal struck(damage: int)
 signal slew(at: Vector2)
 ## It lost `amount` HP (a hit got through).
 signal hurt(amount: int)
+## An enemy's hit landed on the hero (Crown of Thorns answers it).
+signal hit_by(attacker: Enemy)
 
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_number.tscn")
 ## Where damage numbers appear, relative to the hero.
@@ -35,6 +37,9 @@ const QUIVER_EVERY: int = 5
 const QUIVER_FAN: float = 0.21
 const REACH_TIERS: Array[float] = [1.0, 1.15, 1.3, 1.45, 1.6]
 const BLINKS_PER_SECOND: float = 6.0
+## Bulwark never shrugs off more than this share of a hit; Shield Bash reaches enemies this close to the dashing hero (px).
+const BULWARK_MAX: float = 0.9
+const BASH_RADIUS: float = 48.0
 ## Game feel (M8.5, display only): a landed hit and a hit taken stop time this long (s) and shake the
 ## screen this much (px), a fall more.
 const HIT_STOP: float = 0.03
@@ -64,6 +69,8 @@ var _chill_left: float = 0.0
 ## Held in place (roots): the seconds left; a dash breaks free.
 var _held_left: float = 0.0
 var _attack_time_left: float = 0.0
+## The enemies this dash has already knocked back (Shield Bash), by instance id.
+var _bashed: Dictionary = {}
 ## The last direction the hero moved in: a dash from standing still goes this way.
 var _last_direction: Vector2 = Vector2.DOWN
 var _cooldown_left: float = 0.0
@@ -99,6 +106,7 @@ func _ready() -> void:
 	_dash.modifiers = modifiers
 	_dash.setup(self, _sprite)
 	_attack_hitbox.hit.connect(_on_attack_landed)
+	_hurtbox.hit_received.connect(_on_hit_received)
 	if modifiers != null:
 		modifiers.changed.connect(_apply_modifiers)
 		_apply_modifiers()
@@ -114,9 +122,11 @@ func _physics_process(delta: float) -> void:
 	if _dash.is_dashing():
 		velocity = _dash.get_velocity()
 		move_and_slide()
+		_bash_enemies()
 	else:
 		_move()
 	_update_attack_timers(delta)
+	health.damage_taken_multiplier = _bulwark_multiplier()
 	# Holding the button keeps swinging, limited by the cooldown. Clicks on UI (e.g. the build menu)
 	# are not swings.
 	if Input.is_action_pressed("attack") and get_viewport().gui_get_hovered_control() == null:
@@ -175,6 +185,7 @@ func dash(direction: Vector2) -> bool:
 		return false
 	if not _dash.try_dash(direction if not direction.is_zero_approx() else _last_direction):
 		return false
+	_bashed.clear()
 	_held_left = 0.0
 	_hurtbox.make_invulnerable(_dash.get_invulnerability())
 	Sfx.play(self, &"hero_dash")
@@ -381,6 +392,37 @@ func _on_bolt_hit(enemy: Enemy) -> void:
 		slew.emit(enemy.global_position)
 
 
+## Oathkeeper: a sword hit on a boss lands this many more times.
+func _oathkeeper(enemy: Enemy) -> void:
+	var extra: int = RunModifiers.value_int(modifiers, 0, [RunModifiers.HERO_BOSS_HITS])
+	if extra > 0 and enemy.data != null and enemy.data.is_boss and enemy.is_alive():
+		enemy.get_health().take_damage(_attack_hitbox.damage * extra)
+
+
+## Bulwark: while swinging (the swing's cooldown), a hit does this share of its damage (Iron Will lowers it more).
+func _bulwark_multiplier() -> float:
+	if data == null or _cooldown_left <= 0.0 or data.attack_kind != HeroData.AttackKind.SWORD:
+		return 1.0
+	return 1.0 - clampf(RunModifiers.value(modifiers, data.bulwark, [RunModifiers.HERO_BULWARK]), 0.0, BULWARK_MAX)
+
+
+## Shield Bash: a dash knocks every enemy it passes back along its lane, once per dash.
+func _bash_enemies() -> void:
+	var push: float = RunModifiers.value(modifiers, 0.0, [RunModifiers.HERO_DASH_BASH])
+	if push <= 0.0:
+		return
+	for enemy: Enemy in EnemyQuery.in_circle(get_world_2d(), global_position, BASH_RADIUS):
+		if not _bashed.has(enemy.get_instance_id()):
+			_bashed[enemy.get_instance_id()] = true
+			enemy.knock_back(push)
+
+
+func _on_hit_received(hitbox: Hitbox) -> void:
+	var attacker: Enemy = hitbox.owner as Enemy if is_instance_valid(hitbox) else null
+	if attacker != null:
+		hit_by.emit(attacker)
+
+
 func _on_attack_landed(target: Hurtbox) -> void:
 	Sfx.play(self, &"hero_hit")
 	Juice.hit_stop(self, HIT_STOP)
@@ -388,6 +430,7 @@ func _on_attack_landed(target: Hurtbox) -> void:
 	var enemy: Enemy = target.owner as Enemy if is_instance_valid(target) else null
 	if enemy != null:
 		enemy.knock_back(knockback)
+		_oathkeeper(enemy)
 	struck.emit(_attack_hitbox.damage)
 
 

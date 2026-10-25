@@ -49,6 +49,8 @@ var _level: int = 1
 var _evolution: TowerEvolution = null
 ## Fire-rate bonus from a Beacon Flame in reach (0 = none; 0.25 = 25% more shots).
 var _boost: float = 0.0
+## The Knight's Rally: a fire-rate bonus while the hero stands near (TowerBuilder keeps it up to date).
+var _rally: float = 0.0
 ## Its pair bonuses active now (a partner tower nearby; TowerBuilder keeps them up to date).
 var _synergies: Array[TowerSynergy] = []
 ## Twin Banners: a same-type tower's level shared with this one (0 = none); the better one counts.
@@ -266,6 +268,18 @@ func set_fire_rate_boost(bonus: float) -> void:
 	_update_boost_mark()
 
 
+## Rally's bonus (0 when the hero is far).
+func set_rally(bonus: float) -> void:
+	if is_equal_approx(bonus, _rally):
+		return
+	_rally = bonus
+	_stats = _effective_stats()
+
+
+func get_rally() -> float:
+	return _rally
+
+
 func get_fire_rate_boost() -> float:
 	return _boost
 
@@ -361,7 +375,7 @@ func _effective_stats() -> TowerTier:
 ## `base` with everything that lifts this tower now: a Beacon's speed, the run's cards, pair bonuses.
 func _stats_from(base: TowerTier) -> TowerTier:
 	var stats: TowerTier = base.duplicate() as TowerTier
-	stats.fire_interval = base.fire_interval / (1.0 + _boost)
+	stats.fire_interval = base.fire_interval / (1.0 + _boost + _rally)
 	stats.attack_range = base.attack_range * (1.0 + _aura_range + _weather_range)
 	if modifiers != null:
 		_apply_modifiers(stats, base)

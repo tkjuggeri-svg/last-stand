@@ -26,6 +26,16 @@ enum AttackKind { SWORD, BOLT }
 ## The hero's sprite sheet (null: the scene's own).
 @export var frames: SpriteFrames
 @export var attack_kind: AttackKind = AttackKind.SWORD
+## Bulwark (the Knight's passive): the share of a hit's damage shrugged off while swinging.
+@export_range(0.0, 0.9) var bulwark: float = 0.0
+@export_group("Story")
+## The hero's name in the story (Ser Aldric), a line for the War Room's hero panel and the longer telling,
+## and which portrait of the sheet is theirs (Portraits).
+@export var story_name: String = ""
+@export var story_line: String = ""
+@export_multiline var story_text: String = ""
+@export var portrait_index: int = 0
+@export_group("")
 @export_group("Raising")
 ## A kill the hero's bolt lands raises this minion where the enemy fell, up to `raise_cap` at once.
 @export var raise_minion: MinionData

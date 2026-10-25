@@ -110,6 +110,11 @@ func _measures(catalog: Array[TowerData]) -> Dictionary:
 	_measure(m, "hero lives", [RunModifiers.HERO_LIVES], HERO["lives"], func(s: RunModifiers) -> float: return s.apply(HERO["lives"], [RunModifiers.HERO_LIVES]))
 	_measure(m, "dash cooldown", [RunModifiers.HERO_DASH_COOLDOWN], HERO["dash"], func(s: RunModifiers) -> float:
 		return maxf(s.apply(HERO["dash"], [RunModifiers.HERO_DASH_COOLDOWN]), HERO["min_dash"]))
+	# The Knight: Bulwark (25% of a hit shrugged off while swinging), Shield Bash's push, Oathkeeper's extra sword hits on a boss, Rally.
+	_measure(m, "bulwark: share of a hit shrugged off", [RunModifiers.HERO_BULWARK], 0.5, func(s: RunModifiers) -> float: return s.apply(0.25, [RunModifiers.HERO_BULWARK]))
+	_measure(m, "dash knock-back (px)", [RunModifiers.HERO_DASH_BASH], 60.0, func(s: RunModifiers) -> float: return s.apply(0.0, [RunModifiers.HERO_DASH_BASH]))
+	_measure(m, "sword hits on a boss per swing", [RunModifiers.HERO_BOSS_HITS], 2.0, func(s: RunModifiers) -> float: return 1.0 + s.apply(0.0, [RunModifiers.HERO_BOSS_HITS]))
+	_measure(m, "fire rate near the hero", [RunModifiers.HERO_RALLY], 0.3, func(s: RunModifiers) -> float: return s.apply(0.0, [RunModifiers.HERO_RALLY]))
 	_measure(m, "dash trail damage", [RunModifiers.HERO_DASH_TRAIL], HERO_DPS, func(s: RunModifiers) -> float: return s.apply(0.0, [RunModifiers.HERO_DASH_TRAIL]))
 	# Building: how much of a wave a fresh tower spends under construction.
 	_measure(m, "build time", [RunModifiers.TOWER_BUILD_TIME], WAVE_SECONDS, func(s: RunModifiers) -> float:

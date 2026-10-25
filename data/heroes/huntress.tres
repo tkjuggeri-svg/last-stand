@@ -38,3 +38,7 @@ mark_time = 3.0
 exclusive_towers = Array[ExtResource("3_tower")]([ExtResource("4_trap"), ExtResource("5_hawk"), ExtResource("6_watch")])
 exclusive_cards = Array[ExtResource("7_card")]([ExtResource("9_barbed"), ExtResource("10_quick"), ExtResource("11_snare"), ExtResource("12_mark"), ExtResource("17_teeth"), ExtResource("18_cord")])
 exclusive_relics = Array[ExtResource("8_relic")]([ExtResource("13_quiver"), ExtResource("14_hood")])
+story_name = "Wren"
+story_line = "Wren tracked the Waking through the Gloam Wood to its source, and found only more tracks."
+story_text = "Wren was a ranger of the Gloam Wood, where the trees closed over the light a generation ago. When the dead began to walk she followed their trail, month after month, expecting a beginning. There was none: the tracks come from everywhere and go to Last Light. She sets traps because a dead thing that is held still is a dead thing that can be understood, and she is still trying to understand."
+portrait_index = 1
