@@ -1,24 +1,22 @@
 [gd_resource type="Resource" script_class="WaveData" format=3]
 
 [ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
-[ext_resource type="Resource" path="res://data/enemies/black_knight.tres" id="2_black_knight"]
-[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="3_brute"]
-[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="4_cultist"]
-[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="5_ghoul"]
-[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="6_hound"]
-[ext_resource type="Resource" path="res://data/enemies/shieldbearer.tres" id="7_shieldbearer"]
-[ext_resource type="Resource" path="res://data/enemies/siege_ram.tres" id="8_siege_ram"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="2_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_hound"]
+[ext_resource type="Resource" path="res://data/enemies/shieldbearer.tres" id="5_shieldbearer"]
+[ext_resource type="Resource" path="res://data/enemies/siege_ram.tres" id="6_siege_ram"]
 [ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
 
 [sub_resource type="Resource" id="Resource_g0"]
 script = ExtResource("1_group")
-enemy = ExtResource("5_ghoul")
+enemy = ExtResource("3_ghoul")
 count = 26
 interval = 0.79
 
 [sub_resource type="Resource" id="Resource_g1"]
 script = ExtResource("1_group")
-enemy = ExtResource("5_ghoul")
+enemy = ExtResource("3_ghoul")
 count = 18
 interval = 0.8400000000000001
 lane = 2
@@ -26,7 +24,7 @@ delay = 4.0
 
 [sub_resource type="Resource" id="Resource_g2"]
 script = ExtResource("1_group")
-enemy = ExtResource("6_hound")
+enemy = ExtResource("4_hound")
 count = 18
 interval = 0.4
 lane = 3
@@ -34,7 +32,7 @@ delay = 2.0
 
 [sub_resource type="Resource" id="Resource_g3"]
 script = ExtResource("1_group")
-enemy = ExtResource("6_hound")
+enemy = ExtResource("4_hound")
 count = 11
 interval = 0.4
 lane = 1
@@ -42,7 +40,7 @@ delay = 8.0
 
 [sub_resource type="Resource" id="Resource_g4"]
 script = ExtResource("1_group")
-enemy = ExtResource("8_siege_ram")
+enemy = ExtResource("6_siege_ram")
 count = 2
 interval = 8.0
 lane = 3
@@ -50,37 +48,21 @@ delay = 6.0
 
 [sub_resource type="Resource" id="Resource_g5"]
 script = ExtResource("1_group")
-enemy = ExtResource("3_brute")
-count = 3
-interval = 5.0
-lane = 1
-delay = 4.0
-
-[sub_resource type="Resource" id="Resource_g6"]
-script = ExtResource("1_group")
-enemy = ExtResource("7_shieldbearer")
-count = 3
+enemy = ExtResource("5_shieldbearer")
+count = 1
 interval = 3.5
 delay = 6.0
 
-[sub_resource type="Resource" id="Resource_g7"]
+[sub_resource type="Resource" id="Resource_g6"]
 script = ExtResource("1_group")
-enemy = ExtResource("2_black_knight")
-count = 3
-interval = 4.0
-lane = 3
-delay = 10.0
-
-[sub_resource type="Resource" id="Resource_g8"]
-script = ExtResource("1_group")
-enemy = ExtResource("4_cultist")
+enemy = ExtResource("2_cultist")
 count = 4
 interval = 2.02
 delay = 8.0
 
-[sub_resource type="Resource" id="Resource_g9"]
+[sub_resource type="Resource" id="Resource_g7"]
 script = ExtResource("1_group")
-enemy = ExtResource("4_cultist")
+enemy = ExtResource("2_cultist")
 count = 3
 interval = 2.0
 lane = 3
@@ -88,7 +70,7 @@ delay = 16.0
 
 [resource]
 script = ExtResource("9_wave")
-health_multiplier = 1.14
-gold_multiplier = 0.56
+health_multiplier = 1.157
+gold_multiplier = 0.69
 speed_multiplier = 1.133
-groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7"), SubResource("Resource_g8"), SubResource("Resource_g9")])
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7")])

@@ -75,23 +75,42 @@ SPEED_2 = [1.05, 1.05, 1.06, 1.07, 1.08, 1.09, 1.1, 1.11, 1.12, 1.13, 1.14, 1.15
 N, E, SW = 1, 2, 3
 
 
-def wave_3(n):
+def ramp_in(base, n, start, length):
+    """`base` enemies once the group has fully arrived: 0 before wave `start`, then growing to `base` over `length` waves."""
+    if n < start:
+        return 0
+    return max(1, int(base * min(1.0, (n - start + 1) / length)))
+
+
+def mult_3(n):
+    """Tier 3's health curve: the first waves start higher than the old 0.6 + 0.18 (n - 1), so that no row of
+    two waves is more than about x1.8 the HP of the row before (a straight line would be x1.84 at row 1 to 2
+    before any heavy enemy). From wave 7 on it is the old line exactly (M12 follow-up, balance trace)."""
+    early = [0.8, 0.886, 1.011, 1.157, 1.319, 1.494]
+    return early[n - 1] if n <= len(early) else round(0.6 + 0.18 * (n - 1), 2)
+
+
+def wave_3(n, brute_from=5, brute_len=3):
     t = n - 1
     groups = [("ghoul", 20 + 2 * t, max(0.5, 0.85 - 0.02 * t), W, 0), ("ghoul", 14 + t * 3 // 2, max(0.5, 0.9 - 0.02 * t), E, 4),
               ("hound", 14 + t * 8 // 5, 0.4, SW, 2), ("hound", 8 + t, 0.4, N, 8)]
+    # The heavy enemies arrive one kind at a time and grow to their full count over a few waves (Rams from wave
+    # 2, Shieldbearers 4, Brutes 5, Black Knights 8), so a row never adds them all at once.
     if n >= 2:
-        groups.append(("siege_ram", 1 + t // 3, 8.0, E if n % 2 else SW, 6))
-    if n >= 3:
-        groups += [("brute", 2 + t // 2, 5.0, N, 4), ("shieldbearer", 2 + t // 3, 3.5, W, 6)]
+        groups.append(("siege_ram", ramp_in(1 + t // 3, n, 2, 3), 8.0, E if n % 2 else SW, 6))
+    if n >= brute_from:
+        groups.append(("brute", ramp_in(2 + t // 2, n, brute_from, brute_len), 5.0, N, 4))
     if n >= 4:
-        groups.append(("black_knight", 2 + t // 2, 4.0, SW, 10))
+        groups.append(("shieldbearer", ramp_in(2 + t // 3, n, 4, 2), 3.5, W, 6))
+    if n >= 8:
+        groups.append(("black_knight", ramp_in(2 + t // 2, n, 8, 2), 4.0, SW, 10))
     groups += [("cultist", 3 + t // 2, max(1.4, 2.2 - 0.06 * t), [W, E, N, SW][n % 4], 8), ("cultist", 2 + t // 3, 2.0, [SW, N, E, W][n % 4], 16)]
     if n == 15:
         groups.insert(0, ("fallen_marshal", 1, 1.0, W, 14))
     return groups
 
 
-WAVES_3 = [(round(0.6 + 0.18 * (n - 1), 2), wave_3(n)) for n in range(1, 16)]
+WAVES_3 = [(mult_3(n), wave_3(n)) for n in range(1, 16)]
 GOLD_TARGET_3 = [380 + 12 * n for n in range(15)]
 SPEED_3 = [round(1.1 + 0.011 * n, 3) for n in range(15)]
 # M10 stage 2: the second biome of each tier, made from its tier's waves.
@@ -117,7 +136,7 @@ WAVES_F = [(m, [(FROST_MAP.get(e, e), c, i, l, d) for (e, c, i, l, d) in groups]
 # wave 2, Lamp Wights from wave 4 and the Deep Warden in wave 15.
 def wave_mines(n):
     t = n - 1
-    groups = [g for g in wave_3(n) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
+    groups = [g for g in wave_3(n, 4, 6) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
     groups = [(e, c, i, min(l, 2), d) for (e, c, i, l, d) in groups]
     if n >= 2:
         groups.append(("burrower", 3 + t // 2, 3.0, [W, N, E][n % 3], 5))
@@ -128,7 +147,7 @@ def wave_mines(n):
     return groups
 
 
-WAVES_M = [(round(0.6 + 0.18 * (n - 1), 2), wave_mines(n)) for n in range(1, 16)]
+WAVES_M = [(mult_3(n), wave_mines(n)) for n in range(1, 16)]
 # M10 stage 3: the third biome of each tier.
 # Bone Quarry (tier 1): Brutes are Rubble Brutes, half the Cultists Bone Hurlers, the Quarry Colossus leads wave 15.
 WAVES_Q = []
@@ -154,18 +173,18 @@ for n, (mult, groups) in enumerate(WAVES_2, 1):
 # the Pale Bishop in wave 15.
 def wave_cathedral(n):
     t = n - 1
-    groups = [g for g in wave_3(n) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
+    groups = [g for g in wave_3(n, 4, 6) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
     groups = [(e, c, i, min(l, 2), d) for (e, c, i, l, d) in groups]
     if n >= 2:
         groups.append(("chorister", 2 + t // 4, 5.0, [W, N, E][n % 3], 6))
     if n >= 4:
-        groups.append(("inquisitor", 2 + t // 3, 4.0, [E, W, N][n % 3], 10))
+        groups.append(("inquisitor", ramp_in(2 + t // 3, n, 4, 6), 4.0, [E, W, N][n % 3], 10))
     if n == 15:
         groups.insert(0, ("pale_bishop", 1, 1.0, W, 14))
     return groups
 
 
-WAVES_P = [(round(0.6 + 0.18 * (n - 1), 2), wave_cathedral(n)) for n in range(1, 16)]
+WAVES_P = [(mult_3(n), wave_cathedral(n)) for n in range(1, 16)]
 CHAPTERS = [("data/waves", WAVES, GOLD_TARGET, SPEED), ("data/waves/chapter_2", WAVES_2, GOLD_TARGET_2, SPEED_2),
             ("data/waves/chapter_3", WAVES_3, GOLD_TARGET_3, SPEED_3), ("data/waves/ember_orchard", WAVES_E, GOLD_TARGET, SPEED),
             ("data/waves/frostbound_pass", WAVES_F, GOLD_TARGET_2, SPEED_2), ("data/waves/sunless_mines", WAVES_M, GOLD_TARGET_3, SPEED_3),

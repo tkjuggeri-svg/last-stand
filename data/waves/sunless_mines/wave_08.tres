@@ -43,7 +43,7 @@ delay = 8.0
 [sub_resource type="Resource" id="Resource_g4"]
 script = ExtResource("1_group")
 enemy = ExtResource("2_brute")
-count = 5
+count = 4
 interval = 5.0
 lane = 1
 delay = 4.0
@@ -88,6 +88,6 @@ delay = 8.0
 [resource]
 script = ExtResource("9_wave")
 health_multiplier = 1.86
-gold_multiplier = 0.46
+gold_multiplier = 0.47
 speed_multiplier = 1.177
 groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7"), SubResource("Resource_g8"), SubResource("Resource_g9")])

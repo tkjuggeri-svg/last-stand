@@ -1,7 +1,7 @@
 extends SceneTree
 ## Automated check for the Ashen Keep (M10 stage 1b, chapter 3) and the hazards: its chapter data (tier 3,
 ## 6 battles, 4 elites, a boss), its enemies (Siege Ram, Black Knight, the Fallen Marshal) and waves (the
-## Rams from wave 2, the Knights from wave 4, the Marshal in wave 15), the level (4 roads, 8 slots, slots
+## Rams from wave 2, the Knights from wave 8 (M13 follow-up: heavy enemies arrive one kind at a time), the Marshal in wave 15), the level (4 roads, 8 slots, slots
 ## clear of the roads), Falling Walls (a ring warns, the collapse hurts enemies, hero and minions, and
 ## silences the nearest tower) and Open Graves (Ghouls climb out in the middle of a road and the wave
 ## waits for them); neither strikes between waves.
@@ -51,7 +51,7 @@ func _test_data() -> void:
 				marshal_wave = n
 			_check_quiet(group.lane <= 3)
 	_check("the Rams come from wave %d, the Knights from wave %d, the Marshal in wave %d" % [first.get(enemies[0], 0), first.get(enemies[1], 0), marshal_wave],
-		first.get(enemies[0], 0) == 2 and first.get(enemies[1], 0) == 4 and marshal_wave == 15 and _failures == 0)
+		first.get(enemies[0], 0) == 2 and first.get(enemies[1], 0) == 8 and marshal_wave == 15 and _failures == 0)
 	var boss: EncounterData = keep.boss
 	_check("the boss fight is waves 13 to 15", boss.waves.size() == 3 and boss.row == 0 and not boss.strip_bosses)
 

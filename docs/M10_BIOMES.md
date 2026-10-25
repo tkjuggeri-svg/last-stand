@@ -234,3 +234,31 @@ choice; `RunSave` keeps the biome ids (older saves load as before); the run summ
   protected): Ashen Keep 17.2, Sunless Mines 17.8, Pale Cathedral 17.8.
 - **Left out of the design:** ice patches on the Pass, buying lamps in the Gloam Wood (lamps are fixed), the
   biomes' own events (M11 writes them), the Pass/Wood/Cathedral having only the shared sounds plus `gale`.
+
+## As built, follow-up: smoother tier-3 waves (M13 balance trace)
+
+A trace of the bot at chapter 3 showed row 2 (waves 3-4) was ~x2.9 the enemy HP of row 1, against ~x1.7 in every
+other chapter: `wave_3()` added Brutes and Shieldbearers at wave 3 and Black Knights at wave 4, all at full count.
+Even with no heavy enemy at all, the old health line (0.6 + 0.18 (n - 1)) gives x1.84 from row 1 to row 2, so the
+line itself had to start higher. Now (`tools/make_waves.py`):
+
+- `mult_3(n)`: the health multiplier of waves 1-6 is 0.8, 0.886, 1.011, 1.157, 1.319, 1.494; from wave 7 it is the old
+  line (so rows 5 and up are unchanged).
+- The heavy enemies arrive one kind at a time and grow to their count over a few waves (`ramp_in`): Rams from wave 2
+  (as before), Shieldbearers from 4, Brutes from 5 (Mines and Cathedral: from 4 over 6 waves), Black Knights from 8,
+  the Cathedral's Inquisitors over 6 waves from wave 4.
+
+Row-to-row steps in total enemy HP (average of the row's two waves), before -> after:
+
+| Biome | r1>r2 | r2>r3 | r3>r4 | r4>r5 | r5>r6 |
+|---|---|---|---|---|---|
+| Ashen Keep | 2.92 -> 1.80 | 1.77 -> 1.80 | 1.56 -> 1.80 | 1.39 -> 1.58 | 1.33 -> 1.33 |
+| Sunless Mines | 2.63 -> 1.80 | 1.66 -> 1.79 | 1.48 -> 1.57 | 1.39 -> 1.47 | 1.31 |
+| Pale Cathedral | 2.76 -> 1.75 | 1.70 -> 1.79 | 1.50 -> 1.66 | 1.38 -> 1.54 | 1.31 |
+
+Row 1 is ~21% harder (2329 -> 2817 average at the Keep), rows 2 and 3 ~25% easier. Bot at chapter 3 (`--start=3`, 8
+seeds, rows cleared of 8): Knight 1.2 -> 1.6, Huntress 1.0 -> 0.6, Necromancer 1.0 -> 1.2, Knight with a 15:3:3000
+kit 2.6 -> 3.0: within the bot's noise; the smoother steps did not by themselves let it survive chapter 3 (the bot's
+fixed tower plan is the limit). Chapter 1's own steps are still uneven (x2.99 at row 2 to 3, x2.41 at row 4 to 5 in
+Crypt Road); not changed.
+
