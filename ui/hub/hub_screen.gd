@@ -15,8 +15,14 @@ signal beat_read(beat: StringName)
 ## The hero buttons: -1 the previous owned hero, 1 the next.
 signal hero_cycled(step: int)
 
+# What the Chronicle shows: the profile and story of the last refresh.
+var _profile: SaveProfile
+var _book: StoryBook
+
 @onready var _shards: Label = %Shards
 @onready var _cast: HBoxContainer = %Cast
+@onready var _chronicle_button: Button = %ChronicleButton
+@onready var _chronicle: ChronicleScreen = %ChronicleScreen
 @onready var _beat_dialog: AcceptDialog = %BeatDialog
 @onready var _unlocks: VBoxContainer = %Unlocks
 @onready var _hero_name: Label = %HeroName
@@ -33,6 +39,7 @@ signal hero_cycled(step: int)
 
 func _ready() -> void:
 	hide()
+	_chronicle_button.pressed.connect(func() -> void: _chronicle.open(_profile, _book))
 	_start_button.pressed.connect(func() -> void: start_requested.emit())
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
 	_hero_prev.pressed.connect(func() -> void: hero_cycled.emit(-1))
@@ -68,6 +75,14 @@ func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, ca
 		", ".join(profile.bosses) if not profile.bosses.is_empty() else "none yet", profile.shards_total]
 	if not profile.run.is_empty():
 		_records.text += "\n\nA run is saved: Continue it from the title. A new run abandons it."
+
+
+func get_chronicle() -> ChronicleScreen:
+	return _chronicle
+
+
+func get_chronicle_button() -> Button:
+	return _chronicle_button
 
 
 ## The Listen button of `character` (tests); null when they have nothing to tell.
@@ -144,6 +159,9 @@ func _icon(unlock: UnlockData) -> Texture2D:
 
 
 func _show_cast(profile: SaveProfile, book: StoryBook) -> void:
+	_profile = profile
+	_book = book
+	_chronicle_button.visible = book != null
 	for child: Node in _cast.get_children():
 		_cast.remove_child(child)
 		child.queue_free()

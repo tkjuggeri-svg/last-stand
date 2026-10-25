@@ -137,6 +137,7 @@ func _test_screens() -> void:
 	screen.get_continue_button().pressed.emit()
 	_check("Continue closes it and tells Main", not screen.visible and done == [true])
 	screen.queue_free()
+	await _test_chronicle(book)
 	var run: RunData = load("res://data/run/run.tres")
 	var lore_ok: bool = true
 	var seen_keys: Dictionary = {}
@@ -148,6 +149,24 @@ func _test_screens() -> void:
 		else:
 			lore_ok = lore_ok and run.chapters.any(func(c: ChapterData) -> bool: return c.id == entry.key)
 	_check("every Chronicle entry has text and a real foe or biome behind it", lore_ok)
+
+
+func _test_chronicle(book: StoryBook) -> void:
+	var chronicle: ChronicleScreen = (load("res://ui/hub/chronicle_screen.tscn") as PackedScene).instantiate()
+	root.add_child(chronicle)
+	await process_frame
+	var p: SaveProfile = SaveProfile.new()
+	chronicle.open(p, book)
+	_check("a new profile's Chronicle: every foe locked", chronicle.get_counts(ChronicleScreen.FOES) == Vector2i(0, 33))
+	p.foes_seen.append("ghoul")
+	p.places_seen.append("crypt_road")
+	p.beats_seen.append("dunmore_1")
+	p.endings.append("ending_marshal")
+	chronicle.open(p, book)
+	_check("a foe met, a place entered, a beat heard and an ending seen unlock their entries",
+		chronicle.get_counts(ChronicleScreen.FOES) == Vector2i(1, 33) and chronicle.get_counts(ChronicleScreen.PLACES) == Vector2i(1, 9)
+		and chronicle.get_counts(ChronicleScreen.PEOPLE) == Vector2i(1, 1) and chronicle.get_counts(ChronicleScreen.ENDINGS) == Vector2i(1, 4))
+	chronicle.queue_free()
 
 
 func _check(label: String, ok: bool) -> void:

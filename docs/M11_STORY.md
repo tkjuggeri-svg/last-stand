@@ -137,3 +137,31 @@ and the Chronicle. No other new art.
 On 2026-10-25 the user's blanket permission ("push the project as far as you can") settled this proposal:
 everything above stands as written, taken at the recommendation of each choice (from: recommendation).
 Save points: git tags `save/m11-<stage>`.
+
+## 10. As built
+
+- **Resources** (`resources/`): `StoryCondition` (min_runs, min_wins, boss, chapter, place, unlock, ending, beat,
+  and the `last_*` fields about the last run), `StoryCharacter`, `StoryBeat`, `HubLine`, `EndingData`,
+  `LoreEntry`, `StoryBook`. One generated book: `data/story/story_book.tres`, written by `tools/make_story.py`
+  (19 lines, 12 beats, 4 endings, 42 Chronicle entries: 33 foes, 9 places). Edit the tables there and rerun.
+- **Rules:** `core/utils/story.gd` (`line_for`, `next_beat`, `heard_beats`, `is_unlocked`, `ending_for`).
+  The secret ending is given on the win *after* all three normal endings have been seen (once).
+- **Save v4:** `beats_seen`, `foes_seen`, `places_seen`, `endings`; older saves load with them empty.
+- **War Room:** the Quartermaster's single line became three cards (portrait, a line chosen by priority, a
+  Listen button for the next unheard beat, which opens a dialog and is saved as heard). `HubLines` is gone.
+  `Portraits` (`ui/widgets/portraits.gd`) cuts the generated 6-bust sheet (`tools/art/portrait_art.gd`, job
+  `portraits`); first-pass art.
+- **Recording (Main):** a foe is met when it first spawns in a fight, a place when its chapter starts.
+  A first visit and a boss's first appearance are told through the hint panel (`HintDirector.tell`), so the
+  Tips switch also switches the narration off (and back on, which retells it).
+- **Events:** 18 events, two per biome (`tools/make_events.py`, also feeds `make_biome_data.py`), using only
+  existing effects, upgrades and affixes. Chapter 1 now draws from 8 events instead of 6.
+- **Endings:** `EndingScreen` after the last boss, before Victory. The ending follows the last boss that
+  appeared (Fallen Marshal, Deep Warden, Pale Bishop). Not in script mode.
+- **Chronicle:** `ChronicleScreen` from the War Room's footer: foes, places, people (heard beats), endings;
+  locked entries show `???` and a hint.
+- **Tests:** `test_story` (conditions, lines, beats, lore, endings, the screens, the save), `test_events`
+  (the 18 events), `test_front_end` and `test_hints` extended.
+
+**Not done:** the hero stories (Ser Aldric, Wren, Maren) in the hero panel and the hero portraits there; the
+play-test will say whether the texts land. Boss lines are the Chronicle text, not spoken lines in the fight.

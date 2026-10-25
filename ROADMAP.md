@@ -228,7 +228,7 @@ Built in stages:
 ---
 
 ## M11 — World & Story
-Design: `docs/M11_STORY.md` (approved on the recommendations; being built).
+Design: `docs/M11_STORY.md` (approved on the recommendations; built: stages 1-4, see its "As built"; hero stories in the hero panel still open).
 Lore, characters, event texts for the run map, and an ending. The hub's characters (M8) become real characters with their own stories, still reacting to how each run went.
 
 **Done when:** a player knows why they fight and gets an ending for winning.

@@ -1,0 +1,71 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/hub/chronicle_screen.gd" id="1_screen"]
+[ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
+
+[node name="ChronicleScreen" type="CanvasLayer"]
+layer = 12
+visible = false
+script = ExtResource("1_screen")
+
+[node name="Dim" type="Panel" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"Backdrop"
+
+[node name="Center" type="CenterContainer" parent="."]
+theme = ExtResource("2_theme")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(1000, 560)
+layout_mode = 2
+theme_type_variation = &"ModalPanel"
+
+[node name="Content" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/Panel/Content"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_type_variation = &"TitleLabel"
+text = "The Chronicle"
+
+[node name="Tabs" type="TabContainer" parent="Center/Panel/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Foes" type="ScrollContainer" parent="Center/Panel/Content/Tabs"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Places" type="ScrollContainer" parent="Center/Panel/Content/Tabs"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="People" type="ScrollContainer" parent="Center/Panel/Content/Tabs"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Endings" type="ScrollContainer" parent="Center/Panel/Content/Tabs"]
+visible = false
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="CloseButton" type="Button" parent="Center/Panel/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Close"
