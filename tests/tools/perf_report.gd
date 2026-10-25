@@ -2,9 +2,9 @@ extends SceneTree
 ## Plays the run's last wave (165 enemies and the Lich Warden) with every slot built and upgraded and reports the frame
 ## rate and frame times. Run it in a real window (not headless), at real speed:
 ##   godot --path . --resolution 1280x720 --script res://tests/tools/perf_report.gd [-- --seconds=60] [--no-towers]
-##     [--chapter-2] [--evolved] [--necromancer]
+##     [--chapter-2 | --biome=<chapter id>] [--evolved] [--necromancer]
 ## --chapter-2 plays chapter 2's last wave (223 enemies and the Tollkeeper, with the chapter's fight HP
-## scale) instead; --evolved evolves every tower (alternating branches) so their effects are on screen.
+## scale) instead; --biome=<id> does the same for any biome (its boss fight's last wave, M13); --evolved evolves every tower (alternating branches) so their effects are on screen.
 ## Vsync is switched off so the numbers show the real headroom. --no-towers leaves the whole wave
 ## alive (the worst case for enemies on screen); --empty measures the scene without a wave.
 ## Prints FPS (average, 1% low), process and physics time per frame, and the most enemies and shots
@@ -22,6 +22,8 @@ var _empty: bool = false
 ## Experiment: every PointLight2D off (to see what the lights cost).
 var _lights: bool = true
 var _chapter_2: bool = false
+## --biome=<chapter id>: that biome's level and boss-fight wave.
+var _biome: String = ""
 var _evolved: bool = false
 var _display: bool = false
 var _necromancer: bool = false
@@ -39,6 +41,8 @@ func _initialize() -> void:
 			_lights = false
 		elif arg == "--chapter-2":
 			_chapter_2 = true
+		elif arg.begins_with("--biome="):
+			_biome = arg.trim_prefix("--biome=")
 		elif arg == "--evolved":
 			_evolved = true
 		elif arg == "--necromancer":
@@ -47,10 +51,16 @@ func _initialize() -> void:
 			_display = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	var chapter: ChapterData = (load("res://data/run/run.tres") as RunData).chapters[1 if _chapter_2 else 0]
+	if _biome != "":
+		chapter = (load("res://data/run/run.tres") as RunData).find_chapter(StringName(_biome))
 	var level: Level = chapter.level_scene.instantiate()
 	var spawner: WaveSpawner = level.get_node("WaveSpawner")
 	spawner.waves = [spawner.waves.back(), WaveData.new()]
-	if _chapter_2:
+	if _biome != "":
+		var boss_wave: WaveData = chapter.boss.waves.back().duplicate()
+		boss_wave.health_multiplier *= chapter.fight_health_scale
+		spawner.waves = [boss_wave, WaveData.new()]
+	elif _chapter_2:
 		var finale: WaveData = (load("res://data/waves/chapter_2/wave_15.tres") as WaveData).duplicate()
 		finale.health_multiplier *= chapter.fight_health_scale
 		spawner.waves = [finale, WaveData.new()]
