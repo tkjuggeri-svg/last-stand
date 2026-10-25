@@ -15,6 +15,7 @@ func _initialize() -> void:
 	await _test_level_effects()
 	_test_save_and_meta()
 	await _test_screens()
+	await _test_summary_and_hub()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -138,6 +139,33 @@ func _test_screens() -> void:
 		and (changes[0] as Array).has("no_repairs") and (changes[0] as Array).has("lean_purses"))
 	screen.queue_free()
 	await process_frame
+
+
+func _test_summary_and_hub() -> void:
+	var summary_screen: RunSummaryScreen = (load("res://ui/menus/run_summary_screen.tscn") as PackedScene).instantiate()
+	root.add_child(summary_screen)
+	await process_frame
+	summary_screen.open({"result": "won", "chapter": 3, "row": 6, "seed": 4, "hero": "knight", "pressure": 5, "depth": 2, "shards": 9})
+	var stats: Label = summary_screen.find_child("Stats", true, false) as Label
+	var where: Label = summary_screen.find_child("Where", true, false) as Label
+	_check("the summary names the Pressure and its title, and the depth", stats.text.begins_with("Pressure: 5 (Captain)") and where.text.contains("descended 2 deep"))
+	summary_screen.queue_free()
+	var hub: HubScreen = (load("res://ui/hub/hub_screen.tscn") as PackedScene).instantiate()
+	root.add_child(hub)
+	await process_frame
+	var profile: SaveProfile = SaveProfile.new()
+	profile.wins = 1
+	profile.pressure_best = 8
+	profile.pressure_wins["knight"] = 4
+	profile.depth_best["knight"] = 3
+	var board: UnlockBoard = load("res://data/meta/unlock_board.tres")
+	hub.refresh(profile, board, null, false, null, RUN.pressure_options)
+	var records: Label = hub.find_child("Records", true, false) as Label
+	_check("the War Room shows the Pressure button after a win, and the records", hub.get_pressure_button().visible and records.text.contains("Highest Pressure: 8 (Marshal)")
+		and records.text.contains("Won at Pressure: 4 (Captain)") and records.text.contains("Deepest descent: 3"))
+	hub.refresh(SaveProfile.new(), board, null, false, null, RUN.pressure_options)
+	_check("...and hides it before the first win", not hub.get_pressure_button().visible)
+	hub.queue_free()
 
 
 func _frames(count: int) -> void:

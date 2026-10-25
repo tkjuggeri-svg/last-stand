@@ -31,8 +31,13 @@ func _ready() -> void:
 func open(summary: Dictionary) -> void:
 	_frame.title = RESULT_TITLES.get(String(summary.get("result", "lost")), "The run is over")
 	_where.text = "Chapter %d, row %d   -   seed %d" % [int(summary.get("chapter", 1)), int(summary.get("row", 0)), int(summary.get("seed", 0))]
+	var depth: int = int(summary.get("depth", 0))
+	if depth > 0:
+		_where.text += "   -   descended %d deep" % depth
 	var path: Array = summary.get("path", [])
-	_stats.text = "Hero: %s\nBiomes: %s\nPath: %s\nKills: %d   Waves: %d   Time: %.1f min" % [
+	var pressure: int = int(summary.get("pressure", 0))
+	var pressure_text: String = "" if pressure <= 0 else "Pressure: %d (%s)\n" % [pressure, PressureRules.title(pressure)]
+	_stats.text = pressure_text + "Hero: %s\nBiomes: %s\nPath: %s\nKills: %d   Waves: %d   Time: %.1f min" % [
 		String(summary.get("hero", "knight")).capitalize(),
 		" > ".join(summary.get("biomes", [])) if not (summary.get("biomes", []) as Array).is_empty() else "-",
 		" > ".join(path.map(func(kind: Variant) -> String: return String(kind).capitalize())) if not path.is_empty() else "-",

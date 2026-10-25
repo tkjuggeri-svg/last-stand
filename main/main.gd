@@ -41,6 +41,9 @@ const CHAPTER_REPAIR: float = 0.5
 var last_summary: Dictionary = {}
 
 ## The roads offered on the chapter screen (empty: none to choose between).
+## Pressure forced on every run (tools: map_balance --pressure); empty: the player's own choice.
+var forced_pressure: Array[PressureData] = []
+
 var _pending_roads: Array[ChapterData] = []
 var _level: Level
 ## The last boss to appear in the run: the finale boss once the last chapter is won (picks the ending).
@@ -222,6 +225,8 @@ func _ending_of_run() -> EndingData:
 
 ## The Pressure the player switched on (only when the front end is in use and Pressure is open).
 func _chosen_pressure() -> Array[PressureData]:
+	if not forced_pressure.is_empty():
+		return forced_pressure
 	if not uses_front_end() or not _save.profile.pressure_open():
 		return []
 	return run_data.pressure_for(_save.profile.pressure_selection)

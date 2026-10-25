@@ -88,6 +88,19 @@ func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, ca
 		"chapter %d, row %d" % [profile.best_chapter, profile.best_row] if profile.best_chapter > 0 else "no run yet",
 		profile.runs, profile.wins,
 		", ".join(profile.bosses) if not profile.bosses.is_empty() else "none yet", profile.shards_total]
+	if profile.pressure_best > 0:
+		_records.text += "\nHighest Pressure: %d (%s)" % [profile.pressure_best, PressureRules.title(profile.pressure_best)]
+	if not profile.pressure_wins.is_empty():
+		var best_win: int = 0
+		for points: Variant in profile.pressure_wins.values():
+			best_win = maxi(best_win, int(points))
+		if best_win > 0:
+			_records.text += "\nWon at Pressure: %d (%s)" % [best_win, PressureRules.title(best_win)]
+	if not profile.depth_best.is_empty():
+		var deepest: int = 0
+		for depth: Variant in profile.depth_best.values():
+			deepest = maxi(deepest, int(depth))
+		_records.text += "\nDeepest descent: %d" % deepest
 	if not profile.run.is_empty():
 		_records.text += "\n\nA run is saved: Continue it from the title. A new run abandons it."
 

@@ -4,7 +4,7 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--biomes=<id>,<id>,<id>] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--pressure=all|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
@@ -106,6 +106,8 @@ var _protected: int = 0
 var _trace: bool = false
 ## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
 var _fire: String = ""
+## --pressure=all|<id>,<id>: Pressure modifiers (M12) switched on for every run.
+var _pressure: String = ""
 var _early: bool = false
 ## --profile=first: a fresh profile (the first run's kit) instead of everything unlocked.
 var _first_kit: bool = false
@@ -154,6 +156,8 @@ func _initialize() -> void:
 			_trace = true
 		elif arg.begins_with("--fire="):
 			_fire = arg.trim_prefix("--fire=")
+		elif arg.begins_with("--pressure="):
+			_pressure = arg.trim_prefix("--pressure=")
 		elif arg == "--early":
 			_early = true
 		elif arg == "--profile=first":
@@ -185,6 +189,10 @@ func _play(seed_value: int) -> String:
 	(root.get_node("SaveManager") as SaveManagerNode).profile.hero = _hero_kind
 	var main: Node = (load(MAIN) as PackedScene).instantiate()
 	main.set("run_seed", seed_value)
+	if _pressure != "":
+		var every: RunData = load("res://data/run/run.tres")
+		var ids: Array = every.pressure_options.map(func(p: PressureData) -> String: return String(p.id)) if _pressure == "all" else Array(_pressure.split(","))
+		main.set("forced_pressure", every.pressure_for(ids))
 	if not _biomes.is_empty():
 		var full: RunData = load("res://data/run/run.tres")
 		var custom: RunData = RunData.new()

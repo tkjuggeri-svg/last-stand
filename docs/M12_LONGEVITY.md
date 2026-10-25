@@ -78,3 +78,30 @@
 
 On 2026-10-25 the user's blanket permission settled this proposal: everything above stands as written, taken
 at the recommendation of each choice (from: recommendation). Save points: git tags `save/m12-<stage>`.
+
+## 9. As built
+
+- **Pressure:** `PressureData` (`data/meta/pressure/*.tres`, the ten modifiers; written by an inline script, edit
+  the `.tres`), listed in `RunData.pressure_options`. `PressureRules` (`core/utils/`): points, shard multiplier
+  (+10% a point), titles (1-3 Watchman, 4-6 Captain, 7-9 Marshal, 10-12 Warden, 13+ Last Light) and the numbers
+  of each rule. `RunState.pressure`, saved with the run (`RunSave`). Applied per chapter by
+  `Level.apply_pressure` (stat modifiers through `RunModifiers` with no HUD icon; `RunModifiers.rules` for the
+  rest): `WaveSpawner.enemy_speed_scale`, `RunCycle.hasty_seconds` (the HUD's Start button counts down),
+  `UpgradeOffers.offer_size`, `BuildSlot.lock()` + `TowerBuilder.SLOT_LOCKED` (Fewer Slots: two empty slots,
+  seeded by the chapter), `Fortress.can_repair()` (No Repairs), and `MapFlow` (elite and boss health: the
+  leader and bosses ignore the wave scale, so their spawn groups carry it).
+- **Panel:** `PressureScreen` from the War Room's footer (after the first win; the last selection is kept in the
+  profile), with total, title and shard multiplier. Records: the highest Pressure played, the best won per hero,
+  shown in the hub's records and on the run summary.
+- **Endless:** `Endless` (`core/utils/`): x1.3 health a depth (bosses too), a 6-row chapter copy (`short_chapter`),
+  shards 10 + 20 + ... for the depths reached. After the last boss the ending screen has **Descend**; the run
+  is finished (won) only when the player stops or the descent ends in a fall, whatever the way (the summary
+  is a win with its depth). `RunState.depth`, `descend` is `next_chapter()` past the last tier (tier-3 roads again),
+  saved (`RunSave` depth). Records: deepest descent per hero (save v5).
+- **Balance** (`map_balance.gd --pressure=all|<ids>`, the weak bot, seeds 1-4, rows cleared of 24): none 6.5,
+  five points (Lean Purses, Hasty Waves, Hardened Elites, Fewer Cards, Swift Dead) 4.8, all ten 0.8. Pressure
+  is monotonically harder; only a human playtest says whether 1-3 points is a gentle first step.
+- **Tests:** `test_pressure`, `test_endless`; `test_story` and `test_roads` follow the new rules.
+- **Not done / honest gaps:** no sound or art of its own (the rubble is a darkened pad); Hardened Elites does not
+  force an affix (elites already carry one); the Hasty Waves countdown has no sound; Endless has no leaderboard
+  beyond the per-hero record.

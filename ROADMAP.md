@@ -236,7 +236,7 @@ Lore, characters, event texts for the run map, and an ending. The hub's characte
 ---
 
 ## M12 — Longevity
-Design: `docs/M12_LONGEVITY.md`.
+Design: `docs/M12_LONGEVITY.md` (built: Pressure and Endless, see its "As built").
 Endless mode and **selectable challenge modifiers** (Hades' Heat style) instead of plain difficulty levels: before a run the player turns on any mix of modifiers (e.g. tougher elites, no repairs, faster enemies, fewer slots, a stronger boss), each worth points; higher totals unlock rewards and records.
 
 **Done when:** a player who has won keeps finding a harder reason to play.
