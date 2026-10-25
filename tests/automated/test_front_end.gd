@@ -28,6 +28,13 @@ func _initialize() -> void:
 	_check("boots on the title: no Continue (no saved run), no level, no pause", title.visible
 		and not title.get_continue_button().visible and main.call("get_level") == null and not main.call("can_pause"))
 
+	title.get_credits_button().pressed.emit()
+	await _frames(2)
+	_check("Credits: a scrolling modal with the makers and the licence, and the credits music", title.get_credits().visible
+		and title.get_credits().get_block_count() >= 10 and Music.current == &"credits")
+	title.get_credits().close()
+	await _frames(2)
+	_check("closing the credits brings the title music back", not title.get_credits().visible and Music.current == &"title")
 	title.get_play_button().pressed.emit()
 	await _frames(2)
 	_check("Play: the War Room", hub.visible and not title.visible)

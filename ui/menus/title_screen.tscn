@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://ui/menus/title_screen.gd" id="1_title"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/title_scene.png" id="2_art"]
 [ext_resource type="PackedScene" path="res://ui/menus/settings_menu.tscn" id="3_settings"]
+[ext_resource type="PackedScene" path="res://ui/menus/credits_screen.tscn" id="4_credits"]
 
 [sub_resource type="Gradient" id="Gradient_shade"]
 offsets = PackedFloat32Array(0, 0.55, 1)
@@ -96,6 +97,13 @@ layout_mode = 2
 size_flags_horizontal = 0
 text = "Settings"
 
+[node name="CreditsButton" type="Button" parent="Menu/Box/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 52)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Credits"
+
 [node name="QuitButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 52)
@@ -123,3 +131,6 @@ mouse_filter = 2
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+
+[node name="CreditsScreen" parent="." instance=ExtResource("4_credits")]
+unique_name_in_owner = true

@@ -12,6 +12,8 @@ signal quit_requested
 @onready var _play_button: Button = %PlayButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
+@onready var _credits_button: Button = %CreditsButton
+@onready var _credits: CreditsScreen = %CreditsScreen
 @onready var _notice: Label = %Notice
 @onready var _menu: Control = %Menu
 @onready var _settings: SettingsMenu = %SettingsMenu
@@ -23,6 +25,10 @@ func _ready() -> void:
 	_play_button.pressed.connect(func() -> void: play_requested.emit())
 	_quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	_settings_button.pressed.connect(_open_settings)
+	_credits_button.pressed.connect(_credits.open)
+	_credits.closed.connect(func() -> void:
+		Music.play(self, &"title")
+		_credits_button.grab_focus.call_deferred())
 	_settings.closed.connect(func() -> void:
 		_menu.show()
 		_settings_button.grab_focus.call_deferred())
@@ -41,6 +47,14 @@ func open(can_continue: bool, notice: String) -> void:
 
 func get_continue_button() -> Button:
 	return _continue_button
+
+
+func get_credits_button() -> Button:
+	return _credits_button
+
+
+func get_credits() -> CreditsScreen:
+	return _credits
 
 
 func get_play_button() -> Button:

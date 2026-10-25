@@ -10,6 +10,7 @@ Every third-party asset must be CC0 or self-made. Log each one here before commi
 | Pixel font (glyphs designed for LAST STAND) | `res://assets/fonts/pixel_font.res`, `pixel_font_atlas.png` | Original, made for LAST STAND (`tools/art/ui_art.gd`) | — | Project-owned |
 | Shaders (hit flash, ground fog) | `res://assets/shaders/*.gdshader` | Original, made for LAST STAND | — | Project-owned |
 | Light gradient | `res://entities/effects/light_soft.tres` | Original (Godot GradientTexture2D) | — | Project-owned |
+| All music (12 looping tracks) | `res://assets/audio/music/*.wav` | Original, made for LAST STAND (synthesized in code by `tools/audio/music_recipes.gd` and `music_synth.gd`) | — | Project-owned |
 | All sound effects | `res://assets/audio/sfx/*.wav` | Original, made for LAST STAND (synthesized in code by `tools/audio/`) | — | Project-owned |
 
 ### Provenance note from the art pack (verbatim)
