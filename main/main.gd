@@ -32,6 +32,8 @@ const CHAPTER_REPAIR: float = 0.5
 @export var boot_to_title: bool = true
 ## The unlock board (M8): what a run may use comes from it and the player's profile.
 @export var unlock_board: UnlockBoard
+## The story (M11): handed to the front end.
+@export var story_book: StoryBook
 ## Where feedback reports are saved (tests point it elsewhere).
 @export var feedback_dir: String = FeedbackRecorder.DEFAULT_DIR
 
@@ -73,6 +75,7 @@ func _ready() -> void:
 	_pause_menu.quit_requested.connect(quit_game)
 	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
 	_front_end.unlock_board = unlock_board
+	_front_end.story_book = story_book
 	_front_end.run_data = run_data
 	_front_end.run_requested.connect(_on_new_run_requested)
 	_front_end.continue_requested.connect(continue_run)
@@ -184,6 +187,8 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	_level.apply_hero(_run.hero, run_data.heroes)
 	_level.apply_unlocks(_run.unlocks)
 	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
+	_level.spawner.enemy_spawned.connect(_note_foe)
+	_note_place(_run.get_chapter())
 	_level.spawner.wave_cleared.connect(func(_n: int) -> void: _run.waves += 1)
 	if _run.carry != null:
 		_level.carry_in(_run.carry, CHAPTER_REPAIR)
@@ -196,6 +201,21 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	if not resume.is_empty():
 		RunSave.restore_level(_level, resume)
 	_map_flow.show_map()
+
+
+## The Chronicle's records (M11): a foe is met when it appears in a fight, a place when its chapter starts.
+func _note_foe(enemy: Enemy) -> void:
+	if is_instance_valid(enemy) and enemy.data != null and enemy.data.resource_path != "":
+		_remember(_save.profile.foes_seen, enemy.data.resource_path.get_file().get_basename())
+
+
+func _note_place(chapter: ChapterData) -> void:
+	_remember(_save.profile.places_seen, String(chapter.id))
+
+
+func _remember(into: Array[String], entry: String) -> void:
+	if not into.has(entry):
+		into.append(entry)
 
 
 ## The road chosen on the chapter screen: its biome is the next chapter, which starts at once.

@@ -11,6 +11,8 @@ signal quit_requested
 
 ## The unlock board the hub shows (the same one Main gives the runs).
 @export var unlock_board: UnlockBoard
+## The story: the War Room's people, their lines and beats, the Chronicle (M11).
+@export var story_book: StoryBook
 ## The run the hub picks the hero of.
 var run_data: RunData
 
@@ -31,11 +33,12 @@ func _ready() -> void:
 	_hub.tips_toggled.connect(_set_tips)
 	_hub.reset_requested.connect(_reset)
 	_hub.hero_cycled.connect(_cycle_hero)
+	_hub.beat_read.connect(_beat_read)
 	_summary.hub_requested.connect(func() -> void: _fade.transition(show_hub))
 	_summary.new_run_requested.connect(func() -> void: _leave(run_requested))
 	_save.changed.connect(func() -> void:
 		if _hub.visible:
-			_hub.refresh(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1))
+			_hub.refresh(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book))
 
 
 ## True while one of its screens is shown.
@@ -51,7 +54,7 @@ func show_title() -> void:
 
 func show_hub() -> void:
 	hide_all()
-	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1)
+	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book)
 
 
 ## The end of a run (`summary`: RunSummary's, with its shard lines), faded in; `at_dark` (Main
@@ -112,6 +115,13 @@ func _leave(request: Signal) -> void:
 	_fade.transition(func() -> void:
 		hide_all()
 		request.emit())
+
+
+## The player heard a beat: it is told once (the hub then shows their next one).
+func _beat_read(beat: StringName) -> void:
+	if not _save.profile.beats_seen.has(String(beat)):
+		_save.profile.beats_seen.append(String(beat))
+		_save.save_profile()
 
 
 func _buy(unlock: UnlockData) -> void:

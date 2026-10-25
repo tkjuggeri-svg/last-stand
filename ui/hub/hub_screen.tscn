@@ -25,12 +25,11 @@ layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "Soul Shards: 0"
 
-[node name="Line" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
+[node name="Cast" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_type_variation = &"DimLabel"
-autowrap_mode = 3
+theme_override_constants/separation = 12
 
 [node name="Middle" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content"]
 layout_mode = 2
@@ -116,6 +115,11 @@ custom_minimum_size = Vector2(240, 48)
 layout_mode = 2
 theme_type_variation = &"ButtonPrimary"
 text = "Start a run"
+
+[node name="BeatDialog" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
+title = ""
+ok_button_text = "Thank you"
 
 [node name="ConfirmReset" type="ConfirmationDialog" parent="."]
 unique_name_in_owner = true

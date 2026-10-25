@@ -28,6 +28,7 @@ const GravelordArt: GDScript = preload("res://tools/art/gravelord_art.gd")
 const ColossusArt: GDScript = preload("res://tools/art/colossus_art.gd")
 const LichArt: GDScript = preload("res://tools/art/lich_art.gd")
 const TollkeeperArt: GDScript = preload("res://tools/art/tollkeeper_art.gd")
+const PortraitArt: GDScript = preload("res://tools/art/portrait_art.gd")
 const EffectsArt: GDScript = preload("res://tools/art/effects_art.gd")
 const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
@@ -58,6 +59,7 @@ func _initialize() -> void:
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=").split(",")
 	var jobs: Dictionary = {
+		"portraits": func() -> void: _save(_sheet(PortraitArt.new(Layouts.FINE).sheet_rows(), PortraitArt.SIZE * Layouts.FINE), "res://assets/sprites/ui/portraits.png"),
 		"hero": func() -> void: _save(_sheet(HeroArt.new(Layouts.FINE).sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
 		"huntress": func() -> void: _save(_sheet(HuntressArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS["size"]), Layouts.HUNTRESS["png"]),
 		"necromancer": func() -> void: _save(_sheet(NecromancerArt.new(Layouts.FINE).sheet_rows(), Layouts.NECROMANCER["size"]), Layouts.NECROMANCER["png"]),

@@ -1,0 +1,805 @@
+[gd_resource type="Resource" script_class="StoryBook" load_steps=116 format=3]
+
+[ext_resource type="Script" path="res://resources/story_character.gd" id="1"]
+[ext_resource type="Script" path="res://resources/hub_line.gd" id="2"]
+[ext_resource type="Script" path="res://resources/story_condition.gd" id="3"]
+[ext_resource type="Script" path="res://resources/story_beat.gd" id="4"]
+[ext_resource type="Script" path="res://resources/ending_data.gd" id="5"]
+[ext_resource type="Script" path="res://resources/lore_entry.gd" id="6"]
+[ext_resource type="Script" path="res://resources/story_book.gd" id="7"]
+
+[sub_resource type="Resource" id="s1"]
+script = ExtResource("1")
+id = &"quartermaster"
+display_name = "Quartermaster Dunmore"
+role = "keeper of the stores"
+portrait = 3
+
+[sub_resource type="Resource" id="s2"]
+script = ExtResource("1")
+id = &"ilse"
+display_name = "Sister Ilse"
+role = "last of the bell-keepers"
+portrait = 4
+
+[sub_resource type="Resource" id="s3"]
+script = ExtResource("1")
+id = &"orm"
+display_name = "Orm"
+role = "the smith"
+portrait = 5
+
+[sub_resource type="Resource" id="s4"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "First night on the walls? The dead leave Soul Shards behind. Spend them here."
+priority = 0
+condition = null
+
+[sub_resource type="Resource" id="s5"]
+script = ExtResource("3")
+min_runs = 1
+
+[sub_resource type="Resource" id="s6"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "The ledger says you came back. The ledger is a kind liar."
+priority = 5
+condition = SubResource("s5")
+
+[sub_resource type="Resource" id="s7"]
+script = ExtResource("3")
+last_result = "lost"
+last_row_max = 2
+
+[sub_resource type="Resource" id="s8"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "A short night. Shake it off: the first rows are the easiest to learn."
+priority = 10
+condition = SubResource("s7")
+
+[sub_resource type="Resource" id="s9"]
+script = ExtResource("3")
+last_result = "lost"
+last_found_a_relic = true
+
+[sub_resource type="Resource" id="s10"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "That relic you found... I've seen ones like it. Keep your eyes open out there."
+priority = 12
+condition = SubResource("s9")
+
+[sub_resource type="Resource" id="s11"]
+script = ExtResource("3")
+last_result = "lost"
+
+[sub_resource type="Resource" id="s12"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "The fortress fell, and we rebuild. We always rebuild."
+priority = 14
+condition = SubResource("s11")
+
+[sub_resource type="Resource" id="s13"]
+script = ExtResource("3")
+last_result = "lost"
+last_chapter_min = 2
+
+[sub_resource type="Resource" id="s14"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "The water out there remembers everything. So do I. Sit; eat."
+priority = 16
+condition = SubResource("s13")
+
+[sub_resource type="Resource" id="s15"]
+script = ExtResource("3")
+last_result = "lost"
+last_beat_a_boss = true
+
+[sub_resource type="Resource" id="s16"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "A boss fell to you, and still the night came on. Rest, then go again."
+priority = 18
+condition = SubResource("s15")
+
+[sub_resource type="Resource" id="s17"]
+script = ExtResource("3")
+last_result = "abandoned"
+
+[sub_resource type="Resource" id="s18"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "Walking away is sometimes wisdom. The walls will wait for you."
+priority = 20
+condition = SubResource("s17")
+
+[sub_resource type="Resource" id="s19"]
+script = ExtResource("3")
+last_result = "won"
+
+[sub_resource type="Resource" id="s20"]
+script = ExtResource("2")
+character = &"quartermaster"
+text = "You held! Every chapter. The bells will ring for a week."
+priority = 30
+condition = SubResource("s19")
+
+[sub_resource type="Resource" id="s21"]
+script = ExtResource("2")
+character = &"ilse"
+text = "The bells are cracked, but they still know the old hours. Listen when the wind is right."
+priority = 0
+condition = null
+
+[sub_resource type="Resource" id="s22"]
+script = ExtResource("3")
+min_runs = 3
+
+[sub_resource type="Resource" id="s23"]
+script = ExtResource("2")
+character = &"ilse"
+text = "Every night you go out, I light a candle. Dunmore says it is a waste of wax. He lights one too."
+priority = 5
+condition = SubResource("s22")
+
+[sub_resource type="Resource" id="s24"]
+script = ExtResource("3")
+last_result = "lost"
+
+[sub_resource type="Resource" id="s25"]
+script = ExtResource("2")
+character = &"ilse"
+text = "No shame in a fall. The Waking does not tire, so we must learn to rest between."
+priority = 10
+condition = SubResource("s24")
+
+[sub_resource type="Resource" id="s26"]
+script = ExtResource("3")
+last_result = "won"
+
+[sub_resource type="Resource" id="s27"]
+script = ExtResource("2")
+character = &"ilse"
+text = "Dawn. I had forgotten how it sounds when the bells are not afraid."
+priority = 20
+condition = SubResource("s26")
+
+[sub_resource type="Resource" id="s28"]
+script = ExtResource("3")
+place = &"pale_cathedral"
+
+[sub_resource type="Resource" id="s29"]
+script = ExtResource("2")
+character = &"ilse"
+text = "You have walked the Pale Cathedral. Tell me nothing. I know what is in its nave."
+priority = 12
+condition = SubResource("s28")
+
+[sub_resource type="Resource" id="s30"]
+script = ExtResource("2")
+character = &"orm"
+text = "Bring me bones and I will make you iron. Bring me iron and I will make you a fool's hope."
+priority = 0
+condition = null
+
+[sub_resource type="Resource" id="s31"]
+script = ExtResource("3")
+min_runs = 2
+
+[sub_resource type="Resource" id="s32"]
+script = ExtResource("2")
+character = &"orm"
+text = "Your blade has a new notch. Good. Notches are how a smith reads a story."
+priority = 5
+condition = SubResource("s31")
+
+[sub_resource type="Resource" id="s33"]
+script = ExtResource("3")
+last_result = "lost"
+
+[sub_resource type="Resource" id="s34"]
+script = ExtResource("2")
+character = &"orm"
+text = "The dead broke you, not the steel. I'll hammer you back into shape. Not the steel."
+priority = 10
+condition = SubResource("s33")
+
+[sub_resource type="Resource" id="s35"]
+script = ExtResource("3")
+place = &"ashen_keep"
+
+[sub_resource type="Resource" id="s36"]
+script = ExtResource("2")
+character = &"orm"
+text = "Ashen Keep, was it? My old forge is there. Is the anvil still cold?"
+priority = 12
+condition = SubResource("s35")
+
+[sub_resource type="Resource" id="s37"]
+script = ExtResource("3")
+last_result = "won"
+
+[sub_resource type="Resource" id="s38"]
+script = ExtResource("2")
+character = &"orm"
+text = "Won, did you. Hm. Then I will have to forge something worth winning with."
+priority = 20
+condition = SubResource("s37")
+
+[sub_resource type="Resource" id="s39"]
+script = ExtResource("3")
+min_runs = 1
+
+[sub_resource type="Resource" id="s40"]
+script = ExtResource("4")
+id = &"dunmore_1"
+character = &"quartermaster"
+title = "The Ledger"
+text = "Before the Waking there were forty of us keeping the stores of Last Light. Now there is me, a bell-keeper, a smith and whoever the fortress sends through that door.\n\nI keep the ledger because someone should write down what the dead cost us. It is a long column."
+order = 1
+condition = SubResource("s39")
+
+[sub_resource type="Resource" id="s41"]
+script = ExtResource("3")
+min_runs = 3
+
+[sub_resource type="Resource" id="s42"]
+script = ExtResource("4")
+id = &"dunmore_2"
+character = &"quartermaster"
+title = "Who Pays"
+text = "You think the Soul Shards are a gift. They are what is left of people who stood where you stand.\n\nThe Waking takes everyone it kills and leaves a little of them behind. We spend it on walls. I have stopped asking whether that is a mercy."
+order = 2
+condition = SubResource("s41")
+
+[sub_resource type="Resource" id="s43"]
+script = ExtResource("3")
+chapter = 2
+
+[sub_resource type="Resource" id="s44"]
+script = ExtResource("4")
+id = &"dunmore_3"
+character = &"quartermaster"
+title = "The Marsh Road"
+text = "The marsh was a farm once. The Drowned Fields fed Vael for three hundred years. When the water came up I sent twelve carts out and none came back.\n\nIf you find a cart wheel out there, bring it. I would like to know which one."
+order = 3
+condition = SubResource("s43")
+
+[sub_resource type="Resource" id="s45"]
+script = ExtResource("3")
+min_wins = 1
+
+[sub_resource type="Resource" id="s46"]
+script = ExtResource("4")
+id = &"dunmore_4"
+character = &"quartermaster"
+title = "What We Owe"
+text = "You did it. Do not look so surprised; I have kept a cot made up for exactly this.\n\nThe Waking will come again, it always does. But for one night the ledger has a line in the other column. Thank you."
+order = 4
+condition = SubResource("s45")
+
+[sub_resource type="Resource" id="s47"]
+script = ExtResource("3")
+min_runs = 2
+
+[sub_resource type="Resource" id="s48"]
+script = ExtResource("4")
+id = &"ilse_1"
+character = &"ilse"
+title = "The Bells"
+text = "There were nine bells in the tower, one for each hour of the long night. The Waking cracked eight. The ninth I rang until my hands bled and it kept them away until dawn.\n\nThat is why I stay. One bell is still better than none."
+order = 1
+condition = SubResource("s47")
+
+[sub_resource type="Resource" id="s49"]
+script = ExtResource("3")
+boss = "The Fallen Marshal"
+
+[sub_resource type="Resource" id="s50"]
+script = ExtResource("4")
+id = &"ilse_2"
+character = &"ilse"
+title = "The Marshal"
+text = "You have faced the Fallen Marshal. He held the keep for the last king of Vael, and when the king fell he did not know it, and he held it still.\n\nThere is a kind of loyalty that is a curse. Pity him if you can, and strike true."
+order = 2
+condition = SubResource("s49")
+
+[sub_resource type="Resource" id="s51"]
+script = ExtResource("3")
+place = &"pale_cathedral"
+
+[sub_resource type="Resource" id="s52"]
+script = ExtResource("4")
+id = &"ilse_3"
+character = &"ilse"
+title = "My Order"
+text = "The Pale Cathedral was my order's seat. We taught that the dead rest if you ring for them. The Bishop believed it so hard that he rang for everyone, and now no one rests.\n\nI do not hate him. That is the worst part."
+order = 3
+condition = SubResource("s51")
+
+[sub_resource type="Resource" id="s53"]
+script = ExtResource("3")
+min_wins = 1
+
+[sub_resource type="Resource" id="s54"]
+script = ExtResource("4")
+id = &"ilse_4"
+character = &"ilse"
+title = "Dawn"
+text = "When you won, I rang the ninth bell. The Waking did not flinch, but I felt something old in the stones loosen, as if the walls remembered how to be a home.\n\nDo not tell Dunmore I wept. He will want a line in the ledger."
+order = 4
+condition = SubResource("s53")
+
+[sub_resource type="Resource" id="s55"]
+script = ExtResource("3")
+min_runs = 1
+
+[sub_resource type="Resource" id="s56"]
+script = ExtResource("4")
+id = &"orm_1"
+character = &"orm"
+title = "Iron"
+text = "Everyone wants a sword. Nobody wants the smith. I made blades for the Marshal's guard, back when the Marshal was a man who laughed.\n\nI do not say that for pity. I say it so that when you see his helm, you know whose steel is in it."
+order = 1
+condition = SubResource("s55")
+
+[sub_resource type="Resource" id="s57"]
+script = ExtResource("3")
+place = &"ashen_keep"
+
+[sub_resource type="Resource" id="s58"]
+script = ExtResource("4")
+id = &"orm_2"
+character = &"orm"
+title = "The Keep's Forge"
+text = "Under the Ashen Keep there is a forge I never finished. The fire there burns without wood. I think it is waiting for someone to finish the blade on the anvil.\n\nIf you pass it, do not touch the hammer. It has opinions."
+order = 2
+condition = SubResource("s57")
+
+[sub_resource type="Resource" id="s59"]
+script = ExtResource("3")
+place = &"bone_quarry"
+
+[sub_resource type="Resource" id="s60"]
+script = ExtResource("4")
+id = &"orm_3"
+character = &"orm"
+title = "Quarry Stone"
+text = "The stone of Last Light came from the Bone Quarry. We dug it from the old giants' graves because it was cheap and strong. We did not ask why it hummed.\n\nYou have heard it hum, I hear. Good. Then you believe me."
+order = 3
+condition = SubResource("s59")
+
+[sub_resource type="Resource" id="s61"]
+script = ExtResource("3")
+min_wins = 2
+
+[sub_resource type="Resource" id="s62"]
+script = ExtResource("4")
+id = &"orm_4"
+character = &"orm"
+title = "The Last Blade"
+text = "Twice you have walked out of the dark. I am too old to make you a legend, but I can make you a blade nothing else would be worth.\n\nSit. This will take until the next dawn."
+order = 4
+condition = SubResource("s61")
+
+[sub_resource type="Resource" id="s63"]
+script = ExtResource("5")
+id = &"ending_marshal"
+boss = &"fallen_marshal"
+title = "The Marshal Rests"
+text = "The Fallen Marshal kneels in the ash, and for the first time in a hundred years he hears no orders. He sets his sword on the stones of the keep and the iron cools.\n\nLast Light's walls hold. In the war room, Orm lights a forge that has been cold since the Waking, and Dunmore, who does not say such things, writes one word in the ledger: Held."
+secret = false
+
+[sub_resource type="Resource" id="s64"]
+script = ExtResource("5")
+id = &"ending_warden"
+boss = &"deep_warden"
+title = "The Deep Is Quiet"
+text = "The Deep Warden sinks into its own shadows and the mines go dark, truly dark, the kind the old miners called peace. The hum in the stone stops.\n\nAbove, the walls of Last Light stop shuddering. Ilse rings the ninth bell, and for once nothing answers it."
+secret = false
+
+[sub_resource type="Resource" id="s65"]
+script = ExtResource("5")
+id = &"ending_bishop"
+boss = &"pale_bishop"
+title = "The Last Toll"
+text = "The Pale Bishop's mouth opens to ring one more time, and no sound comes. The bells of the cathedral, nine for nine hours, are silent together.\n\nIn Last Light, Ilse sits down on the steps of the tower and laughs and cries and cannot stop. The dead are resting. All of them. At last."
+secret = false
+
+[sub_resource type="Resource" id="s66"]
+script = ExtResource("5")
+id = &"ending_secret"
+boss = &""
+title = "The First Dawn"
+text = "Three times you ended the night, and the Waking learned your name. On the fourth, no horror waited at the end of the road: only a door, and beyond it, light that did not belong to any fire.\n\nSome say the Waking was never a curse but a long vigil, kept for something that has not yet come. The walls of Last Light stand. The bells ring nine. And somewhere very far away, someone wakes."
+secret = true
+
+[sub_resource type="Resource" id="s67"]
+script = ExtResource("6")
+id = &"foe_ghoul"
+kind = 0
+key = &"ghoul"
+title = "Ghoul"
+text = "A fresh grave's first mistake: hungry, quick to rise and quicker to fall. The Waking's rank and file."
+hint = "Met on the Crypt Road."
+
+[sub_resource type="Resource" id="s68"]
+script = ExtResource("6")
+id = &"foe_hound"
+kind = 0
+key = &"hound"
+title = "Hound"
+text = "The old hunters' dogs, dug up and unleashed. They go for the hero first."
+hint = "Fast and hungry."
+
+[sub_resource type="Resource" id="s69"]
+script = ExtResource("6")
+id = &"foe_brute"
+kind = 0
+key = &"brute"
+title = "Brute"
+text = "A pit-fighter whose bones were taken thick. It does not feel the blades."
+hint = "Slow and heavy."
+
+[sub_resource type="Resource" id="s70"]
+script = ExtResource("6")
+id = &"foe_shieldbearer"
+kind = 0
+key = &"shieldbearer"
+title = "Shieldbearer"
+text = "A soldier who held the line after death. Hit it from the side, if you can."
+hint = "Carries a shield."
+
+[sub_resource type="Resource" id="s71"]
+script = ExtResource("6")
+id = &"foe_cultist"
+kind = 0
+key = &"cultist"
+title = "Cultist"
+text = "One of those who prayed for the Waking and got an answer. It mends the dead around it."
+hint = "Keeps others alive."
+
+[sub_resource type="Resource" id="s72"]
+script = ExtResource("6")
+id = &"foe_bloater"
+kind = 0
+key = &"bloater"
+title = "Bloater"
+text = "Swollen with grave-water. Strike it where you do not mind the splash."
+hint = "Bursts when killed."
+
+[sub_resource type="Resource" id="s73"]
+script = ExtResource("6")
+id = &"foe_bloatling"
+kind = 0
+key = &"bloatling"
+title = "Bloatling"
+text = "What a Bloater leaves behind: small, and angry about it."
+hint = "Born from a Bloater."
+
+[sub_resource type="Resource" id="s74"]
+script = ExtResource("6")
+id = &"foe_mire_priest"
+kind = 0
+key = &"mire_priest"
+title = "Mire Priest"
+text = "A marsh preacher who baptised the drowned. His sermons are nearly kind."
+hint = "Preaches in the marsh."
+
+[sub_resource type="Resource" id="s75"]
+script = ExtResource("6")
+id = &"foe_gravelord"
+kind = 0
+key = &"gravelord"
+title = "The Gravelord"
+text = "Warden of the Crypt Road, raised by his own tomb. He commands the graves."
+hint = "Boss of the Crypt Road."
+
+[sub_resource type="Resource" id="s76"]
+script = ExtResource("6")
+id = &"foe_colossus"
+kind = 0
+key = &"colossus"
+title = "The Bone Colossus"
+text = "A hundred skeletons wired together by a single will. It walks because it has forgotten how to fall."
+hint = "Boss of the marsh."
+
+[sub_resource type="Resource" id="s77"]
+script = ExtResource("6")
+id = &"foe_lich"
+kind = 0
+key = &"lich"
+title = "The Lich Warden"
+text = "A scholar who sought to hold death at bay and merely held it."
+hint = "A chapter's last guardian."
+
+[sub_resource type="Resource" id="s78"]
+script = ExtResource("6")
+id = &"foe_tollkeeper"
+kind = 0
+key = &"tollkeeper"
+title = "The Tollkeeper"
+text = "The marsh ferryman, who still takes his fee. It was never gold he wanted."
+hint = "Takes a toll."
+
+[sub_resource type="Resource" id="s79"]
+script = ExtResource("6")
+id = &"foe_cinder_ghoul"
+kind = 0
+key = &"cinder_ghoul"
+title = "Cinder Ghoul"
+text = "A ghoul in the Ember Orchard's flames. It leaves ash where it walks."
+hint = "Burns."
+
+[sub_resource type="Resource" id="s80"]
+script = ExtResource("6")
+id = &"foe_scarecrow"
+kind = 0
+key = &"scarecrow"
+title = "Scarecrow"
+text = "Stuffed with dry straw and a dead farmer's grudge. Keep it from the flame."
+hint = "Flammable."
+
+[sub_resource type="Resource" id="s81"]
+script = ExtResource("6")
+id = &"foe_pyre_warden"
+kind = 0
+key = &"pyre_warden"
+title = "The Pyre Warden"
+text = "The orchard's keeper, who lit the first fire to save the fruit and did not stop."
+hint = "Boss of the Ember Orchard."
+
+[sub_resource type="Resource" id="s82"]
+script = ExtResource("6")
+id = &"foe_frost_wraith"
+kind = 0
+key = &"frost_wraith"
+title = "Frost Wraith"
+text = "A traveller who froze in the pass and kept walking."
+hint = "Cold and quick."
+
+[sub_resource type="Resource" id="s83"]
+script = ExtResource("6")
+id = &"foe_rime_brute"
+kind = 0
+key = &"rime_brute"
+title = "Rime Brute"
+text = "A frozen giant's corpse, brittle and strong."
+hint = "Frozen solid."
+
+[sub_resource type="Resource" id="s84"]
+script = ExtResource("6")
+id = &"foe_winter_warden"
+kind = 0
+key = &"winter_warden"
+title = "The Winter Warden"
+text = "The pass's master. Her blizzard has never lifted."
+hint = "Boss of the Frostbound Pass."
+
+[sub_resource type="Resource" id="s85"]
+script = ExtResource("6")
+id = &"foe_burrower"
+kind = 0
+key = &"burrower"
+title = "Burrower"
+text = "Something that learned to swim through stone."
+hint = "Digs through the ground."
+
+[sub_resource type="Resource" id="s86"]
+script = ExtResource("6")
+id = &"foe_lamp_wight"
+kind = 0
+key = &"lamp_wight"
+title = "Lamp Wight"
+text = "A miner whose lantern burns still, and draws others to it."
+hint = "Carries a lantern."
+
+[sub_resource type="Resource" id="s87"]
+script = ExtResource("6")
+id = &"foe_deep_warden"
+kind = 0
+key = &"deep_warden"
+title = "The Deep Warden"
+text = "The thing that dug back. It guards the bottom of the Mines."
+hint = "Boss of the Sunless Mines."
+
+[sub_resource type="Resource" id="s88"]
+script = ExtResource("6")
+id = &"foe_bone_hurler"
+kind = 0
+key = &"bone_hurler"
+title = "Bone Hurler"
+text = "Throws its own ribs. It grows them back."
+hint = "Throws bones."
+
+[sub_resource type="Resource" id="s89"]
+script = ExtResource("6")
+id = &"foe_rubble_brute"
+kind = 0
+key = &"rubble_brute"
+title = "Rubble Brute"
+text = "A quarryman rebuilt from fallen stone."
+hint = "Stone-skinned."
+
+[sub_resource type="Resource" id="s90"]
+script = ExtResource("6")
+id = &"foe_quarry_colossus"
+kind = 0
+key = &"quarry_colossus"
+title = "The Quarry Colossus"
+text = "A giant that the quarrymen cut from the hill. It is only finishing its walk."
+hint = "Boss of the Bone Quarry."
+
+[sub_resource type="Resource" id="s91"]
+script = ExtResource("6")
+id = &"foe_stalker"
+kind = 0
+key = &"stalker"
+title = "Stalker"
+text = "It walks the Gloam Wood without sound, and without light."
+hint = "Quiet in the dark."
+
+[sub_resource type="Resource" id="s92"]
+script = ExtResource("6")
+id = &"foe_hollow_treant"
+kind = 0
+key = &"hollow_treant"
+title = "Hollow Treant"
+text = "A great tree hollowed by the dark. Something looks out of it."
+hint = "Slow, huge."
+
+[sub_resource type="Resource" id="s93"]
+script = ExtResource("6")
+id = &"foe_hollow_stag"
+kind = 0
+key = &"hollow_stag"
+title = "The Hollow Stag"
+text = "The forest's old lord. Its antlers hold the night."
+hint = "Boss of the Gloam Wood."
+
+[sub_resource type="Resource" id="s94"]
+script = ExtResource("6")
+id = &"foe_chorister"
+kind = 0
+key = &"chorister"
+title = "Chorister"
+text = "A choirboy whose last hymn never ended."
+hint = "Sings."
+
+[sub_resource type="Resource" id="s95"]
+script = ExtResource("6")
+id = &"foe_inquisitor"
+kind = 0
+key = &"inquisitor"
+title = "Inquisitor"
+text = "The cathedral's judge. It remembers only the verdict."
+hint = "Judges."
+
+[sub_resource type="Resource" id="s96"]
+script = ExtResource("6")
+id = &"foe_pale_bishop"
+kind = 0
+key = &"pale_bishop"
+title = "The Pale Bishop"
+text = "He rang the bells for everyone, and so no one rests. The last toll is his."
+hint = "Boss of the Pale Cathedral."
+
+[sub_resource type="Resource" id="s97"]
+script = ExtResource("6")
+id = &"foe_siege_ram"
+kind = 0
+key = &"siege_ram"
+title = "Siege Ram"
+text = "A battering ram that still hits walls of its own accord."
+hint = "Breaks walls."
+
+[sub_resource type="Resource" id="s98"]
+script = ExtResource("6")
+id = &"foe_black_knight"
+kind = 0
+key = &"black_knight"
+title = "Black Knight"
+text = "A knight of the last king's guard, loyal long past the grave."
+hint = "Loyal."
+
+[sub_resource type="Resource" id="s99"]
+script = ExtResource("6")
+id = &"foe_fallen_marshal"
+kind = 0
+key = &"fallen_marshal"
+title = "The Fallen Marshal"
+text = "He held the keep for the last king and did not stop when the king fell."
+hint = "Boss of the Ashen Keep."
+
+[sub_resource type="Resource" id="s100"]
+script = ExtResource("6")
+id = &"place_crypt_road"
+kind = 1
+key = &"crypt_road"
+title = "The Crypt Road"
+text = "The old pilgrim way from Last Light to the Marshal's keep, lined with tombs. The graves open when the Waking stirs: the road remembers every funeral."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s101"]
+script = ExtResource("6")
+id = &"place_ember_orchard"
+kind = 1
+key = &"ember_orchard"
+title = "The Ember Orchard"
+text = "Vael's apple country burned in the first night and never stopped smouldering. The trees bear fruit that glows. Do not eat it."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s102"]
+script = ExtResource("6")
+id = &"place_bone_quarry"
+kind = 1
+key = &"bone_quarry"
+title = "The Bone Quarry"
+text = "Where the fortress stone was cut, out of the graves of giants. Rockfalls here are not accidents."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s103"]
+script = ExtResource("6")
+id = &"place_drowned_fields"
+kind = 1
+key = &"drowned_fields"
+title = "The Drowned Marsh"
+text = "Vael's farmland, taken by black water when the river changed course. The Mire Priests preach that the marsh is a mercy."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s104"]
+script = ExtResource("6")
+id = &"place_frostbound_pass"
+kind = 1
+key = &"frostbound_pass"
+title = "The Frostbound Pass"
+text = "A mountain road where the cold has a will. Blizzards roll in from nowhere and wraiths walk in them."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s105"]
+script = ExtResource("6")
+id = &"place_gloam_wood"
+kind = 1
+key = &"gloam_wood"
+title = "The Gloam Wood"
+text = "A forest where the light does not reach the ground. Whatever lives here has learned to wait."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s106"]
+script = ExtResource("6")
+id = &"place_ashen_keep"
+kind = 1
+key = &"ashen_keep"
+title = "The Ashen Keep"
+text = "The last king's castle. Its walls fall inward on those who linger, and its Marshal still keeps the gate."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s107"]
+script = ExtResource("6")
+id = &"place_sunless_mines"
+kind = 1
+key = &"sunless_mines"
+title = "The Sunless Mines"
+text = "Deep shafts that gave Vael its iron. The miners dug too deep, and the Deep dug back."
+hint = "A road not yet taken."
+
+[sub_resource type="Resource" id="s108"]
+script = ExtResource("6")
+id = &"place_pale_cathedral"
+kind = 1
+key = &"pale_cathedral"
+title = "The Pale Cathedral"
+text = "The bell-keepers' great church. Its bells ring on their own, and the dead file in to hear them."
+hint = "A road not yet taken."
+
+[resource]
+script = ExtResource("7")
+characters = Array[StoryCharacter]([SubResource("s1"), SubResource("s2"), SubResource("s3")])
+lines = Array[HubLine]([SubResource("s4"), SubResource("s6"), SubResource("s8"), SubResource("s10"), SubResource("s12"), SubResource("s14"), SubResource("s16"), SubResource("s18"), SubResource("s20"), SubResource("s21"), SubResource("s23"), SubResource("s25"), SubResource("s27"), SubResource("s29"), SubResource("s30"), SubResource("s32"), SubResource("s34"), SubResource("s36"), SubResource("s38")])
+beats = Array[StoryBeat]([SubResource("s40"), SubResource("s42"), SubResource("s44"), SubResource("s46"), SubResource("s48"), SubResource("s50"), SubResource("s52"), SubResource("s54"), SubResource("s56"), SubResource("s58"), SubResource("s60"), SubResource("s62")])
+endings = Array[EndingData]([SubResource("s63"), SubResource("s64"), SubResource("s65"), SubResource("s66")])
+lore = Array[LoreEntry]([SubResource("s67"), SubResource("s68"), SubResource("s69"), SubResource("s70"), SubResource("s71"), SubResource("s72"), SubResource("s73"), SubResource("s74"), SubResource("s75"), SubResource("s76"), SubResource("s77"), SubResource("s78"), SubResource("s79"), SubResource("s80"), SubResource("s81"), SubResource("s82"), SubResource("s83"), SubResource("s84"), SubResource("s85"), SubResource("s86"), SubResource("s87"), SubResource("s88"), SubResource("s89"), SubResource("s90"), SubResource("s91"), SubResource("s92"), SubResource("s93"), SubResource("s94"), SubResource("s95"), SubResource("s96"), SubResource("s97"), SubResource("s98"), SubResource("s99"), SubResource("s100"), SubResource("s101"), SubResource("s102"), SubResource("s103"), SubResource("s104"), SubResource("s105"), SubResource("s106"), SubResource("s107"), SubResource("s108")])
