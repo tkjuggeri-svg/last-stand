@@ -45,6 +45,8 @@ var endings: Array[String] = []
 var pressure_selection: Array[String] = []
 var pressure_best: int = 0
 var pressure_wins: Dictionary = {}
+## The deepest descent per hero (Endless: HeroData id -> depth).
+var depth_best: Dictionary = {}
 ## The hero picked for the next run (HeroData id).
 var hero: String = DEFAULT_HERO
 
@@ -69,6 +71,7 @@ func to_dict() -> Dictionary:
 		"firsts": firsts, "hints_seen": hints_seen, "hints_off": hints_off, "run": run,
 		"hero": hero,
 		"pressure": {"selection": pressure_selection, "best": pressure_best, "wins": pressure_wins},
+		"depth_best": depth_best,
 		"story": {"beats": beats_seen, "foes": foes_seen, "places": places_seen, "endings": endings}}
 
 
@@ -100,6 +103,10 @@ static func from_dict(data: Dictionary) -> SaveProfile:
 	if won_at is Dictionary:
 		for hero_id: Variant in won_at:
 			profile.pressure_wins[str(hero_id)] = int(won_at[hero_id])
+	var deep: Variant = d.get("depth_best", {})
+	if deep is Dictionary:
+		for hero_id: Variant in deep:
+			profile.depth_best[str(hero_id)] = int(deep[hero_id])
 	var story: Dictionary = d.get("story", {})
 	profile.beats_seen = _strings(story.get("beats", []))
 	profile.foes_seen = _strings(story.get("foes", []))

@@ -39,6 +39,9 @@ static func shard_lines(summary: Dictionary, profile: SaveProfile) -> Array[Arra
 	for first: String in firsts_of(summary):
 		if not profile.firsts.has(first):
 			lines.append(["First time: %s" % first.get_slice(":", 1), FIRST_TIME])
+	var depth: int = int(summary.get("depth", 0))
+	if depth > 0:
+		lines.append(["Descended %d deep" % depth, Endless.shards(depth)])
 	var pressure: int = int(summary.get("pressure", 0))
 	if pressure > 0:
 		var base: int = 0
@@ -79,6 +82,10 @@ static func finish_run(profile: SaveProfile, summary: Dictionary) -> int:
 	if summary.get("result", "") == "won":
 		var hero_id: String = str(summary.get("hero", SaveProfile.DEFAULT_HERO))
 		profile.pressure_wins[hero_id] = maxi(int(profile.pressure_wins.get(hero_id, 0)), pressure)
+	var depth: int = int(summary.get("depth", 0))
+	if depth > 0:
+		var deep_hero: String = str(summary.get("hero", SaveProfile.DEFAULT_HERO))
+		profile.depth_best[deep_hero] = maxi(int(profile.depth_best.get(deep_hero, 0)), depth)
 	var chapter: int = int(summary.get("chapter", 1))
 	var row: int = int(summary.get("row", 0))
 	if chapter > profile.best_chapter or (chapter == profile.best_chapter and row > profile.best_row):

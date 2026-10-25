@@ -21,6 +21,8 @@ var carry: ChapterCarry
 var unlocks: RunUnlocks
 ## The hero this run is played with (M9).
 var hero: HeroData
+## How many chapters deeper than the last tier the run has descended (Endless, M12; 0 = the normal run).
+var depth: int = 0
 ## The Pressure modifiers this run is played with (M12).
 var pressure: Array[PressureData] = []
 ## What the run did, for its summary: the fights won ({chapter, row, kind, boss}), kills, waves
@@ -39,6 +41,7 @@ func start_run(data: RunData, run_seed: int, run_unlocks: RunUnlocks = null, run
 	unlocks = run_unlocks
 	hero = run_hero if run_hero != null else (data.get_hero("") if data != null else null)
 	chapter_index = 0
+	depth = 0
 	carry = null
 	biomes.clear()
 	biomes.append(_draw_biome(1, 0))
@@ -57,8 +60,9 @@ func get_chapter_count() -> int:
 	return run_data.tier_count() if run_data != null else 0
 
 
+## True in the normal run's last chapter (a descended run has no last one: it ends when it is lost).
 func is_last_chapter() -> bool:
-	return chapter_index >= get_chapter_count() - 1
+	return depth == 0 and chapter_index >= get_chapter_count() - 1
 
 
 ## The roads the player may take after this chapter: up to two unlocked biomes of the next tier, drawn
@@ -85,6 +89,19 @@ func next_chapter() -> void:
 	if biomes.size() <= chapter_index + 1:
 		biomes.append(_draw_biome(chapter_index + 2, chapter_index + 1))
 	chapter_index += 1
+	if chapter_index >= get_chapter_count():
+		depth = chapter_index - get_chapter_count() + 1
+		biomes[chapter_index] = Endless.short_chapter(biomes[chapter_index], depth)
+	_make_map()
+
+
+## Puts a saved descent back: the depth, the chapter and its map (the biomes were set already).
+func resume_descent(saved_depth: int, index: int) -> void:
+	depth = saved_depth
+	chapter_index = index
+	for i: int in range(get_chapter_count(), biomes.size()):
+		if not Endless.is_short(biomes[i]):
+			biomes[i] = Endless.short_chapter(biomes[i], i - get_chapter_count() + 1)
 	_make_map()
 
 
@@ -104,6 +121,7 @@ func chapter_seed() -> int:
 
 ## The unlocked biomes of `tier` (all of them if none is unlocked: a run never lacks a chapter).
 func _candidates(tier: int) -> Array[ChapterData]:
+	tier = mini(tier, get_chapter_count())  # a descent keeps drawing from the last tier
 	var all: Array[ChapterData] = run_data.biomes_of_tier(tier) if run_data != null else []
 	var open: Array[ChapterData] = all.filter(func(c: ChapterData) -> bool: return unlocks == null or not unlocks.locked_biomes.has(c))
 	return open if not open.is_empty() else all

@@ -74,7 +74,10 @@ func _ready() -> void:
 		add_child(dev_menu)
 	_game_over_screen.restart_requested.connect(_after_run)
 	_victory_screen.restart_requested.connect(_after_run)
-	_ending_screen.continued.connect(func() -> void: _victory_screen.open(VICTORY_TEXT, _run.seed_value))
+	_ending_screen.continued.connect(func() -> void:
+		_finish_run("won")
+		_victory_screen.open(VICTORY_TEXT, _run.seed_value))
+	_ending_screen.descend_requested.connect(_pack_up_chapter)
 	_pause_menu.restart_requested.connect(_on_restart_requested)
 	_pause_menu.quit_requested.connect(quit_game)
 	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
@@ -281,15 +284,21 @@ func _on_chapter_cleared() -> void:
 	if _run.is_last_chapter():
 		_level.end_run_won()
 		var ending: EndingData = _ending_of_run()
-		_finish_run("won")
 		if ending != null:
+			# The run is finished (won) when the player stops here, or when the descent ends.
 			_save.profile.endings.append(String(ending.id))
 			_save.save_profile()
-			_ending_screen.open(ending)
+			_ending_screen.open(ending, true)
 		else:
+			_finish_run("won")
 			_victory_screen.open(VICTORY_TEXT, _run.seed_value)
 		return
-	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
+	_pack_up_chapter()
+
+
+## Packs the cleared chapter up: everything carries into the next chapter's fresh level (Continue, or a
+## road, starts it). Also how a descent goes on after the last boss.
+func _pack_up_chapter() -> void:
 	var refund_ratio: float = _run.get_chapter().leave_refund
 	var carry: ChapterCarry = _level.carry_out(refund_ratio)
 	var cleared: String = _run.get_chapter().display_name
@@ -328,6 +337,8 @@ func _screen_name() -> String:
 ## The run ended: its summary, its shards paid into the profile (saved). Returns the summary.
 func _finish_run(result: String) -> Dictionary:
 	_hints.clear()
+	if _run.depth > 0:
+		result = "won"  # the run was won at the last boss; the descent is a bonus that ends in a fall
 	last_summary = RunSummary.build(_run, _level, result)
 	last_summary["shard_lines"] = MetaProgress.shard_lines(last_summary, _save.profile)
 	last_summary["shards"] = MetaProgress.finish_run(_save.profile, last_summary)

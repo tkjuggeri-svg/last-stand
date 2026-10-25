@@ -24,10 +24,10 @@ static func build(run: RunStateNode, level: Level, result: String) -> Dictionary
 		"hero": String(run.hero.id) if run.hero != null else "",
 		"biomes": run.biomes.slice(0, run.chapter_index + 1).map(func(c: ChapterData) -> String: return c.display_name), "chapter": run.chapter_index + 1,
 		"row": node.row if node != null else 0, "battles": battles, "elites": elites, "bosses": bosses,
-		"chapters_cleared": run.chapter_index + (1 if result == "won" else 0),
+		"chapters_cleared": mini(run.chapter_index + (1 if result == "won" else 0), run.get_chapter_count()),
 		"path": run.map.path.map(func(n: MapNode) -> String: return RunMap.Kind.keys()[n.kind].to_lower()) if run.map != null else [],
 		"kills": run.kills, "waves": run.waves, "minutes": snappedf((Time.get_ticks_msec() - run.started_msec) / 60000.0, 0.1),
-		"cards": [], "relics": [], "pressure": PressureRules.points(run.pressure), "pressure_ids": PressureRules.ids(run.pressure)}
+		"cards": [], "relics": [], "depth": run.depth, "pressure": PressureRules.points(run.pressure), "pressure_ids": PressureRules.ids(run.pressure)}
 	if level != null and level.modifiers != null:
 		summary["cards"] = level.modifiers.get_taken().filter(func(d: UpgradeData) -> bool: return not d is RelicData).map(
 			func(d: UpgradeData) -> String: return String(d.id))

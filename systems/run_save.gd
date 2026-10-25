@@ -25,6 +25,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		"seed": run.seed_value,
 		"hero": capture_hero_id(run),
 		"pressure": PressureRules.ids(run.pressure),
+		"depth": run.depth,
 		"chapter": run.chapter_index,
 		"biomes": run.biomes.map(func(chapter: ChapterData) -> String: return String(chapter.id)),
 		"path": run.map.path.map(func(node: MapNode) -> int: return run.map.nodes.find(node)),
@@ -54,7 +55,7 @@ static func capture_hero_id(run: RunStateNode) -> String:
 ## nothing usable) if it can't be: another format, a chapter or a map node that doesn't exist.
 static func restore_run(run: RunStateNode, saved: Dictionary, run_data: RunData, unlocks: RunUnlocks) -> bool:
 	if int(saved.get("version", 0)) != VERSION or int(saved.get("chapter", -1)) < 0 \
-			or int(saved.get("chapter", -1)) >= run_data.chapters.size():
+			or (int(saved.get("chapter", -1)) >= run_data.chapters.size() and int(saved.get("depth", 0)) <= 0):
 		return false
 	run.start_run(run_data, int(saved.get("seed", 0)), unlocks, run_data.get_hero(str(saved.get("hero", ""))), run_data.pressure_for(saved.get("pressure", [])))
 	# The roads taken (a save from before M10 has none: the seed's picks, as they were).
@@ -65,7 +66,10 @@ static func restore_run(run: RunStateNode, saved: Dictionary, run_data: RunData,
 			saved_biomes.append(biome)
 	if not saved_biomes.is_empty():
 		run.biomes = saved_biomes
-	run.set_chapter(int(saved.get("chapter", 0)))
+	if int(saved.get("depth", 0)) > 0:
+		run.resume_descent(int(saved.get("depth", 0)), int(saved.get("chapter", 0)))
+	else:
+		run.set_chapter(int(saved.get("chapter", 0)))
 	for index: Variant in saved.get("path", []):
 		if int(index) < 0 or int(index) >= run.map.nodes.size():
 			return false

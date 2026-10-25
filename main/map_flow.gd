@@ -126,6 +126,10 @@ func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightRewar
 	if _node != null and _node.kind == RunMap.Kind.ELITE and PressureRules.has_rule(_run.pressure, PressureRules.RULE_HARDENED_ELITES):
 		scale *= PressureRules.ELITE_HEALTH
 		_scale_bosses(waves, PressureRules.ELITE_HEALTH)  # the leader is a boss-class enemy
+	var deeper: float = Endless.health_scale(_run.depth)
+	scale *= deeper
+	if _run.depth > 0:
+		_scale_bosses(waves, deeper)
 	for wave: WaveData in waves:
 		wave.health_multiplier *= scale
 	if _node != null and _node.kind == RunMap.Kind.BOSS and PressureRules.has_rule(_run.pressure, PressureRules.RULE_STRONGER_BOSSES):
