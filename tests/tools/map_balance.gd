@@ -250,6 +250,9 @@ func _play(seed_value: int) -> String:
 				(level.get_node("WaveSpawner") as WaveSpawner).wave_started.connect(func(n: int) -> void:
 					if chapter >= 1:
 						print("  c%d wave %d start: %s" % [chapter + 1, n, _describe(traced)]))
+				(level.get_node("WaveSpawner") as WaveSpawner).enemy_reached_fortress.connect(func(e: Enemy) -> void:
+					if chapter >= 1 and is_instance_valid(e):
+						print("  c%d leak: %s (health x%.2f)" % [chapter + 1, e.data.resource_path.get_file().get_basename(), e.health_multiplier]))
 				(level.get_node("WaveSpawner") as WaveSpawner).wave_cleared.connect(func(n: int) -> void:
 					if chapter >= 1:
 						print("  c%d wave %d end:   %s" % [chapter + 1, n, _describe(traced)]))
