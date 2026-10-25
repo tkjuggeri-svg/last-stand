@@ -43,11 +43,14 @@ var last_summary: Dictionary = {}
 ## The roads offered on the chapter screen (empty: none to choose between).
 var _pending_roads: Array[ChapterData] = []
 var _level: Level
+## The last boss to appear in the run: the finale boss once the last chapter is won (picks the ending).
+var _finale_boss: StringName = &""
 
 @onready var _run: RunStateNode = get_node("/root/RunState")
 @onready var _save: SaveManagerNode = get_node("/root/SaveManager")
 @onready var _game_over_screen: GameOverScreen = %GameOverScreen
 @onready var _victory_screen: VictoryScreen = %VictoryScreen
+@onready var _ending_screen: EndingScreen = %EndingScreen
 @onready var _pause_menu: PauseMenu = %PauseMenu
 @onready var _map_screen: MapScreen = %MapScreen
 @onready var _merchant_screen: MerchantScreen = %MerchantScreen
@@ -71,6 +74,7 @@ func _ready() -> void:
 		add_child(dev_menu)
 	_game_over_screen.restart_requested.connect(_after_run)
 	_victory_screen.restart_requested.connect(_after_run)
+	_ending_screen.continued.connect(func() -> void: _victory_screen.open(VICTORY_TEXT, _run.seed_value))
 	_pause_menu.restart_requested.connect(_on_restart_requested)
 	_pause_menu.quit_requested.connect(quit_game)
 	_pause_menu.seed_run_requested.connect(_on_seed_run_requested)
@@ -130,6 +134,7 @@ func get_map() -> RunMap:
 ## Starts a fresh run, chapter 1 and its map: from `seed_value` if given (>= 0; a replay), else from
 ## run_seed if set, else from a new random seed.
 func start_run(seed_value: int = -1) -> void:
+	_finale_boss = &""
 	_close_screens()
 	var chosen: int = seed_value if seed_value >= 0 else (run_seed if run_seed >= 0 else randi())
 	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile), run_data.get_hero(_save.profile.hero))
@@ -165,6 +170,7 @@ func _close_screens() -> void:
 	_pause_menu.close()
 	_game_over_screen.hide()
 	_victory_screen.hide()
+	_ending_screen.hide()
 	_map_flow.close()
 	_chapter_screen.hide()
 	_front_end.hide_all()
@@ -203,19 +209,39 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	_map_flow.show_map()
 
 
-## The Chronicle's records (M11): a foe is met when it appears in a fight, a place when its chapter starts.
+## The ending the run's last boss gives (null in script mode, or without a story).
+func _ending_of_run() -> EndingData:
+	if not uses_front_end() or story_book == null:
+		return null
+	return Story.ending_for(story_book, _save.profile, _finale_boss)
+
+
+## The Chronicle\'s records (M11): a foe is met when it appears in a fight, a place when its chapter starts.
 func _note_foe(enemy: Enemy) -> void:
-	if is_instance_valid(enemy) and enemy.data != null and enemy.data.resource_path != "":
-		_remember(_save.profile.foes_seen, enemy.data.resource_path.get_file().get_basename())
+	if not is_instance_valid(enemy) or enemy.data == null or enemy.data.resource_path == "":
+		return
+	var key: String = enemy.data.resource_path.get_file().get_basename()
+	if enemy.data.is_boss:
+		_finale_boss = StringName(key)
+	if not _save.profile.foes_seen.has(key):
+		_save.profile.foes_seen.append(key)
+		if enemy.data.is_boss:
+			_narrate(StringName("foe_%s" % key))
 
 
 func _note_place(chapter: ChapterData) -> void:
-	_remember(_save.profile.places_seen, String(chapter.id))
+	if not _save.profile.places_seen.has(String(chapter.id)):
+		_save.profile.places_seen.append(String(chapter.id))
+		_narrate(StringName("place_%s" % chapter.id))
 
 
-func _remember(into: Array[String], entry: String) -> void:
-	if not into.has(entry):
-		into.append(entry)
+## The first time a boss appears or a place is entered, its Chronicle entry is told as a tip-style panel.
+func _narrate(entry_id: StringName) -> void:
+	if story_book == null or not uses_front_end():
+		return
+	for entry: LoreEntry in story_book.lore:
+		if entry.id == entry_id:
+			_hints.tell(entry_id, "%s\n%s" % [entry.title, entry.text])
 
 
 ## The road chosen on the chapter screen: its biome is the next chapter, which starts at once.
@@ -246,8 +272,14 @@ func _save_run() -> void:
 func _on_chapter_cleared() -> void:
 	if _run.is_last_chapter():
 		_level.end_run_won()
+		var ending: EndingData = _ending_of_run()
 		_finish_run("won")
-		_victory_screen.open(VICTORY_TEXT, _run.seed_value)
+		if ending != null:
+			_save.profile.endings.append(String(ending.id))
+			_save.save_profile()
+			_ending_screen.open(ending)
+		else:
+			_victory_screen.open(VICTORY_TEXT, _run.seed_value)
 		return
 	# Pack up: everything carries into the next chapter's fresh level (Continue starts it).
 	var refund_ratio: float = _run.get_chapter().leave_refund

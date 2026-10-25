@@ -28,6 +28,8 @@ const HINTS: Dictionary = {
 @export var map_flow: MapFlow
 
 var _queue: Array[StringName] = []
+## Texts told at run time (the story's place and boss entries, M11), by id.
+var _told: Dictionary = {}
 
 @onready var _save: SaveManagerNode = get_node("/root/SaveManager")
 @onready var _run: RunStateNode = get_node("/root/RunState")
@@ -72,6 +74,12 @@ func request(id: StringName) -> void:
 		_show_next()
 
 
+## Tells `text` once under `id` (a story entry: a place's first visit, a boss's first appearance).
+func tell(id: StringName, text: String) -> void:
+	_told[id] = text
+	request(id)
+
+
 ## No more tips (saved; the War Room's Tips switch brings them back).
 func skip_all() -> void:
 	_queue.clear()
@@ -104,7 +112,7 @@ func _on_map_shown() -> void:
 
 ## The tip's text with its actions' current keys.
 func _text(id: StringName) -> String:
-	var text: String = HINTS.get(id, "")
+	var text: String = _told.get(id, HINTS.get(id, ""))
 	for action: StringName in [&"interact", &"start_wave", &"attack", &"dash"]:
 		var bindings: Array[InputEvent] = GameSettings.get_bindings(action)
 		text = text.replace("{%s}" % action, GameSettings.describe(bindings[0]) if not bindings.is_empty() else String(action))

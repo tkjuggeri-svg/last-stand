@@ -12,6 +12,7 @@ func _initialize() -> void:
 	_test_lines_and_beats()
 	_test_lore_and_endings()
 	_test_save()
+	await _test_screens()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -114,6 +115,39 @@ func _test_save() -> void:
 	var old: SaveProfile = SaveProfile.from_dict({"version": 3, "shards": 4})
 	_check("a v3 save loads with an empty story", old.shards == 4 and old.beats_seen.is_empty() and old.endings.is_empty())
 	_check("the current version is 4", SaveProfile.CURRENT_VERSION == 4)
+
+
+func _test_screens() -> void:
+	var book: StoryBook = load("res://data/story/story_book.tres")
+	_check("the story book: 3 characters, 4 endings (one secret), foes and places in the Chronicle", book.characters.size() == 3
+		and book.endings.size() == 4 and book.endings.filter(func(e: EndingData) -> bool: return e.secret).size() == 1 and book.lore.size() == 42)
+	var every_boss: bool = true
+	for key: String in ["fallen_marshal", "deep_warden", "pale_bishop"]:
+		var fresh: SaveProfile = SaveProfile.new()
+		var ending: EndingData = Story.ending_for(book, fresh, StringName(key))
+		every_boss = every_boss and ending != null and ending.boss == StringName(key)
+	_check("each tier-3 boss has its own ending", every_boss)
+	var screen: EndingScreen = (load("res://ui/menus/ending_screen.tscn") as PackedScene).instantiate()
+	root.add_child(screen)
+	await process_frame
+	var done: Array[bool] = []
+	screen.continued.connect(func() -> void: done.append(true))
+	screen.open(book.endings[0])
+	_check("the ending screen shows the title and text", screen.visible and (screen.find_child("Title", true, false) as Label).text == book.endings[0].title)
+	screen.get_continue_button().pressed.emit()
+	_check("Continue closes it and tells Main", not screen.visible and done == [true])
+	screen.queue_free()
+	var run: RunData = load("res://data/run/run.tres")
+	var lore_ok: bool = true
+	var seen_keys: Dictionary = {}
+	for entry: LoreEntry in book.lore:
+		lore_ok = lore_ok and not entry.text.is_empty() and not seen_keys.has(entry.id)
+		seen_keys[entry.id] = true
+		if entry.kind == LoreEntry.Kind.FOE:
+			lore_ok = lore_ok and ResourceLoader.exists("res://data/enemies/%s.tres" % entry.key)
+		else:
+			lore_ok = lore_ok and run.chapters.any(func(c: ChapterData) -> bool: return c.id == entry.key)
+	_check("every Chronicle entry has text and a real foe or biome behind it", lore_ok)
 
 
 func _check(label: String, ok: bool) -> void:
