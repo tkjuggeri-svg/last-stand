@@ -19,6 +19,8 @@ func _initialize() -> void:
 		[Vector2(-700, 200), Vector2(200, 200), Vector2(-600, -300), Vector2(-600, 200), Vector2(-750, -350)])
 	await _test_level("res://levels/drowned_marsh.tscn", Rect2(-1040, -700, 1820, 1300),
 		[Vector2(-900, 0), Vector2(500, 0), Vector2(-850, -390), Vector2(-950, 300), Vector2(-920, -560)])
+	await _test_level("res://levels/ashen_keep.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, 100), Vector2(200, 100), Vector2(-500, -330), Vector2(-500, 250), Vector2(-780, -380)])
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 
@@ -74,11 +76,11 @@ func _test_level(path: String, expected: Rect2, starts: Array[Vector2]) -> void:
 	# --- Enemies are unaffected ---
 	var playable: Rect2 = arena.grow(-GHOUL_RADIUS)
 	var lanes: Array[Path2D] = (level.get_node("WaveSpawner") as WaveSpawner).lanes
-	var lane_inside: bool = lanes.size() == 3
+	var lane_inside: bool = lanes.size() >= 3
 	for lane: Path2D in lanes:
 		for point: Vector2 in lane.curve.get_baked_points():
 			lane_inside = lane_inside and playable.has_point(lane.to_global(point))
-	_check("all 3 lanes lie inside the arena", lane_inside)
+	_check("all %d lanes lie inside the arena" % lanes.size(), lane_inside)
 	var ends_at_fortress: bool = true
 	for lane: Path2D in lanes:
 		var end: Vector2 = lane.to_global(lane.curve.sample_baked(lane.curve.get_baked_length()))

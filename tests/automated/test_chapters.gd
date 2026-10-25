@@ -28,7 +28,7 @@ func _initialize() -> void:
 
 
 func _test_data() -> void:
-	_check("the run has 2 chapters", RUN.chapters.size() == 2 and RUN.chapters[1].display_name.begins_with("Chapter 2"))
+	_check("the run has 3 chapters, one per tier (M10)", RUN.tier_count() == 3 and RUN.chapters[1].display_name.begins_with("Chapter 2") and RUN.chapters[2].tier == 3)
 	var one: ChapterData = RUN.chapters[0]
 	var two: ChapterData = RUN.chapters[1]
 	var tougher: bool = true

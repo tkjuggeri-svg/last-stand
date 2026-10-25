@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://resources/run_data.gd" id="1_run"]
 [ext_resource type="Resource" path="res://data/run/chapter_1.tres" id="2_ch1"]
 [ext_resource type="Resource" path="res://data/run/chapter_2.tres" id="3_ch2"]
+[ext_resource type="Resource" path="res://data/run/chapter_3.tres" id="7_ch3"]
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
 [ext_resource type="Resource" path="res://data/heroes/knight.tres" id="4_knight"]
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="s_hero"]
@@ -12,4 +13,4 @@
 [resource]
 script = ExtResource("1_run")
 heroes = Array[ExtResource("s_hero")]([ExtResource("4_knight"), ExtResource("5_huntress"), ExtResource("6_necro")])
-chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1"), ExtResource("3_ch2")])
+chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1"), ExtResource("3_ch2"), ExtResource("7_ch3")])

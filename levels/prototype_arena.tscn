@@ -69,6 +69,9 @@
 [ext_resource type="Script" path="res://resources/enemy_data.gd" id="r_enemy_data"]
 [ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="r_cultist"]
 [ext_resource type="Resource" path="res://data/enemies/mire_priest.tres" id="r_priest"]
+[ext_resource type="Script" path="res://levels/hazards/open_graves.gd" id="hz_graves_script"]
+[ext_resource type="Resource" path="res://data/hazards/open_graves.tres" id="hz_graves_data"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="hz_ghoul"]
 [ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
 [ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
@@ -909,6 +912,14 @@ limit_top = -532
 limit_right = 432
 limit_bottom = 432
 position_smoothing_enabled = true
+
+[node name="OpenGraves" type="Node" parent="." node_paths=PackedStringArray("spawner", "hero", "effects")]
+script = ExtResource("hz_graves_script")
+data = ExtResource("hz_graves_data")
+spawner = NodePath("../WaveSpawner")
+hero = NodePath("../Hero")
+effects = NodePath("../Effects")
+enemy = ExtResource("hz_ghoul")
 
 [node name="Effects" type="Node2D" parent="."]
 unique_name_in_owner = true

@@ -11,6 +11,7 @@ const MIN_BUILDING: float = 1.5
 const GROUNDS: Dictionary = {
 	"the Crypt Road": "res://assets/sprites/environment/prototype_arena_ground.png",
 	"the Drowned Marsh": "res://assets/sprites/environment/drowned_marsh_ground.png",
+	"the Ashen Keep": "res://assets/sprites/environment/ashen_keep_ground.png",
 }
 ## Enemies of chapter 2 only (measured on its ground alone).
 const MARSH_ONLY: Array[String] = ["bloater", "bloatling", "mire_priest", "shieldbearer", "tollkeeper"]

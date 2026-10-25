@@ -185,3 +185,23 @@ away), Q11 nothing new in autoloads, layers or inputs. Save points are git tags 
 `road_options()` (two unlocked biomes of the next tier from the seed, else the only one), `choose_road()`;
 `UnlockData.biomes` and `RunUnlocks.locked_biomes`; the chapter screen shows road cards when there is a
 choice; `RunSave` keeps the biome ids (older saves load as before); the run summary names the biomes.
+
+**Stage 1b as built** (chapter 3, the Ashen Keep, and the first hazards):
+- **Tools that make a biome** (new, dev-only): `tools/make_level.py` writes `levels/<id>.tscn` from
+  `tools/levels/<id>.json` (floor, lanes, slots, colours, props, gates, particles, hazard nodes) on the Crypt
+  Road's scene as template, and checks that slots keep clear of the roads; `tools/make_biome_data.py` writes the
+  new enemies' data and a chapter's encounters and chapter file; `tools/make_waves.py` gained chapter 3's waves
+  (built from a rule, lanes 0-3). Art: `tools/art/biome_art.gd` (ground from per-biome styles),
+  `biome_props_art.gd` (props and the spawn gate), `variant_art.gd` (see below).
+- **Enemy variants:** a new enemy can be an existing one in other colours (`variant_art.gd` remaps the base
+  sheet's ramps): Siege Ram (Brute), Black Knight (Shieldbearer), the Fallen Marshal (Colossus, with its charge
+  and a frontal shield). What differs in play is data and ability; sprites of their own are for M13's art pass.
+- **Hazards:** `LevelHazard` (a node that runs while a wave is on and strikes on a timer from a `HazardData`),
+  `FallingWalls` (the Keep: a ring warns, then enemies, hero and minions in it are hurt and the nearest tower is
+  silenced for 12 s: the design's "burns out the slot" became a silence, because towers have no HP and a ruined
+  slot would need its own rebuild UI) and `OpenGraves` (the Crypt Road: Ghouls climb out in the middle of a
+  road, `WaveSpawner.spawn_at`; the wave waits for them).
+- **Balance** (`map_balance.gd --protect-ch2`, 4 seeds, the bot): chapter 3 dies at row 2-4, about where chapter
+  2 does with chapter 1 protected (3.3); `fight_health_scale` 2.0 (not the proposal's 2.6) and waves starting at
+  x0.6. The tool now takes a plan for any level (the hero's kit on the slots nearest the fortress).
+- **Left for later:** the Keep's own events (two were planned; it uses the shared pool), its own sounds.

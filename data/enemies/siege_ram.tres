@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/brute_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/siege_ram_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+role = 2
+display_name = "Siege Ram"
+max_health = 300
+move_speed = 32.0
+gold_reward = 24
+fortress_damage = 45
+hero_damage = 22
+attack_range = 30.0
+attack_windup = 0.7
+attack_cooldown = 2.2
+body_radius = 18.0
+sprite_offset = Vector2(0, -16)
+health_bar_y = -58.0
+burn_taken = 0.4
+knockback_taken = 0.3
+hint = "slow and heavy: it hits the fortress 3 times as hard as a Brute. Stop it on the road."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")

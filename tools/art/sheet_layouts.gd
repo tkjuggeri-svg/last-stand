@@ -39,6 +39,26 @@ const HUNTRESS: Dictionary = {
 	"anims": HERO["anims"],
 }
 
+## Enemy variants (M10, variant_art.gd): the base enemy's sheet layout, their own sheets.
+const SIEGE_RAM: Dictionary = {
+	"png": "res://assets/sprites/enemies/siege_ram.png",
+	"frames": "res://entities/enemies/siege_ram_frames.tres",
+	"size": BRUTE["size"],
+	"anims": BRUTE["anims"],
+}
+const BLACK_KNIGHT: Dictionary = {
+	"png": "res://assets/sprites/enemies/black_knight.png",
+	"frames": "res://entities/enemies/black_knight_frames.tres",
+	"size": SHIELDBEARER["size"],
+	"anims": SHIELDBEARER["anims"],
+}
+const FALLEN_MARSHAL: Dictionary = {
+	"png": "res://assets/sprites/enemies/fallen_marshal.png",
+	"frames": "res://entities/enemies/bosses/fallen_marshal_frames.tres",
+	"size": COLOSSUS["size"],
+	"anims": COLOSSUS["anims"],
+}
+
 ## The Necromancer (M9): the Knight's layout again.
 const NECROMANCER: Dictionary = {
 	"png": "res://assets/sprites/hero/necromancer.png",
@@ -607,7 +627,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {

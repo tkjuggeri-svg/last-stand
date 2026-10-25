@@ -3,8 +3,9 @@
 # gold. Run from the project folder: python3 tools/make_waves.py
 # The .tres files are the game's data; edit this table (not the files) and rerun, so the HP curve and
 # the gold scale (GOLD_TARGET: the kill gold each wave's regulars pay) stay consistent.
-HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "bloater": 110, "mire_priest": 34, "shieldbearer": 90, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
-GOLD = {"ghoul": 8, "hound": 4, "brute": 20, "cultist": 10, "bloater": 14, "mire_priest": 16, "shieldbearer": 14, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0}
+HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "bloater": 110, "mire_priest": 34, "shieldbearer": 90, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0, "siege_ram": 300, "black_knight": 160, "fallen_marshal": 0}
+GOLD = {"ghoul": 8, "hound": 4, "brute": 20, "cultist": 10, "bloater": 14, "mire_priest": 16, "shieldbearer": 14, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0,
+        "siege_ram": 24, "black_knight": 18, "fallen_marshal": 0}
 # Kill gold of each wave's regulars (bosses pay their own): None = unscaled (waves 1-5).
 GOLD_TARGET = [None, None, None, None, None, 250, 260, 280, 300, 270, 310, 320, 330, 340, 350]
 # Move-speed scale of each wave's regulars (bosses move as authored).
@@ -63,7 +64,34 @@ WAVES_2 = [
 # its kill gold is back up (M7 kept it at 220-300 because the full refund paid for the rebuild).
 GOLD_TARGET_2 = [300, 310, 320, 330, 340, 350, 360, 370, 380, 390, 400, 410, 420, 430, 440]
 SPEED_2 = [1.05, 1.05, 1.06, 1.07, 1.08, 1.09, 1.1, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18]
-CHAPTERS = [("data/waves", WAVES, GOLD_TARGET, SPEED), ("data/waves/chapter_2", WAVES_2, GOLD_TARGET_2, SPEED_2)]
+# Chapter 3 (M10, the Ashen Keep: four roads, lanes 0-3): starts above chapter 2's end (the dead are tougher
+# from the first wave and the defence is rebuilt from 40% of its cost), the Siege Rams come from wave 2 and
+# the Black Knights from wave 4, the Fallen Marshal leads wave 15. Built from a rule, not by hand: wave n
+# adds a little of everything on the four roads.
+N, E, SW = 1, 2, 3
+
+
+def wave_3(n):
+    t = n - 1
+    groups = [("ghoul", 20 + 2 * t, max(0.5, 0.85 - 0.02 * t), W, 0), ("ghoul", 14 + t * 3 // 2, max(0.5, 0.9 - 0.02 * t), E, 4),
+              ("hound", 14 + t * 8 // 5, 0.4, SW, 2), ("hound", 8 + t, 0.4, N, 8)]
+    if n >= 2:
+        groups.append(("siege_ram", 1 + t // 3, 8.0, E if n % 2 else SW, 6))
+    if n >= 3:
+        groups += [("brute", 2 + t // 2, 5.0, N, 4), ("shieldbearer", 2 + t // 3, 3.5, W, 6)]
+    if n >= 4:
+        groups.append(("black_knight", 2 + t // 2, 4.0, SW, 10))
+    groups += [("cultist", 3 + t // 2, max(1.4, 2.2 - 0.06 * t), [W, E, N, SW][n % 4], 8), ("cultist", 2 + t // 3, 2.0, [SW, N, E, W][n % 4], 16)]
+    if n == 15:
+        groups.insert(0, ("fallen_marshal", 1, 1.0, W, 14))
+    return groups
+
+
+WAVES_3 = [(round(0.6 + 0.18 * (n - 1), 2), wave_3(n)) for n in range(1, 16)]
+GOLD_TARGET_3 = [380 + 12 * n for n in range(15)]
+SPEED_3 = [round(1.1 + 0.011 * n, 3) for n in range(15)]
+CHAPTERS = [("data/waves", WAVES, GOLD_TARGET, SPEED), ("data/waves/chapter_2", WAVES_2, GOLD_TARGET_2, SPEED_2),
+            ("data/waves/chapter_3", WAVES_3, GOLD_TARGET_3, SPEED_3)]
 
 import os
 for folder, WAVES, GOLD_TARGET, SPEED in CHAPTERS:

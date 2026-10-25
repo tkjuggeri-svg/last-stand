@@ -207,6 +207,20 @@ func spawn_extra(data: EnemyData, lane_index: int) -> Enemy:
 	return enemy
 
 
+## An enemy that comes out of the ground at `at` on lane `lane_index` (a biome's hazard: Open Graves). It
+## joins the running wave, which waits for it; added at the end of the frame (a strike may come from a
+## tween inside a physics step). Nothing happens between waves.
+func spawn_at(data: EnemyData, lane_index: int, at: Vector2) -> void:
+	if not _wave_open:
+		return
+	_summoned_count += 1
+	_add_at.call_deferred(data, lanes[clampi(lane_index, 0, lanes.size() - 1)], at)
+
+
+func _add_at(data: EnemyData, lane: Path2D, at: Vector2) -> void:
+	_add_enemy(data, lane, at)
+
+
 func _is_spawning() -> bool:
 	if not _wave_open:
 		return false

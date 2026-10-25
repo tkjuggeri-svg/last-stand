@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/colossus_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/fallen_marshal_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/charge_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 6
+display_name = "The Fallen Marshal"
+max_health = 3400
+move_speed = 34.0
+gold_reward = 150
+fortress_damage = 60
+hero_damage = 28
+attack_range = 30.0
+attack_windup = 0.6
+attack_cooldown = 2.2
+body_radius = 28.0
+sprite_offset = Vector2(0, -24)
+health_bar_y = -110.0
+burn_taken = 0.35
+shield_arc = 100.0
+is_boss = true
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

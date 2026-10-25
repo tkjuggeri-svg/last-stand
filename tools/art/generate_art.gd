@@ -15,6 +15,9 @@ const HuntressArt: GDScript = preload("res://tools/art/huntress_art.gd")
 const NecromancerArt: GDScript = preload("res://tools/art/necromancer_art.gd")
 const SkeletonArt: GDScript = preload("res://tools/art/skeleton_art.gd")
 const ComboTowersArt: GDScript = preload("res://tools/art/combo_towers_art.gd")
+const VariantArt: GDScript = preload("res://tools/art/variant_art.gd")
+const BiomeArt: GDScript = preload("res://tools/art/biome_art.gd")
+const BiomePropsArt: GDScript = preload("res://tools/art/biome_props_art.gd")
 const NecroTowersArt: GDScript = preload("res://tools/art/necro_towers_art.gd")
 const HuntressTowersArt: GDScript = preload("res://tools/art/huntress_towers_art.gd")
 const GhoulArt: GDScript = preload("res://tools/art/ghoul_art.gd")
@@ -61,6 +64,12 @@ func _initialize() -> void:
 		"skeleton": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).sheet_rows(), Layouts.SKELETON["size"]), Layouts.SKELETON["png"]),
 		"soul_bolt": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).soul_bolt_rows(), Layouts.SOUL_BOLT["size"]), Layouts.SOUL_BOLT["png"]),
 		"huntress_towers": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS["size"]), Layouts.HUNTRESS_TOWERS["png"]),
+		"siege_ram": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("siege_ram"), Layouts.SIEGE_RAM["size"]), Layouts.SIEGE_RAM["png"]),
+		"black_knight": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("black_knight"), Layouts.BLACK_KNIGHT["size"]), Layouts.BLACK_KNIGHT["png"]),
+		"fallen_marshal": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("fallen_marshal"), Layouts.FALLEN_MARSHAL["size"]), Layouts.FALLEN_MARSHAL["png"]),
+		"ashen_keep_ground": func() -> void: _save(_biome_ground("ashen_keep"), "res://assets/sprites/environment/ashen_keep_ground.png"),
+		"ashen_keep_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("ashen_keep")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/ashen_keep_props.png"),
+		"ashen_keep_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("ashen_keep"), "res://assets/sprites/environment/ashen_keep_gate.png"),
 		"combo_towers": func() -> void: _save(_sheet(ComboTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.COMBO_TOWERS["size"]), Layouts.COMBO_TOWERS["png"]),
 		"necro_towers": func() -> void: _save(_sheet(NecroTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.NECRO_TOWERS["size"]), Layouts.NECRO_TOWERS["png"]),
 		"huntress_fx": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).fx_rows(), Layouts.HUNTRESS_FX["size"]), Layouts.HUNTRESS_FX["png"]),
@@ -178,6 +187,17 @@ func _marsh_ground() -> Image:
 	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
 	level.free()
 	return MarshArt.new().ground(floor_rect, lanes, pools, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE)
+
+
+## A new biome's ground (M10), baked from its level like the marsh's (BiomeArt carries the palettes).
+func _biome_ground(biome: String) -> Image:
+	var level: Node = (load("res://levels/%s.tscn" % biome) as PackedScene).instantiate()
+	var lanes: Array[Array] = _lanes_of(level)
+	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
+	var floor_node: ColorRect = level.get_node("Floor")
+	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
+	level.free()
+	return BiomeArt.new().bake(biome, floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE)
 
 
 ## Every Path2D named Lane* as a polyline in level coordinates.

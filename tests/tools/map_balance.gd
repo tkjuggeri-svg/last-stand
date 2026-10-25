@@ -96,6 +96,9 @@ var _archetype: StringName = &""
 var _hero_kind: String = "knight"
 var _quiet: bool = false
 var _protect_ch1: bool = false
+## --protect-ch1 / --protect-ch2: that many chapters (from the first) keep the fortress and lives full, so
+## a later chapter is measured with a real earlier build.
+var _protected: int = 0
 var _trace: bool = false
 ## "with": the fire cards and relic are granted at the start; "without": never offered; "": as drawn.
 var _fire: String = ""
@@ -134,6 +137,10 @@ func _initialize() -> void:
 			_quiet = true
 		elif arg == "--protect-ch1":
 			_protect_ch1 = true
+			_protected = 1
+		elif arg == "--protect-ch2":
+			_protect_ch1 = true
+			_protected = 2
 		elif arg == "--trace":
 			_trace = true
 		elif arg.begins_with("--fire="):
@@ -155,7 +162,7 @@ func _initialize() -> void:
 		print(line)
 		cleared += _rows_cleared(line)
 	print("\nplan %s, fire %s, %s: %.1f rows cleared per run (of %d)" % [_plan_name, _fire if _fire != "" else "as drawn",
-		"chapter 1 protected" if _protect_ch1 else "whole runs", cleared / maxf(lines.size(), 1.0), ROWS_PER_CHAPTER * 2])
+		"%d chapter(s) protected" % _protected if _protect_ch1 else "whole runs", cleared / maxf(lines.size(), 1.0), ROWS_PER_CHAPTER * _tiers()])
 	print("\n%-22s %8s %6s" % ["relic", "offered", "taken"])
 	for id: StringName in RELIC_PREFERENCE:
 		var counts: Array = _relic_counts.get(id, [0, 0])
@@ -190,7 +197,7 @@ func _play(seed_value: int) -> String:
 		if level != main.call("get_level"):
 			level = main.call("get_level")
 			bot = HeroBot.new(level.get_node("Hero"), level.get_node("WaveSpawner")) if _hero_mode == "bot" else null
-			plan = _steps(_plan_for(level.scene_file_path.get_file().get_basename()))
+			plan = _steps(_plan_for(level.scene_file_path.get_file().get_basename(), level))
 			next = 0
 			_set_fire(level, chapter == 0)
 			_set_relics(level, chapter == 0)
@@ -246,7 +253,7 @@ func _play(seed_value: int) -> String:
 		var cycle: RunCycle = level.get_node("%RunCycle")
 		if _hero_mode == "idle" and cycle.get_phase() == RunCycle.Phase.BUILD:
 			(level.get_node("Hero") as Node2D).global_position = HERO_PARKED
-		if _protect_ch1 and chapter == 0:
+		if chapter < _protected:
 			level.fortress.health.set_current_health(level.fortress.health.max_health)
 			level.hero_lives.set_lives_left(level.hero_lives.get_max_lives())
 		if bot != null:
@@ -285,20 +292,31 @@ func _describe(level: Level) -> String:
 
 
 ## The plan's builds on this level: a hand-made one, "all <tower>" or "braziers first".
-func _plan_for(level_name: String) -> Array:
+func _plan_for(level_name: String, level: Level = null) -> Array:
+	var table: Dictionary = {}
 	if HERO_PLANS.has(_hero_kind) and _plan_name == "mixed":
-		return HERO_PLANS[_hero_kind][level_name]
-	if PLANS.has(_plan_name):
-		return PLANS[_plan_name][level_name]
-	var mixed: Array = PLANS["mixed"][level_name]
+		table = HERO_PLANS[_hero_kind]
+	elif PLANS.has(_plan_name):
+		table = PLANS[_plan_name]
+	if table.has(level_name):
+		return table[level_name]
+	# A level without a hand-made plan (the newer biomes): the hero's towers on its slots, nearest to the
+	# fortress first (one per slot, the kit repeating).
+	var kits: Dictionary = {"knight": ["archer", "cannon", "frost", "brazier", "archer", "ballista", "cannon", "frost"],
+		"huntress": ["archer", "hawk_perch", "trap_layer", "watchtower", "archer", "hawk_perch", "trap_layer", "cannon"],
+		"necromancer": ["archer", "bone_pit", "soul_siphon", "ossuary", "archer", "bone_pit", "soul_siphon", "cannon"]}
+	var kit: Array = kits.get(_hero_kind, kits["knight"])
+	var slots: Array[BuildSlot] = level.builder.get_slots() if level != null else []
+	var order: Array[int] = []
+	for i: int in slots.size():
+		order.append(i)
+	order.sort_custom(func(a: int, b: int) -> bool: return slots[a].global_position.length() < slots[b].global_position.length())
 	var builds: Array = []
-	for i: int in mixed.size():
-		var tower: String = mixed[i][0]
+	for k: int in order.size():
+		var tower: String = kit[k % kit.size()]
 		if _plan_name.begins_with("all "):
 			tower = _plan_name.trim_prefix("all ")
-		elif _plan_name == "braziers first" and i < 3:
-			tower = "brazier"
-		builds.append([tower, mixed[i][1]])
+		builds.append([tower, order[k]])
 	return builds
 
 
@@ -327,9 +345,14 @@ func _set_relics(level: Level, run_start: bool) -> void:
 
 ## Rows cleared in a run's summary line: every row of both chapters if won, else the rows before the
 ## one it fell in.
+## How many chapters a run has (its tiers).
+func _tiers() -> int:
+	return (load("res://data/run/run.tres") as RunData).tier_count()
+
+
 func _rows_cleared(line: String) -> float:
 	if line.contains("WON"):
-		return ROWS_PER_CHAPTER * 2.0
+		return float(ROWS_PER_CHAPTER * _tiers())
 	var found: RegExMatch = RegEx.create_from_string("lost c(\\d) row (\\d)").search(line)
 	if found == null:
 		return 0.0

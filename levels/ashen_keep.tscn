@@ -1,0 +1,927 @@
+[gd_scene load_steps=500 format=3]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_01.tres" id="bw01"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_02.tres" id="bw02"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_03.tres" id="bw03"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_04.tres" id="bw04"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_05.tres" id="bw05"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_06.tres" id="bw06"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_07.tres" id="bw07"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_08.tres" id="bw08"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_09.tres" id="bw09"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_10.tres" id="bw10"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_11.tres" id="bw11"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_12.tres" id="bw12"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_13.tres" id="bw13"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_14.tres" id="bw14"]
+[ext_resource type="Resource" path="res://data/waves/chapter_3/wave_15.tres" id="bw15"]
+[ext_resource type="Script" path="res://levels/hazards/falling_walls.gd" id="hz0"]
+[ext_resource type="Resource" path="res://data/hazards/falling_walls.tres" id="hz1"]
+
+[ext_resource type="Script" path="res://levels/level.gd" id="1_level"]
+[ext_resource type="Script" path="res://levels/tiled_ground.gd" id="36_tiled_ground"]
+[ext_resource type="PackedScene" path="res://entities/fortress/fortress.tscn" id="2_fortress"]
+[ext_resource type="PackedScene" path="res://entities/hero/hero.tscn" id="3_hero"]
+[ext_resource type="Script" path="res://systems/wave_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="26_wave_data"]
+[ext_resource type="Script" path="res://systems/run_cycle.gd" id="27_cycle"]
+[ext_resource type="Script" path="res://systems/hero_lives.gd" id="28_lives"]
+[ext_resource type="Script" path="res://systems/run_modifiers.gd" id="30_mods"]
+[ext_resource type="Script" path="res://systems/upgrade_offers.gd" id="31_offers"]
+[ext_resource type="PackedScene" path="res://ui/upgrade_screen/upgrade_choice_screen.tscn" id="32_choice"]
+[ext_resource type="Resource" path="res://data/upgrades/battle_rhythm.tres" id="u_battle_rhythm"]
+[ext_resource type="Resource" path="res://data/upgrades/berserker.tres" id="u_berserker"]
+[ext_resource type="Resource" path="res://data/upgrades/bounty.tres" id="u_bounty"]
+[ext_resource type="Resource" path="res://data/upgrades/deep_freeze.tres" id="u_deep_freeze"]
+[ext_resource type="Resource" path="res://data/upgrades/eagle_eye.tres" id="u_eagle_eye"]
+[ext_resource type="Resource" path="res://data/upgrades/fletching.tres" id="u_fletching"]
+[ext_resource type="Resource" path="res://data/upgrades/guild.tres" id="u_guild"]
+[ext_resource type="Resource" path="res://data/upgrades/hellfire.tres" id="u_hellfire"]
+[ext_resource type="Resource" path="res://data/upgrades/honed_blade.tres" id="u_honed_blade"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_body.tres" id="u_iron_body"]
+[ext_resource type="Resource" path="res://data/upgrades/long_reach.tres" id="u_long_reach"]
+[ext_resource type="Resource" path="res://data/upgrades/masonry.tres" id="u_masonry"]
+[ext_resource type="Resource" path="res://data/upgrades/overcharge.tres" id="u_overcharge"]
+[ext_resource type="Resource" path="res://data/upgrades/piercing.tres" id="u_piercing"]
+[ext_resource type="Resource" path="res://data/upgrades/rapid_reload.tres" id="u_rapid_reload"]
+[ext_resource type="Resource" path="res://data/upgrades/repairs.tres" id="u_repairs"]
+[ext_resource type="Resource" path="res://data/upgrades/second_wind.tres" id="u_second_wind"]
+[ext_resource type="Resource" path="res://data/upgrades/thorns.tres" id="u_thorns"]
+[ext_resource type="Resource" path="res://data/upgrades/treasury.tres" id="u_treasury"]
+[ext_resource type="Resource" path="res://data/upgrades/war_tax.tres" id="u_war_tax"]
+[ext_resource type="Resource" path="res://data/upgrades/fleet_step.tres" id="u_fleet_step"]
+[ext_resource type="Resource" path="res://data/upgrades/cinder_dash.tres" id="u_cinder_dash"]
+[ext_resource type="Script" path="res://resources/upgrade_data.gd" id="33_upgrade_data"]
+[ext_resource type="Resource" path="res://data/relics/bloodpact.tres" id="r_bloodpact"]
+[ext_resource type="Resource" path="res://data/relics/drowned_bell.tres" id="r_drowned_bell"]
+[ext_resource type="Resource" path="res://data/relics/ember_heart.tres" id="r_ember_heart"]
+[ext_resource type="Resource" path="res://data/relics/executioners_mark.tres" id="r_executioners_mark"]
+[ext_resource type="Resource" path="res://data/relics/glass_banner.tres" id="r_glass_banner"]
+[ext_resource type="Resource" path="res://data/relics/hourglass.tres" id="r_hourglass"]
+[ext_resource type="Resource" path="res://data/relics/iron_tithe.tres" id="r_iron_tithe"]
+[ext_resource type="Resource" path="res://data/relics/lantern_of_the_lost.tres" id="r_lantern_of_the_lost"]
+[ext_resource type="Resource" path="res://data/relics/merchants_seal.tres" id="r_merchants_seal"]
+[ext_resource type="Resource" path="res://data/relics/ossuary_bell.tres" id="r_ossuary_bell"]
+[ext_resource type="Resource" path="res://data/relics/phoenix_feather.tres" id="r_phoenix_feather"]
+[ext_resource type="Resource" path="res://data/relics/second_oath.tres" id="r_second_oath"]
+[ext_resource type="Resource" path="res://data/relics/siege_ledger.tres" id="r_siege_ledger"]
+[ext_resource type="Resource" path="res://data/relics/soul_lantern.tres" id="r_soul_lantern"]
+[ext_resource type="Resource" path="res://data/relics/twin_banners.tres" id="r_twin_banners"]
+[ext_resource type="Script" path="res://resources/relic_data.gd" id="r_script"]
+[ext_resource type="Script" path="res://systems/relic_effects.gd" id="r_effects"]
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="r_enemy_data"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="r_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/mire_priest.tres" id="r_priest"]
+[ext_resource type="Script" path="res://levels/hazards/open_graves.gd" id="hz_graves_script"]
+[ext_resource type="Resource" path="res://data/hazards/open_graves.tres" id="hz_graves_data"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="hz_ghoul"]
+[ext_resource type="PackedScene" path="res://entities/hero/respawn_point.tscn" id="29_respawn"]
+[ext_resource type="PackedScene" path="res://entities/enemies/enemy.tscn" id="5_enemy"]
+[ext_resource type="PackedScene" path="res://ui/hud/hud.tscn" id="6_hud"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ashen_keep_ground.png" id="7_ground"]
+[ext_resource type="Script" path="res://systems/economy.gd" id="8_economy"]
+[ext_resource type="Script" path="res://systems/wave_rewards.gd" id="9_rewards"]
+[ext_resource type="Script" path="res://systems/tower_builder.gd" id="10_builder"]
+[ext_resource type="Script" path="res://systems/quartermaster.gd" id="40_quartermaster"]
+[ext_resource type="Script" path="res://systems/merchant.gd" id="41_merchant"]
+[ext_resource type="Script" path="res://systems/event_resolver.gd" id="42_events"]
+[ext_resource type="Resource" path="res://data/towers/archer.tres" id="11_archer"]
+[ext_resource type="Resource" path="res://data/towers/frost.tres" id="12_frost"]
+[ext_resource type="Resource" path="res://data/towers/cannon.tres" id="13_cannon"]
+[ext_resource type="Resource" path="res://data/towers/brazier.tres" id="34_brazier"]
+[ext_resource type="Resource" path="res://data/towers/ballista.tres" id="35_ballista"]
+[ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
+[ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ashen_keep_props.png" id="20_props"]
+[ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="21_light"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/ashen_keep_gate.png" id="22_crypt"]
+[ext_resource type="Shader" path="res://assets/shaders/ground_fog.gdshader" id="23_fog"]
+[ext_resource type="Texture2D" path="res://assets/sprites/effects/mote.png" id="24_mote"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fog"]
+frequency = 0.008
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fog"]
+width = 256
+height = 256
+seamless = true
+noise = SubResource("FastNoiseLite_fog")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fog"]
+shader = ExtResource("23_fog")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_fog")
+shader_parameter/fog_color = Color(0.55, 0.42, 0.38, 1)
+shader_parameter/rect_size = Vector2(1300, 900)
+shader_parameter/pixel_size = 4.0
+shader_parameter/density = 0.32
+shader_parameter/base_density = 0.3
+shader_parameter/focus = Vector2(0.12, 0.25)
+shader_parameter/focus_radius = 0.38
+shader_parameter/drift = Vector2(0.006, 0.002)
+
+[sub_resource type="Gradient" id="Gradient_firefly"]
+offsets = PackedFloat32Array(0, 0.2, 0.5, 0.8, 1)
+colors = PackedColorArray(0.85, 1, 0.55, 0, 0.85, 1, 0.55, 0.9, 0.85, 1, 0.55, 0.3, 0.85, 1, 0.55, 0.9, 0.85, 1, 0.55, 0)
+
+[sub_resource type="Gradient" id="Gradient_soul"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.55, 1, 0.75, 0, 0.6, 1, 0.78, 0.85, 0.4, 0.85, 0.65, 0)
+
+[sub_resource type="Gradient" id="Gradient_vignette"]
+offsets = PackedFloat32Array(0, 0.62, 1)
+colors = PackedColorArray(0.04, 0.03, 0.06, 0, 0.04, 0.03, 0.06, 0.12, 0.04, 0.03, 0.06, 0.6)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vignette"]
+gradient = SubResource("Gradient_vignette")
+width = 256
+height = 144
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1.05, 0.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_h"]
+size = Vector2(1500, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall_v"]
+size = Vector2(100, 1100)
+
+[sub_resource type="Curve2D" id="Curve2D_lane1"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -860, -300, 0, 0, 0, 0, -600, -300, 0, 0, 0, 0, -600, -100, 0, 0, 0, 0, -300, -100, 0, 0, 0, 0, -300, 0, 0, 0, 0, 0, -48, 0)
+}
+point_count = 6
+
+[sub_resource type="Curve2D" id="Curve2D_lane2"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -150, -460, 0, 0, 0, 0, -150, -220, 0, 0, 0, 0, 0, -220, 0, 0, 0, 0, 0, -48)
+}
+point_count = 4
+
+[sub_resource type="Curve2D" id="Curve2D_lane3"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 370, -300, 0, 0, 0, 0, 200, -300, 0, 0, 0, 0, 200, 32, 0, 0, 0, 0, 48, 32)
+}
+point_count = 4
+
+[sub_resource type="Curve2D" id="Curve2D_lane4"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -860, 300, 0, 0, 0, 0, -450, 300, 0, 0, 0, 0, -450, 160, 0, 0, 0, 0, 0, 160, 0, 0, 0, 0, 0, 48)
+}
+point_count = 5
+
+[node name="AshenKeep" type="Node2D" node_paths=PackedStringArray("fortress", "spawner", "hero_lives", "run_cycle", "modifiers", "offers", "economy", "merchant", "events", "builder", "quartermaster")]
+y_sort_enabled = true
+script = ExtResource("1_level")
+fortress = NodePath("Fortress")
+spawner = NodePath("WaveSpawner")
+hero_lives = NodePath("Systems/HeroLives")
+run_cycle = NodePath("Systems/RunCycle")
+modifiers = NodePath("Systems/RunModifiers")
+offers = NodePath("Systems/UpgradeOffers")
+economy = NodePath("Systems/Economy")
+merchant = NodePath("Systems/Merchant")
+events = NodePath("Systems/EventResolver")
+builder = NodePath("Systems/TowerBuilder")
+quartermaster = NodePath("Systems/Quartermaster")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+light_mask = 0
+z_index = -3
+offset_left = -1400
+offset_top = -900
+offset_right = 900
+offset_bottom = 800
+mouse_filter = 2
+color = Color(0.05, 0.04, 0.04, 1)
+
+[node name="Floor" type="ColorRect" parent="."]
+light_mask = 0
+unique_name_in_owner = true
+z_index = -2
+offset_left = -900
+offset_top = -500
+offset_right = 400
+offset_bottom = 400
+mouse_filter = 2
+color = Color(0.2, 0.18, 0.18, 1)
+
+[node name="Ground" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = -1
+position = Vector2(-932, -532)
+script = ExtResource("36_tiled_ground")
+texture = ExtResource("7_ground")
+tile_size = Vector2i(128, 128)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.82, 0.64, 0.58, 1)
+
+[node name="Fog" type="ColorRect" parent="."]
+light_mask = 0
+z_index = -1
+material = SubResource("ShaderMaterial_fog")
+offset_left = -900
+offset_top = -500
+offset_right = 400
+offset_bottom = 400
+mouse_filter = 2
+
+[node name="Gate1" type="Sprite2D" parent="."]
+position = Vector2(-895, -300)
+scale = Vector2(1, 1)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -42)
+
+[node name="Glow" type="PointLight2D" parent="Gate1"]
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Gate2" type="Sprite2D" parent="."]
+position = Vector2(-150, -460)
+scale = Vector2(1, 1)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -42)
+
+[node name="Glow" type="PointLight2D" parent="Gate2"]
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Gate3" type="Sprite2D" parent="."]
+position = Vector2(370, -300)
+scale = Vector2(1, 1)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -42)
+
+[node name="Glow" type="PointLight2D" parent="Gate3"]
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Gate4" type="Sprite2D" parent="."]
+position = Vector2(-895, 300)
+scale = Vector2(1, 1)
+texture = ExtResource("22_crypt")
+offset = Vector2(0, -42)
+
+[node name="Glow" type="PointLight2D" parent="Gate4"]
+position = Vector2(0, -12)
+scale = Vector2(1, 1)
+color = Color(1, 0.55, 0.25, 1)
+energy = 0.7
+texture = ExtResource("21_light")
+texture_scale = 2.0
+
+[node name="Props" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Prop1" type="Sprite2D" parent="Props"]
+position = Vector2(73, 167)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 2
+
+[node name="Prop2" type="Sprite2D" parent="Props"]
+position = Vector2(-862, -114)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop3" type="Sprite2D" parent="Props"]
+position = Vector2(-99, -287)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop4" type="Sprite2D" parent="Props"]
+position = Vector2(50, 282)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop5" type="Sprite2D" parent="Props"]
+position = Vector2(-531, -217)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop6" type="Sprite2D" parent="Props"]
+position = Vector2(334, -396)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 6
+
+[node name="Prop7" type="Sprite2D" parent="Props"]
+position = Vector2(-90, 348)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop8" type="Sprite2D" parent="Props"]
+position = Vector2(-667, -162)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop9" type="Sprite2D" parent="Props"]
+position = Vector2(-12, -371)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 6
+
+[node name="Prop10" type="Sprite2D" parent="Props"]
+position = Vector2(-446, -54)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 2
+
+[node name="Prop11" type="Sprite2D" parent="Props"]
+position = Vector2(-787, -256)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop12" type="Sprite2D" parent="Props"]
+position = Vector2(-865, -39)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop13" type="Sprite2D" parent="Props"]
+position = Vector2(-100, 43)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop14" type="Sprite2D" parent="Props"]
+position = Vector2(-391, -26)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop15" type="Sprite2D" parent="Props"]
+position = Vector2(-646, 151)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop16" type="Sprite2D" parent="Props"]
+position = Vector2(-603, 92)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 7
+
+[node name="Prop17" type="Sprite2D" parent="Props"]
+position = Vector2(150, -374)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop18" type="Sprite2D" parent="Props"]
+position = Vector2(-60, -264)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop19" type="Sprite2D" parent="Props"]
+position = Vector2(-684, 257)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop20" type="Sprite2D" parent="Props"]
+position = Vector2(-522, 163)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop21" type="Sprite2D" parent="Props"]
+position = Vector2(-791, -405)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 2
+
+[node name="Prop22" type="Sprite2D" parent="Props"]
+position = Vector2(-326, 294)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 7
+
+[node name="Prop23" type="Sprite2D" parent="Props"]
+position = Vector2(159, -416)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop24" type="Sprite2D" parent="Props"]
+position = Vector2(194, 144)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop25" type="Sprite2D" parent="Props"]
+position = Vector2(-698, -105)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop26" type="Sprite2D" parent="Props"]
+position = Vector2(321, -86)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop27" type="Sprite2D" parent="Props"]
+position = Vector2(301, 303)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop28" type="Sprite2D" parent="Props"]
+position = Vector2(369, -124)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop29" type="Sprite2D" parent="Props"]
+position = Vector2(-647, -242)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop30" type="Sprite2D" parent="Props"]
+position = Vector2(-292, -355)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop31" type="Sprite2D" parent="Props"]
+position = Vector2(-763, -434)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop32" type="Sprite2D" parent="Props"]
+position = Vector2(272, 366)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop33" type="Sprite2D" parent="Props"]
+position = Vector2(-167, 266)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 6
+
+[node name="Prop34" type="Sprite2D" parent="Props"]
+position = Vector2(-740, -25)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop35" type="Sprite2D" parent="Props"]
+position = Vector2(-112, 113)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 2
+
+[node name="Prop36" type="Sprite2D" parent="Props"]
+position = Vector2(-281, -285)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop37" type="Sprite2D" parent="Props"]
+position = Vector2(-345, -430)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop38" type="Sprite2D" parent="Props"]
+position = Vector2(-539, -337)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop39" type="Sprite2D" parent="Props"]
+position = Vector2(-851, -411)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Prop40" type="Sprite2D" parent="Props"]
+position = Vector2(-448, 345)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop41" type="Sprite2D" parent="Props"]
+position = Vector2(-149, -169)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop42" type="Sprite2D" parent="Props"]
+position = Vector2(275, -176)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop43" type="Sprite2D" parent="Props"]
+position = Vector2(-634, -393)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop44" type="Sprite2D" parent="Props"]
+position = Vector2(-529, 219)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop45" type="Sprite2D" parent="Props"]
+position = Vector2(348, 163)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 3
+
+[node name="Prop46" type="Sprite2D" parent="Props"]
+position = Vector2(-672, -411)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 2
+
+[node name="Prop47" type="Sprite2D" parent="Props"]
+position = Vector2(-420, -447)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 1
+
+[node name="Prop48" type="Sprite2D" parent="Props"]
+position = Vector2(336, 112)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop49" type="Sprite2D" parent="Props"]
+position = Vector2(248, 33)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
+
+[node name="Prop50" type="Sprite2D" parent="Props"]
+position = Vector2(-338, 88)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 0
+
+[node name="Ambience" type="CPUParticles2D" parent="."]
+z_index = 2
+position = Vector2(-250, -50)
+amount = 40
+lifetime = 6.0
+preprocess = 6.0
+texture = ExtResource("24_mote")
+emission_shape = 3
+emission_rect_extents = Vector2(650, 450)
+direction = Vector2(0.2, -1)
+spread = 30
+gravity = Vector2(0, -10)
+initial_velocity_min = 8.0
+initial_velocity_max = 20.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color = Color(1, 0.62, 0.25, 0.9)
+
+[node name="ArenaBounds" type="StaticBody2D" parent="."]
+collision_mask = 0
+
+[node name="WallTop" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-250, -550)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallBottom" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-250, 450)
+shape = SubResource("RectangleShape2D_wall_h")
+
+[node name="WallLeft" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(-950, -50)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="WallRight" type="CollisionShape2D" parent="ArenaBounds"]
+position = Vector2(450, -50)
+shape = SubResource("RectangleShape2D_wall_v")
+
+[node name="Lane" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane1")
+
+[node name="Lane2" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane2")
+
+[node name="Lane3" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane3")
+
+[node name="Lane4" type="Path2D" parent="."]
+curve = SubResource("Curve2D_lane4")
+
+[node name="Fortress" parent="." node_paths=PackedStringArray("modifiers") instance=ExtResource("2_fortress")]
+modifiers = NodePath("../Systems/RunModifiers")
+
+[node name="Systems" type="Node" parent="."]
+
+[node name="RunModifiers" type="Node" parent="Systems"]
+unique_name_in_owner = true
+script = ExtResource("30_mods")
+
+[node name="UpgradeOffers" type="Node" parent="Systems" node_paths=PackedStringArray("modifiers", "economy")]
+unique_name_in_owner = true
+script = ExtResource("31_offers")
+modifiers = NodePath("../RunModifiers")
+economy = NodePath("../Economy")
+pool = Array[ExtResource("33_upgrade_data")]([ExtResource("u_battle_rhythm"), ExtResource("u_berserker"), ExtResource("u_bounty"), ExtResource("u_deep_freeze"), ExtResource("u_eagle_eye"), ExtResource("u_fletching"), ExtResource("u_guild"), ExtResource("u_hellfire"), ExtResource("u_honed_blade"), ExtResource("u_iron_body"), ExtResource("u_long_reach"), ExtResource("u_masonry"), ExtResource("u_overcharge"), ExtResource("u_piercing"), ExtResource("u_rapid_reload"), ExtResource("u_repairs"), ExtResource("u_second_wind"), ExtResource("u_thorns"), ExtResource("u_treasury"), ExtResource("u_war_tax"), ExtResource("u_fleet_step"), ExtResource("u_cinder_dash")])
+relic_pool = Array[ExtResource("r_script")]([ExtResource("r_bloodpact"), ExtResource("r_drowned_bell"), ExtResource("r_ember_heart"), ExtResource("r_executioners_mark"), ExtResource("r_glass_banner"), ExtResource("r_hourglass"), ExtResource("r_iron_tithe"), ExtResource("r_lantern_of_the_lost"), ExtResource("r_merchants_seal"), ExtResource("r_ossuary_bell"), ExtResource("r_phoenix_feather"), ExtResource("r_second_oath"), ExtResource("r_siege_ledger"), ExtResource("r_soul_lantern"), ExtResource("r_twin_banners")])
+
+[node name="Economy" type="Node" parent="Systems"]
+unique_name_in_owner = true
+script = ExtResource("8_economy")
+starting_gold = 150
+
+[node name="WaveRewards" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "spawner", "modifiers")]
+unique_name_in_owner = true
+script = ExtResource("9_rewards")
+economy = NodePath("../Economy")
+spawner = NodePath("../../WaveSpawner")
+modifiers = NodePath("../RunModifiers")
+
+[node name="RunCycle" type="Node" parent="Systems" node_paths=PackedStringArray("spawner", "offers")]
+unique_name_in_owner = true
+script = ExtResource("27_cycle")
+spawner = NodePath("../../WaveSpawner")
+offers = NodePath("../UpgradeOffers")
+
+[node name="HeroLives" type="Node" parent="Systems" node_paths=PackedStringArray("hero", "respawn_point", "modifiers", "spawner")]
+unique_name_in_owner = true
+script = ExtResource("28_lives")
+hero = NodePath("../../Hero")
+respawn_point = NodePath("../../RespawnPoint")
+modifiers = NodePath("../RunModifiers")
+spawner = NodePath("../../WaveSpawner")
+
+[node name="TowerBuilder" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "slots_root", "modifiers")]
+unique_name_in_owner = true
+script = ExtResource("10_builder")
+economy = NodePath("../Economy")
+slots_root = NodePath("../../BuildSlots")
+modifiers = NodePath("../RunModifiers")
+catalog = Array[Resource]([ExtResource("11_archer"), ExtResource("12_frost"), ExtResource("13_cannon"), ExtResource("34_brazier"), ExtResource("35_ballista")])
+
+[node name="Quartermaster" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "fortress", "hero_lives", "run_cycle")]
+unique_name_in_owner = true
+script = ExtResource("40_quartermaster")
+economy = NodePath("../Economy")
+fortress = NodePath("../../Fortress")
+hero_lives = NodePath("../HeroLives")
+run_cycle = NodePath("../RunCycle")
+
+[node name="Merchant" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "offers", "modifiers", "fortress")]
+unique_name_in_owner = true
+script = ExtResource("41_merchant")
+economy = NodePath("../Economy")
+offers = NodePath("../UpgradeOffers")
+modifiers = NodePath("../RunModifiers")
+fortress = NodePath("../../Fortress")
+
+[node name="EventResolver" type="Node" parent="Systems" node_paths=PackedStringArray("economy", "modifiers", "fortress", "hero_lives", "builder", "merchant")]
+unique_name_in_owner = true
+script = ExtResource("42_events")
+economy = NodePath("../Economy")
+modifiers = NodePath("../RunModifiers")
+fortress = NodePath("../../Fortress")
+hero_lives = NodePath("../HeroLives")
+builder = NodePath("../TowerBuilder")
+merchant = NodePath("../Merchant")
+
+[node name="RelicEffects" type="Node" parent="Systems" node_paths=PackedStringArray("modifiers", "spawner", "run_cycle", "hero", "hero_lives", "fortress", "economy", "effects")]
+unique_name_in_owner = true
+script = ExtResource("r_effects")
+modifiers = NodePath("../RunModifiers")
+spawner = NodePath("../../WaveSpawner")
+run_cycle = NodePath("../RunCycle")
+hero = NodePath("../../Hero")
+hero_lives = NodePath("../HeroLives")
+fortress = NodePath("../../Fortress")
+economy = NodePath("../Economy")
+effects = NodePath("../../Effects")
+lantern_targets = Array[ExtResource("r_enemy_data")]([ExtResource("r_cultist"), ExtResource("r_priest")])
+
+[node name="Hero" parent="." node_paths=PackedStringArray("modifiers") instance=ExtResource("3_hero")]
+modifiers = NodePath("../Systems/RunModifiers")
+position = Vector2(-200, -40)
+
+[node name="Camera2D" type="Camera2D" parent="Hero"]
+limit_left = -932
+limit_top = -532
+limit_right = 432
+limit_bottom = 432
+position_smoothing_enabled = true
+
+[node name="OpenGraves" type="Node" parent="." node_paths=PackedStringArray("spawner", "hero", "effects")]
+script = ExtResource("hz_graves_script")
+data = ExtResource("hz_graves_data")
+spawner = NodePath("../WaveSpawner")
+hero = NodePath("../Hero")
+effects = NodePath("../Effects")
+enemy = ExtResource("hz_ghoul")
+
+[node name="BuildSlots" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Slot1" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-750, -190)
+
+[node name="Slot2" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-450, -200)
+
+[node name="Slot3" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-60, -120)
+
+[node name="Slot4" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(130, -130)
+
+[node name="Slot5" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(280, 140)
+
+[node name="Slot6" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-200, 100)
+
+[node name="Slot7" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-650, 60)
+
+[node name="Slot8" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-300, 230)
+
+[node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
+y_sort_enabled = true
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("5_enemy")
+lanes = [NodePath("../Lane"), NodePath("../Lane2"), NodePath("../Lane3"), NodePath("../Lane4")]
+waves = Array[ExtResource("26_wave_data")]([ExtResource("bw01"), ExtResource("bw02"), ExtResource("bw03"), ExtResource("bw04"), ExtResource("bw05"), ExtResource("bw06"), ExtResource("bw07"), ExtResource("bw08"), ExtResource("bw09"), ExtResource("bw10"), ExtResource("bw11"), ExtResource("bw12"), ExtResource("bw13"), ExtResource("bw14"), ExtResource("bw15")])
+
+[node name="RespawnPoint" parent="." instance=ExtResource("29_respawn")]
+position = Vector2(100, 100)
+
+[node name="FallingWalls" type="Node" parent="." node_paths=PackedStringArray("spawner", "hero", "effects", "builder")]
+script = ExtResource("hz0")
+data = ExtResource("hz1")
+spawner = NodePath("../WaveSpawner")
+hero = NodePath("../Hero")
+effects = NodePath("../Effects")
+builder = NodePath("../Systems/TowerBuilder")
+
+[node name="Effects" type="Node2D" parent="."]
+unique_name_in_owner = true
+y_sort_enabled = true
+
+[node name="Vignette" type="CanvasLayer" parent="."]
+
+[node name="Shade" type="TextureRect" parent="Vignette"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_vignette")
+expand_mode = 1
+
+[node name="HUD" parent="." node_paths=PackedStringArray("fortress", "hero", "spawner", "economy", "rewards", "builder", "run_cycle", "hero_lives", "modifiers", "quartermaster", "relic_effects") instance=ExtResource("6_hud")]
+fortress = NodePath("../Fortress")
+hero = NodePath("../Hero")
+spawner = NodePath("../WaveSpawner")
+economy = NodePath("../Systems/Economy")
+rewards = NodePath("../Systems/WaveRewards")
+builder = NodePath("../Systems/TowerBuilder")
+run_cycle = NodePath("../Systems/RunCycle")
+hero_lives = NodePath("../Systems/HeroLives")
+modifiers = NodePath("../Systems/RunModifiers")
+quartermaster = NodePath("../Systems/Quartermaster")
+relic_effects = NodePath("../Systems/RelicEffects")
+
+[node name="BuildMenu" parent="." node_paths=PackedStringArray("builder", "economy") instance=ExtResource("15_menu")]
+builder = NodePath("../Systems/TowerBuilder")
+economy = NodePath("../Systems/Economy")
+
+[node name="UpgradeChoiceScreen" parent="." node_paths=PackedStringArray("offers", "economy") instance=ExtResource("32_choice")]
+offers = NodePath("../Systems/UpgradeOffers")
+economy = NodePath("../Systems/Economy")

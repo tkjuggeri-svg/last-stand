@@ -76,7 +76,7 @@ func _test_data() -> void:
 						first[group.enemy] = n
 	_check("introduced one by one in chapter 2 (Bloater wave %d, Priest wave %d, Shieldbearer wave %d), never in chapter 1"
 		% [first.get(BLOATER, 0), first.get(PRIEST, 0), first.get(SHIELD, 0)], not in_chapter_1 and first.size() == 3
-		and first[BLOATER] < first[PRIEST] and first[PRIEST] < first[SHIELD] and first[SHIELD] <= 8 and run.chapters.size() == 2)
+		and first[BLOATER] < first[PRIEST] and first[PRIEST] < first[SHIELD] and first[SHIELD] <= 8 and run.chapters.size() >= 2)
 
 
 func _test_bloater() -> void:

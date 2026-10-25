@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/shieldbearer_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/black_knight_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+role = 2
+display_name = "Black Knight"
+max_health = 160
+move_speed = 46.0
+gold_reward = 18
+fortress_damage = 20
+hero_damage = 16
+attack_range = 26.0
+attack_windup = 0.4
+attack_cooldown = 1.4
+body_radius = 13.0
+sprite_offset = Vector2(0, -11)
+health_bar_y = -38.0
+knockback_taken = 0.4
+shield_arc = 160.0
+hint = "its shield is wider than the Shieldbearer's: tower shots from the front are blocked."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
