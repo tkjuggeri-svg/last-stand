@@ -209,6 +209,7 @@ Design: `docs/M9_HEROES.md` (proposal, waiting for answers to its open questions
 ---
 
 ## M10 — Maps & Biomes
+Design: `docs/M10_BIOMES.md` (proposal, waiting for answers to its open questions).
 Art resolution decided (`docs/M10_ART_RESOLUTION.md` section 7): every biome is drawn at double resolution (1 art px = 1 world px), like the world since the art pack.
 At least **9 biomes in 3 tiers of 3**: tier 1 for chapter 1 (easy), tier 2 for chapter 2 (medium), tier 3 for a new chapter 3 (hard). Each run picks one biome per tier: at random, or the player chooses between two roads at the end of a chapter. The Graveyard is tier 1 and the Drowned Marsh tier 2 (pulled forward into M7.5).
 Every biome has:
