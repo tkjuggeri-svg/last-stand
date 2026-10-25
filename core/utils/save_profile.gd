@@ -5,7 +5,7 @@ extends RefCounted
 ## dictionary form (to_dict / from_dict); SaveManager reads and writes it. migrate() brings an older
 ## save up to CURRENT_VERSION step by step (a test loads tests/fixtures/save_v1.json).
 
-const CURRENT_VERSION: int = 3
+const CURRENT_VERSION: int = 4
 ## Version 1 (the M8 proposal) had permanent bonuses, dropped in version 2 (the user's rule: no
 ## permanent power). Their price per level, refunded when an old save is loaded.
 const V1_BONUS_PRICES: Dictionary = {"stores": [40, 80, 120], "mortar": [50, 100, 150]}
@@ -34,6 +34,12 @@ var hints_seen: Array[String] = []
 var hints_off: bool = false
 ## The run in progress (RunResume's dictionary), empty when there is none.
 var run: Dictionary = {}
+## The story (M11): beats heard (StoryBeat ids), foes met (enemy file names), places entered (chapter ids)
+## and endings seen (EndingData ids).
+var beats_seen: Array[String] = []
+var foes_seen: Array[String] = []
+var places_seen: Array[String] = []
+var endings: Array[String] = []
 ## The hero picked for the next run (HeroData id).
 var hero: String = DEFAULT_HERO
 
@@ -51,7 +57,8 @@ func to_dict() -> Dictionary:
 		"records": {"runs": runs, "wins": wins, "best": {"chapter": best_chapter, "row": best_row},
 			"bosses": bosses, "shards_total": shards_total, "history": history},
 		"firsts": firsts, "hints_seen": hints_seen, "hints_off": hints_off, "run": run,
-		"hero": hero}
+		"hero": hero,
+		"story": {"beats": beats_seen, "foes": foes_seen, "places": places_seen, "endings": endings}}
 
 
 ## A profile from a saved dictionary of any known version (migrated first).
@@ -75,6 +82,11 @@ static func from_dict(data: Dictionary) -> SaveProfile:
 	profile.hints_seen = _strings(d.get("hints_seen", []))
 	profile.hints_off = bool(d.get("hints_off", false))
 	profile.hero = str(d.get("hero", DEFAULT_HERO))
+	var story: Dictionary = d.get("story", {})
+	profile.beats_seen = _strings(story.get("beats", []))
+	profile.foes_seen = _strings(story.get("foes", []))
+	profile.places_seen = _strings(story.get("places", []))
+	profile.endings = _strings(story.get("endings", []))
 	var saved_run: Variant = d.get("run", {})
 	profile.run = saved_run if saved_run is Dictionary else {}
 	return profile
