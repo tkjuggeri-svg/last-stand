@@ -24,6 +24,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		"version": VERSION,
 		"seed": run.seed_value,
 		"hero": capture_hero_id(run),
+		"pressure": PressureRules.ids(run.pressure),
 		"chapter": run.chapter_index,
 		"biomes": run.biomes.map(func(chapter: ChapterData) -> String: return String(chapter.id)),
 		"path": run.map.path.map(func(node: MapNode) -> int: return run.map.nodes.find(node)),
@@ -55,7 +56,7 @@ static func restore_run(run: RunStateNode, saved: Dictionary, run_data: RunData,
 	if int(saved.get("version", 0)) != VERSION or int(saved.get("chapter", -1)) < 0 \
 			or int(saved.get("chapter", -1)) >= run_data.chapters.size():
 		return false
-	run.start_run(run_data, int(saved.get("seed", 0)), unlocks, run_data.get_hero(str(saved.get("hero", ""))))
+	run.start_run(run_data, int(saved.get("seed", 0)), unlocks, run_data.get_hero(str(saved.get("hero", ""))), run_data.pressure_for(saved.get("pressure", [])))
 	# The roads taken (a save from before M10 has none: the seed's picks, as they were).
 	var saved_biomes: Array[ChapterData] = []
 	for id: Variant in saved.get("biomes", []):

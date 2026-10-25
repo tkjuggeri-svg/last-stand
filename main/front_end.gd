@@ -34,11 +34,12 @@ func _ready() -> void:
 	_hub.reset_requested.connect(_reset)
 	_hub.hero_cycled.connect(_cycle_hero)
 	_hub.beat_read.connect(_beat_read)
+	_hub.pressure_changed.connect(_pressure_changed)
 	_summary.hub_requested.connect(func() -> void: _fade.transition(show_hub))
 	_summary.new_run_requested.connect(func() -> void: _leave(run_requested))
 	_save.changed.connect(func() -> void:
 		if _hub.visible:
-			_hub.refresh(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book))
+			_hub.refresh(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book, run_data.pressure_options if run_data != null else []))
 
 
 ## True while one of its screens is shown.
@@ -54,7 +55,7 @@ func show_title() -> void:
 
 func show_hub() -> void:
 	hide_all()
-	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book)
+	_hub.open(_save.profile, unlock_board, _hero(), _owned_heroes().size() > 1, story_book, run_data.pressure_options if run_data != null else [])
 
 
 ## The end of a run (`summary`: RunSummary's, with its shard lines), faded in; `at_dark` (Main
@@ -115,6 +116,12 @@ func _leave(request: Signal) -> void:
 	_fade.transition(func() -> void:
 		hide_all()
 		request.emit())
+
+
+## The Pressure panel's switches: kept in the profile for the next run.
+func _pressure_changed(ids: Array[String]) -> void:
+	_save.profile.pressure_selection = ids
+	_save.save_profile()
 
 
 ## The player heard a beat: it is told once (the hub then shows their next one).

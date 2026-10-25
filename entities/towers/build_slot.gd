@@ -18,6 +18,8 @@ const HOVER_RECT: Rect2 = Rect2(-30, -96, 60, 116)
 
 ## The tower standing here, or null.
 var tower: Tower = null
+## Rubble blocks the slot (Pressure's Fewer Slots): nothing can be built on it.
+var locked: bool = false
 
 ## Rings requested by the build menu: [outer radius, inner radius (dead zone, 0 = none), colour].
 var _menu_rings: Array = []
@@ -38,6 +40,14 @@ func _ready() -> void:
 
 func is_empty() -> bool:
 	return tower == null
+
+
+## Blocks the (empty) slot with rubble for the rest of the chapter.
+func lock() -> void:
+	locked = true
+	if _pad != null:
+		_pad.modulate = Color(0.45, 0.4, 0.4)
+	_update_prompt()
 
 
 func place(new_tower: Tower) -> void:
@@ -147,7 +157,7 @@ func _process(_delta: float) -> void:
 
 func _update_prompt() -> void:
 	if _prompt != null:
-		_prompt.text = "E  Build" if is_empty() else "E  " + tower.data.display_name
+		_prompt.text = "Rubble" if locked else ("E  Build" if is_empty() else "E  " + tower.data.display_name)
 
 
 func _draw() -> void:

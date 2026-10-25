@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PressureData" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://resources/pressure_data.gd" id="1_p"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_m"]
+
+[sub_resource type="Resource" id="M0"]
+script = ExtResource("2_m")
+stat = &"fortress.max_health"
+flat = 0.0
+percent = -0.3
+
+[resource]
+script = ExtResource("1_p")
+id = &"brittle_fortress"
+display_name = "Brittle Fortress"
+text = "The fortress has 30% less maximum health."
+points = 2
+modifiers = Array[ExtResource("2_m")]([SubResource("M0")])

@@ -21,6 +21,8 @@ var carry: ChapterCarry
 var unlocks: RunUnlocks
 ## The hero this run is played with (M9).
 var hero: HeroData
+## The Pressure modifiers this run is played with (M12).
+var pressure: Array[PressureData] = []
 ## What the run did, for its summary: the fights won ({chapter, row, kind, boss}), kills, waves
 ## fought, and when it started (msec).
 var cleared: Array[Dictionary] = []
@@ -30,7 +32,8 @@ var started_msec: int = 0
 
 
 ## A fresh run: chapter 1 and its map.
-func start_run(data: RunData, run_seed: int, run_unlocks: RunUnlocks = null, run_hero: HeroData = null) -> void:
+func start_run(data: RunData, run_seed: int, run_unlocks: RunUnlocks = null, run_hero: HeroData = null, run_pressure: Array[PressureData] = []) -> void:
+	pressure = run_pressure.duplicate()
 	run_data = data
 	seed_value = run_seed
 	unlocks = run_unlocks

@@ -137,7 +137,7 @@ func start_run(seed_value: int = -1) -> void:
 	_finale_boss = &""
 	_close_screens()
 	var chosen: int = seed_value if seed_value >= 0 else (run_seed if run_seed >= 0 else randi())
-	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile), run_data.get_hero(_save.profile.hero))
+	_run.start_run(run_data, chosen, RunUnlocks.for_profile(unlock_board, _save.profile), run_data.get_hero(_save.profile.hero), _chosen_pressure())
 	_start_chapter()
 	if _run.unlocks.has_perk(&"muster"):
 		_map_flow.offer_muster()
@@ -192,6 +192,7 @@ func _start_chapter(resume: Dictionary = {}) -> void:
 	_hints.watch(_level)
 	_level.apply_hero(_run.hero, run_data.heroes)
 	_level.apply_unlocks(_run.unlocks)
+	_level.apply_pressure(_run.pressure, _run.chapter_seed())
 	_level.spawner.enemy_killed.connect(func(_e: Enemy) -> void: _run.kills += 1)
 	_level.spawner.enemy_spawned.connect(_note_foe)
 	_note_place(_run.get_chapter())
@@ -216,7 +217,14 @@ func _ending_of_run() -> EndingData:
 	return Story.ending_for(story_book, _save.profile, _finale_boss)
 
 
-## The Chronicle\'s records (M11): a foe is met when it appears in a fight, a place when its chapter starts.
+## The Pressure the player switched on (only when the front end is in use and Pressure is open).
+func _chosen_pressure() -> Array[PressureData]:
+	if not uses_front_end() or not _save.profile.pressure_open():
+		return []
+	return run_data.pressure_for(_save.profile.pressure_selection)
+
+
+## The Chronicle's records (M11): a foe is met when it appears in a fight, a place when its chapter starts.
 func _note_foe(enemy: Enemy) -> void:
 	if not is_instance_valid(enemy) or enemy.data == null or enemy.data.resource_path == "":
 		return

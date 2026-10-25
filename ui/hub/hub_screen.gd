@@ -12,17 +12,23 @@ signal tips_toggled(on: bool)
 signal reset_requested
 ## The player listened to a character's beat (StoryBeat id): the front end records it in the profile.
 signal beat_read(beat: StringName)
+## The Pressure switches changed (the ids now on): the front end saves the selection.
+signal pressure_changed(ids: Array[String])
 ## The hero buttons: -1 the previous owned hero, 1 the next.
 signal hero_cycled(step: int)
 
 # What the Chronicle shows: the profile and story of the last refresh.
 var _profile: SaveProfile
 var _book: StoryBook
+var _pressure_options: Array[PressureData] = []
+var _pressure_selected: Array[String] = []
 
 @onready var _shards: Label = %Shards
 @onready var _cast: HBoxContainer = %Cast
 @onready var _chronicle_button: Button = %ChronicleButton
 @onready var _chronicle: ChronicleScreen = %ChronicleScreen
+@onready var _pressure_button: Button = %PressureButton
+@onready var _pressure_screen: PressureScreen = %PressureScreen
 @onready var _beat_dialog: AcceptDialog = %BeatDialog
 @onready var _unlocks: VBoxContainer = %Unlocks
 @onready var _hero_name: Label = %HeroName
@@ -39,6 +45,11 @@ var _book: StoryBook
 
 func _ready() -> void:
 	hide()
+	_pressure_button.pressed.connect(func() -> void: _pressure_screen.open(_pressure_options, _pressure_selected))
+	_pressure_screen.selection_changed.connect(func(ids: Array[String]) -> void:
+		_pressure_selected = ids
+		_refresh_pressure_button()
+		pressure_changed.emit(ids))
 	_chronicle_button.pressed.connect(func() -> void: _chronicle.open(_profile, _book))
 	_start_button.pressed.connect(func() -> void: start_requested.emit())
 	_back_button.pressed.connect(func() -> void: back_requested.emit())
@@ -49,20 +60,24 @@ func _ready() -> void:
 	_confirm.confirmed.connect(func() -> void: reset_requested.emit())
 
 
-func open(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false, book: StoryBook = null) -> void:
-	refresh(profile, board, hero, can_cycle, book)
+func open(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false, book: StoryBook = null, pressure: Array[PressureData] = []) -> void:
+	refresh(profile, board, hero, can_cycle, book, pressure)
 	show()
 	_start_button.grab_focus.call_deferred()
 
 
 ## Shows `profile` against `board`: shards, the line, the hero of the next run, every unlock's state, the records.
-func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false, book: StoryBook = null) -> void:
+func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, can_cycle: bool = false, book: StoryBook = null, pressure: Array[PressureData] = []) -> void:
 	_hero_prev.visible = can_cycle
 	_hero_next.visible = can_cycle
 	_hero_name.text = hero.display_name if hero != null else ""
 	_hero_text.text = hero.description if hero != null else ""
 	_shards.text = "Soul Shards: %d" % profile.shards
 	_show_cast(profile, book)
+	_pressure_options = pressure
+	_pressure_selected = profile.pressure_selection.duplicate()
+	_pressure_button.visible = profile.pressure_open() and not pressure.is_empty()
+	_refresh_pressure_button()
 	_tips_button.set_pressed_no_signal(not profile.hints_off)
 	for child: Node in _unlocks.get_children():
 		_unlocks.remove_child(child)  # now, so the new rows get their unlock's name
@@ -75,6 +90,14 @@ func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, ca
 		", ".join(profile.bosses) if not profile.bosses.is_empty() else "none yet", profile.shards_total]
 	if not profile.run.is_empty():
 		_records.text += "\n\nA run is saved: Continue it from the title. A new run abandons it."
+
+
+func get_pressure_screen() -> PressureScreen:
+	return _pressure_screen
+
+
+func get_pressure_button() -> Button:
+	return _pressure_button
 
 
 func get_chronicle() -> ChronicleScreen:
@@ -211,3 +234,11 @@ func _tell(beat: StoryBeat, character: StoryCharacter) -> void:
 	_beat_dialog.dialog_text = beat.text
 	_beat_dialog.popup_centered(Vector2i(900, 0))
 	beat_read.emit(beat.id)
+
+
+func _refresh_pressure_button() -> void:
+	var total: int = 0
+	for data: PressureData in _pressure_options:
+		if _pressure_selected.has(String(data.id)):
+			total += data.points
+	_pressure_button.text = "Pressure %d" % total if total > 0 else "Pressure"

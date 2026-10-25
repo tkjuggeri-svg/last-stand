@@ -204,6 +204,26 @@ func apply_unlocks(unlocks: RunUnlocks) -> void:
 		offers.free_rerolls = 1 if unlocks.has_perk(&"drill") else 0
 
 
+## Turns on the run's Pressure modifiers (M12) for this chapter's level: the stat ones through the run's
+## modifiers (hidden: no HUD icon), the rules on the systems they belong to. `chapter_seed` picks which
+## slots the rubble blocks, so a chapter blocks the same ones every time.
+func apply_pressure(list: Array[PressureData], chapter_seed: int) -> void:
+	for data: PressureData in list:
+		for modifier: StatModifier in data.modifiers:
+			modifiers.add_modifier(modifier)
+		if data.rule != &"" and not modifiers.rules.has(data.rule):
+			modifiers.rules.append(data.rule)
+	if modifiers.rules.has(PressureRules.RULE_SWIFT_DEAD):
+		spawner.enemy_speed_scale = PressureRules.ENEMY_SPEED
+	if modifiers.rules.has(PressureRules.RULE_HASTY_WAVES):
+		run_cycle.hasty_seconds = PressureRules.HASTY_SECONDS
+		run_cycle.restart()
+	if modifiers.rules.has(PressureRules.RULE_FEWER_CARDS) and offers != null:
+		offers.offer_size = PressureRules.FEWER_CARDS_SIZE
+	if modifiers.rules.has(PressureRules.RULE_FEWER_SLOTS):
+		_lock_slots(chapter_seed)
+
+
 ## Stops the level as won (the run map's last boss fell): everything freezes, like at Game Over.
 func end_run_won() -> void:
 	if _stop():
@@ -337,3 +357,14 @@ func _show_damage(amount: int, at: Vector2) -> void:
 	number.set_text(str(amount), UiColors.TEXT)
 	number.position = at + DAMAGE_NUMBER_OFFSET
 	_effects.add_child(number)
+
+
+## Blocks PressureRules.SLOTS_LOCKED empty slots with rubble, picked from `chapter_seed`.
+func _lock_slots(chapter_seed: int) -> void:
+	var free: Array[BuildSlot] = builder.get_slots().filter(func(s: BuildSlot) -> bool: return s.is_empty() and not s.locked)
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = chapter_seed * 13 + 5
+	for i: int in mini(PressureRules.SLOTS_LOCKED, free.size()):
+		var pick: int = rng.randi_range(0, free.size() - 1)
+		free[pick].lock()
+		free.remove_at(pick)

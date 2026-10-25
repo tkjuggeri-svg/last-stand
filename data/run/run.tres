@@ -16,7 +16,20 @@
 [ext_resource type="Resource" path="res://data/heroes/huntress.tres" id="5_huntress"]
 [ext_resource type="Resource" path="res://data/heroes/necromancer.tres" id="6_necro"]
 
+[ext_resource type="Script" path="res://resources/pressure_data.gd" id="s_pressure"]
+[ext_resource type="Resource" path="res://data/meta/pressure/hardened_elites.tres" id="pr_hardened_elites"]
+[ext_resource type="Resource" path="res://data/meta/pressure/no_repairs.tres" id="pr_no_repairs"]
+[ext_resource type="Resource" path="res://data/meta/pressure/swift_dead.tres" id="pr_swift_dead"]
+[ext_resource type="Resource" path="res://data/meta/pressure/fewer_slots.tres" id="pr_fewer_slots"]
+[ext_resource type="Resource" path="res://data/meta/pressure/lean_purses.tres" id="pr_lean_purses"]
+[ext_resource type="Resource" path="res://data/meta/pressure/stronger_bosses.tres" id="pr_stronger_bosses"]
+[ext_resource type="Resource" path="res://data/meta/pressure/brittle_fortress.tres" id="pr_brittle_fortress"]
+[ext_resource type="Resource" path="res://data/meta/pressure/one_life_fewer.tres" id="pr_one_life_fewer"]
+[ext_resource type="Resource" path="res://data/meta/pressure/hasty_waves.tres" id="pr_hasty_waves"]
+[ext_resource type="Resource" path="res://data/meta/pressure/fewer_cards.tres" id="pr_fewer_cards"]
+
 [resource]
 script = ExtResource("1_run")
 heroes = Array[ExtResource("s_hero")]([ExtResource("4_knight"), ExtResource("5_huntress"), ExtResource("6_necro")])
 chapters = Array[ExtResource("s_chapter")]([ExtResource("2_ch1"), ExtResource("3_ch2"), ExtResource("7_ch3"), ExtResource("8_ember"), ExtResource("9_frost"), ExtResource("10_mines"), ExtResource("11_quarry"), ExtResource("12_gloam"), ExtResource("13_cathedral")])
+pressure_options = Array[ExtResource("s_pressure")]([ExtResource("pr_hardened_elites"), ExtResource("pr_no_repairs"), ExtResource("pr_swift_dead"), ExtResource("pr_fewer_slots"), ExtResource("pr_lean_purses"), ExtResource("pr_stronger_bosses"), ExtResource("pr_brittle_fortress"), ExtResource("pr_one_life_fewer"), ExtResource("pr_hasty_waves"), ExtResource("pr_fewer_cards")])

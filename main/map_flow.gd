@@ -105,6 +105,14 @@ func _enter_node(node: MapNode) -> void:
 			event_screen.open(node.event, _level.events)
 
 
+## Bosses (and elite leaders) ignore the wave's health scale, so their groups carry the extra health.
+func _scale_bosses(waves: Array[WaveData], factor: float) -> void:
+	for wave: WaveData in waves:
+		for group: SpawnGroup in wave.groups:
+			if group.enemy != null and group.enemy.is_boss:
+				group.health_scale *= factor
+
+
 ## Plays `encounter` on the level with its own twist (an elite's) and any an event left for it.
 func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightReward) -> void:
 	var affixes: Array[AffixData] = []
@@ -115,8 +123,13 @@ func _start_fight(encounter: EncounterData, affix: AffixData, reward: FightRewar
 	var waves: Array[WaveData] = encounter.build_waves(affixes)
 	var chapter: ChapterData = _run.get_chapter()
 	var scale: float = chapter.fight_health_scale * (chapter.elite_health_scale if _node != null and _node.kind == RunMap.Kind.ELITE else 1.0)
+	if _node != null and _node.kind == RunMap.Kind.ELITE and PressureRules.has_rule(_run.pressure, PressureRules.RULE_HARDENED_ELITES):
+		scale *= PressureRules.ELITE_HEALTH
+		_scale_bosses(waves, PressureRules.ELITE_HEALTH)  # the leader is a boss-class enemy
 	for wave: WaveData in waves:
 		wave.health_multiplier *= scale
+	if _node != null and _node.kind == RunMap.Kind.BOSS and PressureRules.has_rule(_run.pressure, PressureRules.RULE_STRONGER_BOSSES):
+		_scale_bosses(waves, PressureRules.BOSS_HEALTH)
 	_level.set_active(true)
 	_level.start_encounter(waves, reward)
 	fight_started.emit()

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PressureData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/pressure_data.gd" id="1_p"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_m"]
+
+
+[resource]
+script = ExtResource("1_p")
+id = &"fewer_cards"
+display_name = "Fewer Cards"
+text = "Upgrade offers have 2 cards, not 3."
+points = 1
+rule = &"fewer_cards"

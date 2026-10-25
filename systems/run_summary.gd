@@ -27,7 +27,7 @@ static func build(run: RunStateNode, level: Level, result: String) -> Dictionary
 		"chapters_cleared": run.chapter_index + (1 if result == "won" else 0),
 		"path": run.map.path.map(func(n: MapNode) -> String: return RunMap.Kind.keys()[n.kind].to_lower()) if run.map != null else [],
 		"kills": run.kills, "waves": run.waves, "minutes": snappedf((Time.get_ticks_msec() - run.started_msec) / 60000.0, 0.1),
-		"cards": [], "relics": []}
+		"cards": [], "relics": [], "pressure": PressureRules.points(run.pressure), "pressure_ids": PressureRules.ids(run.pressure)}
 	if level != null and level.modifiers != null:
 		summary["cards"] = level.modifiers.get_taken().filter(func(d: UpgradeData) -> bool: return not d is RelicData).map(
 			func(d: UpgradeData) -> String: return String(d.id))

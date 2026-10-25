@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PressureData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://resources/pressure_data.gd" id="1_p"]
+[ext_resource type="Script" path="res://resources/stat_modifier.gd" id="2_m"]
+
+
+[resource]
+script = ExtResource("1_p")
+id = &"swift_dead"
+display_name = "Swift Dead"
+text = "Every enemy walks 10% faster."
+points = 2
+rule = &"swift_dead"

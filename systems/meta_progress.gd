@@ -39,6 +39,13 @@ static func shard_lines(summary: Dictionary, profile: SaveProfile) -> Array[Arra
 	for first: String in firsts_of(summary):
 		if not profile.firsts.has(first):
 			lines.append(["First time: %s" % first.get_slice(":", 1), FIRST_TIME])
+	var pressure: int = int(summary.get("pressure", 0))
+	if pressure > 0:
+		var base: int = 0
+		for line: Array in lines:
+			base += int(line[1])
+		lines.append(["Pressure %d (+%d%%)" % [pressure, roundi(PressureRules.SHARD_BONUS_PER_POINT * pressure * 100.0)],
+			roundi(base * PressureRules.SHARD_BONUS_PER_POINT * pressure)])
 	return lines
 
 
@@ -67,6 +74,11 @@ static func finish_run(profile: SaveProfile, summary: Dictionary) -> int:
 	profile.runs += 1
 	if summary.get("result", "") == "won":
 		profile.wins += 1
+	var pressure: int = int(summary.get("pressure", 0))
+	profile.pressure_best = maxi(profile.pressure_best, pressure)
+	if summary.get("result", "") == "won":
+		var hero_id: String = str(summary.get("hero", SaveProfile.DEFAULT_HERO))
+		profile.pressure_wins[hero_id] = maxi(int(profile.pressure_wins.get(hero_id, 0)), pressure)
 	var chapter: int = int(summary.get("chapter", 1))
 	var row: int = int(summary.get("row", 0))
 	if chapter > profile.best_chapter or (chapter == profile.best_chapter and row > profile.best_row):

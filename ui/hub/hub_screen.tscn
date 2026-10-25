@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://ui/hub/hub_screen.gd" id="1_hub"]
 [ext_resource type="PackedScene" path="res://ui/widgets/screen_frame.tscn" id="2_frame"]
 [ext_resource type="PackedScene" path="res://ui/hub/chronicle_screen.tscn" id="3_chronicle"]
+[ext_resource type="PackedScene" path="res://ui/hub/pressure_screen.tscn" id="4_pressure"]
 
 [node name="HubScreen" type="CanvasLayer"]
 layer = 20
@@ -104,6 +105,12 @@ custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "Chronicle"
 
+[node name="PressureButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+text = "Pressure"
+
 [node name="ResetButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
@@ -124,6 +131,9 @@ theme_type_variation = &"ButtonPrimary"
 text = "Start a run"
 
 [node name="ChronicleScreen" parent="." instance=ExtResource("3_chronicle")]
+unique_name_in_owner = true
+
+[node name="PressureScreen" parent="." instance=ExtResource("4_pressure")]
 unique_name_in_owner = true
 
 [node name="BeatDialog" type="AcceptDialog" parent="."]

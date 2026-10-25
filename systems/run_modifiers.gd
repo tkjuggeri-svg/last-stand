@@ -88,6 +88,8 @@ const RELIC_QUIVER: StringName = &"quiver_of_plenty"
 ## Ossuaries: a kill by a skeleton counts twice.
 const RELIC_RELIQUARY: StringName = &"reliquary_of_bones"
 
+## Rules that are not stats (Pressure's, M12): PressureRules.RULE_* keys.
+var rules: Array[StringName] = []
 var _taken: Array[UpgradeData] = []
 var _flat: Dictionary = {}
 var _percent: Dictionary = {}
@@ -137,6 +139,11 @@ func remove_last_upgrade() -> UpgradeData:
 func add_modifier(modifier: StatModifier) -> void:
 	_add(modifier)
 	changed.emit()
+
+
+## True if the run has the Pressure rule `key`.
+static func has_rule(modifiers: RunModifiers, key: StringName) -> bool:
+	return modifiers != null and modifiers.rules.has(key)
 
 
 func get_stacks(id: StringName) -> int:

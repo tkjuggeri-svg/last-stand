@@ -23,7 +23,11 @@ enum Phase { BUILD, COMBAT, CHOOSE, FINISHED }
 ## Offer an upgrade after every cleared wave (off on the run map: one choice per fight).
 @export var choose_between_waves: bool = true
 
+## Seconds of a build phase after which the wave starts by itself (Pressure's Hasty Waves; 0 = never).
+var hasty_seconds: float = 0.0
+
 var _phase: Phase = Phase.BUILD
+var _build_left: float = 0.0
 
 
 func _ready() -> void:
@@ -33,8 +37,24 @@ func _ready() -> void:
 	spawner.wave_cleared.connect(_on_wave_cleared)
 	if offers != null:
 		offers.picked.connect(_on_upgrade_picked)
+	_build_left = hasty_seconds
 	if spawner.is_wave_active():
 		_phase = Phase.COMBAT
+
+
+func _physics_process(delta: float) -> void:
+	if hasty_seconds <= 0.0 or _phase != Phase.BUILD or not spawner.has_next_wave():
+		return
+	_build_left -= delta
+	if _build_left <= 0.0:
+		start_wave()
+
+
+## Seconds until the next wave starts by itself, or -1 when it waits for the player.
+func get_hasty_left() -> float:
+	if hasty_seconds <= 0.0 or _phase != Phase.BUILD or not spawner.has_next_wave():
+		return -1.0
+	return maxf(_build_left, 0.0)
 
 
 func get_phase() -> Phase:
@@ -75,6 +95,7 @@ func call_early() -> bool:
 
 ## Back to the build phase for the spawner's freshly loaded waves (after FINISHED, a new fight).
 func restart() -> void:
+	_build_left = hasty_seconds
 	_set_phase(Phase.BUILD)
 
 
@@ -103,4 +124,5 @@ func _set_phase(phase: Phase) -> void:
 	if phase == _phase:
 		return
 	_phase = phase
+	_build_left = hasty_seconds
 	phase_changed.emit(phase)

@@ -19,6 +19,7 @@ signal tower_evolved(slot: BuildSlot, tower: Tower, evolution: TowerEvolution)
 
 const NOT_ENOUGH_GOLD: String = "Not enough gold"
 const SLOT_OCCUPIED: String = "This slot already has a tower"
+const SLOT_LOCKED: String = "Rubble blocks this slot"
 const MAX_LEVEL: String = "Already at the highest level"
 const NO_TOWER: String = "No tower here"
 const UNDER_CONSTRUCTION: String = "Still under construction"
@@ -77,7 +78,7 @@ func get_towers() -> Array[Tower]:
 
 
 func get_free_slot_count() -> int:
-	return get_slots().filter(func(s: BuildSlot) -> bool: return s.is_empty()).size()
+	return get_slots().filter(func(s: BuildSlot) -> bool: return s.is_empty() and not s.locked).size()
 
 
 ## The slot the hero is standing at (the most recently entered one), or null.
@@ -275,6 +276,9 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 		return false
 	if not slot.is_empty():
 		build_failed.emit(slot, data, SLOT_OCCUPIED)
+		return false
+	if slot.locked:
+		build_failed.emit(slot, data, SLOT_LOCKED)
 		return false
 	var cost: int = build_cost(data)
 	if not economy.try_spend(cost):

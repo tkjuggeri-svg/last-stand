@@ -33,6 +33,9 @@ const SPAWN_SHIELD_TIME: float = 600.0
 ## Start the first wave as soon as the level is ready.
 @export var autostart: bool = false
 
+## How much faster every enemy walks (Pressure's Swift Dead; 1 = as authored).
+var enemy_speed_scale: float = 1.0
+
 ## Index of the current (or last) wave in `waves`; -1 before the first one.
 var _wave_index: int = -1
 var _wave_open: bool = false
@@ -258,7 +261,7 @@ func _add_enemy(data: EnemyData, lane: Path2D, at: Vector2, health_scale: float 
 	# A boss's HP, gold and speed are authored directly: the wave's scales don't apply.
 	enemy.health_multiplier = (1.0 if data.is_boss else waves[_wave_index].health_multiplier) * health_scale
 	enemy.gold_multiplier = 1.0 if data.is_boss else waves[_wave_index].gold_multiplier
-	enemy.speed_multiplier = 1.0 if data.is_boss else waves[_wave_index].speed_multiplier
+	enemy.speed_multiplier = (1.0 if data.is_boss else waves[_wave_index].speed_multiplier) * enemy_speed_scale
 	enemy.died.connect(_on_enemy_died)
 	enemy.reached_fortress.connect(_on_enemy_reached_fortress)
 	enemy.summon_requested.connect(_on_summon_requested)

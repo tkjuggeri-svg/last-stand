@@ -5,7 +5,7 @@ extends RefCounted
 ## dictionary form (to_dict / from_dict); SaveManager reads and writes it. migrate() brings an older
 ## save up to CURRENT_VERSION step by step (a test loads tests/fixtures/save_v1.json).
 
-const CURRENT_VERSION: int = 4
+const CURRENT_VERSION: int = 5
 ## Version 1 (the M8 proposal) had permanent bonuses, dropped in version 2 (the user's rule: no
 ## permanent power). Their price per level, refunded when an old save is loaded.
 const V1_BONUS_PRICES: Dictionary = {"stores": [40, 80, 120], "mortar": [50, 100, 150]}
@@ -40,12 +40,22 @@ var beats_seen: Array[String] = []
 var foes_seen: Array[String] = []
 var places_seen: Array[String] = []
 var endings: Array[String] = []
+## Pressure (M12): the modifiers switched on for the next run (PressureData ids), the highest Pressure ever
+## played, and the highest Pressure of a won run per hero (HeroData id -> points).
+var pressure_selection: Array[String] = []
+var pressure_best: int = 0
+var pressure_wins: Dictionary = {}
 ## The hero picked for the next run (HeroData id).
 var hero: String = DEFAULT_HERO
 
 
 func has_unlock(id: String) -> bool:
 	return unlock_everything or unlocks.has(id)
+
+
+## Pressure is offered after the first win (everything counts as unlocked in tests and tools).
+func pressure_open() -> bool:
+	return unlock_everything or wins > 0
 
 
 func get_last_run() -> Dictionary:
@@ -58,6 +68,7 @@ func to_dict() -> Dictionary:
 			"bosses": bosses, "shards_total": shards_total, "history": history},
 		"firsts": firsts, "hints_seen": hints_seen, "hints_off": hints_off, "run": run,
 		"hero": hero,
+		"pressure": {"selection": pressure_selection, "best": pressure_best, "wins": pressure_wins},
 		"story": {"beats": beats_seen, "foes": foes_seen, "places": places_seen, "endings": endings}}
 
 
@@ -82,6 +93,13 @@ static func from_dict(data: Dictionary) -> SaveProfile:
 	profile.hints_seen = _strings(d.get("hints_seen", []))
 	profile.hints_off = bool(d.get("hints_off", false))
 	profile.hero = str(d.get("hero", DEFAULT_HERO))
+	var pressure: Dictionary = d.get("pressure", {})
+	profile.pressure_selection = _strings(pressure.get("selection", []))
+	profile.pressure_best = int(pressure.get("best", 0))
+	var won_at: Variant = pressure.get("wins", {})
+	if won_at is Dictionary:
+		for hero_id: Variant in won_at:
+			profile.pressure_wins[str(hero_id)] = int(won_at[hero_id])
 	var story: Dictionary = d.get("story", {})
 	profile.beats_seen = _strings(story.get("beats", []))
 	profile.foes_seen = _strings(story.get("foes", []))

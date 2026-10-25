@@ -186,6 +186,9 @@ func _update_wave() -> void:
 		var early: bool = run_cycle.can_call_early()
 		_start_wave_button.visible = run_cycle.can_start_wave() or early
 		_start_wave_button.text = EARLY_CALL_TEXT % (rewards.early_call_bonus() if rewards != null else 0) if early else START_WAVE_TEXT
+		var hasty: float = run_cycle.get_hasty_left()
+		if hasty >= 0.0 and not early:
+			_start_wave_button.text = "%s  (%d s)" % [START_WAVE_TEXT, ceili(hasty)]
 	if spawner == null:
 		return
 	if spawner.is_wave_active() or run_cycle == null:

@@ -63,15 +63,16 @@ func repair(fraction: float) -> void:
 	repair_hp(roundi(health.max_health * fraction))
 
 
-## Repairs `amount` HP (the Quartermaster's, a merchant's). Nothing under Iron Tithe.
+## Repairs `amount` HP (the Quartermaster's, a merchant's). Nothing under Iron Tithe or No Repairs.
 func repair_hp(amount: int) -> void:
 	if can_repair():
 		health.heal(amount)
 
 
-## False under the Iron Tithe relic: the walls can't be repaired at all.
+## False under the Iron Tithe relic and Pressure's No Repairs: the walls can't be repaired at all.
 func can_repair() -> bool:
-	return not RunModifiers.relic(modifiers, RunModifiers.RELIC_IRON_TITHE)
+	return not RunModifiers.relic(modifiers, RunModifiers.RELIC_IRON_TITHE) \
+		and not RunModifiers.has_rule(modifiers, PressureRules.RULE_NO_REPAIRS)
 
 
 func _apply_modifiers() -> void:

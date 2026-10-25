@@ -114,7 +114,7 @@ func _test_save() -> void:
 		and back.places_seen == p.places_seen and back.endings == p.endings)
 	var old: SaveProfile = SaveProfile.from_dict({"version": 3, "shards": 4})
 	_check("a v3 save loads with an empty story", old.shards == 4 and old.beats_seen.is_empty() and old.endings.is_empty())
-	_check("the current version is 4", SaveProfile.CURRENT_VERSION == 4)
+	_check("the story fields are in the current save version (5 since M12)", SaveProfile.CURRENT_VERSION >= 4)
 
 
 func _test_screens() -> void:

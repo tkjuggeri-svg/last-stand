@@ -6,6 +6,26 @@ extends Resource
 
 @export var chapters: Array[ChapterData] = []
 @export var heroes: Array[HeroData] = []
+## The Pressure modifiers the player may turn on before a run (M12).
+@export var pressure_options: Array[PressureData] = []
+
+
+## The Pressure modifier with `id` (null if unknown).
+func find_pressure(id: StringName) -> PressureData:
+	for data: PressureData in pressure_options:
+		if data.id == id:
+			return data
+	return null
+
+
+## The modifiers for the saved `ids` (unknown ones dropped).
+func pressure_for(ids: Array) -> Array[PressureData]:
+	var list: Array[PressureData] = []
+	for id: Variant in ids:
+		var data: PressureData = find_pressure(StringName(str(id)))
+		if data != null and not list.has(data):
+			list.append(data)
+	return list
 
 
 ## The hero with `id`; the default (first) hero for an unknown id. Null if there are no heroes.
