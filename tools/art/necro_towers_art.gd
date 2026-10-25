@@ -44,6 +44,17 @@ func _bone_pit(c: Canvas, level: int, firing: bool, frame: int, evolution: Strin
 	c.ellipse(Vector2(16, 38), Vector2(12.5, 5.5), P.STONE, 0.0, 0.1)
 	c.part()
 	c.ellipse(Vector2(16, 38.5), Vector2(9.0, 3.6), P.ICHOR if evolution == "plague_pit" else P.CULT_DARK, 0.0, -0.4)
+	c.part(true)
+	c.ellipse(Vector2(16, 39.0), Vector2(6.0, 2.0), [Color(0.35, 0.95, 0.65, 0.22 + 0.06 * [0.0, 1.0, 2.0, 1.0][frame])], 0.0, 0.0)  # a faint green glow in the pit
+	for k: int in 9:  # the rim: stones round the pit's front, a skull on every third
+		var angle: float = PI * 0.05 + PI * 0.9 * k / 8.0
+		var at: Vector2 = Vector2(16.0 + cos(angle) * 11.6, 38.0 + sin(angle) * 5.0)
+		c.part()
+		c.ellipse(at, Vector2(1.9, 1.3), P.STONE_WARM, 0.0, 0.05 + 0.04 * (k % 2))
+		if k % 3 == 1:
+			c.part()
+			c.ellipse(at + Vector2(0, -0.8), Vector2(1.2, 1.0), P.BONE, 0.0, 0.2)
+			c.px(roundi(at.x), roundi(at.y) - 1, P.OUTLINE)
 	_bones(c, Vector2(5, 41), 4 + level)
 	_bones(c, Vector2(20, 42), 3 + level)
 	# A skull on a stake at the back.
@@ -81,22 +92,40 @@ func _bone_pit(c: Canvas, level: int, firing: bool, frame: int, evolution: Strin
 
 func _soul_siphon(c: Canvas, level: int, firing: bool, frame: int, evolution: String) -> void:
 	_footing(c, level)
+	# A tapered obelisk with a capital, carved with runes that glow in step with the crystal.
 	c.part()
-	c.block(Rect2(13, 14, 6, 3), 20.0, P.STONE.slice(2, 7), P.STONE.slice(1, 6))
-	c.line(Vector2(13, 28), Vector2(18, 28), P.STONE[1])
-	c.line(Vector2(13, 33), Vector2(18, 33), P.STONE[1])
-	# Ribs curving up round the crystal.
-	var lift: float = [0.0, 0.5, 1.0, 0.5][frame]
+	c.block(Rect2(12, 16, 8, 3), 20.0, P.STONE.slice(2, 7), P.STONE.slice(1, 6))
 	c.part()
-	c.line(Vector2(10, 14), Vector2(12, 6), P.BONE[2])
-	c.line(Vector2(22, 14), Vector2(20, 6), P.BONE[2])
-	c.line(Vector2(12, 6), Vector2(16, 3), P.BONE[3])
-	c.line(Vector2(20, 6), Vector2(16, 3), P.BONE[3])
-	# The soul crystal floats and brightens when it fires.
+	c.block(Rect2(11, 14, 10, 2), 2.5, P.STONE.slice(2, 7), P.STONE.slice(1, 6))
+	c.line(Vector2(12, 28), Vector2(19, 28), P.STONE[1])
+	c.line(Vector2(12, 33), Vector2(19, 33), P.STONE[1])
+	var pulse: float = [0.0, 0.5, 1.0, 0.5][frame]
+	c.part(true)
+	for k: int in 3:
+		var y: float = 21.0 + k * 5.0
+		var rune: Color = P.SOUL[2 + (1 if (k + frame) % 3 == 0 else 0)]
+		c.line(Vector2(15, y), Vector2(17, y), rune)
+		c.px(15 + (k % 2), roundi(y) + 1, rune)
+		c.px(16, roundi(y) - 1, P.SOUL[1])
+	# Ribs curving up round the crystal, four of them meeting at the apex.
+	var lift: float = pulse
+	c.part()
+	c.line(Vector2(11, 14), Vector2(10, 8), P.BONE[2])
+	c.line(Vector2(21, 14), Vector2(22, 8), P.BONE[2])
+	c.line(Vector2(10, 8), Vector2(16, 2), P.BONE[3])
+	c.line(Vector2(22, 8), Vector2(16, 2), P.BONE[3])
+	c.line(Vector2(13, 14), Vector2(13, 8), P.BONE[1])
+	c.line(Vector2(19, 14), Vector2(19, 8), P.BONE[1])
+	c.line(Vector2(13, 8), Vector2(16, 2), P.BONE[2])
+	c.line(Vector2(19, 8), Vector2(16, 2), P.BONE[2])
+	# The soul crystal floats and brightens when it fires; two lesser souls circle it.
 	c.part(true)
 	var bright: float = 0.5 if firing and frame in [1, 2] else 0.0
-	c.ellipse(Vector2(16, 9 - lift), Vector2(3.0, 3.8), P.SOUL, 0.0, 0.1 + bright)
-	c.px(15, 8, P.SOUL[4])
+	c.ellipse(Vector2(16, 8.5 - lift), Vector2(3.0, 3.8), P.SOUL, 0.0, 0.1 + bright)
+	c.px(15, 7, P.SOUL[4])
+	for k: int in 2:
+		var angle: float = frame * PI * 0.5 + k * PI
+		c.ellipse(Vector2(16 + cos(angle) * 6.0, 8.5 - lift + sin(angle) * 1.8), Vector2(0.9, 0.9), P.SOUL.slice(2, 5), 0.0, 0.3)
 	if level >= 2:
 		c.part()
 		c.ellipse(Vector2(16, 15), Vector2(6.5, 1.4), P.IRON, 0.0, 0.1)
@@ -126,6 +155,17 @@ func _ossuary(c: Canvas, level: int, firing: bool, frame: int, evolution: String
 	for y: int in [26, 30, 34]:
 		_skull(c, Vector2(11, y), false)
 		_skull(c, Vector2(21, y), false)
+	for y: int in [24, 32]:  # iron bands with rivets
+		c.part()
+		c.line(Vector2(8, y), Vector2(24, y), P.IRON_WORN[2])
+		c.px(9, y, P.STEEL[5])
+		c.px(15, y, P.STEEL[5])
+		c.px(23, y, P.STEEL[5])
+	for x: int in [7, 25]:  # candles on the footing
+		c.part()
+		c.rect(Rect2i(x, 35, 1, 3), P.BONE[3])
+		c.part(true)
+		c.px(x, 34, P.FIRE[4])
 	# A ribbed dome and the glowing core.
 	c.part()
 	c.polygon(PackedVector2Array([Vector2(8, 22), Vector2(16, 12), Vector2(24, 22)]), P.STONE, Vector3(-0.3, -0.5, 1))

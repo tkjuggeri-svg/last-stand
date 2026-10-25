@@ -148,34 +148,53 @@ func _watcher(c: Canvas, at: Vector2) -> void:
 
 func _trap_layer(c: Canvas, level: int, firing: bool, frame: int, evolution: String) -> void:
 	_footing(c, level)
-	# The frame: two posts and a crossbeam, the throwing arm pivoting on it.
+	# Two stout posts braced against each other, an iron-capped axle across them.
 	c.part()
-	for x: int in [10, 21]:
-		c.rect(Rect2i(x, 22, 2, 14), P.WOOD[2])
+	c.capsule(Vector2(10.5, 37.0), Vector2(13.0, 19.5), 1.6, P.WOOD.slice(1, 5), 0.0)
 	c.part()
-	c.rect(Rect2i(10, 21, 13, 2), P.WOOD[3])
-	# The arm: down while winding, flung forward on the shot.
+	c.capsule(Vector2(21.5, 37.0), Vector2(19.0, 19.5), 1.6, P.WOOD.slice(1, 5), 0.0)
+	c.part()
+	c.capsule(Vector2(11.4, 31.0), Vector2(20.6, 29.0), 0.7, P.WOOD.slice(2, 5), 0.0)  # a brace
+	c.part()
+	c.capsule(Vector2(9.0, 19.5), Vector2(23.0, 19.5), 1.0, P.WOOD.slice(2, 5), 0.0)
+	for x: float in [9.0, 23.0]:
+		c.part()
+		c.ellipse(Vector2(x, 19.5), Vector2(0.9, 1.1), P.IRON_WORN, 0.0, 0.1)
+	for y: float in [25.0, 33.0]:  # rope lashings
+		c.line(Vector2(11.2 + (y - 25.0) * -0.15, y), Vector2(14.6 + (y - 25.0) * -0.2, y), P.LEATHER[3])
+		c.line(Vector2(17.6 + (y - 25.0) * 0.2, y), Vector2(20.8 + (y - 25.0) * 0.15, y), P.LEATHER[3])
+	# The throwing arm on its pivot: down at rest with the counterweight swinging, flung on the shot.
+	var pivot: Vector2 = Vector2(16, 19.5)
 	var swing: float = [0.0, 1.0, 0.6, 0.2][frame] if firing else 0.0
-	var tip: Vector2 = Vector2(16, 24).lerp(Vector2(26, 14), swing) if firing else Vector2(9, 26)
+	var tip: Vector2 = pivot.lerp(Vector2(27, 8), swing) if firing else Vector2(6.5, 28.0)
+	var weight: Vector2 = pivot - (tip - pivot) * 0.35
 	c.part()
-	c.line(Vector2(16, 24), tip, P.WOOD[4])
-	c.line(Vector2(15, 24), tip + Vector2(-1, 0), P.WOOD[3])
+	c.capsule(weight, tip, 1.0, P.WOOD.slice(2, 5), 0.1)
+	c.part()
+	c.ellipse(weight, Vector2(2.4, 2.4), P.STONE_WARM, 0.0, 0.0)  # the counterweight, a sack of stones
+	c.line(weight + Vector2(-1.0, -1.0), weight + Vector2(1.0, -1.0), P.LEATHER[2])
+	c.part()
+	c.ellipse(pivot, Vector2(1.6, 1.6), P.IRON_WORN, 0.0, 0.2)
 	if not firing or frame == 0:
 		c.part()
-		c.ellipse(tip + Vector2(0, 1), Vector2(2.2, 1.6), P.LEATHER, 0.0, 0.1)  # the snare in its cup
+		c.ellipse(tip + Vector2(0, 0.6), Vector2(2.3, 1.7), P.LEATHER, 0.0, 0.1)  # the net in its cup
+		c.line(tip + Vector2(-1.5, 0), tip + Vector2(1.5, 0), P.BONE[2])
 	elif frame == 1:
 		c.part(true)
 		c.line(tip, tip + Vector2(3, -3), P.BONE[3])
-	# A rope coil and spiked snares at the foot.
+		c.line(tip + Vector2(1, 0), tip + Vector2(4, -1.5), P.BONE[2])
+	# A rack of iron jaw traps and a rope coil at the foot.
+	var traps: int = 2 if level < 2 else 3
+	for k: int in traps:
+		_jaw_trap(c, Vector2(14.0 + k * 5.0, 38.0), level >= 3)
 	c.part()
-	c.ellipse(Vector2(12, 37), Vector2(3.0, 1.8), P.LEATHER, 0.0, 0.1)
-	c.ellipse(Vector2(12, 36.4), Vector2(1.6, 0.8), P.LEATHER, 0.0, -0.3)
-	_spikes(c, Vector2(22, 38), 3 if level < 2 else 5)
+	c.ellipse(Vector2(9.5, 38.6), Vector2(3.0, 1.8), P.LEATHER, 0.0, 0.1)
+	c.ellipse(Vector2(9.5, 38.0), Vector2(1.6, 0.8), P.LEATHER, 0.0, -0.3)
 	if level >= 3:
 		c.part()
-		c.line(Vector2(10, 29), Vector2(12, 29), P.STEEL[4])
-		c.line(Vector2(21, 29), Vector2(23, 29), P.STEEL[4])
-	_pennant(c, Vector2(11, 21), level, frame)
+		c.line(Vector2(12, 24.5), Vector2(15, 24.5), P.STEEL[4])
+		c.line(Vector2(17, 24.5), Vector2(20, 24.5), P.STEEL[4])
+	_pennant(c, Vector2(13, 19), level, frame)
 	match evolution:
 		"bear_pit":
 			# Great iron jaws gaping on the ground in front, teeth to the sky.
@@ -183,11 +202,28 @@ func _trap_layer(c: Canvas, level: int, firing: bool, frame: int, evolution: Str
 			c.polygon(PackedVector2Array([Vector2(3, 43), Vector2(9, 36), Vector2(11, 43)]), P.IRON, Vector3(-0.3, -0.5, 1))
 			c.polygon(PackedVector2Array([Vector2(29, 43), Vector2(23, 36), Vector2(21, 43)]), P.IRON, Vector3(0.3, -0.5, 1))
 			c.line(Vector2(3, 43), Vector2(29, 43), P.IRON[1])
+			for k: int in 4:
+				c.px(5 + k * 2, 41 - (k % 2), P.STEEL[5])
+				c.px(27 - k * 2, 41 - (k % 2), P.STEEL[5])
 		"caltrop_field":
 			_spikes(c, Vector2(7, 41), 4)
 			_spikes(c, Vector2(26, 42), 4)
 			c.part()
 			c.ellipse(Vector2(16, 43), Vector2(11, 2), P.DIRT, 0.0, -0.1)
+
+
+## An iron jaw trap on the ground: a dark ring with five teeth along its back edge (set open at level 3: they stand taller).
+func _jaw_trap(c: Canvas, at: Vector2, open: bool) -> void:
+	c.part()
+	c.ellipse(at, Vector2(3.0, 1.5), P.IRON, 0.0, -0.1)
+	c.part()
+	c.ellipse(at + Vector2(0, -0.1), Vector2(1.8, 0.8), P.DIRT, 0.0, -0.4)
+	for k: int in 5:
+		var angle: float = PI + PI * (k + 0.5) / 5.0
+		var base: Vector2 = at + Vector2(cos(angle) * 2.5, sin(angle) * 1.1)
+		c.part()
+		c.line(base, base + Vector2(0.0, -1.1 - (0.8 if open else 0.0)), P.STEEL[3])
+	c.px(roundi(at.x) - 1, roundi(at.y) - 1, P.STEEL[5])
 
 
 func _spikes(c: Canvas, at: Vector2, count: int) -> void:
@@ -201,27 +237,54 @@ func _spikes(c: Canvas, at: Vector2, count: int) -> void:
 
 func _hawk_perch(c: Canvas, level: int, firing: bool, frame: int, evolution: String) -> void:
 	_footing(c, level)
-	# A tall pole and the crossbar the hawk stands on.
+	# An A-frame of two leaning posts, cross-braced and lashed with rope, under a small platform.
+	var lean_l: Vector2 = Vector2(13.5, 14.0)
+	var lean_r: Vector2 = Vector2(18.5, 14.0)
 	c.part()
-	c.cylinder(16, 14, 37, 2.0, 0.8, P.WOOD.slice(1, 5), [], false)
+	c.capsule(Vector2(10.0, 37.0), lean_l, 1.5, P.WOOD.slice(1, 5), 0.0)
 	c.part()
-	c.block(Rect2(9, 12, 14, 2), 1.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)
+	c.capsule(Vector2(22.0, 37.0), lean_r, 1.5, P.WOOD.slice(1, 5), 0.0)
+	for y: float in [20.0, 26.5, 33.0]:
+		var left: float = lerpf(lean_l.x, 10.0, (y - 14.0) / 23.0)
+		var right: float = lerpf(lean_r.x, 22.0, (y - 14.0) / 23.0)
+		c.part()
+		c.capsule(Vector2(left, y + 1.0), Vector2(right, y), 0.65, P.WOOD.slice(2, 5), 0.0)
+		c.part()
+		c.rect(Rect2i(roundi(left) - 1, roundi(y) - 1, 3, 2), P.LEATHER[3])  # the lashings
+		c.rect(Rect2i(roundi(right) - 1, roundi(y) - 1, 3, 2), P.LEATHER[3])
+	# The platform with a rail, and the long perch arm reaching out to the right.
+	c.part()
+	c.block(Rect2(10, 11, 12, 3), 3.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)
+	for x: int in [10, 21]:
+		c.rect(Rect2i(x, 6, 1, 6), P.WOOD[3])
+	c.line(Vector2(10, 7), Vector2(21, 7), P.WOOD[2])
+	c.part()
+	c.capsule(Vector2(20.0, 11.5), Vector2(28.5, 11.0), 0.8, P.WOOD.slice(2, 5), 0.0)
+	c.part()
+	c.line(Vector2(24.5, 12.0), Vector2(24.7, 15.5), P.TABARD[3])  # a lure on a cord
+	c.px(24, 16, P.TABARD[4])
 	if level >= 2:
 		c.part()
-		c.block(Rect2(12, 22, 8, 2), 1.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)  # a lower rest with the lure
-		c.px(20, 25, P.TABARD[3])
+		c.capsule(Vector2(11.5, 23.5), Vector2(5.0, 22.5), 0.7, P.WOOD.slice(2, 5), 0.0)  # a lower rest
+		c.part()
+		c.ellipse(Vector2(5.5, 22.0), Vector2(1.2, 0.9), P.LEATHER, 0.0, 0.1)
 	if level >= 3:
 		c.part()
-		c.ellipse(Vector2(16, 11), Vector2(1.6, 1.0), P.GOLD, 0.0, 0.2)  # a gilded finial
+		c.ellipse(Vector2(16, 5), Vector2(1.7, 1.2), P.GOLD, 0.0, 0.2)  # a gilded finial
+		c.line(Vector2(16, 6), Vector2(16, 11), P.GOLD[2])
 	if evolution == "falconer":
-		_hawk_on(c, Vector2(11, 11), firing, frame, true)
-		_hawk_on(c, Vector2(21, 11), firing, (frame + 2) % 4, false)
+		c.part()
+		c.capsule(Vector2(12.0, 11.5), Vector2(3.5, 11.0), 0.8, P.WOOD.slice(2, 5), 0.0)
+		_hawk_on(c, Vector2(4.5, 11), firing, frame, false)
+		_hawk_on(c, Vector2(26.5, 11), firing, (frame + 2) % 4, true)
 	else:
-		_hawk_on(c, Vector2(16, 11), firing, frame, true, evolution == "eye_of_the_hunt")
-	_pennant(c, Vector2(23, 12), level, frame)
+		_hawk_on(c, Vector2(26.5, 11), firing, frame, true, evolution == "eye_of_the_hunt")
+	_pennant(c, Vector2(21, 6), level, frame)
+	for k: int in 3:  # feathers on the posts
+		c.px(12 + k, 17 + k * 6, P.BONE[3 - (k % 2)])
 	if evolution == "eye_of_the_hunt":
 		c.part(true)
-		c.line(Vector2(13, 6), Vector2(19, 6), P.TABARD[4], true)
+		c.line(Vector2(23, 4), Vector2(30, 4), P.TABARD[4], true)
 
 
 ## A hawk perched at `at` (the crossbar's top): breathing while idle, gone (a puff of feathers) mid-dive.
@@ -234,22 +297,30 @@ func _hawk_on(c: Canvas, at: Vector2, firing: bool, frame: int, lead: bool, glow
 	var bob: float = 0.5 if (not firing and frame in [1, 2]) else 0.0
 	c.part()
 	c.ellipse(at + Vector2(0, -2.6 + bob), Vector2(2.6, 3.2), HAWK_BROWN, 0.0, 0.05)
+	c.part()
+	c.ellipse(at + Vector2(0.2, -1.8 + bob), Vector2(1.7, 2.0), P.BONE.slice(0, 3), 0.0, 0.1)  # a pale breast
+	c.part()
 	c.ellipse(at + Vector2(0.6, -6.0 + bob), Vector2(1.8, 1.7), HAWK_BROWN, 0.0, 0.2)
 	c.px(roundi(at.x) + 2, roundi(at.y) - 6, P.GOLD[3])  # the beak
 	c.px(roundi(at.x) + 1, roundi(at.y) - 7, P.TABARD[4] if glowing else P.GOLD[4])  # the eye
 	c.line(at + Vector2(-1, -1), at + Vector2(-3, 1.5), HAWK_BROWN[1])  # the tail
+	c.line(at + Vector2(-1, -3), at + Vector2(-2.6, -0.5), HAWK_BROWN[1])  # the folded wing's edge
 
 
 # ---------------------------------------------------------------- Watchtower
 
 func _watchtower(c: Canvas, level: int, firing: bool, frame: int, evolution: String) -> void:
 	_footing(c, level)
-	# Four legs braced into a tall timber shaft, a deck, rails and a thatched roof.
+	# Four legs braced into a tall timber shaft, a deck, rails and a roof.
 	c.part()
 	c.block(Rect2(11, 20, 10, 3), BASE - 38.0 - 3.0 + 3.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)
 	for y: int in range(27, 38, 4):
 		c.line(Vector2(11, y), Vector2(20, y + 2), P.WOOD[1])
 		c.line(Vector2(20, y), Vector2(11, y + 2), P.WOOD[1])
+	for y: int in range(24, 37, 4):  # a ladder up the right side
+		c.line(Vector2(21, y), Vector2(23, y), P.WOOD[4])
+	c.line(Vector2(21, 24), Vector2(21, 37), P.WOOD[3])
+	c.line(Vector2(23, 24), Vector2(23, 37), P.WOOD[3])
 	c.part()
 	c.block(Rect2(8, 15, 16, 3), 3.0, P.WOOD.slice(2, 5), P.WOOD.slice(1, 4), false)  # the deck
 	for x: int in [8, 23]:
@@ -266,10 +337,20 @@ func _watchtower(c: Canvas, level: int, firing: bool, frame: int, evolution: Str
 		if glint:
 			c.part(true)
 			c.px(20, 9, Color("ffffff"))
+	for k: int in 3:  # sandbags around the foot
+		c.part()
+		c.ellipse(Vector2(9.5 + k * 3.2, 40.6 - (k % 2) * 0.6), Vector2(2.0, 1.2), P.REED.slice(0, 4), 0.0, 0.05)
+	c.part()
+	c.line(Vector2(9, 18), Vector2(9, 20), P.IRON_WORN[3])  # a lantern hung from the deck
+	c.rect(Rect2i(8, 20, 2, 2), P.BRONZE[2])
+	c.part(true)
+	c.px(9, 21, P.FIRE[4])
 	c.part()
 	var roof: Array = P.SLATE if evolution == "marksmans_roost" else P.REED
 	c.polygon(PackedVector2Array([Vector2(4, 9), Vector2(16, 0), Vector2(28, 9)]), roof, Vector3(-0.3, -0.6, 0.8))
 	c.line(Vector2(4, 9), Vector2(28, 9), roof[2])
+	for k: int in 3:  # thatch courses
+		c.line(Vector2(8 + k * 2, 7 - k * 2), Vector2(24 - k * 2, 7 - k * 2), roof[1])
 	if level >= 3:
 		c.px(16, -1, P.GOLD[3])
 	if evolution == "signal_fire":
