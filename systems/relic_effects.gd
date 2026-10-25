@@ -127,8 +127,9 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 		bone.collected.connect(func(_b: BonePickup) -> void:
 			economy.earn(bone_gold, Economy.Source.REWARD)
 			triggered.emit("Ossuary Bell: +%d gold" % bone_gold))
-		effects.add_child(bone)
-		bone.global_position = enemy.global_position
+		# A kill is handled inside a physics callback, where an Area can't be added to the tree: defer it.
+		bone.position = effects.to_local(enemy.global_position)
+		effects.add_child.call_deferred(bone)
 	if modifiers.has_relic(RunModifiers.RELIC_SOUL_LANTERN) and fortress != null \
 			and enemy.global_position.distance_to(fortress.global_position) <= soul_lantern_radius:
 		fortress.repair_hp(1)

@@ -4,7 +4,7 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--biomes=<id>,<id>,<id>] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--pressure=all|<id>,<id>] [--profile=first] [--early]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--pressure=all|<id>,<id>] [--start=2|3] [--kit=cards:relics:gold] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
@@ -109,6 +109,11 @@ var _fire: String = ""
 ## --pressure=all|<id>,<id>: Pressure modifiers (M12) switched on for every run.
 var _pressure: String = ""
 var _early: bool = false
+## --start=2|3: the run begins in that chapter (a fresh level, as the dev menu's jump) with a random kit of
+## cards and relics (--kit=cards:relics:gold, default 5:1:900 for chapter 2 and 10:2:1500 for chapter 3 (about what the earlier chapters' refunds leave), drawn
+## from the seed): a chapter measured on its own, as a player who got that far would meet it.
+var _start: int = 1
+var _kit: String = ""
 ## --profile=first: a fresh profile (the first run's kit) instead of everything unlocked.
 var _first_kit: bool = false
 ## --relics: the only relics of the run (granted at the start); null = drawn as usual.
@@ -158,6 +163,10 @@ func _initialize() -> void:
 			_fire = arg.trim_prefix("--fire=")
 		elif arg.begins_with("--pressure="):
 			_pressure = arg.trim_prefix("--pressure=")
+		elif arg.begins_with("--start="):
+			_start = clampi(int(arg.trim_prefix("--start=")), 1, 3)
+		elif arg.begins_with("--kit="):
+			_kit = arg.trim_prefix("--kit=")
 		elif arg == "--early":
 			_early = true
 		elif arg == "--profile=first":
@@ -175,7 +184,7 @@ func _initialize() -> void:
 		print(line)
 		cleared += _rows_cleared(line)
 	print("\nplan %s, fire %s, %s: %.1f rows cleared per run (of %d)" % [_plan_name, _fire if _fire != "" else "as drawn",
-		"%d chapter(s) protected" % _protected if _protect_ch1 else "whole runs", cleared / maxf(lines.size(), 1.0), ROWS_PER_CHAPTER * _tiers()])
+		"%d chapter(s) protected" % _protected if _protect_ch1 else "whole runs", cleared / maxf(lines.size(), 1.0), ROWS_PER_CHAPTER * (_tiers() - _start + 1)])
 	print("\n%-22s %8s %6s" % ["relic", "offered", "taken"])
 	for id: StringName in RELIC_PREFERENCE:
 		var counts: Array = _relic_counts.get(id, [0, 0])
@@ -202,13 +211,17 @@ func _play(seed_value: int) -> String:
 		main.set("run_data", custom)
 	root.add_child(main)
 	await physics_frame
+	if _start > 1:
+		main.call("jump_to_chapter", _start - 1)
+		await physics_frame
 	var stats: Dictionary = {"fights": 0, "waves": 0, "evos": 0, "income": [0, 0], "taken": []}
 	var level: Level = null
 	var bot: RefCounted = null
 	var plan: Array = []
 	var next: int = 0
 	var build_time: float = 0.0
-	var chapter: int = 0
+	var chapter: int = _start - 1
+	var kit_given: bool = false
 	var time: float = 0.0
 	var result: String = "timed out"
 	var map_screen: MapScreen = main.get_node("%MapScreen")
@@ -224,6 +237,9 @@ func _play(seed_value: int) -> String:
 			plan = _steps(_plan_for(level.scene_file_path.get_file().get_basename(), level))
 			next = 0
 			_set_fire(level, chapter == 0)
+			if _start > 1 and not kit_given:
+				kit_given = true
+				_give_kit(level, seed_value)
 			_set_relics(level, chapter == 0)
 			level.economy.gold_earned.connect(func(amount: int, source: Economy.Source) -> void:
 				if source != Economy.Source.REFUND:
@@ -357,6 +373,29 @@ func _set_fire(level: Level, run_start: bool) -> void:
 		level.offers.relic_pool = level.offers.relic_pool.filter(func(d: RelicData) -> bool: return not fire.has(d))
 
 
+## --start: a random kit for the chapter the run starts in: cards and relics from the level's own pools
+## (the hero's, as a player is offered them) and gold, all drawn from the seed.
+func _give_kit(level: Level, seed_value: int) -> void:
+	var spec: PackedStringArray = (_kit if _kit != "" else ("5:1:900" if _start == 2 else "10:2:1500")).split(":")
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = seed_value * 7 + _start
+	var cards: Array[UpgradeData] = []
+	cards.append_array(level.offers.pool)
+	for _i: int in int(spec[0]):
+		if cards.is_empty():
+			break
+		var card: UpgradeData = cards.pop_at(rng.randi_range(0, cards.size() - 1))
+		if level.modifiers.can_take(card):
+			level.modifiers.add_upgrade(card)
+	var relics: Array[RelicData] = []
+	relics.append_array(level.offers.relic_pool)
+	for _i: int in int(spec[1]):
+		if relics.is_empty():
+			break
+		level.modifiers.add_upgrade(relics.pop_at(rng.randi_range(0, relics.size() - 1)))
+	level.economy.earn(int(spec[2]), Economy.Source.REFUND)
+
+
 ## --relics: grant the given relics (once, at the run's start) and offer no other.
 func _set_relics(level: Level, run_start: bool) -> void:
 	if _relics == null:
@@ -376,11 +415,11 @@ func _tiers() -> int:
 
 func _rows_cleared(line: String) -> float:
 	if line.contains("WON"):
-		return float(ROWS_PER_CHAPTER * _tiers())
+		return float(ROWS_PER_CHAPTER * (_tiers() - _start + 1))
 	var found: RegExMatch = RegEx.create_from_string("lost c(\\d) row (\\d)").search(line)
 	if found == null:
 		return 0.0
-	return (int(found.get_string(1)) - 1) * ROWS_PER_CHAPTER + int(found.get_string(2)) - 1.0
+	return (int(found.get_string(1)) - _start) * ROWS_PER_CHAPTER + int(found.get_string(2)) - 1.0
 
 
 func _choose_node(map: RunMap) -> MapNode:
