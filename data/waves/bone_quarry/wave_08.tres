@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/bone_hurler.tres" id="2_bone_hurler"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="5_hound"]
+[ext_resource type="Resource" path="res://data/enemies/rubble_brute.tres" id="6_rubble_brute"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
+
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 20
+interval = 0.9
+
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 10
+interval = 1.0
+lane = 1
+delay = 6.0
+
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_hound")
+count = 18
+interval = 0.5
+lane = 2
+delay = 8.0
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("6_rubble_brute")
+count = 5
+interval = 6.0
+delay = 4.0
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 3
+interval = 2.5
+lane = 2
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_g5"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_bone_hurler")
+count = 2
+interval = 2.5
+lane = 2
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_g6"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 2
+interval = 3.0
+lane = 1
+delay = 20.0
+
+[sub_resource type="Resource" id="Resource_g7"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_bone_hurler")
+count = 1
+interval = 3.0
+lane = 1
+delay = 20.0
+
+[resource]
+script = ExtResource("9_wave")
+health_multiplier = 1.35
+gold_multiplier = 0.53
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7")])

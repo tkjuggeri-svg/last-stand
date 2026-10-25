@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="HazardData" format=3]
+
+[ext_resource type="Script" path="res://resources/hazard_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+radius = 70.0
+amount = 10.0

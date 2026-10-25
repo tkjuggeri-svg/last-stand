@@ -45,10 +45,16 @@
 [ext_resource type="Resource" path="res://data/meta/unlocks/relics_3.tres" id="u16"]
 [ext_resource type="Resource" path="res://data/meta/unlocks/hero_huntress.tres" id="u17"]
 [ext_resource type="Resource" path="res://data/meta/unlocks/hero_necromancer.tres" id="u18"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_ember_orchard.tres" id="u19"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_frostbound_pass.tres" id="u20"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_sunless_mines.tres" id="u21"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_bone_quarry.tres" id="u22"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_gloam_wood.tres" id="u23"]
+[ext_resource type="Resource" path="res://data/meta/unlocks/biome_pale_cathedral.tres" id="u24"]
 
 [resource]
 script = ExtResource("1_board")
 starter_towers = Array[ExtResource("s_tower")]([ExtResource("t0"), ExtResource("t1"), ExtResource("t2")])
 starter_cards = Array[ExtResource("s_card")]([ExtResource("c0"), ExtResource("c1"), ExtResource("c2"), ExtResource("c3"), ExtResource("c4"), ExtResource("c5"), ExtResource("c6"), ExtResource("c7"), ExtResource("c8"), ExtResource("c9"), ExtResource("c10"), ExtResource("c11"), ExtResource("c12")])
 starter_relics = Array[ExtResource("s_relic")]([ExtResource("r0"), ExtResource("r1"), ExtResource("r2"), ExtResource("r3"), ExtResource("r4")])
-unlocks = Array[ExtResource("s_unlock")]([ExtResource("u0"), ExtResource("u1"), ExtResource("u2"), ExtResource("u3"), ExtResource("u4"), ExtResource("u5"), ExtResource("u6"), ExtResource("u7"), ExtResource("u8"), ExtResource("u9"), ExtResource("u10"), ExtResource("u11"), ExtResource("u12"), ExtResource("u13"), ExtResource("u14"), ExtResource("u15"), ExtResource("u16"), ExtResource("u17"), ExtResource("u18")])
+unlocks = Array[ExtResource("s_unlock")]([ExtResource("u0"), ExtResource("u1"), ExtResource("u2"), ExtResource("u3"), ExtResource("u4"), ExtResource("u5"), ExtResource("u6"), ExtResource("u7"), ExtResource("u8"), ExtResource("u9"), ExtResource("u10"), ExtResource("u11"), ExtResource("u12"), ExtResource("u13"), ExtResource("u14"), ExtResource("u15"), ExtResource("u16"), ExtResource("u17"), ExtResource("u18"), ExtResource("u19"), ExtResource("u20"), ExtResource("u21"), ExtResource("u22"), ExtResource("u23"), ExtResource("u24")])

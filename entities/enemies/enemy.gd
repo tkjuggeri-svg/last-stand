@@ -50,6 +50,8 @@ var health_multiplier: float = 1.0
 var gold_multiplier: float = 1.0
 ## Its wave's pace: move speed = data.move_speed x this (before slows). Set by the spawner.
 var speed_multiplier: float = 1.0
+## The weather's speed (a blizzard's gale: Blizzard sets and resets it on every enemy alive).
+var weather_speed: float = 1.0
 
 var _is_finished: bool = false
 ## Where on its lane the enemy is (curve offset), worked out once per physics frame: finding the
@@ -200,7 +202,7 @@ func get_lane_progress() -> float:
 
 
 func get_move_speed() -> float:
-	return data.move_speed * speed_multiplier * _status.get_slow_factor()
+	return data.move_speed * speed_multiplier * weather_speed * _status.get_slow_factor()
 
 
 func is_slowed() -> bool:
@@ -267,6 +269,8 @@ func heal(amount: int) -> void:
 ## Slows movement to `factor` of normal speed for `duration` seconds. Slows never stack: the strongest
 ## factor applies and the longest remaining time is kept; when it runs out, speed is normal again.
 func apply_slow(factor: float, duration: float) -> void:
+	if data.slow_immune:
+		return
 	_status.apply_slow(factor, duration)
 
 

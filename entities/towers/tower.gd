@@ -64,6 +64,8 @@ var _pulse_left: float = 0.0
 var _souls: int = 0
 ## Watchtower: more range for the towers around it (TowerBuilder keeps it up to date); 0 = none.
 var _aura_range: float = 0.0
+## The weather's change to its range (a blizzard: negative); 0 = none.
+var _weather_range: float = 0.0
 var _sight: TowerSight = TowerSight.new()
 var _stats: TowerTier
 var _build_left: float = 0.0
@@ -204,6 +206,15 @@ func is_evolved() -> bool:
 
 func get_evolution() -> TowerEvolution:
 	return _evolution
+
+
+## The weather's change to this tower's range (Blizzard keeps it up to date).
+func set_weather_range(bonus: float) -> void:
+	if is_equal_approx(bonus, _weather_range):
+		return
+	_weather_range = bonus
+	_stats = _effective_stats()
+	_apply_range()
 
 
 ## Banner Guard's aura on this tower: `bonus` more pierce (TowerBuilder gives the best one in reach).
@@ -351,7 +362,7 @@ func _effective_stats() -> TowerTier:
 func _stats_from(base: TowerTier) -> TowerTier:
 	var stats: TowerTier = base.duplicate() as TowerTier
 	stats.fire_interval = base.fire_interval / (1.0 + _boost)
-	stats.attack_range = base.attack_range * (1.0 + _aura_range)
+	stats.attack_range = base.attack_range * (1.0 + _aura_range + _weather_range)
 	if modifiers != null:
 		_apply_modifiers(stats, base)
 	for synergy: TowerSynergy in _synergies:
@@ -363,7 +374,7 @@ func _stats_from(base: TowerTier) -> TowerTier:
 func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
 	stats.damage = modifiers.apply_int(base.damage, RunModifiers.tower_stats(RunModifiers.TOWER_DAMAGE, data.id))
 	stats.fire_interval = maxf(modifiers.apply(stats.fire_interval, RunModifiers.tower_stats(RunModifiers.TOWER_FIRE_INTERVAL, data.id)), 0.1)
-	stats.attack_range = modifiers.apply(base.attack_range * (1.0 + _aura_range), RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
+	stats.attack_range = modifiers.apply(base.attack_range * (1.0 + _aura_range + _weather_range), RunModifiers.tower_stats(RunModifiers.TOWER_RANGE, data.id))
 	stats.slow_duration = modifiers.apply(base.slow_duration, RunModifiers.tower_stats(RunModifiers.TOWER_SLOW_DURATION, data.id))
 	stats.pierce = modifiers.apply_int(base.pierce, RunModifiers.tower_stats(RunModifiers.TOWER_PIERCE, data.id))
 	stats.snare_hold = modifiers.apply(base.snare_hold, RunModifiers.tower_stats(RunModifiers.TOWER_SNARE_HOLD, data.id))

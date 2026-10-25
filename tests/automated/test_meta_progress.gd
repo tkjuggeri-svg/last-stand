@@ -55,7 +55,7 @@ func _test_board() -> void:
 		all_once = all_once and relics.count(relic) == 1
 	_check("the board: every tower, card and relic in the kit or in exactly one unlock", all_once)
 	_check("%d unlocks, %d shards in all, every requirement real" % [BOARD.unlocks.size(), total],
-		BOARD.unlocks.size() >= 15 and total >= 1000 and total <= 1400 and real_requirements)
+		BOARD.unlocks.size() >= 15 and total >= 1000 and total <= 1900 and real_requirements)
 	var power: bool = false
 	for unlock: UnlockData in BOARD.unlocks:
 		power = power or (unlock.perk != &"" and not unlock.perk in [&"muster", &"drill"])

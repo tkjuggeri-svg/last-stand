@@ -21,6 +21,18 @@ func _initialize() -> void:
 		[Vector2(-900, 0), Vector2(500, 0), Vector2(-850, -390), Vector2(-950, 300), Vector2(-920, -560)])
 	await _test_level("res://levels/ashen_keep.tscn", Rect2(-900, -500, 1300, 900),
 		[Vector2(-700, 100), Vector2(200, 100), Vector2(-500, -330), Vector2(-500, 250), Vector2(-780, -380)])
+	await _test_level("res://levels/ember_orchard.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, 0), Vector2(200, 80), Vector2(-400, -350), Vector2(-500, 250), Vector2(-780, -450)])
+	await _test_level("res://levels/frostbound_pass.tscn", Rect2(-1000, -600, 1500, 1100),
+		[Vector2(-780, -100), Vector2(300, 100), Vector2(-300, -450), Vector2(-300, 300), Vector2(-850, -450)])
+	await _test_level("res://levels/sunless_mines.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, 50), Vector2(200, 50), Vector2(-400, -400), Vector2(-500, 250), Vector2(-780, -380)])
+	await _test_level("res://levels/bone_quarry.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, -120), Vector2(200, 50), Vector2(-400, -400), Vector2(-500, 250), Vector2(-780, -380)])
+	await _test_level("res://levels/gloam_wood.tscn", Rect2(-1000, -600, 1500, 1100),
+		[Vector2(-800, -60), Vector2(300, 100), Vector2(-300, -500), Vector2(-300, 300), Vector2(-850, -480)])
+	await _test_level("res://levels/pale_cathedral.tscn", Rect2(-900, -500, 1300, 900),
+		[Vector2(-700, -130), Vector2(200, -80), Vector2(-500, -400), Vector2(-500, 330), Vector2(-780, -400)])
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
 

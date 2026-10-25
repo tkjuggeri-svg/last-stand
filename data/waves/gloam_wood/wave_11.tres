@@ -1,0 +1,115 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/brute.tres" id="2_brute"]
+[ext_resource type="Resource" path="res://data/enemies/cultist.tres" id="3_cultist"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="4_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hollow_treant.tres" id="5_hollow_treant"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="6_hound"]
+[ext_resource type="Resource" path="res://data/enemies/shieldbearer.tres" id="7_shieldbearer"]
+[ext_resource type="Resource" path="res://data/enemies/stalker.tres" id="8_stalker"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
+
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 42
+interval = 0.6
+
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 30
+interval = 0.7
+lane = 2
+
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_ghoul")
+count = 18
+interval = 0.8
+lane = 1
+delay = 14.0
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("6_hound")
+count = 36
+interval = 0.35
+lane = 1
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("7_shieldbearer")
+count = 6
+interval = 2.6
+delay = 4.0
+
+[sub_resource type="Resource" id="Resource_g5"]
+script = ExtResource("1_group")
+enemy = ExtResource("7_shieldbearer")
+count = 5
+interval = 2.8
+lane = 1
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_g6"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_hollow_treant")
+count = 6
+interval = 3.5
+lane = 2
+delay = 6.0
+
+[sub_resource type="Resource" id="Resource_g7"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_brute")
+count = 6
+interval = 4.0
+lane = 1
+delay = 18.0
+
+[sub_resource type="Resource" id="Resource_g8"]
+script = ExtResource("1_group")
+enemy = ExtResource("8_stalker")
+count = 4
+interval = 3.5
+delay = 10.0
+
+[sub_resource type="Resource" id="Resource_g9"]
+script = ExtResource("1_group")
+enemy = ExtResource("8_stalker")
+count = 3
+interval = 4.0
+lane = 2
+delay = 14.0
+
+[sub_resource type="Resource" id="Resource_g10"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 8
+interval = 1.5
+lane = 2
+delay = 6.0
+
+[sub_resource type="Resource" id="Resource_g11"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_cultist")
+count = 7
+interval = 1.5
+delay = 12.0
+
+[sub_resource type="Resource" id="Resource_g12"]
+script = ExtResource("1_group")
+enemy = ExtResource("8_stalker")
+count = 8
+interval = 1.4
+lane = 3
+delay = 6.0
+
+[resource]
+script = ExtResource("9_wave")
+health_multiplier = 2.95
+gold_multiplier = 0.24
+speed_multiplier = 1.14
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4"), SubResource("Resource_g5"), SubResource("Resource_g6"), SubResource("Resource_g7"), SubResource("Resource_g8"), SubResource("Resource_g9"), SubResource("Resource_g10"), SubResource("Resource_g11"), SubResource("Resource_g12")])

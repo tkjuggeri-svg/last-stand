@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/shieldbearer_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/inquisitor_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/mark_hero_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 2
+display_name = "Inquisitor"
+max_health = 150
+move_speed = 44.0
+gold_reward = 20
+fortress_damage = 16
+hero_damage = 16
+attack_range = 26.0
+attack_windup = 0.45
+attack_cooldown = 1.5
+body_radius = 13.0
+sprite_offset = Vector2(0, -11)
+health_bar_y = -38.0
+knockback_taken = 0.5
+hint = "marks you: while marked you take 30% more damage. Step out of its ring."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

@@ -29,6 +29,10 @@ static func for_profile(board: UnlockBoard, profile: SaveProfile) -> RunUnlocks:
 	run.cards = board.starter_cards.duplicate()
 	run.relics = board.starter_relics.duplicate()
 	for unlock: UnlockData in board.unlocks:
+		# Extra biomes open only when really bought, like perks: tests and tools play the same three
+		# biomes as always (a plain chapter 1, 2 and 3).
+		if profile == null or not profile.unlocks.has(String(unlock.id)):
+			run.locked_biomes.append_array(unlock.biomes)
 		if run.everything or profile.has_unlock(String(unlock.id)):
 			run.towers.append_array(unlock.towers)
 			run.cards.append_array(unlock.cards)
@@ -41,7 +45,6 @@ static func for_profile(board: UnlockBoard, profile: SaveProfile) -> RunUnlocks:
 				run.perks.append(unlock.perk)
 		else:
 			run.locked_events.append_array(unlock.events)
-			run.locked_biomes.append_array(unlock.biomes)
 	return run
 
 

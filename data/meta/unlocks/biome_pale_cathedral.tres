@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
+[ext_resource type="Resource" path="res://data/run/pale_cathedral.tres" id="r_chapter"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"biome_pale_cathedral"
+display_name = "The Pale Cathedral"
+description = "A new road for chapter 3: a cathedral whose altars heal the dead."
+cost = 120
+requires_first = "chapter:Chapter 3 reached"
+biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

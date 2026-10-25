@@ -54,6 +54,7 @@ func is_soul_fire() -> bool:
 
 
 func _ready() -> void:
+	add_to_group(Groups.BURN_ZONES)
 	_sprite.play(&"soul_burn" if is_soul_fire() else &"burn")
 
 

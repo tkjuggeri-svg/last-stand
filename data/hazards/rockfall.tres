@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="HazardData" format=3]
+
+[ext_resource type="Script" path="res://resources/hazard_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+first_delay = 14.0
+interval_min = 20.0
+interval_max = 26.0
+warning = 2.0
+radius = 50.0
+damage_to_enemies = 35
+damage_to_hero = 12
+count = 2
+effect_time = 8.0

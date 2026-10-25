@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/lich_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/pyre_warden_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/pyre_summon.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 6
+display_name = "The Pyre Warden"
+max_health = 2600
+move_speed = 28.0
+gold_reward = 130
+fortress_damage = 50
+hero_damage = 25
+attack_range = 32.0
+attack_windup = 0.7
+attack_cooldown = 2.4
+body_radius = 22.0
+sprite_offset = Vector2(0, -22)
+health_bar_y = -100.0
+burn_taken = 0.1
+is_boss = true
+glow_color = Color(1, 0.5, 0.2, 1)
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

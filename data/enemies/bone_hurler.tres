@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/cultist_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bone_hurler_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/shard_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 3
+display_name = "Bone Hurler"
+max_health = 45
+move_speed = 42.0
+gold_reward = 14
+fortress_damage = 10
+hero_damage = 10
+attack_range = 26.0
+body_radius = 12.0
+sprite_offset = Vector2(0, -12)
+health_bar_y = -40.0
+hint = "throws bone shards at your towers: the one it hits is silenced for a few seconds."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

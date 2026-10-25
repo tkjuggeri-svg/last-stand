@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass.tres" id="r_chapter"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"biome_frostbound_pass"
+display_name = "The Frostbound Pass"
+description = "A new road for chapter 2: a mountain pass where the gale shortens your towers' range."
+cost = 60
+requires_first = "chapter:Chapter 2 reached"
+biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

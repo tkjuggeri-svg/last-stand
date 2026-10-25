@@ -1,0 +1,52 @@
+[gd_resource type="Resource" script_class="ChapterData" format=3]
+
+[ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="PackedScene" path="res://levels/frostbound_pass.tscn" id="2_level"]
+[ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
+[ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
+[ext_resource type="Script" path="res://resources/event_data.gd" id="s_event"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_1.tres" id="b1"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_2.tres" id="b2"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_3.tres" id="b3"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_4.tres" id="b4"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_5.tres" id="b5"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/battle_6.tres" id="b6"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/elite_3.tres" id="e3"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/elite_4.tres" id="e4"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/elite_5.tres" id="e5"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/elite_6.tres" id="e6"]
+[ext_resource type="Resource" path="res://data/run/frostbound_pass/boss.tres" id="boss"]
+[ext_resource type="Resource" path="res://data/affixes/swift.tres" id="a_swift"]
+[ext_resource type="Resource" path="res://data/affixes/warded.tres" id="a_warded"]
+[ext_resource type="Resource" path="res://data/affixes/swarming.tres" id="a_swarming"]
+[ext_resource type="Resource" path="res://data/affixes/siege.tres" id="a_siege"]
+[ext_resource type="Resource" path="res://data/affixes/ironclad.tres" id="a_ironclad"]
+[ext_resource type="Resource" path="res://data/events/gravediggers_cart.tres" id="ev_gravediggers_cart"]
+[ext_resource type="Resource" path="res://data/events/wounded_knight.tres" id="ev_wounded_knight"]
+[ext_resource type="Resource" path="res://data/events/flooded_crypt.tres" id="ev_flooded_crypt"]
+[ext_resource type="Resource" path="res://data/events/the_tinker.tres" id="ev_the_tinker"]
+[ext_resource type="Resource" path="res://data/events/night_fog.tres" id="ev_night_fog"]
+[ext_resource type="Resource" path="res://data/events/drowned_reliquary.tres" id="ev_drowned_reliquary"]
+[ext_resource type="Resource" path="res://data/events/shrine_blood.tres" id="ev_shrine_blood"]
+[ext_resource type="Resource" path="res://data/events/shrine_ash.tres" id="ev_shrine_ash"]
+[ext_resource type="Resource" path="res://data/events/shrine_coins.tres" id="ev_shrine_coins"]
+[ext_resource type="Resource" path="res://data/events/shrine_hollow_walls.tres" id="ev_shrine_hollow_walls"]
+[ext_resource type="Resource" path="res://data/events/shrine_whispers.tres" id="ev_shrine_whispers"]
+
+[resource]
+script = ExtResource("1_chapter")
+id = &"frostbound_pass"
+display_name = "The Frostbound Pass"
+tier = 2
+level_scene = ExtResource("2_level")
+blurb = "A mountain pass under a grey sky. One long, winding road and two short ones."
+mechanic_text = "Blizzard: now and then a gale blows for 8 s: your towers lose a fifth of their range and the dead walk faster."
+difficulty_note = "medium: slows are weaker against the Rime Brutes, and the long road gives time"
+battles = Array[ExtResource("s_enc")]([ExtResource("b1"), ExtResource("b2"), ExtResource("b3"), ExtResource("b4"), ExtResource("b5"), ExtResource("b6")])
+elites = Array[ExtResource("s_enc")]([ExtResource("e3"), ExtResource("e4"), ExtResource("e5"), ExtResource("e6")])
+affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_warded"), ExtResource("a_swarming"), ExtResource("a_siege"), ExtResource("a_ironclad")])
+boss = ExtResource("boss")
+fight_health_scale = 1.6
+elite_weight = 18.0
+events = Array[ExtResource("s_event")]([ExtResource("ev_gravediggers_cart"), ExtResource("ev_wounded_knight"), ExtResource("ev_flooded_crypt"), ExtResource("ev_the_tinker"), ExtResource("ev_night_fog"), ExtResource("ev_drowned_reliquary")])
+shrines = Array[ExtResource("s_event")]([ExtResource("ev_shrine_blood"), ExtResource("ev_shrine_ash"), ExtResource("ev_shrine_coins"), ExtResource("ev_shrine_hollow_walls"), ExtResource("ev_shrine_whispers")])

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EncounterData" format=3]
+
+[ext_resource type="Script" path="res://resources/encounter_data.gd" id="1_enc"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="s_wave"]
+[ext_resource type="Resource" path="res://data/waves/gloam_wood/wave_07.tres" id="w0"]
+[ext_resource type="Resource" path="res://data/waves/gloam_wood/wave_08.tres" id="w1"]
+
+[resource]
+script = ExtResource("1_enc")
+row = 4
+waves = Array[ExtResource("s_wave")]([ExtResource("w0"), ExtResource("w1")])

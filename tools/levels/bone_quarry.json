@@ -1,0 +1,157 @@
+{
+ "floor": [
+  -900,
+  -500,
+  400,
+  400
+ ],
+ "hero": [
+  -200,
+  -30
+ ],
+ "respawn": [
+  100,
+  100
+ ],
+ "prop_frames": 8,
+ "prop_count": 50,
+ "gate_glow": "0.9, 0.8, 0.55, 1",
+ "id": "bone_quarry",
+ "node": "BoneQuarry",
+ "waves": "bone_quarry",
+ "lanes": [
+  [
+   [
+    -860,
+    -300
+   ],
+   [
+    -500,
+    -300
+   ],
+   [
+    -500,
+    -60
+   ],
+   [
+    -200,
+    -60
+   ],
+   [
+    -200,
+    0
+   ],
+   [
+    -48,
+    0
+   ]
+  ],
+  [
+   [
+    -860,
+    260
+   ],
+   [
+    -480,
+    260
+   ],
+   [
+    -480,
+    60
+   ],
+   [
+    -200,
+    60
+   ],
+   [
+    -200,
+    0
+   ],
+   [
+    -48,
+    0
+   ]
+  ],
+  [
+   [
+    -80,
+    -460
+   ],
+   [
+    -80,
+    -200
+   ],
+   [
+    0,
+    -200
+   ],
+   [
+    0,
+    -48
+   ]
+  ]
+ ],
+ "slots": [
+  [
+   -700,
+   -180
+  ],
+  [
+   -380,
+   -190
+  ],
+  [
+   -200,
+   -170
+  ],
+  [
+   110,
+   -130
+  ],
+  [
+   -350,
+   0
+  ],
+  [
+   130,
+   100
+  ],
+  [
+   -650,
+   80
+  ],
+  [
+   -100,
+   150
+  ]
+ ],
+ "backdrop": "0.06, 0.055, 0.05, 1",
+ "floor_color": "0.24, 0.22, 0.2, 1",
+ "modulate": "0.84, 0.78, 0.72, 1",
+ "fog": "0.7, 0.64, 0.56, 1",
+ "fog_density": 0.24,
+ "seed": 51,
+ "particles": {
+  "amount": 22,
+  "lifetime": 7.0,
+  "direction": "0.3, -0.6",
+  "spread": 40,
+  "gravity": "0, -3",
+  "v_min": 4.0,
+  "v_max": 10.0,
+  "color": "0.8, 0.74, 0.62, 0.6"
+ },
+ "ext": [
+  [
+   "res://levels/hazards/cave_ins.gd",
+   "Script"
+  ],
+  [
+   "res://data/hazards/rockfall.tres",
+   "Resource"
+  ]
+ ],
+ "hazards": [
+  "[node name=\"Rockfall\" type=\"Node\" parent=\".\" node_paths=PackedStringArray(\"spawner\", \"hero\", \"effects\")]\nscript = ExtResource(\"hz0\")\ndata = ExtResource(\"hz1\")\nspawner = NodePath(\"../WaveSpawner\")\nhero = NodePath(\"../Hero\")\neffects = NodePath(\"../Effects\")\n"
+ ]
+}

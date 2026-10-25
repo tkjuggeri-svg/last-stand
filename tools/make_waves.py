@@ -3,9 +3,13 @@
 # gold. Run from the project folder: python3 tools/make_waves.py
 # The .tres files are the game's data; edit this table (not the files) and rerun, so the HP curve and
 # the gold scale (GOLD_TARGET: the kill gold each wave's regulars pay) stay consistent.
-HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "bloater": 110, "mire_priest": 34, "shieldbearer": 90, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0, "siege_ram": 300, "black_knight": 160, "fallen_marshal": 0}
+HP = {"ghoul": 30, "hound": 15, "brute": 150, "cultist": 20, "bloater": 110, "mire_priest": 34, "shieldbearer": 90, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0, "siege_ram": 300, "black_knight": 160, "fallen_marshal": 0,
+      "cinder_ghoul": 30, "scarecrow": 120, "pyre_warden": 0, "frost_wraith": 40, "rime_brute": 170, "winter_warden": 0, "burrower": 60, "lamp_wight": 50, "deep_warden": 0,
+      "bone_hurler": 45, "rubble_brute": 210, "quarry_colossus": 0, "stalker": 55, "hollow_treant": 260, "hollow_stag": 0, "chorister": 45, "inquisitor": 150, "pale_bishop": 0}
 GOLD = {"ghoul": 8, "hound": 4, "brute": 20, "cultist": 10, "bloater": 14, "mire_priest": 16, "shieldbearer": 14, "gravelord": 0, "colossus": 0, "lich": 0, "tollkeeper": 0,
-        "siege_ram": 24, "black_knight": 18, "fallen_marshal": 0}
+        "siege_ram": 24, "black_knight": 18, "fallen_marshal": 0, "cinder_ghoul": 9, "scarecrow": 16, "pyre_warden": 0,
+        "frost_wraith": 18, "rime_brute": 22, "winter_warden": 0, "burrower": 12, "lamp_wight": 18, "deep_warden": 0,
+        "bone_hurler": 14, "rubble_brute": 24, "quarry_colossus": 0, "stalker": 14, "hollow_treant": 26, "hollow_stag": 0, "chorister": 18, "inquisitor": 20, "pale_bishop": 0}
 # Kill gold of each wave's regulars (bosses pay their own): None = unscaled (waves 1-5).
 GOLD_TARGET = [None, None, None, None, None, 250, 260, 280, 300, 270, 310, 320, 330, 340, 350]
 # Move-speed scale of each wave's regulars (bosses move as authored).
@@ -90,8 +94,83 @@ def wave_3(n):
 WAVES_3 = [(round(0.6 + 0.18 * (n - 1), 2), wave_3(n)) for n in range(1, 16)]
 GOLD_TARGET_3 = [380 + 12 * n for n in range(15)]
 SPEED_3 = [round(1.1 + 0.011 * n, 3) for n in range(15)]
+# M10 stage 2: the second biome of each tier, made from its tier's waves.
+# Ember Orchard (tier 1, three roads): a third of each big Ghoul group are Cinder Ghouls, Scarecrows join from
+# wave 3, the Pyre Warden replaces the Lich Warden in wave 15.
+WAVES_E = []
+for n, (mult, groups) in enumerate(WAVES, 1):
+    out = []
+    for (e, count, interval, lane, delay) in groups:
+        if e == "ghoul" and n >= 2 and count >= 8:
+            k = count // 3
+            out += [("ghoul", count - k, interval, lane, delay), ("cinder_ghoul", k, interval, lane, delay)]
+        else:
+            out.append(("pyre_warden" if e == "lich" else e, count, interval, lane, delay))
+    if n >= 3:
+        out.append(("scarecrow", 1 + n // 5, 8.0, W if n % 2 else NE, 5))
+    WAVES_E.append((mult, out))
+# Frostbound Pass (tier 2): the Marsh's table with the Bloaters as Rime Brutes, the Mire Priests as Frost
+# Wraiths and the Winter Warden for the Tollkeeper.
+FROST_MAP = {"bloater": "rime_brute", "mire_priest": "frost_wraith", "tollkeeper": "winter_warden"}
+WAVES_F = [(m, [(FROST_MAP.get(e, e), c, i, l, d) for (e, c, i, l, d) in groups]) for m, groups in WAVES_2]
+# Sunless Mines (tier 3, three roads: lanes 0-2): the Keep's rule without Rams and Knights, with Burrowers from
+# wave 2, Lamp Wights from wave 4 and the Deep Warden in wave 15.
+def wave_mines(n):
+    t = n - 1
+    groups = [g for g in wave_3(n) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
+    groups = [(e, c, i, min(l, 2), d) for (e, c, i, l, d) in groups]
+    if n >= 2:
+        groups.append(("burrower", 3 + t // 2, 3.0, [W, N, E][n % 3], 5))
+    if n >= 4:
+        groups.append(("lamp_wight", 2 + t // 4, 5.0, [N, E, W][n % 3], 8))
+    if n == 15:
+        groups.insert(0, ("deep_warden", 1, 1.0, W, 14))
+    return groups
+
+
+WAVES_M = [(round(0.6 + 0.18 * (n - 1), 2), wave_mines(n)) for n in range(1, 16)]
+# M10 stage 3: the third biome of each tier.
+# Bone Quarry (tier 1): Brutes are Rubble Brutes, half the Cultists Bone Hurlers, the Quarry Colossus leads wave 15.
+WAVES_Q = []
+for n, (mult, groups) in enumerate(WAVES, 1):
+    out = []
+    for (e, count, interval, lane, delay) in groups:
+        if e == "cultist" and n >= 3 and count >= 3:
+            k = count // 2
+            out += [("cultist", count - k, interval, lane, delay), ("bone_hurler", k, interval, lane, delay)]
+        else:
+            out.append(({"brute": "rubble_brute", "lich": "quarry_colossus"}.get(e, e), count, interval, lane, delay))
+    WAVES_Q.append((mult, out))
+# Gloam Wood (tier 2, four roads): the Marsh's table with Treants and Stalkers for its own dead, the third road
+# of every even wave moved to the fourth, and a few more Stalkers from wave 3.
+GLOAM_MAP = {"bloater": "hollow_treant", "mire_priest": "stalker", "tollkeeper": "hollow_stag"}
+WAVES_G = []
+for n, (mult, groups) in enumerate(WAVES_2, 1):
+    out = [(GLOAM_MAP.get(e, e), c, i, 3 if (l == 2 and n % 2 == 0) else l, d) for (e, c, i, l, d) in groups]
+    if n >= 3:
+        out.append(("stalker", 3 + n // 2, 1.4, [N, E, SW][n % 3], 6))
+    WAVES_G.append((mult, out))
+# Pale Cathedral (tier 3, three aisles): the Keep's rule with Choristers from wave 2, Inquisitors from wave 4 and
+# the Pale Bishop in wave 15.
+def wave_cathedral(n):
+    t = n - 1
+    groups = [g for g in wave_3(n) if g[0] not in ("siege_ram", "black_knight", "fallen_marshal")]
+    groups = [(e, c, i, min(l, 2), d) for (e, c, i, l, d) in groups]
+    if n >= 2:
+        groups.append(("chorister", 2 + t // 4, 5.0, [W, N, E][n % 3], 6))
+    if n >= 4:
+        groups.append(("inquisitor", 2 + t // 3, 4.0, [E, W, N][n % 3], 10))
+    if n == 15:
+        groups.insert(0, ("pale_bishop", 1, 1.0, W, 14))
+    return groups
+
+
+WAVES_P = [(round(0.6 + 0.18 * (n - 1), 2), wave_cathedral(n)) for n in range(1, 16)]
 CHAPTERS = [("data/waves", WAVES, GOLD_TARGET, SPEED), ("data/waves/chapter_2", WAVES_2, GOLD_TARGET_2, SPEED_2),
-            ("data/waves/chapter_3", WAVES_3, GOLD_TARGET_3, SPEED_3)]
+            ("data/waves/chapter_3", WAVES_3, GOLD_TARGET_3, SPEED_3), ("data/waves/ember_orchard", WAVES_E, GOLD_TARGET, SPEED),
+            ("data/waves/frostbound_pass", WAVES_F, GOLD_TARGET_2, SPEED_2), ("data/waves/sunless_mines", WAVES_M, GOLD_TARGET_3, SPEED_3),
+            ("data/waves/bone_quarry", WAVES_Q, GOLD_TARGET, SPEED), ("data/waves/gloam_wood", WAVES_G, GOLD_TARGET_2, SPEED_2),
+            ("data/waves/pale_cathedral", WAVES_P, GOLD_TARGET_3, SPEED_3)]
 
 import os
 for folder, WAVES, GOLD_TARGET, SPEED in CHAPTERS:

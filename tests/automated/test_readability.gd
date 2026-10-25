@@ -12,6 +12,12 @@ const GROUNDS: Dictionary = {
 	"the Crypt Road": "res://assets/sprites/environment/prototype_arena_ground.png",
 	"the Drowned Marsh": "res://assets/sprites/environment/drowned_marsh_ground.png",
 	"the Ashen Keep": "res://assets/sprites/environment/ashen_keep_ground.png",
+	"the Ember Orchard": "res://assets/sprites/environment/ember_orchard_ground.png",
+	"the Frostbound Pass": "res://assets/sprites/environment/frostbound_pass_ground.png",
+	"the Sunless Mines": "res://assets/sprites/environment/sunless_mines_ground.png",
+	"the Bone Quarry": "res://assets/sprites/environment/bone_quarry_ground.png",
+	"the Gloam Wood": "res://assets/sprites/environment/gloam_wood_ground.png",
+	"the Pale Cathedral": "res://assets/sprites/environment/pale_cathedral_ground.png",
 }
 ## Enemies of chapter 2 only (measured on its ground alone).
 const MARSH_ONLY: Array[String] = ["bloater", "bloatling", "mire_priest", "shieldbearer", "tollkeeper"]

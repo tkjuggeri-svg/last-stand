@@ -3,7 +3,7 @@ extends SceneTree
 ## not a pass/fail test): where it ended (won, or lost in chapter c at row r), the fights and waves
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
-##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--quiet]
+##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--biomes=<id>,<id>,<id>] [--quiet]
 ##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
@@ -88,6 +88,8 @@ const MAX_SECONDS: float = 3600.0
 
 var _path: String = "balanced"
 var _plan_name: String = "mixed"
+## --biomes=a,b,c: the run crosses exactly these chapters (one per tier, by id) instead of the default three.
+var _biomes: Array[String] = []
 var _hero_mode: String = "bot"
 ## --archetype=<tag>: the card policy takes a card (or relic) of this tag whenever one is offered, to see
 ## whether an archetype is much stronger or weaker than the rest.
@@ -127,6 +129,9 @@ func _initialize() -> void:
 			_path = arg.trim_prefix("--path=")
 		elif arg.begins_with("--plan="):
 			_plan_name = arg.trim_prefix("--plan=")
+		elif arg.begins_with("--biomes="):
+			for id: String in arg.trim_prefix("--biomes=").split(","):
+				_biomes.append(id)
 		elif arg.begins_with("--archetype="):
 			_archetype = StringName(arg.trim_prefix("--archetype="))
 		elif arg.begins_with("--hero-kind="):
@@ -176,6 +181,13 @@ func _play(seed_value: int) -> String:
 	(root.get_node("SaveManager") as SaveManagerNode).profile.hero = _hero_kind
 	var main: Node = (load(MAIN) as PackedScene).instantiate()
 	main.set("run_seed", seed_value)
+	if not _biomes.is_empty():
+		var full: RunData = load("res://data/run/run.tres")
+		var custom: RunData = RunData.new()
+		custom.heroes = full.heroes
+		for id: String in _biomes:
+			custom.chapters.append(full.find_chapter(StringName(id)))
+		main.set("run_data", custom)
 	root.add_child(main)
 	await physics_frame
 	var stats: Dictionary = {"fights": 0, "waves": 0, "evos": 0, "income": [0, 0], "taken": []}

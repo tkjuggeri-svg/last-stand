@@ -59,6 +59,132 @@ const FALLEN_MARSHAL: Dictionary = {
 	"anims": COLOSSUS["anims"],
 }
 
+const CINDER_GHOUL: Dictionary = {
+	"png": "res://assets/sprites/enemies/cinder_ghoul.png",
+	"frames": "res://entities/enemies/cinder_ghoul_frames.tres",
+	"size": GHOUL["size"],
+	"anims": GHOUL["anims"],
+}
+
+const SCARECROW: Dictionary = {
+	"png": "res://assets/sprites/enemies/scarecrow.png",
+	"frames": "res://entities/enemies/scarecrow_frames.tres",
+	"size": BRUTE["size"],
+	"anims": BRUTE["anims"],
+}
+
+const PYRE_WARDEN: Dictionary = {
+	"png": "res://assets/sprites/enemies/pyre_warden.png",
+	"frames": "res://entities/enemies/bosses/pyre_warden_frames.tres",
+	"size": LICH["size"],
+	"anims": LICH["anims"],
+}
+
+const FROST_WRAITH: Dictionary = {
+	"png": "res://assets/sprites/enemies/frost_wraith.png",
+	"frames": "res://entities/enemies/frost_wraith_frames.tres",
+	"size": CULTIST["size"],
+	"anims": CULTIST["anims"],
+}
+
+const RIME_BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/rime_brute.png",
+	"frames": "res://entities/enemies/rime_brute_frames.tres",
+	"size": BRUTE["size"],
+	"anims": BRUTE["anims"],
+}
+
+const WINTER_WARDEN: Dictionary = {
+	"png": "res://assets/sprites/enemies/winter_warden.png",
+	"frames": "res://entities/enemies/bosses/winter_warden_frames.tres",
+	"size": LICH["size"],
+	"anims": LICH["anims"],
+}
+
+const BURROWER: Dictionary = {
+	"png": "res://assets/sprites/enemies/burrower.png",
+	"frames": "res://entities/enemies/burrower_frames.tres",
+	"size": HOUND["size"],
+	"anims": HOUND["anims"],
+}
+
+const LAMP_WIGHT: Dictionary = {
+	"png": "res://assets/sprites/enemies/lamp_wight.png",
+	"frames": "res://entities/enemies/lamp_wight_frames.tres",
+	"size": MIRE_PRIEST["size"],
+	"anims": MIRE_PRIEST["anims"],
+}
+
+const DEEP_WARDEN: Dictionary = {
+	"png": "res://assets/sprites/enemies/deep_warden.png",
+	"frames": "res://entities/enemies/bosses/deep_warden_frames.tres",
+	"size": TOLLKEEPER["size"],
+	"anims": TOLLKEEPER["anims"],
+}
+
+const BONE_HURLER: Dictionary = {
+	"png": "res://assets/sprites/enemies/bone_hurler.png",
+	"frames": "res://entities/enemies/bone_hurler_frames.tres",
+	"size": CULTIST["size"],
+	"anims": CULTIST["anims"],
+}
+
+const RUBBLE_BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/rubble_brute.png",
+	"frames": "res://entities/enemies/rubble_brute_frames.tres",
+	"size": BRUTE["size"],
+	"anims": BRUTE["anims"],
+}
+
+const QUARRY_COLOSSUS: Dictionary = {
+	"png": "res://assets/sprites/enemies/quarry_colossus.png",
+	"frames": "res://entities/enemies/bosses/quarry_colossus_frames.tres",
+	"size": COLOSSUS["size"],
+	"anims": COLOSSUS["anims"],
+}
+
+const STALKER: Dictionary = {
+	"png": "res://assets/sprites/enemies/stalker.png",
+	"frames": "res://entities/enemies/stalker_frames.tres",
+	"size": HOUND["size"],
+	"anims": HOUND["anims"],
+}
+
+const HOLLOW_TREANT: Dictionary = {
+	"png": "res://assets/sprites/enemies/hollow_treant.png",
+	"frames": "res://entities/enemies/hollow_treant_frames.tres",
+	"size": BRUTE["size"],
+	"anims": BRUTE["anims"],
+}
+
+const HOLLOW_STAG: Dictionary = {
+	"png": "res://assets/sprites/enemies/hollow_stag.png",
+	"frames": "res://entities/enemies/bosses/hollow_stag_frames.tres",
+	"size": GRAVELORD["size"],
+	"anims": GRAVELORD["anims"],
+}
+
+const CHORISTER: Dictionary = {
+	"png": "res://assets/sprites/enemies/chorister.png",
+	"frames": "res://entities/enemies/chorister_frames.tres",
+	"size": MIRE_PRIEST["size"],
+	"anims": MIRE_PRIEST["anims"],
+}
+
+const INQUISITOR: Dictionary = {
+	"png": "res://assets/sprites/enemies/inquisitor.png",
+	"frames": "res://entities/enemies/inquisitor_frames.tres",
+	"size": SHIELDBEARER["size"],
+	"anims": SHIELDBEARER["anims"],
+}
+
+const PALE_BISHOP: Dictionary = {
+	"png": "res://assets/sprites/enemies/pale_bishop.png",
+	"frames": "res://entities/enemies/bosses/pale_bishop_frames.tres",
+	"size": LICH["size"],
+	"anims": LICH["anims"],
+}
+
 ## The Necromancer (M9): the Knight's layout again.
 const NECROMANCER: Dictionary = {
 	"png": "res://assets/sprites/hero/necromancer.png",
@@ -627,7 +753,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {

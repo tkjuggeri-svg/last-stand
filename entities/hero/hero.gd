@@ -58,6 +58,11 @@ const DEATH_SHAKE: Vector2 = Vector2(5.0, 0.4)
 ## Extra damage the hero deals where it stands, as a share (a Watchtower's: set by the Level).
 var damage_bonus_at: Callable = Callable()
 var _bolts_fired: int = 0
+## A chill (a Frost Wraith's): the share of its speed the hero keeps, and for how much longer.
+var _chill_factor: float = 1.0
+var _chill_left: float = 0.0
+## Held in place (roots): the seconds left; a dash breaks free.
+var _held_left: float = 0.0
 var _attack_time_left: float = 0.0
 ## The last direction the hero moved in: a dash from standing still goes this way.
 var _last_direction: Vector2 = Vector2.DOWN
@@ -170,9 +175,34 @@ func dash(direction: Vector2) -> bool:
 		return false
 	if not _dash.try_dash(direction if not direction.is_zero_approx() else _last_direction):
 		return false
+	_held_left = 0.0
 	_hurtbox.make_invulnerable(_dash.get_invulnerability())
 	Sfx.play(self, &"hero_dash")
 	return true
+
+
+## Held in place for `seconds` (a Hollow Stag's roots): no walking; a dash breaks free.
+func hold(seconds: float) -> void:
+	_held_left = maxf(_held_left, seconds)
+
+
+func is_held() -> bool:
+	return _held_left > 0.0
+
+
+## Chilled for `seconds`: the hero keeps `factor` of its speed (the strongest chill counts).
+func chill(seconds: float, factor: float) -> void:
+	if _chill_left <= 0.0 or factor < _chill_factor:
+		_chill_factor = factor
+	_chill_left = maxf(_chill_left, seconds)
+
+
+func is_chilled() -> bool:
+	return _chill_left > 0.0
+
+
+func _chill_speed() -> float:
+	return _chill_factor if _chill_left > 0.0 else 1.0
 
 
 ## Wading in water that leaves it `speed_factor` of its speed (1 = back on dry land).
@@ -250,7 +280,9 @@ func _move() -> void:
 	var input_direction: Vector2 = _input_direction()
 	if not input_direction.is_zero_approx():
 		_last_direction = input_direction
-	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED]) * _wading_speed
+	velocity = input_direction * RunModifiers.value(modifiers, move_speed, [RunModifiers.HERO_MOVE_SPEED]) * _wading_speed * _chill_speed()
+	if _held_left > 0.0:
+		velocity = Vector2.ZERO
 	move_and_slide()
 
 
@@ -260,6 +292,8 @@ func _input_direction() -> Vector2:
 
 
 func _update_attack_timers(delta: float) -> void:
+	_chill_left = maxf(_chill_left - delta, 0.0)
+	_held_left = maxf(_held_left - delta, 0.0)
 	_cooldown_left = maxf(_cooldown_left - delta, 0.0)
 	if _attack_time_left > 0.0:
 		_attack_time_left -= delta

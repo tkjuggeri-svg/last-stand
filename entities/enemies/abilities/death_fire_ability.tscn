@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/abilities/death_fire_ability.gd" id="1_ability"]
+
+[node name="DeathFireAbility" type="Node2D"]
+script = ExtResource("1_ability")

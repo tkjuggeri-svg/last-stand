@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/hound_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/burrower_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/burrow_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 1
+display_name = "Burrower"
+max_health = 60
+move_speed = 58.0
+gold_reward = 12
+fortress_damage = 12
+hero_damage = 12
+attack_range = 22.0
+attack_windup = 0.3
+attack_cooldown = 1.1
+body_radius = 12.0
+sprite_offset = Vector2(0, -10)
+health_bar_y = -34.0
+hint = "digs under the field and comes up further on, shaking the tower nearest to it."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

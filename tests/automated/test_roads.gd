@@ -47,7 +47,7 @@ func _test_tiers() -> void:
 	var data: RunData = _run_data()
 	_check("a run has one chapter per tier (3)", data.tier_count() == 3 and data.biomes_of_tier(1).size() == 3 and data.biomes_of_tier(2).size() == 2)
 	_check("the real run: each chapter is its own tier (tier 0 means its place)", RUN.tier_of(RUN.chapters[0]) == 1 and RUN.tier_of(RUN.chapters[1]) == 2
-		and RUN.tier_count() == RUN.chapters.size())
+		and RUN.tier_count() == 3 and RUN.biomes_of_tier(1).size() == 3 and RUN.biomes_of_tier(3).size() == 3)
 
 
 func _test_draw() -> void:

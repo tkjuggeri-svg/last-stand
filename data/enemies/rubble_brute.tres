@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/brute_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/rubble_brute_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+role = 2
+display_name = "Rubble Brute"
+max_health = 210
+move_speed = 36.0
+gold_reward = 24
+fortress_damage = 24
+hero_damage = 18
+attack_range = 30.0
+attack_windup = 0.6
+attack_cooldown = 1.8
+body_radius = 17.0
+sprite_offset = Vector2(0, -15)
+health_bar_y = -54.0
+burn_taken = 0.5
+knockback_taken = 0.2
+hint = "a wall of stone: it takes a lot to bring it down."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")

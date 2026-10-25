@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/lich_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/winter_warden_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/freeze_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 6
+display_name = "The Winter Warden"
+max_health = 3000
+move_speed = 28.0
+gold_reward = 140
+fortress_damage = 55
+hero_damage = 26
+attack_range = 32.0
+attack_windup = 0.7
+attack_cooldown = 2.4
+body_radius = 22.0
+sprite_offset = Vector2(0, -22)
+health_bar_y = -100.0
+burn_taken = 1.2
+is_boss = true
+glow_color = Color(0.55, 0.85, 1, 1)
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

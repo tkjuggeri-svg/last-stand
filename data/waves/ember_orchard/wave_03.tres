@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="WaveData" format=3]
+
+[ext_resource type="Script" path="res://resources/spawn_group.gd" id="1_group"]
+[ext_resource type="Resource" path="res://data/enemies/cinder_ghoul.tres" id="2_cinder_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="3_ghoul"]
+[ext_resource type="Resource" path="res://data/enemies/hound.tres" id="4_hound"]
+[ext_resource type="Resource" path="res://data/enemies/scarecrow.tres" id="5_scarecrow"]
+[ext_resource type="Script" path="res://resources/wave_data.gd" id="9_wave"]
+
+[sub_resource type="Resource" id="Resource_g0"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_ghoul")
+count = 6
+interval = 1.4
+
+[sub_resource type="Resource" id="Resource_g1"]
+script = ExtResource("1_group")
+enemy = ExtResource("2_cinder_ghoul")
+count = 2
+interval = 1.4
+
+[sub_resource type="Resource" id="Resource_g2"]
+script = ExtResource("1_group")
+enemy = ExtResource("4_hound")
+count = 6
+interval = 0.7
+lane = 1
+delay = 5.0
+
+[sub_resource type="Resource" id="Resource_g3"]
+script = ExtResource("1_group")
+enemy = ExtResource("3_ghoul")
+count = 3
+interval = 2.0
+lane = 2
+delay = 8.0
+
+[sub_resource type="Resource" id="Resource_g4"]
+script = ExtResource("1_group")
+enemy = ExtResource("5_scarecrow")
+count = 1
+interval = 8.0
+delay = 5.0
+
+[resource]
+script = ExtResource("9_wave")
+groups = Array[ExtResource("1_group")]([SubResource("Resource_g0"), SubResource("Resource_g1"), SubResource("Resource_g2"), SubResource("Resource_g3"), SubResource("Resource_g4")])

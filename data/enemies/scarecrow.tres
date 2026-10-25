@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/brute_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/scarecrow_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_data")
+role = 2
+display_name = "Scarecrow"
+max_health = 120
+move_speed = 28.0
+gold_reward = 16
+fortress_damage = 12
+hero_damage = 14
+attack_range = 28.0
+attack_windup = 0.6
+attack_cooldown = 2.0
+body_radius = 16.0
+sprite_offset = Vector2(0, -14)
+health_bar_y = -52.0
+knockback_taken = 0.5
+decoy = true
+hint = "slow, and every tower aims at it first: it covers the others."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")

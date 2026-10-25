@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="UnlockData" format=3]
+
+[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]
+[ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]
+[ext_resource type="Resource" path="res://data/run/bone_quarry.tres" id="r_chapter"]
+
+[resource]
+script = ExtResource("1_unlock")
+id = &"biome_bone_quarry"
+display_name = "The Bone Quarry"
+description = "A new road for chapter 1: a quarry where boulders block the roads."
+cost = 60
+requires_first = "boss:The Lich Warden"
+biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

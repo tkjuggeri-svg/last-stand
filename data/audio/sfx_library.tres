@@ -1,521 +1,530 @@
 [gd_resource type="Resource" script_class="SfxLibrary" format=3]
 
-[ext_resource type="Script" path="res://resources/sfx_entry.gd" id="1_ninw6"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_hover.wav" id="2_f8owf"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_click.wav" id="3_cl76p"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_confirm.wav" id="4_vxmc5"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_back.wav" id="5_2gcm8"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_error.wav" id="6_rrdpi"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/gold.wav" id="7_d7x1q"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/reroll.wav" id="8_utyte"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/upgrade_pick.wav" id="9_upfti"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/relic_pick.wav" id="10_h644q"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/map_select.wav" id="11_5rm34"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/tip.wav" id="12_svkeo"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wave_start.wav" id="13_g5r47"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/wave_clear.wav" id="14_q6icl"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/chapter_clear.wav" id="15_elgrm"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/victory.wav" id="16_htur0"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/game_over.wav" id="17_ua2ib"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_swing.wav" id="18_bjetl"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_hit.wav" id="19_kvpuq"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_hurt.wav" id="20_i5fge"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_dash.wav" id="21_rbsw8"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_death.wav" id="22_rtyv1"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_respawn.wav" id="23_x3oi5"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_hit.wav" id="24_1mo4b"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_death.wav" id="25_4wmym"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_burst.wav" id="26_3j3rf"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_cast.wav" id="27_eahq1"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_heal.wav" id="28_4vyld"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/shield_block.wav" id="29_guvd3"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/fortress_hit.wav" id="30_fge4p"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_appear.wav" id="31_fvs7c"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_warning.wav" id="32_okfjg"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_bell.wav" id="33_ekbd7"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_charge.wav" id="34_c401e"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_ward.wav" id="35_141v3"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_summon.wav" id="36_h8kk3"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_death.wav" id="37_k6pnq"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/archer_shot.wav" id="38_ktcbj"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/cannon_shot.wav" id="39_chs2p"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/explosion.wav" id="40_7i3j8"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/frost_shot.wav" id="41_el0pr"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/frost_impact.wav" id="42_dtnym"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/brazier_shot.wav" id="43_ckbk2"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/ballista_shot.wav" id="44_kbeqv"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_bolt.wav" id="45_5mg06"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_soul_bolt.wav" id="46_5pa7r"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/minion_raise.wav" id="47_j28ro"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/minion_strike.wav" id="48_dvjng"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/trap_throw.wav" id="49_7envc"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/snare_spring.wav" id="50_jgjbq"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/hawk_dive.wav" id="51_qoahu"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_build.wav" id="52_4qgmc"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_upgrade.wav" id="53_8l0na"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_sell.wav" id="54_dnwrm"]
-[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_evolve.wav" id="55_v6ep4"]
-[ext_resource type="Script" path="res://resources/sfx_library.gd" id="56_ceh8a"]
+[ext_resource type="Script" path="res://resources/sfx_entry.gd" id="1_f8owf"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_hover.wav" id="2_cl76p"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_click.wav" id="3_vxmc5"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_confirm.wav" id="4_2gcm8"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_back.wav" id="5_rrdpi"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ui_error.wav" id="6_d7x1q"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/gold.wav" id="7_utyte"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/reroll.wav" id="8_upfti"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/upgrade_pick.wav" id="9_h644q"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/relic_pick.wav" id="10_5rm34"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/map_select.wav" id="11_svkeo"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tip.wav" id="12_g5r47"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wave_start.wav" id="13_q6icl"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/wave_clear.wav" id="14_elgrm"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/chapter_clear.wav" id="15_htur0"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/victory.wav" id="16_ua2ib"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/game_over.wav" id="17_bjetl"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_swing.wav" id="18_kvpuq"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_hit.wav" id="19_i5fge"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_hurt.wav" id="20_rbsw8"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_dash.wav" id="21_rtyv1"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_death.wav" id="22_x3oi5"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_respawn.wav" id="23_1mo4b"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_hit.wav" id="24_4wmym"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_death.wav" id="25_3j3rf"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_burst.wav" id="26_eahq1"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_cast.wav" id="27_4vyld"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/enemy_heal.wav" id="28_guvd3"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/shield_block.wav" id="29_fge4p"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/fortress_hit.wav" id="30_fvs7c"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_appear.wav" id="31_okfjg"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_warning.wav" id="32_ekbd7"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_bell.wav" id="33_c401e"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_charge.wav" id="34_141v3"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_ward.wav" id="35_h8kk3"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_summon.wav" id="36_k6pnq"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/boss_death.wav" id="37_ktcbj"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/archer_shot.wav" id="38_chs2p"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/cannon_shot.wav" id="39_7i3j8"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/explosion.wav" id="40_el0pr"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/frost_shot.wav" id="41_dtnym"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/frost_impact.wav" id="42_ckbk2"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/brazier_shot.wav" id="43_kbeqv"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/ballista_shot.wav" id="44_5mg06"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_bolt.wav" id="45_5pa7r"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hero_soul_bolt.wav" id="46_j28ro"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/minion_raise.wav" id="47_dvjng"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/minion_strike.wav" id="48_7envc"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/gale.wav" id="49_jgjbq"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/trap_throw.wav" id="50_qoahu"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/snare_spring.wav" id="51_4qgmc"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hawk_dive.wav" id="52_8l0na"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_build.wav" id="53_dnwrm"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_upgrade.wav" id="54_v6ep4"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_sell.wav" id="55_ceh8a"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tower_evolve.wav" id="56_e8psy"]
+[ext_resource type="Script" path="res://resources/sfx_library.gd" id="57_cw8tm"]
 
-[sub_resource type="Resource" id="Resource_e8psy"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_45e0d"]
+script = ExtResource("1_f8owf")
 id = &"ui_hover"
-stream = ExtResource("2_f8owf")
+stream = ExtResource("2_cl76p")
 volume_db = -22.0
 voices = 1
 
-[sub_resource type="Resource" id="Resource_cw8tm"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_7enjq"]
+script = ExtResource("1_f8owf")
 id = &"ui_click"
-stream = ExtResource("3_cl76p")
+stream = ExtResource("3_vxmc5")
 volume_db = -14.0
 interval = 0.03
 
-[sub_resource type="Resource" id="Resource_45e0d"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_jbnw1"]
+script = ExtResource("1_f8owf")
 id = &"ui_confirm"
-stream = ExtResource("4_vxmc5")
+stream = ExtResource("4_2gcm8")
 volume_db = -12.0
 
-[sub_resource type="Resource" id="Resource_7enjq"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_yfs0q"]
+script = ExtResource("1_f8owf")
 id = &"ui_back"
-stream = ExtResource("5_2gcm8")
+stream = ExtResource("5_rrdpi")
 volume_db = -14.0
 voices = 1
 
-[sub_resource type="Resource" id="Resource_jbnw1"]
-script = ExtResource("1_ninw6")
-id = &"ui_error"
-stream = ExtResource("6_rrdpi")
-volume_db = -12.0
-voices = 1
-interval = 0.1
-
-[sub_resource type="Resource" id="Resource_yfs0q"]
-script = ExtResource("1_ninw6")
-id = &"gold"
-stream = ExtResource("7_d7x1q")
-volume_db = -13.0
-interval = 0.06
-
 [sub_resource type="Resource" id="Resource_r6acv"]
-script = ExtResource("1_ninw6")
-id = &"reroll"
-stream = ExtResource("8_utyte")
+script = ExtResource("1_f8owf")
+id = &"ui_error"
+stream = ExtResource("6_d7x1q")
 volume_db = -12.0
 voices = 1
 interval = 0.1
 
 [sub_resource type="Resource" id="Resource_ngu85"]
-script = ExtResource("1_ninw6")
+script = ExtResource("1_f8owf")
+id = &"gold"
+stream = ExtResource("7_utyte")
+volume_db = -13.0
+interval = 0.06
+
+[sub_resource type="Resource" id="Resource_nxw2n"]
+script = ExtResource("1_f8owf")
+id = &"reroll"
+stream = ExtResource("8_upfti")
+volume_db = -12.0
+voices = 1
+interval = 0.1
+
+[sub_resource type="Resource" id="Resource_g2ppf"]
+script = ExtResource("1_f8owf")
 id = &"upgrade_pick"
-stream = ExtResource("9_upfti")
+stream = ExtResource("9_h644q")
 volume_db = -8.0
 voices = 1
 interval = 0.2
 
-[sub_resource type="Resource" id="Resource_nxw2n"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_52n3b"]
+script = ExtResource("1_f8owf")
 id = &"relic_pick"
-stream = ExtResource("10_h644q")
+stream = ExtResource("10_5rm34")
 volume_db = -7.0
 voices = 1
 interval = 0.3
 
-[sub_resource type="Resource" id="Resource_g2ppf"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_dko60"]
+script = ExtResource("1_f8owf")
 id = &"map_select"
-stream = ExtResource("11_5rm34")
+stream = ExtResource("11_svkeo")
 voices = 1
 interval = 0.1
 
-[sub_resource type="Resource" id="Resource_52n3b"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_vfv6w"]
+script = ExtResource("1_f8owf")
 id = &"tip"
-stream = ExtResource("12_svkeo")
+stream = ExtResource("12_g5r47")
 volume_db = -14.0
 voices = 1
 interval = 0.5
 
-[sub_resource type="Resource" id="Resource_dko60"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_gmdjr"]
+script = ExtResource("1_f8owf")
 id = &"wave_start"
-stream = ExtResource("13_g5r47")
+stream = ExtResource("13_q6icl")
 volume_db = -8.0
 voices = 1
 interval = 1.0
 
-[sub_resource type="Resource" id="Resource_vfv6w"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_sn6sy"]
+script = ExtResource("1_f8owf")
 id = &"wave_clear"
-stream = ExtResource("14_q6icl")
+stream = ExtResource("14_elgrm")
 volume_db = -9.0
 voices = 1
 interval = 1.0
 
-[sub_resource type="Resource" id="Resource_gmdjr"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_dfm8c"]
+script = ExtResource("1_f8owf")
 id = &"chapter_clear"
-stream = ExtResource("15_elgrm")
+stream = ExtResource("15_htur0")
 volume_db = -6.0
 voices = 1
 interval = 2.0
 
-[sub_resource type="Resource" id="Resource_sn6sy"]
-script = ExtResource("1_ninw6")
-id = &"victory"
-stream = ExtResource("16_htur0")
-volume_db = -5.0
-voices = 1
-interval = 2.0
-
-[sub_resource type="Resource" id="Resource_dfm8c"]
-script = ExtResource("1_ninw6")
-id = &"game_over"
-stream = ExtResource("17_ua2ib")
-volume_db = -5.0
-voices = 1
-interval = 2.0
-
 [sub_resource type="Resource" id="Resource_kntih"]
-script = ExtResource("1_ninw6")
+script = ExtResource("1_f8owf")
+id = &"victory"
+stream = ExtResource("16_ua2ib")
+volume_db = -5.0
+voices = 1
+interval = 2.0
+
+[sub_resource type="Resource" id="Resource_gy8fo"]
+script = ExtResource("1_f8owf")
+id = &"game_over"
+stream = ExtResource("17_bjetl")
+volume_db = -5.0
+voices = 1
+interval = 2.0
+
+[sub_resource type="Resource" id="Resource_aie3w"]
+script = ExtResource("1_f8owf")
 id = &"hero_swing"
-stream = ExtResource("18_bjetl")
+stream = ExtResource("18_kvpuq")
 volume_db = -12.0
 interval = 0.08
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_gy8fo"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_mhvrd"]
+script = ExtResource("1_f8owf")
 id = &"hero_hit"
-stream = ExtResource("19_kvpuq")
+stream = ExtResource("19_i5fge")
 volume_db = -9.0
 voices = 3
 interval = 0.04
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_aie3w"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_83vs5"]
+script = ExtResource("1_f8owf")
 id = &"hero_hurt"
-stream = ExtResource("20_i5fge")
+stream = ExtResource("20_rbsw8")
 volume_db = -7.0
 voices = 1
 interval = 0.2
 world = true
 
-[sub_resource type="Resource" id="Resource_mhvrd"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_h261h"]
+script = ExtResource("1_f8owf")
 id = &"hero_dash"
-stream = ExtResource("21_rbsw8")
+stream = ExtResource("21_rtyv1")
 volume_db = -12.0
 voices = 1
 interval = 0.1
 world = true
 
-[sub_resource type="Resource" id="Resource_83vs5"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_cc0k1"]
+script = ExtResource("1_f8owf")
 id = &"hero_death"
-stream = ExtResource("22_rtyv1")
+stream = ExtResource("22_x3oi5")
 volume_db = -5.0
 voices = 1
 interval = 1.0
 
-[sub_resource type="Resource" id="Resource_h261h"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_y01p3"]
+script = ExtResource("1_f8owf")
 id = &"hero_respawn"
-stream = ExtResource("23_x3oi5")
+stream = ExtResource("23_1mo4b")
 volume_db = -9.0
 voices = 1
 interval = 1.0
 
-[sub_resource type="Resource" id="Resource_cc0k1"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_n3ao0"]
+script = ExtResource("1_f8owf")
 id = &"enemy_hit"
-stream = ExtResource("24_1mo4b")
+stream = ExtResource("24_4wmym")
 volume_db = -17.0
 voices = 4
 interval = 0.03
 jitter = 0.12
 world = true
 
-[sub_resource type="Resource" id="Resource_y01p3"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_jnqqc"]
+script = ExtResource("1_f8owf")
 id = &"enemy_death"
-stream = ExtResource("25_4wmym")
+stream = ExtResource("25_3j3rf")
 volume_db = -12.0
 voices = 4
 jitter = 0.1
 world = true
 
-[sub_resource type="Resource" id="Resource_n3ao0"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_qvjf4"]
+script = ExtResource("1_f8owf")
 id = &"enemy_burst"
-stream = ExtResource("26_3j3rf")
+stream = ExtResource("26_eahq1")
 volume_db = -8.0
 interval = 0.1
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_jnqqc"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_wdgjm"]
+script = ExtResource("1_f8owf")
 id = &"enemy_cast"
-stream = ExtResource("27_eahq1")
+stream = ExtResource("27_4vyld")
 volume_db = -14.0
 interval = 0.12
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_qvjf4"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_5oari"]
+script = ExtResource("1_f8owf")
 id = &"enemy_heal"
-stream = ExtResource("28_4vyld")
+stream = ExtResource("28_guvd3")
 volume_db = -12.0
 voices = 1
 interval = 0.5
 world = true
 
-[sub_resource type="Resource" id="Resource_wdgjm"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_b5k7i"]
+script = ExtResource("1_f8owf")
 id = &"shield_block"
-stream = ExtResource("29_guvd3")
+stream = ExtResource("29_fge4p")
 volume_db = -14.0
 interval = 0.06
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_5oari"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_ne2w1"]
+script = ExtResource("1_f8owf")
 id = &"fortress_hit"
-stream = ExtResource("30_fge4p")
+stream = ExtResource("30_fvs7c")
 volume_db = -7.0
 voices = 1
 interval = 0.15
 jitter = 0.05
 world = true
 
-[sub_resource type="Resource" id="Resource_b5k7i"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_3t734"]
+script = ExtResource("1_f8owf")
 id = &"boss_appear"
-stream = ExtResource("31_fvs7c")
+stream = ExtResource("31_okfjg")
 volume_db = -3.0
 voices = 1
 interval = 2.0
 
-[sub_resource type="Resource" id="Resource_ne2w1"]
-script = ExtResource("1_ninw6")
-id = &"boss_warning"
-stream = ExtResource("32_okfjg")
-volume_db = -9.0
-voices = 1
-interval = 0.5
-world = true
-
-[sub_resource type="Resource" id="Resource_3t734"]
-script = ExtResource("1_ninw6")
-id = &"boss_bell"
-stream = ExtResource("33_ekbd7")
-volume_db = -5.0
-voices = 1
-interval = 0.5
-world = true
-
 [sub_resource type="Resource" id="Resource_5i3ie"]
-script = ExtResource("1_ninw6")
-id = &"boss_charge"
-stream = ExtResource("34_c401e")
-volume_db = -6.0
+script = ExtResource("1_f8owf")
+id = &"boss_warning"
+stream = ExtResource("32_ekbd7")
+volume_db = -9.0
 voices = 1
 interval = 0.5
 world = true
 
 [sub_resource type="Resource" id="Resource_kode7"]
-script = ExtResource("1_ninw6")
-id = &"boss_ward"
-stream = ExtResource("35_141v3")
-volume_db = -9.0
+script = ExtResource("1_f8owf")
+id = &"boss_bell"
+stream = ExtResource("33_c401e")
+volume_db = -5.0
 voices = 1
 interval = 0.5
 world = true
 
 [sub_resource type="Resource" id="Resource_vv87i"]
-script = ExtResource("1_ninw6")
-id = &"boss_summon"
-stream = ExtResource("36_h8kk3")
-volume_db = -7.0
+script = ExtResource("1_f8owf")
+id = &"boss_charge"
+stream = ExtResource("34_141v3")
+volume_db = -6.0
 voices = 1
 interval = 0.5
 world = true
 
 [sub_resource type="Resource" id="Resource_ga1d3"]
-script = ExtResource("1_ninw6")
+script = ExtResource("1_f8owf")
+id = &"boss_ward"
+stream = ExtResource("35_h8kk3")
+volume_db = -9.0
+voices = 1
+interval = 0.5
+world = true
+
+[sub_resource type="Resource" id="Resource_6yond"]
+script = ExtResource("1_f8owf")
+id = &"boss_summon"
+stream = ExtResource("36_k6pnq")
+volume_db = -7.0
+voices = 1
+interval = 0.5
+world = true
+
+[sub_resource type="Resource" id="Resource_gyk5m"]
+script = ExtResource("1_f8owf")
 id = &"boss_death"
-stream = ExtResource("37_k6pnq")
+stream = ExtResource("37_ktcbj")
 volume_db = -2.0
 voices = 1
 interval = 1.0
 
-[sub_resource type="Resource" id="Resource_6yond"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_xefit"]
+script = ExtResource("1_f8owf")
 id = &"archer_shot"
-stream = ExtResource("38_ktcbj")
+stream = ExtResource("38_chs2p")
 volume_db = -18.0
 voices = 3
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_gyk5m"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_khec1"]
+script = ExtResource("1_f8owf")
 id = &"cannon_shot"
-stream = ExtResource("39_chs2p")
+stream = ExtResource("39_7i3j8")
 volume_db = -11.0
 interval = 0.08
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_xefit"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_tcfnd"]
+script = ExtResource("1_f8owf")
 id = &"explosion"
-stream = ExtResource("40_7i3j8")
+stream = ExtResource("40_el0pr")
 volume_db = -9.0
 voices = 3
 interval = 0.06
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_khec1"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_u3adv"]
+script = ExtResource("1_f8owf")
 id = &"frost_shot"
-stream = ExtResource("41_el0pr")
+stream = ExtResource("41_dtnym")
 volume_db = -17.0
 interval = 0.06
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_tcfnd"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_ud7ul"]
+script = ExtResource("1_f8owf")
 id = &"frost_impact"
-stream = ExtResource("42_dtnym")
+stream = ExtResource("42_ckbk2")
 volume_db = -16.0
 voices = 3
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_u3adv"]
-script = ExtResource("1_ninw6")
-id = &"brazier_shot"
-stream = ExtResource("43_ckbk2")
-volume_db = -13.0
-interval = 0.08
-jitter = 0.06
-world = true
-
-[sub_resource type="Resource" id="Resource_ud7ul"]
-script = ExtResource("1_ninw6")
-id = &"ballista_shot"
-stream = ExtResource("44_kbeqv")
-volume_db = -13.0
-interval = 0.08
-jitter = 0.06
-world = true
-
 [sub_resource type="Resource" id="Resource_n70gg"]
-script = ExtResource("1_ninw6")
-id = &"hero_bolt"
-stream = ExtResource("45_5mg06")
+script = ExtResource("1_f8owf")
+id = &"brazier_shot"
+stream = ExtResource("43_kbeqv")
 volume_db = -13.0
 interval = 0.08
-jitter = 0.07
+jitter = 0.06
 world = true
 
 [sub_resource type="Resource" id="Resource_rqtg8"]
-script = ExtResource("1_ninw6")
-id = &"hero_soul_bolt"
-stream = ExtResource("46_5pa7r")
-volume_db = -14.0
+script = ExtResource("1_f8owf")
+id = &"ballista_shot"
+stream = ExtResource("44_5mg06")
+volume_db = -13.0
 interval = 0.08
 jitter = 0.06
 world = true
 
 [sub_resource type="Resource" id="Resource_k5jun"]
-script = ExtResource("1_ninw6")
+script = ExtResource("1_f8owf")
+id = &"hero_bolt"
+stream = ExtResource("45_5pa7r")
+volume_db = -13.0
+interval = 0.08
+jitter = 0.07
+world = true
+
+[sub_resource type="Resource" id="Resource_hfs54"]
+script = ExtResource("1_f8owf")
+id = &"hero_soul_bolt"
+stream = ExtResource("46_j28ro")
+volume_db = -14.0
+interval = 0.08
+jitter = 0.06
+world = true
+
+[sub_resource type="Resource" id="Resource_4mep5"]
+script = ExtResource("1_f8owf")
 id = &"minion_raise"
-stream = ExtResource("47_j28ro")
+stream = ExtResource("47_dvjng")
 volume_db = -14.0
 voices = 3
 interval = 0.06
 jitter = 0.08
 world = true
 
-[sub_resource type="Resource" id="Resource_hfs54"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_07wyp"]
+script = ExtResource("1_f8owf")
 id = &"minion_strike"
-stream = ExtResource("48_dvjng")
+stream = ExtResource("48_7envc")
 volume_db = -17.0
 voices = 3
 jitter = 0.1
 world = true
 
-[sub_resource type="Resource" id="Resource_4mep5"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_r5afr"]
+script = ExtResource("1_f8owf")
+id = &"gale"
+stream = ExtResource("49_jgjbq")
+volume_db = -14.0
+voices = 1
+interval = 2.0
+
+[sub_resource type="Resource" id="Resource_3j04y"]
+script = ExtResource("1_f8owf")
 id = &"trap_throw"
-stream = ExtResource("49_7envc")
+stream = ExtResource("50_qoahu")
 volume_db = -15.0
 interval = 0.1
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_07wyp"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_8x27c"]
+script = ExtResource("1_f8owf")
 id = &"snare_spring"
-stream = ExtResource("50_jgjbq")
+stream = ExtResource("51_4qgmc")
 volume_db = -11.0
 voices = 3
 jitter = 0.06
 world = true
 
-[sub_resource type="Resource" id="Resource_r5afr"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_41mfc"]
+script = ExtResource("1_f8owf")
 id = &"hawk_dive"
-stream = ExtResource("51_qoahu")
+stream = ExtResource("52_8l0na")
 volume_db = -17.0
 interval = 0.1
 jitter = 0.1
 world = true
 
-[sub_resource type="Resource" id="Resource_3j04y"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_dgwr8"]
+script = ExtResource("1_f8owf")
 id = &"tower_build"
-stream = ExtResource("52_4qgmc")
+stream = ExtResource("53_dnwrm")
 voices = 1
 interval = 0.1
 
-[sub_resource type="Resource" id="Resource_8x27c"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_t47tx"]
+script = ExtResource("1_f8owf")
 id = &"tower_upgrade"
-stream = ExtResource("53_8l0na")
+stream = ExtResource("54_v6ep4")
 volume_db = -9.0
 voices = 1
 interval = 0.1
 
-[sub_resource type="Resource" id="Resource_41mfc"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_h0wch"]
+script = ExtResource("1_f8owf")
 id = &"tower_sell"
-stream = ExtResource("54_dnwrm")
+stream = ExtResource("55_ceh8a")
 volume_db = -11.0
 voices = 1
 interval = 0.1
 
-[sub_resource type="Resource" id="Resource_dgwr8"]
-script = ExtResource("1_ninw6")
+[sub_resource type="Resource" id="Resource_gi26d"]
+script = ExtResource("1_f8owf")
 id = &"tower_evolve"
-stream = ExtResource("55_v6ep4")
+stream = ExtResource("56_e8psy")
 volume_db = -6.0
 voices = 1
 interval = 0.5
 
 [resource]
-script = ExtResource("56_ceh8a")
-entries = Array[ExtResource("1_ninw6")]([SubResource("Resource_e8psy"), SubResource("Resource_cw8tm"), SubResource("Resource_45e0d"), SubResource("Resource_7enjq"), SubResource("Resource_jbnw1"), SubResource("Resource_yfs0q"), SubResource("Resource_r6acv"), SubResource("Resource_ngu85"), SubResource("Resource_nxw2n"), SubResource("Resource_g2ppf"), SubResource("Resource_52n3b"), SubResource("Resource_dko60"), SubResource("Resource_vfv6w"), SubResource("Resource_gmdjr"), SubResource("Resource_sn6sy"), SubResource("Resource_dfm8c"), SubResource("Resource_kntih"), SubResource("Resource_gy8fo"), SubResource("Resource_aie3w"), SubResource("Resource_mhvrd"), SubResource("Resource_83vs5"), SubResource("Resource_h261h"), SubResource("Resource_cc0k1"), SubResource("Resource_y01p3"), SubResource("Resource_n3ao0"), SubResource("Resource_jnqqc"), SubResource("Resource_qvjf4"), SubResource("Resource_wdgjm"), SubResource("Resource_5oari"), SubResource("Resource_b5k7i"), SubResource("Resource_ne2w1"), SubResource("Resource_3t734"), SubResource("Resource_5i3ie"), SubResource("Resource_kode7"), SubResource("Resource_vv87i"), SubResource("Resource_ga1d3"), SubResource("Resource_6yond"), SubResource("Resource_gyk5m"), SubResource("Resource_xefit"), SubResource("Resource_khec1"), SubResource("Resource_tcfnd"), SubResource("Resource_u3adv"), SubResource("Resource_ud7ul"), SubResource("Resource_n70gg"), SubResource("Resource_rqtg8"), SubResource("Resource_k5jun"), SubResource("Resource_hfs54"), SubResource("Resource_4mep5"), SubResource("Resource_07wyp"), SubResource("Resource_r5afr"), SubResource("Resource_3j04y"), SubResource("Resource_8x27c"), SubResource("Resource_41mfc"), SubResource("Resource_dgwr8")])
+script = ExtResource("57_cw8tm")
+entries = Array[ExtResource("1_f8owf")]([SubResource("Resource_45e0d"), SubResource("Resource_7enjq"), SubResource("Resource_jbnw1"), SubResource("Resource_yfs0q"), SubResource("Resource_r6acv"), SubResource("Resource_ngu85"), SubResource("Resource_nxw2n"), SubResource("Resource_g2ppf"), SubResource("Resource_52n3b"), SubResource("Resource_dko60"), SubResource("Resource_vfv6w"), SubResource("Resource_gmdjr"), SubResource("Resource_sn6sy"), SubResource("Resource_dfm8c"), SubResource("Resource_kntih"), SubResource("Resource_gy8fo"), SubResource("Resource_aie3w"), SubResource("Resource_mhvrd"), SubResource("Resource_83vs5"), SubResource("Resource_h261h"), SubResource("Resource_cc0k1"), SubResource("Resource_y01p3"), SubResource("Resource_n3ao0"), SubResource("Resource_jnqqc"), SubResource("Resource_qvjf4"), SubResource("Resource_wdgjm"), SubResource("Resource_5oari"), SubResource("Resource_b5k7i"), SubResource("Resource_ne2w1"), SubResource("Resource_3t734"), SubResource("Resource_5i3ie"), SubResource("Resource_kode7"), SubResource("Resource_vv87i"), SubResource("Resource_ga1d3"), SubResource("Resource_6yond"), SubResource("Resource_gyk5m"), SubResource("Resource_xefit"), SubResource("Resource_khec1"), SubResource("Resource_tcfnd"), SubResource("Resource_u3adv"), SubResource("Resource_ud7ul"), SubResource("Resource_n70gg"), SubResource("Resource_rqtg8"), SubResource("Resource_k5jun"), SubResource("Resource_hfs54"), SubResource("Resource_4mep5"), SubResource("Resource_07wyp"), SubResource("Resource_r5afr"), SubResource("Resource_3j04y"), SubResource("Resource_8x27c"), SubResource("Resource_41mfc"), SubResource("Resource_dgwr8"), SubResource("Resource_t47tx"), SubResource("Resource_h0wch"), SubResource("Resource_gi26d")])

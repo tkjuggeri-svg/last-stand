@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/abilities/chill_ability.gd" id="1_ability"]
+
+[node name="ChillAbility" type="Node2D"]
+script = ExtResource("1_ability")
+first_delay = 3.0
+interval = 7.0
+telegraph_time = 1.0
+telegraph_sound = &"boss_warning"
+radius = 110.0
+silence_time = 2.5
+ring_color = Color(0.55, 0.85, 1, 0.8)
+chill_time = 3.0
+chill_factor = 0.55

@@ -1,0 +1,157 @@
+{
+ "floor": [
+  -1000,
+  -600,
+  500,
+  500
+ ],
+ "hero": [
+  -200,
+  -60
+ ],
+ "respawn": [
+  100,
+  100
+ ],
+ "prop_frames": 8,
+ "prop_count": 50,
+ "gate_glow": "0.55, 0.85, 1, 1",
+ "id": "frostbound_pass",
+ "node": "FrostboundPass",
+ "waves": "frostbound_pass",
+ "lanes": [
+  [
+   [
+    -960,
+    -520
+   ],
+   [
+    -600,
+    -520
+   ],
+   [
+    -600,
+    -250
+   ],
+   [
+    -880,
+    -250
+   ],
+   [
+    -880,
+    60
+   ],
+   [
+    -400,
+    60
+   ],
+   [
+    -400,
+    0
+   ],
+   [
+    -48,
+    0
+   ]
+  ],
+  [
+   [
+    -100,
+    -560
+   ],
+   [
+    -100,
+    -200
+   ],
+   [
+    0,
+    -200
+   ],
+   [
+    0,
+    -48
+   ]
+  ],
+  [
+   [
+    460,
+    300
+   ],
+   [
+    260,
+    300
+   ],
+   [
+    260,
+    32
+   ],
+   [
+    48,
+    32
+   ]
+  ]
+ ],
+ "slots": [
+  [
+   -780,
+   -410
+  ],
+  [
+   -500,
+   -380
+  ],
+  [
+   -300,
+   -130
+  ],
+  [
+   130,
+   -130
+  ],
+  [
+   140,
+   150
+  ],
+  [
+   380,
+   180
+  ],
+  [
+   -620,
+   -30
+  ],
+  [
+   -200,
+   170
+  ]
+ ],
+ "backdrop": "0.04, 0.05, 0.07, 1",
+ "floor_color": "0.3, 0.38, 0.46, 1",
+ "modulate": "0.7, 0.8, 0.95, 1",
+ "fog": "0.8, 0.88, 1.0, 1",
+ "fog_density": 0.34,
+ "seed": 33,
+ "particles": {
+  "amount": 50,
+  "lifetime": 5.0,
+  "direction": "-0.4, 1",
+  "spread": 20,
+  "gravity": "0, 8",
+  "v_min": 10.0,
+  "v_max": 26.0,
+  "color": "0.92, 0.96, 1, 0.85"
+ },
+ "ext": [
+  [
+   "res://levels/hazards/blizzard.gd",
+   "Script"
+  ],
+  [
+   "res://data/hazards/blizzard.tres",
+   "Resource"
+  ]
+ ],
+ "hazards": [
+  "[node name=\"Blizzard\" type=\"Node\" parent=\".\" node_paths=PackedStringArray(\"spawner\", \"hero\", \"effects\", \"builder\")]\nscript = ExtResource(\"hz0\")\ndata = ExtResource(\"hz1\")\nspawner = NodePath(\"../WaveSpawner\")\nhero = NodePath(\"../Hero\")\neffects = NodePath(\"../Effects\")\nbuilder = NodePath(\"../Systems/TowerBuilder\")"
+ ]
+}

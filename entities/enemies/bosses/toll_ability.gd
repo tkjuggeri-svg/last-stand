@@ -11,6 +11,8 @@ const TOWER_BODY_MASK: int = 1
 const MAX_TOWERS: int = 32
 
 @export var radius: float = 220.0
+## The ring's colour (the Winter Warden's is ice).
+@export var ring_color: Color = RING_COLOR
 @export var silence_time: float = 4.0
 
 var _ring: TelegraphMarker
@@ -18,7 +20,7 @@ var _silenced: int = 0
 
 
 func _begin_telegraph() -> void:
-	_ring = _marker(TelegraphMarker.Shape.RING, enemy.global_position, RING_COLOR, radius)
+	_ring = _marker(TelegraphMarker.Shape.RING, enemy.global_position, ring_color, radius)
 	_play("toll")
 
 

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/ghoul_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/cinder_ghoul_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/death_fire_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 0
+display_name = "Cinder Ghoul"
+max_health = 30
+move_speed = 62.0
+gold_reward = 9
+fortress_damage = 10
+hero_damage = 10
+body_radius = 12.0
+sprite_offset = Vector2(0, -10)
+health_bar_y = -36.0
+glow_color = Color(1, 0.55, 0.2, 1)
+hint = "burning ground where it falls: it hurts you, not only them."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

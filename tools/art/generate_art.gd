@@ -64,9 +64,45 @@ func _initialize() -> void:
 		"skeleton": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).sheet_rows(), Layouts.SKELETON["size"]), Layouts.SKELETON["png"]),
 		"soul_bolt": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).soul_bolt_rows(), Layouts.SOUL_BOLT["size"]), Layouts.SOUL_BOLT["png"]),
 		"huntress_towers": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS["size"]), Layouts.HUNTRESS_TOWERS["png"]),
+		"cinder_ghoul": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("cinder_ghoul"), Layouts.CINDER_GHOUL["size"]), Layouts.CINDER_GHOUL["png"]),
+		"scarecrow": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("scarecrow"), Layouts.SCARECROW["size"]), Layouts.SCARECROW["png"]),
+		"pyre_warden": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("pyre_warden"), Layouts.PYRE_WARDEN["size"]), Layouts.PYRE_WARDEN["png"]),
+		"frost_wraith": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("frost_wraith"), Layouts.FROST_WRAITH["size"]), Layouts.FROST_WRAITH["png"]),
+		"rime_brute": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("rime_brute"), Layouts.RIME_BRUTE["size"]), Layouts.RIME_BRUTE["png"]),
+		"winter_warden": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("winter_warden"), Layouts.WINTER_WARDEN["size"]), Layouts.WINTER_WARDEN["png"]),
+		"burrower": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("burrower"), Layouts.BURROWER["size"]), Layouts.BURROWER["png"]),
+		"lamp_wight": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("lamp_wight"), Layouts.LAMP_WIGHT["size"]), Layouts.LAMP_WIGHT["png"]),
+		"deep_warden": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("deep_warden"), Layouts.DEEP_WARDEN["size"]), Layouts.DEEP_WARDEN["png"]),
+		"bone_hurler": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("bone_hurler"), Layouts.BONE_HURLER["size"]), Layouts.BONE_HURLER["png"]),
+		"rubble_brute": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("rubble_brute"), Layouts.RUBBLE_BRUTE["size"]), Layouts.RUBBLE_BRUTE["png"]),
+		"quarry_colossus": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("quarry_colossus"), Layouts.QUARRY_COLOSSUS["size"]), Layouts.QUARRY_COLOSSUS["png"]),
+		"stalker": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("stalker"), Layouts.STALKER["size"]), Layouts.STALKER["png"]),
+		"hollow_treant": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("hollow_treant"), Layouts.HOLLOW_TREANT["size"]), Layouts.HOLLOW_TREANT["png"]),
+		"hollow_stag": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("hollow_stag"), Layouts.HOLLOW_STAG["size"]), Layouts.HOLLOW_STAG["png"]),
+		"chorister": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("chorister"), Layouts.CHORISTER["size"]), Layouts.CHORISTER["png"]),
+		"inquisitor": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("inquisitor"), Layouts.INQUISITOR["size"]), Layouts.INQUISITOR["png"]),
+		"pale_bishop": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("pale_bishop"), Layouts.PALE_BISHOP["size"]), Layouts.PALE_BISHOP["png"]),
 		"siege_ram": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("siege_ram"), Layouts.SIEGE_RAM["size"]), Layouts.SIEGE_RAM["png"]),
 		"black_knight": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("black_knight"), Layouts.BLACK_KNIGHT["size"]), Layouts.BLACK_KNIGHT["png"]),
 		"fallen_marshal": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("fallen_marshal"), Layouts.FALLEN_MARSHAL["size"]), Layouts.FALLEN_MARSHAL["png"]),
+		"ember_orchard_ground": func() -> void: _save(_biome_ground("ember_orchard"), "res://assets/sprites/environment/ember_orchard_ground.png"),
+		"ember_orchard_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("ember_orchard")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/ember_orchard_props.png"),
+		"ember_orchard_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("ember_orchard"), "res://assets/sprites/environment/ember_orchard_gate.png"),
+		"frostbound_pass_ground": func() -> void: _save(_biome_ground("frostbound_pass"), "res://assets/sprites/environment/frostbound_pass_ground.png"),
+		"frostbound_pass_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("frostbound_pass")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/frostbound_pass_props.png"),
+		"frostbound_pass_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("frostbound_pass"), "res://assets/sprites/environment/frostbound_pass_gate.png"),
+		"sunless_mines_ground": func() -> void: _save(_biome_ground("sunless_mines"), "res://assets/sprites/environment/sunless_mines_ground.png"),
+		"sunless_mines_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("sunless_mines")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/sunless_mines_props.png"),
+		"sunless_mines_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("sunless_mines"), "res://assets/sprites/environment/sunless_mines_gate.png"),
+		"bone_quarry_ground": func() -> void: _save(_biome_ground("bone_quarry"), "res://assets/sprites/environment/bone_quarry_ground.png"),
+		"bone_quarry_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("bone_quarry")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/bone_quarry_props.png"),
+		"bone_quarry_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("bone_quarry"), "res://assets/sprites/environment/bone_quarry_gate.png"),
+		"gloam_wood_ground": func() -> void: _save(_biome_ground("gloam_wood"), "res://assets/sprites/environment/gloam_wood_ground.png"),
+		"gloam_wood_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("gloam_wood")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/gloam_wood_props.png"),
+		"gloam_wood_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("gloam_wood"), "res://assets/sprites/environment/gloam_wood_gate.png"),
+		"pale_cathedral_ground": func() -> void: _save(_biome_ground("pale_cathedral"), "res://assets/sprites/environment/pale_cathedral_ground.png"),
+		"pale_cathedral_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("pale_cathedral")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/pale_cathedral_props.png"),
+		"pale_cathedral_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("pale_cathedral"), "res://assets/sprites/environment/pale_cathedral_gate.png"),
 		"ashen_keep_ground": func() -> void: _save(_biome_ground("ashen_keep"), "res://assets/sprites/environment/ashen_keep_ground.png"),
 		"ashen_keep_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("ashen_keep")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/ashen_keep_props.png"),
 		"ashen_keep_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("ashen_keep"), "res://assets/sprites/environment/ashen_keep_gate.png"),
@@ -196,8 +232,13 @@ func _biome_ground(biome: String) -> Image:
 	var keep: Vector2 = (level.get_node("Fortress") as Node2D).position
 	var floor_node: ColorRect = level.get_node("Floor")
 	var floor_rect: Rect2 = Rect2(floor_node.position, floor_node.size)
+	var patches: PackedVector2Array = PackedVector2Array()
+	var patch_radius: float = 56.0
+	if level.has_node("DryGrass"):
+		patches = (level.get_node("DryGrass") as DryGrass).patches
+		patch_radius = (level.get_node("DryGrass") as DryGrass).patch_radius
 	level.free()
-	return BiomeArt.new().bake(biome, floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE)
+	return BiomeArt.new().bake(biome, floor_rect, lanes, keep, Layouts.WALL_BAND, float(Layouts.ART_SCALE), Layouts.FINE, patches, patch_radius)
 
 
 ## Every Path2D named Lane* as a polyline in level coordinates.

@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://entities/enemies/bosses/toll_ability.gd" id="1_ability"]
+
+[node name="FreezeAbility" type="Node2D"]
+script = ExtResource("1_ability")
+telegraph_sound = &"boss_warning"
+act_sound = &"boss_bell"
+act_shake = 3.0
+first_delay = 5.0
+interval = 10.0
+telegraph_time = 1.4
+radius = 210.0
+silence_time = 6.0
+ring_color = Color(0.55, 0.85, 1, 0.85)

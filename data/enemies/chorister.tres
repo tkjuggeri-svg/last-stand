@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/mire_priest_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/chorister_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/abilities/resist_aura_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 4
+display_name = "Chorister"
+max_health = 45
+move_speed = 40.0
+gold_reward = 18
+fortress_damage = 10
+hero_damage = 10
+attack_range = 26.0
+body_radius = 12.0
+sprite_offset = Vector2(0, -12)
+health_bar_y = -42.0
+glow_color = Color(1, 0.92, 0.6, 1)
+hint = "its song shields the dead around it: they take 20% less damage. Kill it first."
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

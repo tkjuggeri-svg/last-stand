@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://resources/enemy_data.gd" id="1_data"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/gravelord_death_effect.tscn" id="2_death"]
+[ext_resource type="SpriteFrames" path="res://entities/enemies/bosses/hollow_stag_frames.tres" id="3_frames"]
+[ext_resource type="PackedScene" path="res://entities/enemies/bosses/root_ability.tscn" id="4_ability"]
+
+[resource]
+script = ExtResource("1_data")
+role = 6
+display_name = "The Hollow Stag"
+max_health = 3100
+move_speed = 32.0
+gold_reward = 140
+fortress_damage = 55
+hero_damage = 26
+attack_range = 32.0
+attack_windup = 0.7
+attack_cooldown = 2.4
+body_radius = 24.0
+sprite_offset = Vector2(0, -22)
+health_bar_y = -104.0
+burn_taken = 0.8
+is_boss = true
+death_effect = ExtResource("2_death")
+sprite_frames = ExtResource("3_frames")
+ability = ExtResource("4_ability")

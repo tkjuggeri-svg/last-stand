@@ -41,6 +41,13 @@ enum Role { GRUNT, FAST, TANK, RANGED, SUPPORT, SPLITTER, BOSS }
 ## Share of the hero's sword knockback it takes (1 = all, 0 = none; bosses take none).
 @export_range(0.0, 1.0) var knockback_taken: float = 1.0
 
+## Towers aim at it before any other enemy in reach (a Scarecrow: a decoy).
+@export var decoy: bool = false
+## Slows have no effect on it (a Rime Brute).
+@export var slow_immune: bool = false
+## Towers can only see it within this many px of themselves (a Stalker in the gloom); 0 = always visible.
+@export var stealth_range: float = 0.0
+
 @export_group("Body and look")
 ## Radius of the body in world px: its hurtbox, fortress contact and attack reach grow with it.
 @export var body_radius: float = 12.0

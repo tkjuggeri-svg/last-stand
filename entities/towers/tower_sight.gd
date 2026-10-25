@@ -28,7 +28,7 @@ func is_valid_target(tower: Tower, candidate: Variant) -> bool:
 	if not is_instance_valid(candidate):
 		return false
 	var enemy: Enemy = candidate as Enemy
-	return enemy != null and enemy.is_alive() and _in_range.has(enemy) and tower.is_in_range(enemy.global_position)
+	return enemy != null and enemy.is_alive() and _in_range.has(enemy) and tower.is_in_range(enemy.global_position) and _can_see(tower, enemy)
 
 
 ## Living enemies in range, the furthest along the lane first.
@@ -40,7 +40,7 @@ func targets_in_range(tower: Tower) -> Array[Enemy]:
 			_in_range.remove_at(i)
 			continue
 		var enemy: Enemy = body as Enemy
-		if enemy != null and enemy.is_alive() and tower.is_in_range(enemy.global_position):
+		if enemy != null and enemy.is_alive() and tower.is_in_range(enemy.global_position) and _can_see(tower, enemy):
 			found.append(enemy)
 	found.sort_custom(func(a: Enemy, b: Enemy) -> bool: return a.get_lane_progress() > b.get_lane_progress())
 	return found
@@ -51,6 +51,9 @@ func pick_target(tower: Tower) -> Enemy:
 	var found: Array[Enemy] = targets_in_range(tower)
 	if found.is_empty():
 		return null
+	for enemy: Enemy in found:
+		if enemy.data.decoy:
+			return enemy  # a decoy draws every tower (the furthest along of them)
 	var evolution: TowerEvolution = tower.get_evolution()
 	match evolution.targeting if evolution != null else TowerEvolution.Targeting.FIRST:
 		TowerEvolution.Targeting.STRONGEST:
@@ -58,3 +61,8 @@ func pick_target(tower: Tower) -> Enemy:
 		TowerEvolution.Targeting.DENSEST:
 			return TowerTargeting.densest(found, tower.get_stats().splash_radius)
 	return found[0]
+
+
+## A stealthy enemy (a Stalker) is only seen from close by.
+func _can_see(tower: Tower, enemy: Enemy) -> bool:
+	return enemy.data.stealth_range <= 0.0 or tower.global_position.distance_to(enemy.global_position) <= enemy.data.stealth_range
