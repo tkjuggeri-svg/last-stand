@@ -248,7 +248,7 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M9** (heroes and relics): `docs/M9_HEROES.md` approved; stages 1 (the hero as data, save v3) and 2 (the Huntress) are built, built as `m9-playtest-1` (waiting for playtest feedback); stages 3 (the Necromancer) and 4 (archetypes, combo evolutions) are built too; the next build is `m9-playtest-2`. Before it: the art pack integrated at double resolution, with the characters and grounds redrawn in code and smooth scaling at 1080p (`docs/ART_HANDOFF.md`). M8.5 is built as `m8.5-playtest` (report `docs/M8_5_BUILD_REPORT.md`); nothing since `m7.5-playtest-3` has been played by hand.
+**M9** (heroes and relics): `docs/M9_HEROES.md` approved; stages 1 (the hero as data, save v3) and 2 (the Huntress) are built, built as `m9-playtest-1` (waiting for playtest feedback); stages 3 (the Necromancer) and 4 (archetypes, combo evolutions) are built too; built as `m9-playtest-2` (waiting for playtest feedback). Before it: the art pack integrated at double resolution, with the characters and grounds redrawn in code and smooth scaling at 1080p (`docs/ART_HANDOFF.md`). M8.5 is built as `m8.5-playtest` (report `docs/M8_5_BUILD_REPORT.md`); nothing since `m7.5-playtest-3` has been played by hand.
 
 ---
 
