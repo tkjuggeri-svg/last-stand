@@ -5,6 +5,30 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
+## What to focus on in this build (m13-playtest)
+
+Please write down, with the version from `BUILD_INFO.txt` and the seed from the pause menu, what you see. The bot
+data says little about chapters 2 and 3, so those matter most.
+
+1. **Music:** go through the title, the War Room, a run map, a fight in each tier, a boss, a shop, the ending and
+   Game Over. Which tracks grate, drag on, are too loud next to the sound effects, or don't fit their moment?
+2. **The three heroes:** play each at least once (Huntress 60 shards after beating chapter 1's boss; Necromancer 90
+   after reaching chapter 2). Does each *feel* different, or do you build the same way? The Knight's new kit (Bulwark,
+   Shield Bash, Oathkeeper, Rally, Iron Will, Crown of Thorns, Banner of the Last Keep) is new: do any feel weak or unclear?
+3. **Late biomes (tier 3: Ashen Keep, Sunless Mines, Pale Cathedral):** the waves of all three were smoothed in this
+   build (no row more than about x1.8 the enemy HP of the row before; heavy enemies arrive one kind at a time).
+   Does row 1-2 feel fair now, and where does the first real wall come? Is any biome clearly harder than the others?
+4. **Endings:** beat a tier-3 boss. Does the ending land (text, music, the Descend choice)? Try to see all three
+   (Fallen Marshal, Deep Warden, Pale Bishop) and then the secret fourth.
+5. **Endless (Descend):** after an ending press Descend. Is the depth scaling (x1.3 enemy HP a depth) fair, are the
+   short chapters fun, and does the run end cleanly with a sensible summary?
+6. **Pressure:** after your first win turn on 1-3 points. Is that a sensible next step? Does any modifier feel unfair
+   (No Repairs, Fewer Slots, Hasty Waves)?
+7. **The story:** press Listen on each War Room person, open the Chronicle and a hero's "Their story". Did you read
+   them? Do they make you care or just slow you down?
+8. **Anything broken:** a stuck screen, a fight that never ends, an error in the console, a save that won't load.
+   F8 sends a note with a screenshot and the run's state.
+
 ## Running the build
 
 - **Windows:** unzip `LastStand-<version>-windows.zip` anywhere and run `LastStand.exe`. The build is
