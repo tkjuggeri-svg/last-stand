@@ -11,7 +11,6 @@ const NormalMaps: GDScript = preload("res://experiments/look_test/variant_a/norm
 const NORMAL_HEROES: Array[StringName] = [&"knight"]
 const NORMAL_ENEMIES: Array[StringName] = [&"ghoul"]
 const NORMAL_TOWERS: Array[StringName] = [&"archer"]
-const LIGHT_BOOST: float = 1.5
 const HALO_SIZE: int = 96
 ## Light layer of the sprites with normal maps: the directional moon lights only these. On the tiled ground it
 ## showed the tiles as bright squares (the Compatibility renderer lights each tile item on its own).
@@ -19,6 +18,10 @@ const SUN_LAYER: int = 2
 
 ## Debug: LOOK_A_OFF=sun,shadows,halo,post,motes,normals switches parts off for comparison shots.
 var _off: PackedStringArray = OS.get_environment("LOOK_A_OFF").split(",")
+## Tunable by variant C (A's defaults): how much the level's lamps are boosted, and the glow halos' opacity and size.
+var light_boost: float = 1.5
+var halo_alpha: float = 0.55
+var halo_scale: float = 0.7
 var _level: Level
 var _camera: Camera2D
 var _post: ColorRect
@@ -102,7 +105,7 @@ func _track(sprite: AnimatedSprite2D) -> void:
 
 ## The level's lamps cast soft shadows, glow, and flicker.
 func _light_up(light: PointLight2D) -> void:
-	_base_energy[light] = light.energy * LIGHT_BOOST
+	_base_energy[light] = light.energy * light_boost
 	light.energy = _base_energy[light]
 	light.shadow_enabled = not _off.has("shadows")
 	light.shadow_filter = Light2D.SHADOW_FILTER_PCF13
@@ -115,8 +118,8 @@ func _light_up(light: PointLight2D) -> void:
 	halo.texture = _halo_texture
 	halo.light_mask = 0
 	halo.z_index = 6
-	halo.scale = Vector2.ONE * clampf(light.texture_scale * 0.7, 0.8, 3.0)
-	halo.modulate = Color(light.color, 0.55)
+	halo.scale = Vector2.ONE * clampf(light.texture_scale * halo_scale, 0.5, 3.0)
+	halo.modulate = Color(light.color, halo_alpha)
 	var add: CanvasItemMaterial = CanvasItemMaterial.new()
 	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	halo.material = add

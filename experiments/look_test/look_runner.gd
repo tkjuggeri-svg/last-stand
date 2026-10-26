@@ -10,6 +10,8 @@ var _out: String = "exports/look-test"
 var _seconds: float = 20.0
 var _shots: Array[float] = [4.0, 10.0, 16.0]
 var _measure: bool = false
+## Park the hero here (no bot) to shoot a part of the map the fight does not reach.
+var _hero_at: Vector2 = Vector2.INF
 ## Movie mode: play this many frames (the movie writer's clock is not the wall clock); 0: play `_seconds`.
 var _movie_frames: int = 0
 var _tag: String = "compat"
@@ -31,6 +33,9 @@ func _initialize() -> void:
 				_shots.append(float(part))
 		elif arg.begins_with("--movie-frames="):
 			_movie_frames = int(arg.trim_prefix("--movie-frames="))
+		elif arg.begins_with("--hero-at="):
+			var parts: PackedStringArray = arg.trim_prefix("--hero-at=").split(",")
+			_hero_at = Vector2(float(parts[0]), float(parts[1]))
 		elif arg == "--measure":
 			_measure = true
 		elif arg.begins_with("--tag="):
@@ -56,9 +61,16 @@ func _run() -> void:
 		presenter.call("attach", level)
 	elif _variant == "b":
 		presenter.call("attach", level)
+	if _variant == "c":
+		presenter = (load("res://experiments/look_test/variant_c/look_c.gd") as GDScript).new()
+		host.add_child(presenter)
+		presenter.call("attach", level)
 	for _i: int in 10:
 		await process_frame
-	LookStage.add_bot(level)
+	if _hero_at == Vector2.INF:
+		LookStage.add_bot(level)
+	else:
+		level.get_node("Hero").global_position = _hero_at
 	(level.get_node("%RunCycle") as RunCycle).start_wave()
 	var started: int = Time.get_ticks_usec()
 	var times: Array[float] = []

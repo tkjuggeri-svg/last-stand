@@ -22,6 +22,33 @@ camera onto the 2D plane through `WorldPointer.provider`; the HUD stays 2D on to
 Verified in `test_look_b_mouse.gd`: world -> screen -> world round trip exact over 99 points, the hero aims left
 and right at the mouse, a build slot highlights under the mouse and not away from it.
 
+## Variant C: A's lighting plus a fake depth, all in 2D (added after the first report)
+
+`experiments/look_test/variant_c/`. It extends A (same lights, normal maps, moon, motes) and adds:
+- **Depth scale:** the sprites of enemies, the hero, towers and props are drawn 0.87x at the top of the floor up to
+  1.0x at the bottom, scaled about their feet (visual only: bodies, collisions, hit areas and the mouse are untouched; if
+  the game itself moves or scales a sprite, that becomes the new base).
+- **Haze by world height**, cooler and darker toward the top of the map (it belongs to the map, not the screen).
+- **Foreground strip:** dark, blurred grass, gravestones, crosses and dead branches along the bottom edge that scroll
+  1.4x as fast as the world (parallax).
+- **Tilt-shift stronger at the bottom** (6.5 px) than at the top (1.8 px, so enemies at the spawns stay readable).
+- **Parallax backdrop beyond the top wall:** dusk sky with stars and a moon, far hills, ruins and a treeline at
+  0.18 / 0.38 / 0.62 of the camera's speed. Nothing exists beyond the wall in the real camera, so the camera may look
+  170 px higher than before (`limit_top`, visual only): the backdrop shows when the hero is in the top part of the map
+  (shot: `c_top_t03.png`) and is out of view elsewhere. Without that change the "beyond the wall" band would never be seen.
+- **Bloom toned down** (lamps 1.5x -> 1.3x, halos 0.55 -> 0.3 opacity, bloom 0.7 -> 0.34) plus a soft highlight roll-off:
+  the fortress keeps its detail. An exposure lift keeps the whole picture from getting darker than A.
+- **Sharp numbers and bars:** the post pass is a rectangle in the world canvas (z 150), the damage numbers, labels and
+  enemy health bars are raised above it (z 199-200), and the HUD is on its own layers: they are never blurred.
+
+Findings and cost: it reads as depth without the 3D stage's problems (no mirroring, no new renderer features, no change to
+existing game code in this step). Frame rate in the table below. What it is not: the ground and the unit/tower
+art still have no perspective, so the "tilted" feeling is a suggestion; the depth scale is subtle at 0.87;
+the scaled sprites' hit areas, health bars and baked soft shadows do not scale with them (a 1-2 px mismatch at the very
+top); the haze and blur tuning is by eye on one map; the foreground strip hides the bottom ~60 px of play (worth a setting).
+Adoption: about 520 lines (look_c.gd 200, depth_art.gd 170, shader 70), an opt-in layer in `Level`/Main, the z-order
+raise of numbers and bars (their scenes), and a decision on the camera's top limit.
+
 ## Renderer support (measured with `feature_probe.gd`; the engine's own warnings agree)
 
 | Feature | Compatibility (now) | Forward+ |
@@ -39,13 +66,13 @@ CLAUDE.md sets as the project's renderer goal (it needs Vulkan).
 
 ## Frame rate (Intel Iris Xe iGPU, Mesa, vsync off, 22 s sample after 3 s warm-up, up to ~50 enemies, 16 towers)
 
-| | current | A | B |
-|---|---|---|---|
-| Compatibility 1280x720 | 437 fps (1% low 162) | 127 (68) | 79 (50) |
-| Forward+ 1280x720 | 443 (146) | 168 (71) | 48 (32) |
-| Compatibility 1920x1080 | 290 (123) | 103 (53) | 42 (28) |
+| | current | A | B | C |
+|---|---|---|---|---|
+| Compatibility 1280x720 | 437 fps (1% low 162) | 127-157 (56-68) | 79 (50) | 168 (58) |
+| Forward+ 1280x720 | 443 (146) | 168 (71) | 48 (32) | not run |
+| Compatibility 1920x1080 | 290 (123) | 103 (53) | 42 (28) | 84 (39) |
 
-One machine, an integrated GPU; the 1080p row matters because the game's `Display` renders at 2x on a 1080p
+Run-to-run variation is about 10% (A measured 127, 142 and 157 on three runs); C ran once per row. One machine, an integrated GPU; the 1080p row matters because the game's `Display` renders at 2x on a 1080p
 screen (4x the pixels of 720p). Where the cost goes: A, light shadows are most of it (about 127 -> 320 fps
 without them), the post pass about half of the rest (-> 251 without it). B, the moon's shadows (55 fps with a
 cascaded shadow map, 79-87 with one orthogonal split, 99 without), omni shadows are small, the per-frame
