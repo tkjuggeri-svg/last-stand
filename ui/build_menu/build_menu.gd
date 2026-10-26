@@ -30,6 +30,8 @@ var _cost_labels: Dictionary = {}
 @onready var _sell_button: Button = %SellButton
 @onready var _upgrade_button: Button = %UpgradeButton
 @onready var _upgrade_info: Label = %UpgradeInfo
+@onready var _masterwork_button: Button = %MasterworkButton
+@onready var _masterwork_info: Label = %MasterworkInfo
 @onready var _details: Label = %Details
 @onready var _evolutions: EvolutionChoice = %Evolutions
 
@@ -41,12 +43,14 @@ func _ready() -> void:
 	_panel.minimum_size_changed.connect(_fit_panel)
 	_sell_button.pressed.connect(_on_sell_pressed)
 	_upgrade_button.pressed.connect(_on_upgrade_pressed)
+	_masterwork_button.pressed.connect(_on_masterwork_pressed)
 	if builder != null:
 		builder.active_slot_changed.connect(_on_active_slot_changed)
 		builder.build_failed.connect(_on_build_failed)
 		builder.tower_built.connect(_on_tower_built)
 		builder.tower_sold.connect(_on_tower_sold)
 		builder.tower_upgraded.connect(_on_tower_upgraded)
+		builder.tower_masterworked.connect(_on_tower_masterworked)
 		builder.upgrade_failed.connect(_on_upgrade_failed)
 		builder.tower_evolved.connect(_on_tower_evolved)
 	if economy != null:
@@ -130,6 +134,7 @@ func _rebuild() -> void:
 		_show_links(data, tower)
 		_sell_button.text = "Sell   +%d gold" % builder.refund_for_tower(tower)
 		_update_upgrade()
+		_update_masterwork()
 		_details.text = ""
 		_slot.show_rings([[tower.get_attack_range(), tower.get_min_range(), BuildSlot.RANGE_COLOR]])
 		if _evolutions.show_for(builder, _slot):
@@ -250,8 +255,39 @@ func _update_upgrade() -> void:
 	_upgrade_button.disabled = economy != null and not economy.can_afford(cost)
 
 
+## The Masterwork button and its line: "+8% power a rank, now +16%", or what unlocks it.
+func _update_masterwork() -> void:
+	if _slot == null or _slot.is_empty():
+		return
+	var tower: Tower = _slot.tower
+	var cost: int = builder.masterwork_cost(_slot)
+	var rank: int = tower.get_masterwork()
+	if cost < 0:
+		_masterwork_info.text = "Masterwork (from level %d): +%d%% power a rank." % [builder.masterwork_min_level, roundi(builder.masterwork_power * 100.0)]
+		_masterwork_button.text = "Masterwork"
+		_masterwork_button.disabled = true
+		return
+	_masterwork_info.text = "Masterwork rank %d: +%d%% power now, +%d%% after the next." % [rank, roundi(builder.masterwork_power * rank * 100.0),
+		roundi(builder.masterwork_power * (rank + 1) * 100.0)]
+	_masterwork_button.text = "Masterwork %d   -%d gold" % [rank + 1, cost]
+	_masterwork_button.disabled = economy != null and not economy.can_afford(cost)
+
+
+func _on_masterwork_pressed() -> void:
+	if _slot != null:
+		builder.masterwork(_slot)
+
+
+func _on_tower_masterworked(slot: BuildSlot, _tower: Tower, rank: int) -> void:
+	if slot == _slot:
+		_rebuild()
+		_show_message("Masterwork rank %d." % rank, OK_COLOR)
+		Sfx.play(self, &"tower_upgrade")
+
+
 func _on_gold_changed(gold: int) -> void:
 	_update_upgrade()
+	_update_masterwork()
 	if _evolutions.visible:
 		_evolutions.refresh_gold(gold)
 	for data: TowerData in _cost_labels:

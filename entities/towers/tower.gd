@@ -51,6 +51,10 @@ var _evolution: TowerEvolution = null
 var _boost: float = 0.0
 ## The Knight's Rally: a fire-rate bonus while the hero stands near (TowerBuilder keeps it up to date).
 var _rally: float = 0.0
+## Masterwork (a repeatable gold sink at level 3 and up): its ranks, and the share of power each gives (set by
+## TowerBuilder, which owns the rule).
+var masterwork_power: float = 0.0
+var _masterwork: int = 0
 ## Its pair bonuses active now (a partner tower nearby; TowerBuilder keeps them up to date).
 var _synergies: Array[TowerSynergy] = []
 ## Twin Banners: a same-type tower's level shared with this one (0 = none); the better one counts.
@@ -80,6 +84,7 @@ var _cooldown_left: float = 0.0
 @onready var _glow: PointLight2D = %Glow
 @onready var _range_shape: CollisionShape2D = %RangeShape
 @onready var _boost_mark: AnimatedSprite2D = %BoostMark
+@onready var _rank_mark: Label = %RankMark
 @onready var _silence: TowerSilence = %Silence
 
 
@@ -276,6 +281,22 @@ func set_rally(bonus: float) -> void:
 	_stats = _effective_stats()
 
 
+## Masterwork rank `rank` (0 = none): the tower's power rises by `masterwork_power` a rank.
+func set_masterwork(rank: int) -> void:
+	_masterwork = maxi(rank, 0)
+	_stats = _effective_stats()
+	_update_rank_mark()
+
+
+func get_masterwork() -> int:
+	return _masterwork
+
+
+## What the ranks multiply: 1 with none.
+func get_masterwork_scale() -> float:
+	return 1.0 + masterwork_power * _masterwork
+
+
 func get_rally() -> float:
 	return _rally
 
@@ -382,7 +403,27 @@ func _stats_from(base: TowerTier) -> TowerTier:
 	for synergy: TowerSynergy in _synergies:
 		synergy.apply_to(stats)
 	stats.pierce += _pierce_bonus
+	_apply_masterwork(stats)
 	return stats
+
+
+## Masterwork: damage, burning ground, trap patches, a Watchtower's bonuses and a Bone Pit's skeletons all
+## grow by the same share a rank, so every kind of tower gets something from it.
+func _apply_masterwork(stats: TowerTier) -> void:
+	var power: float = get_masterwork_scale()
+	if _masterwork <= 0:
+		return
+	stats.damage = roundi(stats.damage * power)
+	stats.burn_dps *= power
+	stats.patch_dps *= power
+	stats.hero_bonus *= power
+	stats.aura_range_bonus *= power
+	if stats.minion != null:
+		var minion: MinionData = stats.minion.duplicate() as MinionData
+		minion.damage = roundi(minion.damage * power)
+		minion.max_health = roundi(minion.max_health * power)
+		minion.burst_damage = roundi(minion.burst_damage * power)
+		stats.minion = minion
 
 
 func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
@@ -398,6 +439,13 @@ func _apply_modifiers(stats: TowerTier, base: TowerTier) -> void:
 
 ## The ember over a tower something lifts: a Beacon Flame's speed, a twin's level (Twin Banners), a
 ## pair bonus.
+## "M3" at the tower's foot while it has Masterwork ranks.
+func _update_rank_mark() -> void:
+	if _rank_mark != null:
+		_rank_mark.visible = _masterwork > 0
+		_rank_mark.text = "M%d" % _masterwork
+
+
 func _update_boost_mark() -> void:
 	_boost_mark.visible = _boost > 0.0 or get_stats_level() > _level or not _synergies.is_empty()
 

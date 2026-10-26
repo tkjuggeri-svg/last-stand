@@ -16,12 +16,15 @@ signal upgrade_failed(slot: BuildSlot, reason: String)
 ## A tower's beam killed an enemy (the Level heals the fortress for a Soul Harvester).
 signal tower_slew(tower: Tower, enemy: Enemy)
 signal tower_evolved(slot: BuildSlot, tower: Tower, evolution: TowerEvolution)
+## A tower gained a Masterwork rank.
+signal tower_masterworked(slot: BuildSlot, tower: Tower, rank: int)
 
 const NOT_ENOUGH_GOLD: String = "Not enough gold"
 const SLOT_OCCUPIED: String = "This slot already has a tower"
 const SLOT_LOCKED: String = "Rubble blocks this slot"
 const MAX_LEVEL: String = "Already at the highest level"
 const NO_TOWER: String = "No tower here"
+const NOT_YET_MASTERWORK: String = "Masterwork starts at level 3"
 const UNDER_CONSTRUCTION: String = "Still under construction"
 const NOT_YET: String = "Evolves at level 3"
 const ALREADY_EVOLVED: String = "Already evolved"
@@ -43,6 +46,16 @@ const TWIN_RANGE: float = 330.0
 ## Where Bone Pits and Ossuaries raise skeletons (set by the Level, which makes the pool).
 var minion_pool: MinionPool
 @export_range(0.0, 1.0) var sell_refund_ratio: float = 0.5
+
+@export_group("Masterwork")
+## Masterwork, a repeatable gold sink (M13 follow-up): a tower of at least this level can be given ranks...
+@export var masterwork_min_level: int = 3
+## ...the first costs this much, each next one `masterwork_growth` times the one before (Guild's discount applies)...
+@export var masterwork_base_cost: int = 120
+@export var masterwork_growth: float = 1.32
+## ...and every rank makes the tower this much stronger (damage, burning ground, aura bonuses, skeletons).
+@export var masterwork_power: float = 0.08
+@export_group("")
 
 ## What the run may use (M8 unlocks: which towers may evolve); null = everything.
 var unlocks: RunUnlocks = null
@@ -121,6 +134,34 @@ func upgrade_cost(slot: BuildSlot) -> int:
 		return -1
 	var base: int = slot.tower.data.upgrade_cost(slot.tower.get_level() + 1)
 	return RunModifiers.value_int(modifiers, base, [RunModifiers.TOWER_UPGRADE_COST])
+
+
+## Gold for the slot's tower's next Masterwork rank, or -1 if there is no tower, it is still building, or it is
+## below `masterwork_min_level`. Rising: base x growth^rank (the card discounts for tower upgrades apply).
+func masterwork_cost(slot: BuildSlot) -> int:
+	if slot == null or slot.is_empty() or slot.tower.is_building() or slot.tower.get_level() < masterwork_min_level:
+		return -1
+	var base: int = roundi(masterwork_base_cost * pow(masterwork_growth, slot.tower.get_masterwork()))
+	return RunModifiers.value_int(modifiers, base, [RunModifiers.TOWER_UPGRADE_COST])
+
+
+## Gives the slot's tower its next Masterwork rank if the gold allows. False (and nothing changes) otherwise.
+func masterwork(slot: BuildSlot) -> bool:
+	if slot == null or slot.is_empty():
+		upgrade_failed.emit(slot, NO_TOWER)
+		return false
+	var cost: int = masterwork_cost(slot)
+	if cost < 0:
+		upgrade_failed.emit(slot, UNDER_CONSTRUCTION if slot.tower.is_building() else NOT_YET_MASTERWORK)
+		return false
+	if not economy.try_spend(cost):
+		upgrade_failed.emit(slot, NOT_ENOUGH_GOLD)
+		return false
+	var tower: Tower = slot.tower
+	tower.invested += cost
+	tower.set_masterwork(tower.get_masterwork() + 1)
+	tower_masterworked.emit(slot, tower, tower.get_masterwork())
+	return true
 
 
 ## Upgrades the slot's tower one level if the gold allows. Returns false (and changes nothing) otherwise.
@@ -259,6 +300,7 @@ func _aura_range_for(tower: Tower, towers: Array[Tower]) -> float:
 ## What every new tower gets: the run's modifiers, the minion pool and the beam's kill report.
 func _equip(tower: Tower) -> void:
 	tower.modifiers = modifiers
+	tower.masterwork_power = masterwork_power
 	tower.minion_pool = minion_pool
 	tower.slew.connect(func(t: Tower, enemy: Enemy) -> void: tower_slew.emit(t, enemy))
 
@@ -317,8 +359,8 @@ func build(slot: BuildSlot, data: TowerData) -> bool:
 
 
 ## Puts a saved tower back on `slot` as it was (M8: resuming a run): built, at `level`, evolved into
-## branch `evolution` (-1: none), `invested` gold in it. Nothing is paid; false if the slot is taken.
-func restore(slot: BuildSlot, data: TowerData, level: int, evolution: int, invested: int) -> bool:
+## branch `evolution` (-1: none), `invested` gold in it, Masterwork rank `masterwork_rank`. Nothing is paid; false if the slot is taken.
+func restore(slot: BuildSlot, data: TowerData, level: int, evolution: int, invested: int, masterwork_rank: int = 0) -> bool:
 	if slot == null or data == null or not slot.is_empty():
 		return false
 	var tower: Tower = data.scene.instantiate()
@@ -331,6 +373,7 @@ func restore(slot: BuildSlot, data: TowerData, level: int, evolution: int, inves
 	var all: Array[TowerEvolution] = data.all_evolutions()
 	if evolution >= 0 and evolution < all.size():
 		tower.evolve(all[evolution])
+	tower.set_masterwork(masterwork_rank)
 	refresh_boosts()
 	tower_built.emit(slot, tower)
 	return true

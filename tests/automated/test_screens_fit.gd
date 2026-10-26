@@ -140,6 +140,19 @@ func _screens() -> Dictionary:
 		_level.economy.earn(2000, Economy.Source.REFUND)
 		menu.open(_level.builder.get_slots()[0])
 		return menu
+	screens["build menu, built tower"] = func() -> Node:
+		var menu: Node = _level.get_node("BuildMenu")
+		_level.economy.earn(5000, Economy.Source.REFUND)
+		var slot: BuildSlot = _level.builder.get_slots()[1]
+		if slot.is_empty():
+			_level.builder.build(slot, load("res://data/towers/archer.tres") as TowerData)
+			await _frames(90)
+			for _i: int in 2:
+				_level.builder.upgrade(slot)
+			_level.builder.masterwork(slot)
+			_level.builder.masterwork(slot)
+		menu.open(slot)
+		return menu
 	screens["upgrade choice"] = func() -> Node:
 		_level.offers.pool = RUN.get_hero("knight").exclusive_cards.duplicate()
 		_level.offers.make_offer()

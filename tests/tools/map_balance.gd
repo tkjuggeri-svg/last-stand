@@ -4,7 +4,7 @@ extends SceneTree
 ## fought, the upgrades and evolutions taken, the income per chapter, the time.
 ##   godot --headless --fixed-fps 60 --path . --script res://tests/tools/map_balance.gd
 ##     [-- --seeds=1-8 | --seed-list=3,8,14] [--path=fights|balanced|safe] [--plan=mixed|all five] [--hero=bot|idle] [--hero-kind=knight|huntress|necromancer] [--archetype=<tag>] [--biomes=<id>,<id>,<id>] [--quiet]
-##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--pressure=all|<id>,<id>] [--start=2|3] [--kit=cards:relics:gold] [--profile=first] [--early]
+##     [--protect-ch1] [--trace] [--fire=with|without] [--relics=none|<id>,<id>] [--pressure=all|<id>,<id>] [--start=2|3] [--kit=cards:relics:gold] [--extra=on|off] [--profile=first] [--early]
 ## Plans: "mixed" and "all five" (hand-made per level), "all <tower id>" (that tower on every slot,
 ## in the mixed plan's slot order: single-tower spam) and "braziers first" (the mixed plan with its
 ## first three builds, one per road, made Braziers). --fire=with grants the fire cards and relic at the
@@ -109,6 +109,8 @@ var _fire: String = ""
 ## --pressure=all|<id>,<id>: Pressure modifiers (M12) switched on for every run.
 var _pressure: String = ""
 var _early: bool = false
+## --extra=on|off: after the plan the bot fills the free slots, upgrades, evolves and buys Masterwork ranks (on); off: stops at the plan, as before M13.
+var _extra_mode: String = "on"
 ## --start=2|3: the run begins in that chapter (a fresh level, as the dev menu's jump) with a random kit of
 ## cards and relics (--kit=cards:relics:gold, default 5:1:900 for chapter 2 and 10:2:1500 for chapter 3 (about what the earlier chapters' refunds leave), drawn
 ## from the seed): a chapter measured on its own, as a player who got that far would meet it.
@@ -163,6 +165,8 @@ func _initialize() -> void:
 			_fire = arg.trim_prefix("--fire=")
 		elif arg.begins_with("--pressure="):
 			_pressure = arg.trim_prefix("--pressure=")
+		elif arg.begins_with("--extra="):
+			_extra_mode = arg.trim_prefix("--extra=")
 		elif arg.begins_with("--start="):
 			_start = clampi(int(arg.trim_prefix("--start=")), 1, 3)
 		elif arg.begins_with("--kit="):
@@ -454,6 +458,8 @@ func _steps(builds: Array) -> Array:
 
 func _buy(level: Level, plan: Array, next: int, stats: Dictionary) -> int:
 	if next >= plan.size():
+		if _extra_mode == "on":
+			_extra(level, plan, stats)
 		return next
 	var builder: TowerBuilder = level.builder
 	var economy: Economy = level.economy
@@ -481,6 +487,43 @@ func _buy(level: Level, plan: Array, next: int, stats: Dictionary) -> int:
 				if String(data.id) == step[0] and economy.can_afford(builder.build_cost(data)) and builder.build(slot, data):
 					return next + 1
 	return next
+
+
+## After the plan, as a good player goes on (M13 follow-up, for the extra slots and Masterwork): towers on the
+## slots left (the plan's kit in turn), each taken to level 3 and evolved, then Masterwork ranks on the lowest
+## rank first, always keeping KEEP_GOLD. One purchase a call. `--extra=off` stops at the plan.
+func _extra(level: Level, plan: Array, stats: Dictionary) -> void:
+	var builder: TowerBuilder = level.builder
+	var economy: Economy = level.economy
+	var kit: Array[String] = []
+	for step: Array in plan:
+		if step[0] != "up" and step[0] != "evo" and not kit.has(step[0]):
+			kit.append(step[0])
+	var slots: Array[BuildSlot] = builder.get_slots()
+	for slot: BuildSlot in slots:
+		if slot.is_empty() and not slot.locked and not kit.is_empty():
+			for data: TowerData in builder.catalog:
+				if String(data.id) == kit[slot.get_index() % kit.size()] and economy.get_gold() - builder.build_cost(data) >= KEEP_GOLD and builder.build(slot, data):
+					return
+	for slot: BuildSlot in slots:
+		if slot.is_empty() or slot.tower.is_building():
+			continue
+		var cost: int = builder.upgrade_cost(slot)
+		if cost >= 0:
+			if economy.get_gold() - cost >= KEEP_GOLD and builder.upgrade(slot):
+				return
+		else:
+			var options: Array[TowerEvolution] = builder.evolution_options(slot)
+			var index: int = slot.get_index() % 2
+			if not options.is_empty() and economy.get_gold() - builder.evolution_cost(options[index]) >= KEEP_GOLD and builder.evolve(slot, index):
+				stats["evos"] += 1
+				return
+	var best: BuildSlot = null
+	for slot: BuildSlot in slots:
+		if not slot.is_empty() and builder.masterwork_cost(slot) >= 0 and (best == null or slot.tower.get_masterwork() < best.tower.get_masterwork()):
+			best = slot
+	if best != null and economy.get_gold() - builder.masterwork_cost(best) >= KEEP_GOLD:
+		builder.masterwork(best)
 
 
 func _sinks(level: Level) -> void:

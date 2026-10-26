@@ -19,7 +19,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		var tower: Tower = slots[i].tower
 		if tower != null:
 			towers.append({"slot": i, "tower": tower.data.resource_path, "level": mini(tower.get_level(), tower.data.max_level()),
-				"evolution": tower.data.all_evolutions().find(tower.get_evolution()) if tower.is_evolved() else -1, "invested": tower.invested})
+				"evolution": tower.data.all_evolutions().find(tower.get_evolution()) if tower.is_evolved() else -1, "invested": tower.invested, "masterwork": tower.get_masterwork()})
 	return {
 		"version": VERSION,
 		"seed": run.seed_value,
@@ -98,7 +98,7 @@ static func restore_level(level: Level, saved: Dictionary) -> void:
 		var slot: int = int(entry.get("slot", -1))
 		if slot >= 0 and slot < slots.size() and ResourceLoader.exists(String(entry.get("tower", ""))):
 			level.builder.restore(slots[slot], load(String(entry.get("tower"))) as TowerData, int(entry.get("level", 1)),
-				int(entry.get("evolution", -1)), int(entry.get("invested", 0)))
+				int(entry.get("evolution", -1)), int(entry.get("invested", 0)), int(entry.get("masterwork", 0)))
 	level.builder.free_evolutions = int(saved.get("free_evolutions", 0))
 	if level.offers != null:
 		level.offers.load_state(saved.get("offers", {}))

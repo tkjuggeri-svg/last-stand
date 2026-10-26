@@ -87,6 +87,13 @@ layout_mode = 2
 autowrap_mode = 3
 theme_type_variation = &"HeaderLabel"
 
+[node name="MasterworkInfo" type="Label" parent="Panel/Content/TowerInfo/InfoText"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+autowrap_mode = 3
+theme_type_variation = &"DimLabel"
+
 [node name="Actions" type="VBoxContainer" parent="Panel/Content/TowerInfo"]
 layout_mode = 2
 size_flags_vertical = 4
@@ -97,6 +104,12 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
 text = "Upgrade   -75 gold"
+
+[node name="MasterworkButton" type="Button" parent="Panel/Content/TowerInfo/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+layout_mode = 2
+text = "Masterwork   -120 gold"
 
 [node name="SellButton" type="Button" parent="Panel/Content/TowerInfo/Actions"]
 unique_name_in_owner = true
