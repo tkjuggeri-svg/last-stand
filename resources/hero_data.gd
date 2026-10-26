@@ -50,6 +50,8 @@ enum AttackKind { SWORD, BOLT }
 @export var bolt_range: float = 340.0
 @export var bolt_speed: float = 520.0
 @export var bolt_pierce: int = 0
+## A bolt bends toward the nearest enemy ahead of it, up to this many radians a second (0: flies straight).
+@export var bolt_homing: float = 0.0
 ## The Mark a bolt leaves on whoever it hits: towers deal this much more to it for this long (0: none).
 @export var mark_bonus: float = 0.0
 @export var mark_time: float = 3.0

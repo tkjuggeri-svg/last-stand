@@ -38,6 +38,7 @@ attack_kind = 1
 bolt_range = 220.0
 bolt_speed = 480.0
 bolt_pierce = 0
+bolt_homing = 3.0
 mark_bonus = 0.0
 mark_time = 3.0
 exclusive_towers = Array[ExtResource("5_tower")]([ExtResource("6_pit"), ExtResource("7_siphon"), ExtResource("8_ossuary")])
