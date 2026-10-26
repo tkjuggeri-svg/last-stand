@@ -60,7 +60,7 @@ func _test_level() -> void:
 	var level: Level = (load(KEEP) as PackedScene).instantiate()
 	root.add_child(level)
 	await process_frame
-	_check("four roads and eight slots", level.spawner.lanes.size() == 4 and level.builder.get_slots().size() == 8)
+	_check("four roads and fourteen slots", level.spawner.lanes.size() == 4 and level.builder.get_slots().size() == 14)
 	var clear: bool = true
 	for slot: BuildSlot in level.builder.get_slots():
 		for lane: Path2D in level.spawner.lanes:

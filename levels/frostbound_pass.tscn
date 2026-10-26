@@ -651,20 +651,20 @@ hframes = 8
 frame = 3
 
 [node name="Prop49" type="Sprite2D" parent="Props"]
-position = Vector2(-713, -31)
+position = Vector2(-770, -205)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
-frame = 0
+frame = 3
 
 [node name="Prop50" type="Sprite2D" parent="Props"]
-position = Vector2(-694, 425)
+position = Vector2(10, 389)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
-frame = 4
+frame = 3
 
 [node name="Ambience" type="CPUParticles2D" parent="."]
 z_index = 2
@@ -847,6 +847,24 @@ position = Vector2(-620, -30)
 
 [node name="Slot8" parent="BuildSlots" instance=ExtResource("14_slot")]
 position = Vector2(-200, 170)
+
+[node name="Slot9" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-790, -100)
+
+[node name="Slot10" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-150, -140)
+
+[node name="Slot11" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-700, -390)
+
+[node name="Slot12" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-30, -360)
+
+[node name="Slot13" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-750, -30)
+
+[node name="Slot14" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-470, -10)
 
 [node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true

@@ -303,14 +303,6 @@ hframes = 8
 frame = 4
 
 [node name="Prop3" type="Sprite2D" parent="Props"]
-position = Vector2(-99, -287)
-scale = Vector2(1, 1)
-texture = ExtResource("20_props")
-offset = Vector2(0, -40)
-hframes = 8
-frame = 5
-
-[node name="Prop4" type="Sprite2D" parent="Props"]
 position = Vector2(50, 282)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -318,7 +310,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop5" type="Sprite2D" parent="Props"]
+[node name="Prop4" type="Sprite2D" parent="Props"]
 position = Vector2(-531, -217)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -326,7 +318,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop6" type="Sprite2D" parent="Props"]
+[node name="Prop5" type="Sprite2D" parent="Props"]
 position = Vector2(334, -396)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -334,7 +326,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 6
 
-[node name="Prop7" type="Sprite2D" parent="Props"]
+[node name="Prop6" type="Sprite2D" parent="Props"]
 position = Vector2(-90, 348)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -342,7 +334,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop8" type="Sprite2D" parent="Props"]
+[node name="Prop7" type="Sprite2D" parent="Props"]
 position = Vector2(-667, -162)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -350,7 +342,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 1
 
-[node name="Prop9" type="Sprite2D" parent="Props"]
+[node name="Prop8" type="Sprite2D" parent="Props"]
 position = Vector2(-12, -371)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -358,7 +350,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 6
 
-[node name="Prop10" type="Sprite2D" parent="Props"]
+[node name="Prop9" type="Sprite2D" parent="Props"]
 position = Vector2(-446, -54)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -366,7 +358,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 2
 
-[node name="Prop11" type="Sprite2D" parent="Props"]
+[node name="Prop10" type="Sprite2D" parent="Props"]
 position = Vector2(-787, -256)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -374,7 +366,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop12" type="Sprite2D" parent="Props"]
+[node name="Prop11" type="Sprite2D" parent="Props"]
 position = Vector2(-865, -39)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -382,23 +374,15 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop13" type="Sprite2D" parent="Props"]
-position = Vector2(-100, 43)
+[node name="Prop12" type="Sprite2D" parent="Props"]
+position = Vector2(-591, -436)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
 frame = 1
 
-[node name="Prop14" type="Sprite2D" parent="Props"]
-position = Vector2(-391, -26)
-scale = Vector2(1, 1)
-texture = ExtResource("20_props")
-offset = Vector2(0, -40)
-hframes = 8
-frame = 5
-
-[node name="Prop15" type="Sprite2D" parent="Props"]
+[node name="Prop13" type="Sprite2D" parent="Props"]
 position = Vector2(-646, 151)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -406,7 +390,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop16" type="Sprite2D" parent="Props"]
+[node name="Prop14" type="Sprite2D" parent="Props"]
 position = Vector2(-603, 92)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -414,7 +398,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 7
 
-[node name="Prop17" type="Sprite2D" parent="Props"]
+[node name="Prop15" type="Sprite2D" parent="Props"]
 position = Vector2(150, -374)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -422,7 +406,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop18" type="Sprite2D" parent="Props"]
+[node name="Prop16" type="Sprite2D" parent="Props"]
 position = Vector2(-60, -264)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -430,7 +414,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop19" type="Sprite2D" parent="Props"]
+[node name="Prop17" type="Sprite2D" parent="Props"]
 position = Vector2(-684, 257)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -438,7 +422,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop20" type="Sprite2D" parent="Props"]
+[node name="Prop18" type="Sprite2D" parent="Props"]
 position = Vector2(-522, 163)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -446,7 +430,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop21" type="Sprite2D" parent="Props"]
+[node name="Prop19" type="Sprite2D" parent="Props"]
 position = Vector2(-791, -405)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -454,7 +438,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 2
 
-[node name="Prop22" type="Sprite2D" parent="Props"]
+[node name="Prop20" type="Sprite2D" parent="Props"]
 position = Vector2(-326, 294)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -462,7 +446,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 7
 
-[node name="Prop23" type="Sprite2D" parent="Props"]
+[node name="Prop21" type="Sprite2D" parent="Props"]
 position = Vector2(159, -416)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -470,7 +454,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop24" type="Sprite2D" parent="Props"]
+[node name="Prop22" type="Sprite2D" parent="Props"]
 position = Vector2(194, 144)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -478,7 +462,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop25" type="Sprite2D" parent="Props"]
+[node name="Prop23" type="Sprite2D" parent="Props"]
 position = Vector2(-698, -105)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -486,7 +470,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop26" type="Sprite2D" parent="Props"]
+[node name="Prop24" type="Sprite2D" parent="Props"]
 position = Vector2(321, -86)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -494,7 +478,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop27" type="Sprite2D" parent="Props"]
+[node name="Prop25" type="Sprite2D" parent="Props"]
 position = Vector2(301, 303)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -502,7 +486,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop28" type="Sprite2D" parent="Props"]
+[node name="Prop26" type="Sprite2D" parent="Props"]
 position = Vector2(369, -124)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -510,7 +494,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop29" type="Sprite2D" parent="Props"]
+[node name="Prop27" type="Sprite2D" parent="Props"]
 position = Vector2(-647, -242)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -518,7 +502,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 1
 
-[node name="Prop30" type="Sprite2D" parent="Props"]
+[node name="Prop28" type="Sprite2D" parent="Props"]
 position = Vector2(-292, -355)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -526,7 +510,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop31" type="Sprite2D" parent="Props"]
+[node name="Prop29" type="Sprite2D" parent="Props"]
 position = Vector2(-763, -434)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -534,7 +518,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop32" type="Sprite2D" parent="Props"]
+[node name="Prop30" type="Sprite2D" parent="Props"]
 position = Vector2(272, 366)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -542,7 +526,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop33" type="Sprite2D" parent="Props"]
+[node name="Prop31" type="Sprite2D" parent="Props"]
 position = Vector2(-167, 266)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -550,7 +534,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 6
 
-[node name="Prop34" type="Sprite2D" parent="Props"]
+[node name="Prop32" type="Sprite2D" parent="Props"]
 position = Vector2(-740, -25)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -558,15 +542,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop35" type="Sprite2D" parent="Props"]
-position = Vector2(-112, 113)
-scale = Vector2(1, 1)
-texture = ExtResource("20_props")
-offset = Vector2(0, -40)
-hframes = 8
-frame = 2
-
-[node name="Prop36" type="Sprite2D" parent="Props"]
+[node name="Prop33" type="Sprite2D" parent="Props"]
 position = Vector2(-281, -285)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -574,7 +550,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop37" type="Sprite2D" parent="Props"]
+[node name="Prop34" type="Sprite2D" parent="Props"]
 position = Vector2(-345, -430)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -582,7 +558,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop38" type="Sprite2D" parent="Props"]
+[node name="Prop35" type="Sprite2D" parent="Props"]
 position = Vector2(-539, -337)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -590,7 +566,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop39" type="Sprite2D" parent="Props"]
+[node name="Prop36" type="Sprite2D" parent="Props"]
 position = Vector2(-851, -411)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -598,7 +574,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 0
 
-[node name="Prop40" type="Sprite2D" parent="Props"]
+[node name="Prop37" type="Sprite2D" parent="Props"]
 position = Vector2(-448, 345)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -606,23 +582,23 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop41" type="Sprite2D" parent="Props"]
-position = Vector2(-149, -169)
+[node name="Prop38" type="Sprite2D" parent="Props"]
+position = Vector2(-587, 32)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
-frame = 1
+frame = 4
 
-[node name="Prop42" type="Sprite2D" parent="Props"]
-position = Vector2(275, -176)
+[node name="Prop39" type="Sprite2D" parent="Props"]
+position = Vector2(-594, -372)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
-frame = 1
+frame = 5
 
-[node name="Prop43" type="Sprite2D" parent="Props"]
+[node name="Prop40" type="Sprite2D" parent="Props"]
 position = Vector2(-634, -393)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -630,7 +606,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop44" type="Sprite2D" parent="Props"]
+[node name="Prop41" type="Sprite2D" parent="Props"]
 position = Vector2(-529, 219)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -638,7 +614,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 5
 
-[node name="Prop45" type="Sprite2D" parent="Props"]
+[node name="Prop42" type="Sprite2D" parent="Props"]
 position = Vector2(348, 163)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -646,7 +622,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 3
 
-[node name="Prop46" type="Sprite2D" parent="Props"]
+[node name="Prop43" type="Sprite2D" parent="Props"]
 position = Vector2(-672, -411)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -654,7 +630,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 2
 
-[node name="Prop47" type="Sprite2D" parent="Props"]
+[node name="Prop44" type="Sprite2D" parent="Props"]
 position = Vector2(-420, -447)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -662,7 +638,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 1
 
-[node name="Prop48" type="Sprite2D" parent="Props"]
+[node name="Prop45" type="Sprite2D" parent="Props"]
 position = Vector2(336, 112)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -670,7 +646,7 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop49" type="Sprite2D" parent="Props"]
+[node name="Prop46" type="Sprite2D" parent="Props"]
 position = Vector2(248, 33)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
@@ -678,13 +654,37 @@ offset = Vector2(0, -40)
 hframes = 8
 frame = 4
 
-[node name="Prop50" type="Sprite2D" parent="Props"]
+[node name="Prop47" type="Sprite2D" parent="Props"]
 position = Vector2(-338, 88)
 scale = Vector2(1, 1)
 texture = ExtResource("20_props")
 offset = Vector2(0, -40)
 hframes = 8
 frame = 0
+
+[node name="Prop48" type="Sprite2D" parent="Props"]
+position = Vector2(-817, 134)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 7
+
+[node name="Prop49" type="Sprite2D" parent="Props"]
+position = Vector2(204, 90)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 5
+
+[node name="Prop50" type="Sprite2D" parent="Props"]
+position = Vector2(-741, 198)
+scale = Vector2(1, 1)
+texture = ExtResource("20_props")
+offset = Vector2(0, -40)
+hframes = 8
+frame = 4
 
 [node name="Ambience" type="CPUParticles2D" parent="."]
 z_index = 2
@@ -870,6 +870,24 @@ position = Vector2(-650, 60)
 
 [node name="Slot8" parent="BuildSlots" instance=ExtResource("14_slot")]
 position = Vector2(-300, 230)
+
+[node name="Slot9" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-160, -130)
+
+[node name="Slot10" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-610, 230)
+
+[node name="Slot11" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-120, 70)
+
+[node name="Slot12" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(270, -170)
+
+[node name="Slot13" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-390, 30)
+
+[node name="Slot14" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-80, -310)
 
 [node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true

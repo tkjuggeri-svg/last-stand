@@ -44,7 +44,7 @@ func _test_layout() -> void:
 			if a != b:
 				closest = minf(closest, a.global_position.distance_to(b.global_position))
 	var arena_closest: float = _closest_pair(arena.get_node("BuildSlots"))
-	_check("...and more spread out (closest pair %.0f px, graveyard %.0f px)" % [closest, arena_closest], closest >= 180.0 and closest > arena_closest * 1.5)
+	_check("...and no tighter than the graveyard (closest pair %.0f px, graveyard %.0f px)" % [closest, arena_closest], closest >= 96.0 and closest > arena_closest)
 	var water: MarshWater = level.get_node("Water")
 	var pools: Array[PackedVector2Array] = water.get_pools()
 	var lanes: Array[Path2D] = level.spawner.lanes

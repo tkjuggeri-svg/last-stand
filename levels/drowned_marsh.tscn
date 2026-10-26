@@ -1141,6 +1141,24 @@ position = Vector2(270, -120)
 [node name="Slot7" parent="BuildSlots" instance=ExtResource("14_slot")]
 position = Vector2(700, -380)
 
+[node name="Slot8" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-170, -80)
+
+[node name="Slot9" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-700, 410)
+
+[node name="Slot10" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-840, -360)
+
+[node name="Slot11" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-160, 80)
+
+[node name="Slot12" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(-520, 510)
+
+[node name="Slot13" parent="BuildSlots" instance=ExtResource("14_slot")]
+position = Vector2(450, -160)
+
 [node name="WaveSpawner" type="Node2D" parent="." node_paths=PackedStringArray("lanes")]
 y_sort_enabled = true
 script = ExtResource("4_spawner")
