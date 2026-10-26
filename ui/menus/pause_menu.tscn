@@ -4,7 +4,7 @@
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
 [ext_resource type="PackedScene" path="res://ui/menus/settings_menu.tscn" id="3_settings"]
 
-[node name="PauseMenu" type="CanvasLayer"]
+[node name="PauseMenu" type="CanvasLayer" groups=["ui_scaled"]]
 process_mode = 3
 layer = 9
 visible = false

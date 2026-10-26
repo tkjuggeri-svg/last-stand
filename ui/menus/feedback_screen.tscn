@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://ui/menus/feedback_screen.gd" id="1_feedback"]
 
-[node name="FeedbackScreen" type="CanvasLayer"]
+[node name="FeedbackScreen" type="CanvasLayer" groups=["ui_scaled"]]
 process_mode = 3
 layer = 50
 script = ExtResource("1_feedback")

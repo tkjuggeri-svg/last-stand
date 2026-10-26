@@ -39,6 +39,30 @@ size_flags_horizontal = 0
 tooltip_text = "Even pixels at window sizes that aren't a multiple of 720p (slightly soft)"
 text = "Smooth pixels"
 
+[node name="UiScaleRow" type="HBoxContainer" parent="Margin/Box"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Name" type="Label" parent="Margin/Box/UiScaleRow"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Interface size"
+
+[node name="UiScaleSlider" type="HSlider" parent="Margin/Box/UiScaleRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 24)
+layout_mode = 2
+size_flags_vertical = 4
+min_value = 70.0
+max_value = 120.0
+step = 5.0
+value = 100.0
+
+[node name="Value" type="Label" parent="Margin/Box/UiScaleRow"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+text = "100%"
+
 [node name="FeelRow" type="HBoxContainer" parent="Margin/Box"]
 layout_mode = 2
 theme_override_constants/separation = 12
@@ -138,7 +162,7 @@ text = "Controls (click, then press a key; Esc cancels)"
 theme_type_variation = &"HeaderLabel"
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/Box"]
-custom_minimum_size = Vector2(0, 250)
+custom_minimum_size = Vector2(0, 190)
 layout_mode = 2
 horizontal_scroll_mode = 0
 

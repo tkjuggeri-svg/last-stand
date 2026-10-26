@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://ui/menus/run_summary_screen.gd" id="1_summary"]
 [ext_resource type="PackedScene" path="res://ui/widgets/screen_frame.tscn" id="2_frame"]
 
-[node name="RunSummaryScreen" type="CanvasLayer"]
+[node name="RunSummaryScreen" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 20
 script = ExtResource("1_summary")
 

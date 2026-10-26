@@ -14,6 +14,10 @@ const ACTION_NAMES: Dictionary = {
 const BUSES: Array[StringName] = [&"Master", &"Music", &"SFX"]
 ## Screen shake strengths offered (Full, Reduced, Off).
 const SHAKE_LEVELS: Array[float] = [1.0, 0.5, 0.0]
+## The interface size offered, as a fraction of the default (the battle HUD and every menu).
+const UI_SCALE_MIN: float = 0.7
+const UI_SCALE_MAX: float = 1.2
+const UI_SCALE_STEP: float = 0.05
 ## Bindings per action (shown as two slots in the settings menu).
 const SLOTS: int = 2
 
@@ -24,6 +28,7 @@ static var _volumes: Dictionary = {}
 static var _screen_shake: float = 1.0
 static var _damage_numbers: bool = true
 static var _smooth_scaling: bool = true
+static var _ui_scale: float = 1.0
 
 
 ## Reads the saved settings (if any) and applies them: window mode, volumes, bindings.
@@ -34,6 +39,7 @@ static func load_and_apply() -> void:
 	_screen_shake = float(config.get_value("display", "screen_shake", 1.0)) if loaded else 1.0
 	_damage_numbers = bool(config.get_value("display", "damage_numbers", true)) if loaded else true
 	_smooth_scaling = bool(config.get_value("display", "smooth_scaling", true)) if loaded else true
+	_ui_scale = clampf(float(config.get_value("display", "ui_scale", 1.0)), UI_SCALE_MIN, UI_SCALE_MAX) if loaded else 1.0
 	for bus: StringName in BUSES:
 		_volumes[bus] = float(config.get_value("audio", String(bus), 1.0)) if loaded else 1.0
 	reset_bindings()
@@ -57,6 +63,7 @@ static func save() -> void:
 	config.set_value("display", "screen_shake", _screen_shake)
 	config.set_value("display", "damage_numbers", _damage_numbers)
 	config.set_value("display", "smooth_scaling", _smooth_scaling)
+	config.set_value("display", "ui_scale", _ui_scale)
 	for bus: StringName in BUSES:
 		config.set_value("audio", String(bus), get_volume(bus))
 	for action: StringName in ACTIONS:
@@ -106,6 +113,16 @@ static func smooth_scaling() -> bool:
 
 static func set_smooth_scaling(on: bool) -> void:
 	_smooth_scaling = on
+	save()
+
+
+## How big the interface is: 0.7 .. 1.2, 1 by default (UiScaleDirector applies it).
+static func get_ui_scale() -> float:
+	return _ui_scale
+
+
+static func set_ui_scale(scale: float) -> void:
+	_ui_scale = clampf(snappedf(scale, UI_SCALE_STEP), UI_SCALE_MIN, UI_SCALE_MAX)
 	save()
 
 

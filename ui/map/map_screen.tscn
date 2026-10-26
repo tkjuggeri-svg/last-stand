@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://ui/map/map_view.gd" id="2_view"]
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="3_theme"]
 
-[node name="MapScreen" type="CanvasLayer"]
+[node name="MapScreen" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 5
 script = ExtResource("1_screen")
 

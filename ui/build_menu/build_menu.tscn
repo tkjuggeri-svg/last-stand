@@ -4,7 +4,7 @@
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
 [ext_resource type="Script" path="res://ui/build_menu/evolution_choice.gd" id="9_evolutions"]
 
-[node name="BuildMenu" type="CanvasLayer"]
+[node name="BuildMenu" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 5
 script = ExtResource("1_menu")
 

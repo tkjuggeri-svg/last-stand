@@ -14,7 +14,7 @@ gradient = SubResource("Gradient_shade")
 width = 256
 height = 4
 
-[node name="TitleScreen" type="CanvasLayer"]
+[node name="TitleScreen" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 20
 script = ExtResource("1_title")
 
@@ -45,8 +45,8 @@ anchor_bottom = 1.0
 offset_right = 560.0
 grow_vertical = 2
 theme_override_constants/margin_left = 64
-theme_override_constants/margin_bottom = 48
-theme_override_constants/margin_top = 250
+theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_top = 200
 
 [node name="Box" type="VBoxContainer" parent="Menu"]
 layout_mode = 2
@@ -67,17 +67,17 @@ Every night is worse."
 visible = false
 
 [node name="Space" type="Control" parent="Menu/Box"]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
 [node name="Buttons" type="VBoxContainer" parent="Menu/Box"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 8
 
 [node name="ContinueButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 52)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_type_variation = &"ButtonPrimary"
@@ -85,28 +85,28 @@ text = "Continue the run"
 
 [node name="PlayButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 52)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Play"
 
 [node name="SettingsButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 52)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Settings"
 
 [node name="CreditsButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 52)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Credits"
 
 [node name="QuitButton" type="Button" parent="Menu/Box/Buttons"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(300, 52)
+custom_minimum_size = Vector2(300, 46)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Quit"

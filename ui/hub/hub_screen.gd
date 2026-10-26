@@ -18,6 +18,9 @@ signal pressure_changed(ids: Array[String])
 signal hero_cycled(step: int)
 
 # What the Chronicle shows: the profile and story of the last refresh.
+## Width of a cast card (px); the row wraps when the screen is narrower than the cards side by side.
+const CAST_CARD_WIDTH: float = 250.0
+
 var _profile: SaveProfile
 var _book: StoryBook
 var _pressure_options: Array[PressureData] = []
@@ -27,7 +30,7 @@ var _pressure_selected: Array[String] = []
 var _hero: HeroData
 
 @onready var _shards: Label = %Shards
-@onready var _cast: HBoxContainer = %Cast
+@onready var _cast: HFlowContainer = %Cast
 @onready var _chronicle_button: Button = %ChronicleButton
 @onready var _chronicle: ChronicleScreen = %ChronicleScreen
 @onready var _pressure_button: Button = %PressureButton
@@ -193,6 +196,7 @@ func _row(unlock: UnlockData, blocker: String) -> Control:
 	var buy: Button = Button.new()
 	buy.name = "Buy"
 	buy.custom_minimum_size = Vector2(190, 44)
+	buy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a long reason wraps instead of widening the whole screen
 	buy.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	if blocker == MetaProgress.OWNED:
 		buy.text = "Unlocked"
@@ -229,7 +233,7 @@ func _show_cast(profile: SaveProfile, book: StoryBook) -> void:
 func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
 	var card: HBoxContainer = HBoxContainer.new()
 	card.name = String(character.id)
-	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(CAST_CARD_WIDTH, 0)  # a flow row: at big interface sizes the cards wrap to a second line
 	card.add_theme_constant_override("separation", 8)
 	var face: TextureRect = TextureRect.new()
 	# The bust's top: the face and shoulders fit a short card; never scaled.
@@ -255,6 +259,7 @@ func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
 		var listen: Button = Button.new()
 		listen.name = "Listen"
 		listen.text = "Listen: %s" % beat.title
+		listen.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a long title wraps, so the card can shrink at big interface sizes
 		listen.pressed.connect(func() -> void: _tell(beat, character))
 		text.add_child(listen)
 	card.add_child(text)

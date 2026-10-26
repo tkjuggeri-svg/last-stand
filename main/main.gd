@@ -68,6 +68,7 @@ var _finale_boss: StringName = &""
 func _ready() -> void:
 	assert(run_data != null and not run_data.chapters.is_empty(), "Main needs a run_data with chapters")
 	GameSettings.load_and_apply()
+	add_child(UiScaleDirector.new())
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--seed=") and arg.trim_prefix("--seed=").is_valid_int():
 			run_seed = int(arg.trim_prefix("--seed="))  # replay a run: godot ... -- --seed=<n>

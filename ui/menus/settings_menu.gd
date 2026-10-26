@@ -1,6 +1,6 @@
 class_name SettingsMenu
 extends PanelContainer
-## Settings: fullscreen or windowed, smooth pixel scaling, screen shake (full, reduced, off) and damage numbers, Master /
+## Settings: fullscreen or windowed, smooth pixel scaling, the interface size (70-120%), screen shake (full, reduced, off) and damage numbers, Master /
 ## Music / SFX volume, and two bindings for every
 ## rebindable action (click a binding, then press a key or mouse button; Esc cancels). Every change
 ## is applied and saved at once through GameSettings. UI only: GameSettings owns the rules.
@@ -16,6 +16,7 @@ var _listening_slot: int = 0
 
 @onready var _fullscreen: CheckButton = %Fullscreen
 @onready var _smooth: CheckButton = %SmoothScaling
+@onready var _ui_scale: HSlider = %UiScaleSlider
 @onready var _shake: OptionButton = %ShakeOption
 @onready var _damage_numbers: CheckButton = %DamageNumbers
 @onready var _bindings: GridContainer = %Bindings
@@ -28,6 +29,7 @@ func _ready() -> void:
 	hide()
 	_fullscreen.toggled.connect(GameSettings.set_fullscreen)
 	_smooth.toggled.connect(GameSettings.set_smooth_scaling)
+	_ui_scale.value_changed.connect(_on_ui_scale_changed)
 	_shake.item_selected.connect(func(index: int) -> void: GameSettings.set_screen_shake(GameSettings.SHAKE_LEVELS[index]))
 	_damage_numbers.toggled.connect(GameSettings.set_damage_numbers)
 	for bus: StringName in _sliders:
@@ -40,6 +42,8 @@ func _ready() -> void:
 func open() -> void:
 	_fullscreen.set_pressed_no_signal(GameSettings.is_fullscreen())
 	_smooth.set_pressed_no_signal(GameSettings.smooth_scaling())
+	_ui_scale.set_value_no_signal(roundf(GameSettings.get_ui_scale() * 100.0))
+	_update_ui_scale_label()
 	_shake.select(maxi(GameSettings.SHAKE_LEVELS.find(GameSettings.get_screen_shake()), 0))
 	_damage_numbers.set_pressed_no_signal(GameSettings.shows_damage_numbers())
 	for bus: StringName in _sliders:
@@ -122,6 +126,15 @@ func _stop_listening() -> void:
 		var events: Array[InputEvent] = GameSettings.get_bindings(_listening_action)
 		_listening.text = GameSettings.describe(events[_listening_slot]) if _listening_slot < events.size() else "-"
 	_listening = null
+
+
+func _on_ui_scale_changed(value: float) -> void:
+	GameSettings.set_ui_scale(value / 100.0)
+	_update_ui_scale_label()
+
+
+func _update_ui_scale_label() -> void:
+	(_ui_scale.get_parent().get_node("Value") as Label).text = "%d%%" % roundi(_ui_scale.value)
 
 
 func _on_volume_changed(bus: StringName, value: float) -> void:

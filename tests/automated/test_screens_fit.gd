@@ -7,6 +7,8 @@ extends SceneTree
 
 const RUN: RunData = preload("res://data/run/run.tres")
 const SIZES: Array[Vector2i] = [Vector2i(1280, 720), Vector2i(2560, 1080)]
+## The interface sizes the settings offer at the extremes: the biggest one must still fit.
+const UI_SCALES: Array[float] = [1.0, 1.2, 0.7]
 
 var _failures: int = 0
 var _main: Node
@@ -21,6 +23,16 @@ func _initialize() -> void:
 	_level = await MapFixtures.enter_first_battle(_main)
 	await _frames(3)
 	var screens: Dictionary = _screens()
+	for factor: float in UI_SCALES:
+		GameSettings.set_ui_scale(factor)
+		await _frames(3)
+		await _check_sizes(screens, factor)
+	GameSettings.set_ui_scale(1.0)
+	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
+	quit(_failures)
+
+
+func _check_sizes(screens: Dictionary, factor: float) -> void:
 	for size: Vector2i in SIZES:
 		root.size = size
 		await _frames(3)
@@ -32,11 +44,11 @@ func _initialize() -> void:
 			_check("%s opened" % label, opened)
 			if not opened:
 				continue
+			if factor != 1.0 and node is CanvasLayer and node.is_in_group(Groups.UI_SCALED):
+				_check("%s is drawn at %d%%" % [label, roundi(factor * 100.0)], UiScaleDirector.frame_of(node as CanvasLayer) != null)
 			var clipped: Array[String] = FitCheck.clipped(node, area)
-			_check("%s fits at %dx%d (visible %s)%s" % [label, size.x, size.y, area.size, "" if clipped.is_empty() else ": " + "; ".join(clipped)], clipped.is_empty())
+			_check("%s fits at %dx%d, interface %d%% (visible %s)%s" % [label, size.x, size.y, roundi(factor * 100.0), area.size, "" if clipped.is_empty() else ": " + "; ".join(clipped)], clipped.is_empty())
 			_close(node)
-	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
-	quit(_failures)
 
 
 ## Label -> Callable that opens that screen (worst case content) and returns its root node.

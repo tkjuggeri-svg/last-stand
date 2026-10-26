@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://ui/menus/ending_screen.gd" id="1_screen"]
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
 
-[node name="EndingScreen" type="CanvasLayer"]
+[node name="EndingScreen" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 11
 visible = false
 script = ExtResource("1_screen")

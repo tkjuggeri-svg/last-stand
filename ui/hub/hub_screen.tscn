@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" path="res://ui/hub/chronicle_screen.tscn" id="3_chronicle"]
 [ext_resource type="PackedScene" path="res://ui/hub/pressure_screen.tscn" id="4_pressure"]
 
-[node name="HubScreen" type="CanvasLayer"]
+[node name="HubScreen" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 20
 script = ExtResource("1_hub")
 
@@ -21,11 +21,12 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Cast" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
+[node name="Cast" type="HFlowContainer" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 12
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 6
 
 [node name="Middle" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content"]
 layout_mode = 2
@@ -45,7 +46,7 @@ size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
 [node name="SideScroll" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle"]
-custom_minimum_size = Vector2(320, 0)
+custom_minimum_size = Vector2(290, 0)
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
@@ -163,7 +164,7 @@ text = "Title screen"
 
 [node name="StartButton" type="Button" parent="Frame/Margin/Panel/Box/Footer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(240, 48)
+custom_minimum_size = Vector2(190, 48)
 layout_mode = 2
 theme_type_variation = &"ButtonPrimary"
 text = "Start a run"

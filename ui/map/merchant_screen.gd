@@ -100,7 +100,7 @@ func _refresh() -> void:
 func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	var card: PanelContainer = PanelContainer.new()
 	card.theme_type_variation = &"CardPanel"
-	card.custom_minimum_size = Vector2(300, 220)
+	card.custom_minimum_size = Vector2(250, 220)
 	var column: VBoxContainer = VBoxContainer.new()
 	column.add_theme_constant_override("separation", 6)
 	card.add_child(column)
@@ -120,7 +120,7 @@ func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	var text: Label = Label.new()
 	text.text = data.description
 	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.custom_minimum_size = Vector2(270, 0)
+	text.custom_minimum_size = Vector2(220, 0)
 	text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(text)
 	var button: Button = Button.new()
