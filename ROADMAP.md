@@ -252,10 +252,13 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 ---
 
 ## Current focus
-**M9-M13 are built** and the latest playtest build is **`m13-playtest`** (tag on `art/handoff-integration`, not merged
+**M9-M13 are built** and the latest playtest build is **`m13-playtest-2`** (a developer build with F12 sits next to it as `-dev-` zips; tag on `art/handoff-integration`, not merged
 into `main`; zips in `builds/`, a focus checklist at the top of `PLAYTEST.md`). Waiting for a human playtest: the balance
 numbers come from a weak bot, the music has never been listened to, the story texts are first drafts, the new enemies are
 recoloured placeholders and the M9 towers and portraits are first-pass art (`docs/ART_BACKLOG.md`). Since the M13 wrap-up:
 tier-3 waves smoothed (no row above ~x1.8 enemy HP, `docs/M10_BIOMES.md`), the Knight's kit finished (Bulwark, four cards,
 two relics) and the hero stories in the hero panel. Open: the art pass (M13), tests for Hardened Elites and Stronger Bosses,
 chapter 1's own uneven row steps (x2.99 at row 2-3 in Crypt Road).
+m13-playtest-2 answers the first playtest's feedback: War Room and menu fit (tested at 100/120/70% interface size), the
+interface size setting, more slots and Masterwork ranks, homing soul bolts, the run map's art; the bot still dies in
+chapter 1, so only a human playtest can judge chapter 2's economy.
