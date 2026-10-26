@@ -61,23 +61,22 @@ static func _put(image: Image, x: int, y: int, color: Color = FOREGROUND_COLOR) 
 	image.set_pixel(posmod(x, image.get_width()), y, color)
 
 
-@warning_ignore("integer_division")
 static func _slab(image: Image, x: int, width: int, height: int, cross: bool) -> void:
 	var bottom: int = image.get_height() - 1
 	if cross:
-		var cx: int = x + width / 2
+		var cx: int = x + int(width * 0.5)
 		for row: int in height:
 			for dx: int in range(-3, 4):
 				_put(image, cx + dx, bottom - row)
 		for row: int in range(int(height * 0.6), int(height * 0.6) + 9):
-			for dx: int in range(-width / 2, width / 2):
+			for dx: int in range(-int(width * 0.5), int(width * 0.5)):
 				_put(image, cx + dx, bottom - row)
 		return
 	for row: int in height:
 		var inset: int = 0
 		var from_top: int = height - 1 - row
-		if from_top < width / 2:
-			inset = width / 2 - int(sqrt(maxf(float(width * width) / 4.0 - pow(width / 2.0 - from_top, 2.0), 0.0)))
+		if from_top < int(width * 0.5):
+			inset = int(width * 0.5) - int(sqrt(maxf(float(width * width) / 4.0 - pow(width / 2.0 - from_top, 2.0), 0.0)))
 		for dx: int in range(inset, width - inset):
 			_put(image, x + dx, bottom - row)
 
@@ -109,7 +108,6 @@ static func _hills(image: Image, color: Color, rng: RandomNumberGenerator) -> vo
 			image.set_pixel(x, y, color)
 
 
-@warning_ignore("integer_division")
 static func _ruins(image: Image, color: Color, rng: RandomNumberGenerator) -> void:
 	var height: int = image.get_height()
 	var width: int = image.get_width()
@@ -121,7 +119,7 @@ static func _ruins(image: Image, color: Color, rng: RandomNumberGenerator) -> vo
 		match kind:
 			0:  # a broken tower with crenellations
 				for dx: int in w:
-					var top: int = height - h + (6 if (dx / 5) % 2 == 0 else 0)
+					var top: int = height - h + (6 if int(dx * 0.2) % 2 == 0 else 0)
 					for y: int in range(top, height):
 						image.set_pixel((x + dx) % width, y, color)
 			1:  # an arch: two piers and a ring
@@ -147,7 +145,6 @@ static func _ruins(image: Image, color: Color, rng: RandomNumberGenerator) -> vo
 			image.set_pixel(xx, y, color)
 
 
-@warning_ignore("integer_division")
 static func _trees(image: Image, color: Color, rng: RandomNumberGenerator) -> void:
 	var height: int = image.get_height()
 	var width: int = image.get_width()
@@ -165,13 +162,13 @@ static func _trees(image: Image, color: Color, rng: RandomNumberGenerator) -> vo
 					for dx: int in range(-half, half + 1):
 						var y: int = tier_top + row
 						if y < height:
-							image.set_pixel(posmod(x + w / 2 + dx, width), y, color)
+							image.set_pixel(posmod(x + int(w * 0.5) + dx, width), y, color)
 		else:  # a dead tree: trunk and a few boughs
 			for y: int in range(height - h, height):
 				for dx: int in range(0, 3):
-					image.set_pixel(posmod(x + w / 2 + dx, width), y, color)
+					image.set_pixel(posmod(x + int(w * 0.5) + dx, width), y, color)
 			for bough: int in 3:
-				var p: Vector2 = Vector2(x + w / 2, height - h * (0.4 + 0.2 * bough))
+				var p: Vector2 = Vector2(x + int(w * 0.5), height - h * (0.4 + 0.2 * bough))
 				var d: Vector2 = Vector2(-1.0 if bough % 2 == 0 else 1.0, -0.6)
 				for i: int in rng.randi_range(8, 16):
 					p += d
