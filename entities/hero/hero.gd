@@ -130,7 +130,7 @@ func _physics_process(delta: float) -> void:
 	# Holding the button keeps swinging, limited by the cooldown. Clicks on UI (e.g. the build menu)
 	# are not swings.
 	if Input.is_action_pressed("attack") and get_viewport().gui_get_hovered_control() == null:
-		attack(get_global_mouse_position())
+		attack(WorldPointer.position_for(self))
 	_update_animation()
 
 

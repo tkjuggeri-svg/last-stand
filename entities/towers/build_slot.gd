@@ -155,7 +155,7 @@ func _dismantle(tower_data: TowerData) -> void:
 
 
 func _process(_delta: float) -> void:
-	update_hover(get_global_mouse_position())
+	update_hover(WorldPointer.position_for(self))
 
 
 func _update_prompt() -> void:
