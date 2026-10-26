@@ -136,6 +136,7 @@ func _test_kit() -> void:
 
 
 func _test_hub() -> void:
+	root.size = Vector2i(1280, 720)  # the base viewport: the story must fit even there
 	var hub: HubScreen = (load("res://ui/hub/hub_screen.tscn") as PackedScene).instantiate()
 	root.add_child(hub)
 	await process_frame
@@ -144,6 +145,14 @@ func _test_hub() -> void:
 	_check("the hero panel shows Ser Aldric's line and a button for his story", hub.get_hero_story_line().begins_with("Ser Aldric") and hub.get_hero_story_button().visible)
 	hub.refresh(SaveProfile.new(), board, RUN.get_hero("necromancer"), true)
 	_check("...and Maren's when she is picked", hub.get_hero_story_line().begins_with("Maren"))
+	hub.show_page(HubScreen.Page.HEROES)
+	_check("the pages switch: only the Heroes page shows", hub.get_page() == HubScreen.Page.HEROES)
+	hub.get_hero_story_button().pressed.emit()
+	await process_frame
+	await process_frame
+	var dialog: Window = hub.get_story_dialog()
+	var view: Vector2 = Vector2(hub.get_viewport().get_visible_rect().size)
+	_check("a hero's story opens inside the screen (dialog %s in %s)" % [dialog.size, view], dialog.visible and dialog.position.y >= 0 and dialog.position.y + dialog.size.y <= view.y)
 	hub.refresh(SaveProfile.new(), board, null, false)
 	_check("with no hero there is no story", not hub.get_hero_story_button().visible)
 	hub.queue_free()

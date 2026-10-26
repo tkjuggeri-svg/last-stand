@@ -30,6 +30,7 @@ func _initialize() -> void:
 	await _test_expiry_and_burst()
 	await _test_cards()
 	await _test_taunt()
+	await _test_no_cards_for_missing_towers()
 	_test_unlock()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -195,6 +196,15 @@ func _test_taunt() -> void:
 	_check("a taunting knight takes the blows (%d) while the plain skeleton that came later takes none (%d)" % [knight_hurt, plain_hurt], knight_hurt > 0 and plain_hurt == 0)
 	level.queue_free()
 	await process_frame
+
+
+func _test_no_cards_for_missing_towers() -> void:
+	var level: Level = _level()
+	await process_frame
+	var freeze: UpgradeData = load("res://data/upgrades/deep_freeze.tres")
+	var has_frost: bool = level.builder.catalog.any(func(t: TowerData) -> bool: return t.id == &"frost")
+	_check("the Necromancer (no Frost tower) is never offered Deep Freeze", not has_frost and not level.offers.pool.has(freeze))
+	level.queue_free()
 
 
 func _test_unlock() -> void:

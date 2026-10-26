@@ -18,8 +18,14 @@ signal pressure_changed(ids: Array[String])
 signal hero_cycled(step: int)
 
 # What the Chronicle shows: the profile and story of the last refresh.
-## Width of a cast card (px); the row wraps when the screen is narrower than the cards side by side.
-const CAST_CARD_WIDTH: float = 250.0
+## Width of a council card (px); the row wraps when the screen is narrower than the cards side by side.
+const CAST_CARD_WIDTH: float = 560.0
+## The pages of the War Room, in the order of their tabs.
+enum Page { HEROES, UNLOCKS, COUNCIL, RECORDS }
+
+## Width of the story dialog (px) and the most of the screen it may take.
+const STORY_WIDTH: float = 900.0
+const STORY_SCREEN_SHARE: float = 0.9
 
 var _profile: SaveProfile
 var _book: StoryBook
@@ -28,9 +34,14 @@ var _pressure_selected: Array[String] = []
 
 # The hero shown in the panel (for their story).
 var _hero: HeroData
+var _story_scroll: ScrollContainer
+var _story_text: Label
 
 @onready var _shards: Label = %Shards
+@onready var _tabs: Array[Button] = [%TabHeroes, %TabUnlocks, %TabCouncil, %TabRecords]
+@onready var _pages: Array[Control] = [%HeroPage, %UnlocksPage, %CouncilPage, %RecordsPage]
 @onready var _cast: HFlowContainer = %Cast
+@onready var _greeting: Label = %Greeting
 @onready var _chronicle_button: Button = %ChronicleButton
 @onready var _chronicle: ChronicleScreen = %ChronicleScreen
 @onready var _pressure_button: Button = %PressureButton
@@ -55,6 +66,11 @@ var _hero: HeroData
 
 func _ready() -> void:
 	hide()
+	var group: ButtonGroup = ButtonGroup.new()
+	for index: int in _tabs.size():
+		_tabs[index].button_group = group
+		_tabs[index].pressed.connect(show_page.bind(index))
+	show_page(Page.UNLOCKS)
 	_pressure_button.pressed.connect(func() -> void: _pressure_screen.open(_pressure_options, _pressure_selected))
 	_pressure_screen.selection_changed.connect(func(ids: Array[String]) -> void:
 		_pressure_selected = ids
@@ -131,6 +147,18 @@ func get_chronicle() -> ChronicleScreen:
 
 func get_chronicle_button() -> Button:
 	return _chronicle_button
+
+
+## Shows one page (a Page value); the tab of the page you are on stays pressed.
+func show_page(page: int) -> void:
+	for index: int in _pages.size():
+		_pages[index].visible = index == page
+		_tabs[index].set_pressed_no_signal(index == page)
+
+
+## The page showing now (tests).
+func get_page() -> int:
+	return _pages.find_custom(func(p: Control) -> bool: return p.visible)
 
 
 ## The height the screen's content needs at least (tests: it must stay within the base viewport).
@@ -224,17 +252,25 @@ func _show_cast(profile: SaveProfile, book: StoryBook) -> void:
 	for child: Node in _cast.get_children():
 		_cast.remove_child(child)
 		child.queue_free()
+	_greeting.text = ""
 	if book == null:
 		return
 	for character: StoryCharacter in book.characters:
-		_cast.add_child(_card(character, Story.line_for(book, profile, character.id), Story.next_beat(book, profile, character.id)))
+		var line: String = Story.line_for(book, profile, character.id)
+		_cast.add_child(_card(character, line, Story.next_beat(book, profile, character.id)))
+		if _greeting.text.is_empty() and line != "":
+			# The first voice greets you on every page; the Council page has the rest.
+			_greeting.text = "%s: \"%s\"" % [character.display_name, line]
 
 
 func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
+	var frame: PanelContainer = PanelContainer.new()
+	frame.name = String(character.id)
+	frame.theme_type_variation = &"CardPanel"
+	frame.custom_minimum_size = Vector2(CAST_CARD_WIDTH, 0)  # a flow row: at big interface sizes the cards wrap to a second line
 	var card: HBoxContainer = HBoxContainer.new()
-	card.name = String(character.id)
-	card.custom_minimum_size = Vector2(CAST_CARD_WIDTH, 0)  # a flow row: at big interface sizes the cards wrap to a second line
-	card.add_theme_constant_override("separation", 8)
+	card.add_theme_constant_override("separation", 12)
+	frame.add_child(card)
 	var face: TextureRect = TextureRect.new()
 	# The bust's top: the face and shoulders fit a short card; never scaled.
 	face.custom_minimum_size = Vector2(Portraits.FRAME, 80)
@@ -248,6 +284,7 @@ func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
 	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var who: Label = Label.new()
 	who.text = character.display_name
+	who.theme_type_variation = &"HeaderLabel"
 	text.add_child(who)
 	var said: Label = Label.new()
 	said.name = "Line"
@@ -263,14 +300,31 @@ func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
 		listen.pressed.connect(func() -> void: _tell(beat, character))
 		text.add_child(listen)
 	card.add_child(text)
-	return card
+	return frame
 
 
 func _tell(beat: StoryBeat, character: StoryCharacter) -> void:
-	_beat_dialog.title = "%s: %s" % [character.display_name, beat.title]
-	_beat_dialog.dialog_text = beat.text
-	_beat_dialog.popup_centered(Vector2i(900, 0))
+	_show_story("%s: %s" % [character.display_name, beat.title], beat.text)
 	beat_read.emit(beat.id)
+
+
+## A story in the dialog: the text scrolls inside a box that never grows past the screen (the long ones used to run off it).
+func _show_story(title: String, text: String) -> void:
+	if _story_text == null:
+		var scroll: ScrollContainer = ScrollContainer.new()
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		_story_text = Label.new()
+		_story_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_story_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.add_child(_story_text)
+		_story_scroll = scroll
+		_beat_dialog.add_child(scroll)
+	var view: Vector2 = get_viewport().get_visible_rect().size
+	_story_scroll.custom_minimum_size = Vector2(minf(STORY_WIDTH, view.x * STORY_SCREEN_SHARE), view.y * STORY_SCREEN_SHARE * 0.6)
+	_beat_dialog.title = title
+	_story_text.text = text
+	_beat_dialog.reset_size()
+	_beat_dialog.popup_centered()
 
 
 func _refresh_pressure_button() -> void:
@@ -298,14 +352,17 @@ func _show_hero_story(hero: HeroData) -> void:
 func _tell_hero_story() -> void:
 	if _hero == null:
 		return
-	_beat_dialog.title = "%s, %s" % [_hero.story_name, _hero.display_name]
-	_beat_dialog.dialog_text = _hero.story_text
-	_beat_dialog.popup_centered(Vector2i(900, 0))
+	_show_story("%s, %s" % [_hero.story_name, _hero.display_name], _hero.story_text)
 
 
 ## The hero story's button (tests).
 func get_hero_story_button() -> Button:
 	return _hero_story_button
+
+
+## The story dialog (tests).
+func get_story_dialog() -> AcceptDialog:
+	return _beat_dialog
 
 
 func get_hero_story_line() -> String:

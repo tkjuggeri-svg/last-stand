@@ -255,7 +255,8 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 Playtest fixes, balance, and finishing what is half done: the Knight's extra cards and relics, the hero stories, the
 Pressure switches that have never been tried by hand (Hardened Elites and Stronger Bosses have no tests yet), chapter 1's
 uneven row steps, chapter 2's economy as the first outside playtest sees it, and whatever the `m13-playtest-2` feedback adds.
-Not started.
+Started: the playtest fixes (cards filtered by the run's towers, the War Room in pages, scrolling hero stories, chapter 2 rows 5-6 eased).
+Hero ultimates: `docs/M14_ULTIMATES.md` (proposal, waiting for approval).
 
 **Done when:** everything in the game works and feels finished.
 

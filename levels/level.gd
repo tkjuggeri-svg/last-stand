@@ -146,7 +146,7 @@ func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 			catalog.append(tower)
 	builder.catalog = catalog
 	if offers != null:
-		offers.pool = offers.pool.filter(func(c: UpgradeData) -> bool: return not other_cards.has(c))
+		offers.pool = offers.pool.filter(func(c: UpgradeData) -> bool: return not other_cards.has(c) and _card_has_a_tower(c, catalog))
 		for card: UpgradeData in hero_data.exclusive_cards:
 			if not offers.pool.has(card):
 				offers.pool.append(card)
@@ -160,6 +160,19 @@ func apply_hero(hero_data: HeroData, roster: Array[HeroData]) -> void:
 		builder.rally_hero = hero
 		if hero_data.raise_minion != null:
 			hero.slew.connect(func(at: Vector2) -> void: _raise_for_hero(hero, hero_data, at))
+
+
+## False for a card that only improves one tower type this run can't build (Deep Freeze without a Frost tower).
+func _card_has_a_tower(card: UpgradeData, catalog: Array[TowerData]) -> bool:
+	var aimed: int = 0
+	for modifier: StatModifier in card.modifiers:
+		var parts: PackedStringArray = String(modifier.stat).split(".")
+		if parts.size() != 3 or parts[0] != "tower":
+			return true
+		aimed += 1
+		if catalog.any(func(t: TowerData) -> bool: return String(t.id) == parts[1]):
+			return true
+	return aimed == 0
 
 
 ## Soul Feast: a skeleton of the hero's fell, and she regains HP.
