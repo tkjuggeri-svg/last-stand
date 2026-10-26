@@ -21,12 +21,6 @@ theme_override_constants/separation = 10
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Shards" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HeaderLabel"
-text = "Soul Shards: 0"
-
 [node name="Cast" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Top"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -50,45 +44,51 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="Side" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle"]
-custom_minimum_size = Vector2(300, 0)
+[node name="SideScroll" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle"]
+custom_minimum_size = Vector2(320, 0)
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="HeroTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="Side" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeroTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "Hero"
 
-[node name="HeroPick" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="HeroPick" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 layout_mode = 2
 
-[node name="HeroPrev" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
+[node name="HeroPrev" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/HeroPick"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "<"
 
-[node name="HeroName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
+[node name="HeroName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/HeroPick"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_alignment = 1
 
-[node name="HeroNext" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/HeroPick"]
+[node name="HeroNext" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/HeroPick"]
 unique_name_in_owner = true
 layout_mode = 2
 text = ">"
 
-[node name="HeroText" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="HeroText" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 autowrap_mode = 3
 
-[node name="StoryRow" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="StoryRow" type="HBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="HeroPortrait" type="TextureRect" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/StoryRow"]
+[node name="HeroPortrait" type="TextureRect" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/StoryRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(96, 80)
 layout_mode = 2
@@ -97,34 +97,40 @@ clip_contents = true
 expand_mode = 1
 stretch_mode = 2
 
-[node name="StoryBox" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/StoryRow"]
+[node name="StoryBox" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/StoryRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HeroStoryName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/StoryRow/StoryBox"]
+[node name="HeroStoryName" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/StoryRow/StoryBox"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HeroStoryButton" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side/StoryRow/StoryBox"]
+[node name="HeroStoryButton" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side/StoryRow/StoryBox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Their story"
 
-[node name="HeroStoryLine" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="HeroStoryLine" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"DimLabel"
 autowrap_mode = 3
 
-[node name="RecordsTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="RecordsTitle" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 layout_mode = 2
 theme_type_variation = &"HeaderLabel"
 text = "Records"
 
-[node name="Records" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/Side"]
+[node name="Records" type="Label" parent="Frame/Margin/Panel/Box/Content/Content/Middle/SideScroll/Side"]
 unique_name_in_owner = true
 layout_mode = 2
 autowrap_mode = 3
+
+[node name="Shards" type="Label" parent="Frame/Margin/Panel/Box/Footer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+text = "Soul Shards: 0"
 
 [node name="TipsButton" type="CheckButton" parent="Frame/Margin/Panel/Box/Footer"]
 unique_name_in_owner = true

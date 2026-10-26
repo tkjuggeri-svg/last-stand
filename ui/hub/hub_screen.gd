@@ -130,6 +130,16 @@ func get_chronicle_button() -> Button:
 	return _chronicle_button
 
 
+## The height the screen's content needs at least (tests: it must stay within the base viewport).
+func get_required_height() -> float:
+	return ($Frame/Margin as Control).get_combined_minimum_size().y
+
+
+## The card of `character` (tests).
+func get_cast_card(character: StringName) -> Control:
+	return _cast.get_node_or_null(NodePath(String(character))) as Control
+
+
 ## The Listen button of `character` (tests); null when they have nothing to tell.
 func get_listen_button(character: StringName) -> Button:
 	var card: Node = _cast.get_node_or_null(NodePath(String(character)))
