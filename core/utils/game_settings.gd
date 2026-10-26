@@ -4,11 +4,11 @@ class_name GameSettings
 ## user:// on every change; Main loads and applies them at startup. Defaults come from the project
 ## (its input map, full volume, windowed).
 
-const ACTIONS: Array[StringName] = [&"move_up", &"move_down", &"move_left", &"move_right", &"attack", &"dash",
+const ACTIONS: Array[StringName] = [&"move_up", &"move_down", &"move_left", &"move_right", &"attack", &"dash", &"ultimate",
 	&"interact", &"start_wave", &"pause", &"feedback"]
 const ACTION_NAMES: Dictionary = {
 	&"move_up": "Move up", &"move_down": "Move down", &"move_left": "Move left", &"move_right": "Move right",
-	&"attack": "Attack", &"dash": "Dash", &"interact": "Build / interact", &"start_wave": "Start wave", &"pause": "Pause",
+	&"attack": "Attack", &"dash": "Dash", &"ultimate": "Ultimate", &"interact": "Build / interact", &"start_wave": "Start wave", &"pause": "Pause",
 	&"feedback": "Send feedback",
 }
 const BUSES: Array[StringName] = [&"Master", &"Music", &"SFX"]
@@ -45,7 +45,8 @@ static func load_and_apply() -> void:
 	reset_bindings()
 	if loaded:
 		for action: StringName in ACTIONS:
-			var saved: Variant = config.get_value("bindings", String(action), null)
+			# A key saved by an older build has no entry for an action added since: it keeps its default.
+			var saved: Variant = config.get_value("bindings", String(action)) if config.has_section_key("bindings", String(action)) else null
 			if saved is Array:
 				InputMap.action_erase_events(action)
 				for code: Variant in saved:

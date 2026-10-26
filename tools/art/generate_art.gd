@@ -47,6 +47,7 @@ const UpgradeIconArt: GDScript = preload("res://tools/art/upgrade_icon_art.gd")
 const RelicArt: GDScript = preload("res://tools/art/relic_art.gd")
 const TitleArt: GDScript = preload("res://tools/art/title_art.gd")
 const P: GDScript = preload("res://tools/art/palette.gd")
+const UltimateArt: GDScript = preload("res://tools/art/ultimate_art.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
 ## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
 ## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
@@ -154,6 +155,7 @@ func _initialize() -> void:
 		"explosion": func() -> void: _save(_sheet([TowerArt.new().explosion_frames()], Layouts.EXPLOSION["size"]), Layouts.EXPLOSION["png"]),
 		"explosion_large": func() -> void: _save(_sheet([TowerArt.new().explosion_frames(TowerArt.EXPLOSION_LARGE_SIZE)], Layouts.EXPLOSION_LARGE["size"]), Layouts.EXPLOSION_LARGE["png"]),
 		"frost_nova": func() -> void: _save(_sheet([TowerArt.new().frost_nova_frames()], Layouts.FROST_NOVA["size"]), Layouts.FROST_NOVA["png"]),
+		"ultimate_ring": func() -> void: _save(_sheet(UltimateArt.new().rows(), Layouts.ULTIMATE_RING["size"]), Layouts.ULTIMATE_RING["png"]),
 		"burn": func() -> void: _save(_sheet([TowerArt.new().burn_frames(), EvolutionArt.new().soul_burn_frames()], Layouts.BURN["size"]), Layouts.BURN["png"]),
 		"soul_burst": func() -> void: _save(_sheet([EvolutionArt.new().soul_burst_frames()], Layouts.SOUL_BURST["size"]), Layouts.SOUL_BURST["png"]),
 		"evolution_fx": func() -> void: _save(_sheet([EvolutionArt.new().arrow_rain_frames()], Layouts.EVOLUTION_FX["size"]), Layouts.EVOLUTION_FX["png"]),

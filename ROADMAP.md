@@ -256,7 +256,7 @@ Playtest fixes, balance, and finishing what is half done: the Knight's extra car
 Pressure switches that have never been tried by hand (Hardened Elites and Stronger Bosses have no tests yet), chapter 1's
 uneven row steps, chapter 2's economy as the first outside playtest sees it, and whatever the `m13-playtest-2` feedback adds.
 Started: the playtest fixes (cards filtered by the run's towers, the War Room in pages, scrolling hero stories, chapter 2 rows 5-6 eased).
-Hero ultimates: `docs/M14_ULTIMATES.md` (proposal, waiting for approval).
+Hero ultimates (Q; one per hero, charged by play, two cards each): built, `docs/M14_ULTIMATES.md`; waiting for the playtest.
 
 **Done when:** everything in the game works and feels finished.
 
@@ -281,7 +281,7 @@ Builds for 3-5 new players, or a free itch.io demo; feedback comes in with the F
 ---
 
 ## Current focus
-**M0-M13 are built; M14-M16 are planned, not started.** The latest playtest build is **`m13-playtest-3`** (War Room pages, scrolling stories, cards filtered by towers, chapter 2 rows 5-6 eased; `m13-playtest-2` before it) (tag on
+**M0-M13 are built; M14-M16 are planned, not started.** The latest playtest build is **`m13-playtest-4`** (hero ultimates on Q; before it `m13-playtest-3`: War Room pages, scrolling stories, cards filtered by towers, chapter 2 rows 5-6 eased) (tag on
 `art/handoff-integration`, not merged into `main`; zips in `builds/`, including `-dev-` zips with F12; what to test is at
 the top of `PLAYTEST.md`). **Waiting for the owner's playtest of that build** (the bot, which dies in chapter 1, cannot judge
 chapter 2's economy, the music, the story texts or the new map art). Nothing is to be started until that feedback is

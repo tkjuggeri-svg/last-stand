@@ -69,6 +69,9 @@ const PHASE_TEXTS: Dictionary = {
 @onready var _dash_row: Control = %DashRow
 @onready var _dash_bar: ProgressBar = %DashBar
 @onready var _dash_label: Label = %DashLabel
+@onready var _ultimate_row: Control = %UltimateRow
+@onready var _ultimate_bar: ProgressBar = %UltimateBar
+@onready var _ultimate_label: Label = %UltimateLabel
 @onready var _boss_margin: Control = %BossMargin
 @onready var _boss_name: Label = %BossName
 @onready var _boss_bar: ProgressBar = %BossBar
@@ -149,6 +152,7 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if hero != null and hero.is_node_ready():
 		_update_dash(hero.get_dash())
+		_update_ultimate(hero.get_ultimate())
 	if hero_lives == null:
 		return
 	_lives_status.visible = hero_lives.is_respawning()
@@ -162,6 +166,18 @@ func _update_dash(dash: HeroDash) -> void:
 	_dash_bar.value = 1.0 - left / dash.get_cooldown() if left > 0.0 else 1.0
 	_dash_label.text = "Ready" if left <= 0.0 else "%.1f s" % left
 	_dash_row.modulate = Color.WHITE if left <= 0.0 else DASH_COOLING_TINT
+
+
+## The ultimate's bar (only for a hero that has one): its fill, then the key to press once it is full.
+func _update_ultimate(ultimate: HeroUltimate) -> void:
+	_ultimate_row.visible = ultimate.has_ultimate()
+	if not ultimate.has_ultimate():
+		return
+	_ultimate_bar.value = ultimate.get_fill()
+	var bindings: Array[InputEvent] = GameSettings.get_bindings(&"ultimate")
+	var key: String = GameSettings.describe(bindings[0]) if not bindings.is_empty() else "?"
+	_ultimate_label.text = "Ready: %s" % key if ultimate.is_ready() else "%d%%" % floori(ultimate.get_fill() * 100.0)
+	_ultimate_row.modulate = Color.WHITE if ultimate.is_ready() else DASH_COOLING_TINT
 
 
 func _unhandled_input(event: InputEvent) -> void:

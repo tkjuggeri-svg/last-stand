@@ -18,6 +18,8 @@ const KITE_MIN: float = 150.0
 const KITE_MAX: float = 260.0
 ## Shoot only this far inside the bolt's range.
 const BOLT_MARGIN: float = 20.0
+## It spends its ultimate when this many enemies are within its reach.
+const ULT_CROWD: int = 5
 ## Where it waits between waves.
 const HOME: Vector2 = Vector2(-90, 80)
 
@@ -40,6 +42,7 @@ func step(modifiers: RunModifiers) -> void:
 	if enemies.is_empty():
 		_walk_to(HOME, 8.0)
 		return
+	_use_ultimate(enemies)
 	if _hero.data != null and _hero.data.attack_kind == HeroData.AttackKind.BOLT:
 		_step_ranged(enemies)
 		return
@@ -57,6 +60,23 @@ func step(modifiers: RunModifiers) -> void:
 	# Swing at anything in reach (the target, or something in the way).
 	if nearest.global_position.distance_to(_hero.global_position) <= SWING_RANGE * _reach:
 		_hero.attack(nearest.global_position)
+
+
+## Spends a full ultimate when a crowd is close (UltimateData.radius for a ring, the volley's line toward the leader, a boss
+## being close to the hero too), aiming the Volley at the enemy furthest along its lane.
+func _use_ultimate(enemies: Array[Enemy]) -> void:
+	var ult: HeroUltimate = _hero.get_ultimate()
+	if not ult.is_ready():
+		return
+	var data: UltimateData = ult.get_data()
+	var reach: float = data.line_length if data.kind == UltimateData.Kind.VOLLEY else data.radius
+	var close: int = enemies.filter(func(e: Enemy) -> bool: return e.global_position.distance_to(_hero.global_position) <= reach).size()
+	if close < ULT_CROWD:
+		return
+	var runner: UltimateRunner = _hero.get_parent().get_node_or_null("UltimateRunner") as UltimateRunner
+	if runner != null:
+		runner.aim_override = (_leader(enemies).global_position - _hero.global_position).normalized()
+	ult.use()
 
 
 ## The ranged policy: kite at KITE_MIN to KITE_MAX from the nearest enemy, loose bolts at the leader.

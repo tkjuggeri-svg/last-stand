@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="11_light"]
 [ext_resource type="Script" path="res://entities/hero/hero_dash.gd" id="12_dash"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/ripple_frames.tres" id="13_ripple"]
+[ext_resource type="Script" path="res://entities/hero/hero_ultimate.gd" id="15_ult"]
 [ext_resource type="Resource" path="res://data/heroes/knight.tres" id="14_data"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
@@ -113,6 +114,10 @@ animation = &"spark"
 [node name="AttackerLimit" type="Node" parent="."]
 script = ExtResource("10_limit")
 max_attackers = 2
+
+[node name="Ultimate" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("15_ult")
 
 [node name="Dash" type="Node" parent="."]
 unique_name_in_owner = true

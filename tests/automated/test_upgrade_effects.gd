@@ -29,11 +29,11 @@ func _initialize() -> void:
 
 
 ## The Knight's later cards (M13 follow-up): offered only through his own list (apply_hero); test_knight checks them.
-const KNIGHT_CARDS: Array[StringName] = [&"shield_bash", &"oathkeeper", &"rally", &"iron_will"]
+const KNIGHT_CARDS: Array[StringName] = [&"shield_bash", &"oathkeeper", &"rally", &"iron_will", &"oathbound", &"wider_circle"]
 
 
 ## The new heroes' cards are only offered to them (apply_hero); test_huntress, test_necromancer and test_knight
-## check them.
+## check them (and test_ultimate the ultimates' cards).
 func _hero_only(id: StringName) -> bool:
 	return KNIGHT_CARDS.has(id) or [HUNTRESS, NECROMANCER].any(func(hero: HeroData) -> bool: return hero.exclusive_cards.any(func(card: UpgradeData) -> bool: return card.id == id))
 

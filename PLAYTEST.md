@@ -5,7 +5,16 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
-## What changed since m13-playtest-2 (this is m13-playtest-3)
+## What changed in m13-playtest-4
+
+New: **hero ultimates**, one per hero, on **Q** (rebind it in Settings). The bar under the dash fills from your kills and
+damage (and your skeletons') and slowly from time in a wave; full = press Q. Knight **Last Stand** (a ring that holds and
+smashes what is close, you take half damage for 6 s), Huntress **Volley of Ruin** (12 bolts rain along the aim and Mark), Necromancer
+**Rise of the Dead** (5 fast skeletons for 12 s). Each hero has two new cards that charge it faster or make it bigger.
+Please tell us: how often is it ready (too rare? too often?), does Q feel right, does any of the three feel weak or too strong,
+and is it clear what happened when you pressed it?
+
+## Changes in m13-playtest-3 (check them if you have not)
 
 Everything below comes from your feedback on the last build. Please check each one:
 

@@ -65,6 +65,7 @@ func _ready() -> void:
 	if hero_lives != null:
 		hero_lives.out_of_lives.connect(func() -> void: _end_run(LossReason.HERO_KILLED))
 	_make_minion_pool()
+	_make_ultimate_runner()
 	if run_cycle != null:
 		run_cycle.all_waves_cleared.connect(_on_all_waves_cleared)
 	if modifiers != null:
@@ -73,6 +74,30 @@ func _ready() -> void:
 		spawner.enemy_killed.connect(_on_enemy_killed)
 		spawner.wave_started.connect(func(_n: int) -> void: _soul_healed = 0)
 		spawner.enemy_spawned.connect(func(enemy: Enemy) -> void: enemy.damage_reported.connect(_show_damage))
+
+
+## The hero's ultimate (M14): the runner feeds its bar and plays its effect; the bar starts the chapter half full.
+func _make_ultimate_runner() -> void:
+	var hero: Hero = get_node_or_null("Hero") as Hero
+	if hero == null or hero.data == null or hero.data.ultimate == null:
+		return
+	var runner: UltimateRunner = UltimateRunner.new()
+	runner.name = "UltimateRunner"
+	add_child(runner)
+	runner.setup(hero, minions, _effects, modifiers, spawner)
+	hero.get_ultimate().start_chapter()
+
+
+## The bar's state for a saved run ({} for a hero without an ultimate), and putting it back.
+func get_ultimate_state() -> Dictionary:
+	var hero: Hero = get_node_or_null("Hero") as Hero
+	return hero.get_ultimate().save_state() if hero != null and hero.get_ultimate().has_ultimate() else {}
+
+
+func load_ultimate_state(state: Dictionary) -> void:
+	var hero: Hero = get_node_or_null("Hero") as Hero
+	if hero != null and not state.is_empty():
+		hero.get_ultimate().load_state(state)
 
 
 func _make_minion_pool() -> void:

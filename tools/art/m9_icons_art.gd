@@ -29,6 +29,12 @@ const ICONS: Dictionary = {
 	"iron_will": "res://assets/sprites/ui/upgrades/iron_will.png",
 	"crown_of_thorns": "res://assets/sprites/ui/relics/crown_of_thorns.png",
 	"banner_of_the_last_keep": "res://assets/sprites/ui/relics/banner_of_the_last_keep.png",
+	"oathbound": "res://assets/sprites/ui/upgrades/oathbound.png",
+	"wider_circle": "res://assets/sprites/ui/upgrades/wider_circle.png",
+	"quickdraw": "res://assets/sprites/ui/upgrades/quickdraw.png",
+	"rain_of_spears": "res://assets/sprites/ui/upgrades/rain_of_spears.png",
+	"grave_hunger": "res://assets/sprites/ui/upgrades/grave_hunger.png",
+	"crowded_crypt": "res://assets/sprites/ui/upgrades/crowded_crypt.png",
 }
 
 
@@ -262,3 +268,51 @@ func _banner_of_the_last_keep(c: Canvas) -> void:
 	c.rect(Rect2i(14, 10, 2, 2), P.STEEL[4])
 	c.rect(Rect2i(18, 10, 2, 2), P.STEEL[4])
 	c.rect(Rect2i(22, 10, 0, 2), P.STEEL[4])
+
+
+## The ultimate cards (M14): faster charge and a bigger effect for each hero.
+func _oathbound(c: Canvas) -> void:
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(6, 5), Vector2(26, 5), Vector2(26, 17), Vector2(16, 28), Vector2(6, 17)]), P.STEEL, Vector3(-0.3, -0.4, 1))
+	c.part(true)
+	c.ellipse(Vector2(16, 14), Vector2(5, 5), P.GOLD, 0.0, 0.3)
+	c.part()
+	c.line(Vector2(16, 7), Vector2(16, 21), P.GOLD[4])
+
+
+func _wider_circle(c: Canvas) -> void:
+	c.part(true)
+	c.ellipse(Vector2(16, 17), Vector2(13, 11), P.GOLD, 0.0, 0.2)
+	c.ellipse(Vector2(16, 17), Vector2(10, 8), P.SLATE, 0.0, 0.0)
+	c.ellipse(Vector2(16, 17), Vector2(7, 5.5), P.GOLD, 0.0, 0.3)
+	c.ellipse(Vector2(16, 17), Vector2(4, 3), P.SLATE, 0.0, 0.0)
+	c.part()
+	c.capsule(Vector2(16, 12), Vector2(16, 22), 1.4, P.STEEL, 0.1)
+
+
+func _quickdraw(c: Canvas) -> void:
+	_bolt(c, Vector2(9, 24), Vector2(26, 8))
+	c.part(true)
+	for k: int in 3:
+		c.line(Vector2(2, 14 + k * 5), Vector2(8, 14 + k * 5), P.BONE[3])
+
+
+func _rain_of_spears(c: Canvas) -> void:
+	for k: int in 3:
+		_bolt(c, Vector2(5 + k * 9, 3), Vector2(9 + k * 9, 26))
+	c.part()
+	c.line(Vector2(3, 29), Vector2(29, 29), P.DIRT[2])
+
+
+func _grave_hunger(c: Canvas) -> void:
+	_skull(c, Vector2(16, 14), 9.0)
+	c.part()
+	c.polygon(PackedVector2Array([Vector2(9, 22), Vector2(23, 22), Vector2(21, 28), Vector2(11, 28)]), P.BONE, Vector3(-0.3, -0.4, 1))
+	c.part(true)
+	c.ellipse(Vector2(16, 24), Vector2(3, 1.6), P.SOUL, 0.0, 0.3)
+
+
+func _crowded_crypt(c: Canvas) -> void:
+	_skull(c, Vector2(9, 21), 5.5)
+	_skull(c, Vector2(23, 21), 5.5)
+	_skull(c, Vector2(16, 12), 6.5)

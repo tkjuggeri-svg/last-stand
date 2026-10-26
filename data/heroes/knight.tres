@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=11 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_tower"]
@@ -17,6 +17,9 @@
 [ext_resource type="Script" path="res://resources/relic_data.gd" id="15_relic_script"]
 [ext_resource type="Resource" path="res://data/relics/crown_of_thorns.tres" id="16_crown"]
 [ext_resource type="Resource" path="res://data/relics/banner_of_the_last_keep.tres" id="17_banner"]
+[ext_resource type="Resource" path="res://data/upgrades/oathbound.tres" id="90_ucard"]
+[ext_resource type="Resource" path="res://data/upgrades/wider_circle.tres" id="91_ucard"]
+[ext_resource type="Resource" path="res://data/ultimates/last_stand.tres" id="99_ult"]
 
 [resource]
 script = ExtResource("1_data")
@@ -30,10 +33,11 @@ attack_cooldown = 0.4
 attack_duration = 0.12
 knockback = 12.0
 exclusive_towers = Array[ExtResource("2_tower")]([ExtResource("3_brazier"), ExtResource("4_frost"), ExtResource("5_ballista")])
-exclusive_cards = Array[ExtResource("6_card")]([ExtResource("7_blade"), ExtResource("8_reach"), ExtResource("9_rhythm"), ExtResource("10_berserker"), ExtResource("11_bash"), ExtResource("12_oath"), ExtResource("13_rally"), ExtResource("14_will")])
+exclusive_cards = Array[ExtResource("6_card")]([ExtResource("7_blade"), ExtResource("8_reach"), ExtResource("9_rhythm"), ExtResource("10_berserker"), ExtResource("11_bash"), ExtResource("12_oath"), ExtResource("13_rally"), ExtResource("14_will"), ExtResource("90_ucard"), ExtResource("91_ucard")])
 exclusive_relics = Array[ExtResource("15_relic_script")]([ExtResource("16_crown"), ExtResource("17_banner")])
 bulwark = 0.25
 story_name = "Ser Aldric"
 story_line = "Ser Aldric kept the gate of Last Light when the Marshal's guard broke, and has not left it since."
 story_text = "Ser Aldric was a sergeant of the old garrison when the Waking came. The Marshal rode out with the guard and the guard did not return; Aldric closed the gate behind them and stood in front of it. Orm made him the sword he carries. Dunmore keeps a ledger line for every night he has held. He does not talk about the Marshal, and he does not say what he will do if he meets him."
 portrait_index = 0
+ultimate = ExtResource("99_ult")

@@ -13,6 +13,7 @@ const HINTS: Dictionary = {
 	&"start_wave": "Ready? Press {start_wave} (or the Start wave button) to send the wave.",
 	&"fight": "Press {attack} to swing at the dead. Keep them off the fortress gate.",
 	&"dash": "{dash} dashes through the crowd: you can't be hurt while dashing.",
+	&"ultimate": "Your ultimate is ready! Press {ultimate}: it charges from your kills and damage.",
 	&"upgrade": "Pick one: it lasts the whole run.",
 	&"map": "Choose your path: battles give cards, elites relics; merchants sell, events tempt.",
 	&"elite": "An elite fight ahead: tougher dead, but it pays a relic.",
@@ -49,6 +50,7 @@ func watch(level: Level) -> void:
 	level.builder.tower_built.connect(func(_slot: BuildSlot, _tower: Tower) -> void: request(&"start_wave"))
 	level.spawner.wave_started.connect(func(_n: int) -> void: request(&"fight"))
 	level.hero_lives.hero.hurt.connect(func(_amount: int) -> void: request(&"dash"))
+	level.hero_lives.hero.get_ultimate().charged.connect(func() -> void: request(&"ultimate"))
 	level.offers.offer_made.connect(func(_cards: Array[UpgradeData]) -> void: request(&"upgrade"))
 	level.modifiers.upgrade_added.connect(func(data: UpgradeData, _stacks: int) -> void:
 		if data is RelicData:
@@ -113,7 +115,7 @@ func _on_map_shown() -> void:
 ## The tip's text with its actions' current keys.
 func _text(id: StringName) -> String:
 	var text: String = _told.get(id, HINTS.get(id, ""))
-	for action: StringName in [&"interact", &"start_wave", &"attack", &"dash"]:
+	for action: StringName in [&"interact", &"start_wave", &"attack", &"dash", &"ultimate"]:
 		var bindings: Array[InputEvent] = GameSettings.get_bindings(action)
 		text = text.replace("{%s}" % action, GameSettings.describe(bindings[0]) if not bindings.is_empty() else String(action))
 	return text

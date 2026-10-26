@@ -41,6 +41,12 @@ const MINION_HEALTH: StringName = &"minion.health"
 const MINION_CAP: StringName = &"minion.cap"
 ## Soul Feast: HP the hero regains whenever a skeleton of hers falls.
 const HERO_SOUL_FEAST: StringName = &"hero.soul_feast"
+## The ultimate (M14): how fast its bar charges (a share), how far its ring / impacts reach (a share), the Huntress's extra impacts
+## and the Necromancer's extra skeletons (flat).
+const HERO_ULT_CHARGE: StringName = &"hero.ult_charge"
+const HERO_ULT_RADIUS: StringName = &"hero.ult_radius"
+const HERO_ULT_BOLTS: StringName = &"hero.ult_bolts"
+const HERO_ULT_SKELETONS: StringName = &"hero.ult_skeletons"
 const TOWER_DAMAGE: StringName = &"damage"
 const TOWER_FIRE_INTERVAL: StringName = &"fire_interval"
 const TOWER_RANGE: StringName = &"range"

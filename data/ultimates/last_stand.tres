@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UltimateData" format=3]
+
+[ext_resource type="Script" path="res://resources/ultimate_data.gd" id="1_ult"]
+
+[resource]
+script = ExtResource("1_ult")
+id = &"last_stand"
+display_name = "Last Stand"
+description = "A ring of light: everything within 160 px is held for 1.2 s and takes six sword blows (a boss takes three, at most 10% of its health). For 6 s you take half damage and your sword reaches 30% further."
+kind = 0
+radius = 160.0
+damage_multiplier = 6.0
+boss_multiplier = 3.0
+boss_health_cap = 0.1
+stun_time = 1.2
+damage_reduction = 0.5
+reach_bonus = 0.3
+buff_seconds = 6.0
+sound = &"ultimate_knight"

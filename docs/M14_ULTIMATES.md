@@ -1,6 +1,6 @@
 # M14 — Hero ultimates: design
 
-> Status: **proposal, not approved, not implemented.** Numbers are starting points for the balance tools
+> Status: **approved (Q1-Q6 answered by the user) and implemented**, see Decisions and As built at the end. Numbers are starting points for the balance tools
 > (`balance_report.gd`, `map_balance.gd`). Source: playtest report "we need ultimate skills for the heros"
 > (`m13-playtest-2`, chapter 2 row 2).
 
@@ -100,3 +100,29 @@ Rarity: common, stackable once. They draw from the hero's exclusive pool, like t
 | Q4 | Does the bar carry between chapters? | Resets to 50 (half) so each chapter opens with something |
 | Q5 | Which ultimate behaviours do you want changed? | Keep section 2 as is, and tune after one playtest |
 | Q6 | Should ultimates exist in the Endless / Pressure modes unchanged? | Yes; a Pressure switch "No ultimates" could come later (not now) |
+
+## 7. Decisions
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | A new `ultimate` input action (Q)? | Yes, Q | user |
+| Q2 | Charge from play or a cooldown? | From play | user |
+| Q3 | One ultimate per hero or a choice? | One | user |
+| Q4 | Does the bar carry between chapters? | Yes, and it restarts at 50 in a new chapter | user |
+| Q5 | Change any of the three ultimates? | No: as in section 2 | user |
+| Q6 | Ultimates unchanged in Endless and Pressure? | Yes | user |
+
+## 8. As built
+
+- `resources/ultimate_data.gd` (`UltimateData`, `data/ultimates/*.tres`), `entities/hero/hero_ultimate.gd` (the bar: a child of the Hero, like the dash),
+  `systems/ultimate_runner.gd` (feeds the bar from `Hero.dealt`, the hero's skeletons and the spawner, and plays the effect; made by the Level when the
+  hero has an ultimate), `UpgradeData` cards through the stats `hero.ult_charge / ult_radius / ult_bolts / ult_skeletons` (`RunModifiers`).
+- **Differences from the proposal:** Last Stand does **not pull** enemies in (it holds and hurts everything already in the ring; moving enemies along their lanes is not
+  something the enemies allow); Rise of the Dead has no extra "first strike heals her" (Soul Feast already heals when a skeleton falls); a boss takes a capped blow from every
+  effect; the volley's boss cap is 1% of max health per impact (12 impacts: at most 12%).
+- **Charge detail:** a kill counts if the hero or one of her skeletons hurt the enemy first (the Level reports deaths); the kill of an enemy an ultimate killed pays nothing
+  (no loop); the bar charges by time only while a wave runs.
+- **Art:** the effects reuse the frost nova (a ring) and the explosion (an impact); six new card icons; four sounds (`ultimate_ready`, `ultimate_knight`, `ultimate_huntress`,
+  `ultimate_necro`). Own effect art for each ultimate is M15 work.
+- The saved run keeps the bar (`RunSave`, key `ultimate`); a save from before has none and starts at half. The key's binding is optional in older `settings.cfg` files.
+- The balance bot (`tests/tools/hero_bot.gd`) now presses the key when 5 or more enemies are within its reach.

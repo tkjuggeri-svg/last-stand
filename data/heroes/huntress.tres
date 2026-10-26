@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="HeroData" load_steps=15 format=3]
+[gd_resource type="Resource" script_class="HeroData" load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://resources/hero_data.gd" id="1_data"]
 [ext_resource type="Resource" path="res://data/upgrades/iron_teeth.tres" id="17_teeth"]
@@ -16,6 +16,9 @@
 [ext_resource type="Resource" path="res://data/upgrades/snare_mastery.tres" id="11_snare"]
 [ext_resource type="Resource" path="res://data/upgrades/hunters_mark.tres" id="12_mark"]
 [ext_resource type="Resource" path="res://data/relics/quiver_of_plenty.tres" id="13_quiver"]
+[ext_resource type="Resource" path="res://data/upgrades/quickdraw.tres" id="90_ucard"]
+[ext_resource type="Resource" path="res://data/upgrades/rain_of_spears.tres" id="91_ucard"]
+[ext_resource type="Resource" path="res://data/ultimates/volley_of_ruin.tres" id="99_ult"]
 
 [resource]
 script = ExtResource("1_data")
@@ -36,9 +39,10 @@ bolt_pierce = 1
 mark_bonus = 0.15
 mark_time = 3.0
 exclusive_towers = Array[ExtResource("3_tower")]([ExtResource("4_trap"), ExtResource("5_hawk"), ExtResource("6_watch")])
-exclusive_cards = Array[ExtResource("7_card")]([ExtResource("9_barbed"), ExtResource("10_quick"), ExtResource("11_snare"), ExtResource("12_mark"), ExtResource("17_teeth"), ExtResource("18_cord")])
+exclusive_cards = Array[ExtResource("7_card")]([ExtResource("9_barbed"), ExtResource("10_quick"), ExtResource("11_snare"), ExtResource("12_mark"), ExtResource("17_teeth"), ExtResource("18_cord"), ExtResource("90_ucard"), ExtResource("91_ucard")])
 exclusive_relics = Array[ExtResource("8_relic")]([ExtResource("13_quiver"), ExtResource("14_hood")])
 story_name = "Wren"
 story_line = "Wren tracked the Waking through the Gloam Wood to its source, and found only more tracks."
 story_text = "Wren was a ranger of the Gloam Wood, where the trees closed over the light a generation ago. When the dead began to walk she followed their trail, month after month, expecting a beginning. There was none: the tracks come from everywhere and go to Last Light. She sets traps because a dead thing that is held still is a dead thing that can be understood, and she is still trying to understand."
 portrait_index = 1
+ultimate = ExtResource("99_ult")

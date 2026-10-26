@@ -26,6 +26,8 @@ enum AttackKind { SWORD, BOLT }
 ## The hero's sprite sheet (null: the scene's own).
 @export var frames: SpriteFrames
 @export var attack_kind: AttackKind = AttackKind.SWORD
+## The hero's ultimate (M14): null = none.
+@export var ultimate: UltimateData
 ## Bulwark (the Knight's passive): the share of a hit's damage shrugged off while swinging.
 @export_range(0.0, 0.9) var bulwark: float = 0.0
 @export_group("Story")

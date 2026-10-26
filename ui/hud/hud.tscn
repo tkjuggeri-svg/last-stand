@@ -126,6 +126,41 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.89, 0.94, 1)
 text = "Ready"
 
+[node name="UltimateRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="UltimateSpacer" type="Control" parent="Margin/Panel/Bars/UltimateRow"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="UltimateTitle" type="Label" parent="Margin/Panel/Bars/UltimateRow"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Ultimate"
+
+[node name="UltimateBar" type="ProgressBar" parent="Margin/Panel/Bars/UltimateRow"]
+unique_name_in_owner = true
+modulate = Color(1, 0.82, 0.45, 1)
+custom_minimum_size = Vector2(132, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxTexture_dash")
+max_value = 1.0
+show_percentage = false
+
+[node name="UltimateLabel" type="Label" parent="Margin/Panel/Bars/UltimateRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(84, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
+text = "0%"
+
 [node name="LivesStatus" type="Label" parent="Margin/Panel/Bars"]
 unique_name_in_owner = true
 visible = false

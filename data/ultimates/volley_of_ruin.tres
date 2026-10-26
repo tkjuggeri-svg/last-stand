@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="UltimateData" format=3]
+
+[ext_resource type="Script" path="res://resources/ultimate_data.gd" id="1_ult"]
+
+[resource]
+script = ExtResource("1_ult")
+id = &"volley_of_ruin"
+display_name = "Volley of Ruin"
+description = "Twelve bolts rain along a 340 px line toward your aim over 2.5 s. Each hits for two bolts of damage and Marks what it hits for 8 s (towers deal +15%)."
+kind = 1
+damage_multiplier = 2.0
+boss_multiplier = 1.5
+boss_health_cap = 0.01
+bolts = 12
+line_length = 340.0
+volley_seconds = 2.5
+mark_bonus = 0.15
+mark_time = 8.0
+sound = &"ultimate_huntress"

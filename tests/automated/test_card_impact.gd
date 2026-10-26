@@ -107,6 +107,11 @@ func _measures(catalog: Array[TowerData]) -> Dictionary:
 	_measure(m, "skeleton health", [RunModifiers.MINION_HEALTH], 30.0, func(s: RunModifiers) -> float: return 30.0 * s.apply(1.0, [RunModifiers.MINION_HEALTH]))
 	_measure(m, "skeletons at a time", [RunModifiers.MINION_CAP], 3.0, func(s: RunModifiers) -> float: return 3.0 + s.apply(0.0, [RunModifiers.MINION_CAP]))
 	_measure(m, "heal per fallen skeleton", [RunModifiers.HERO_SOUL_FEAST], HERO["health"] * 0.25, func(s: RunModifiers) -> float: return s.apply(0.0, [RunModifiers.HERO_SOUL_FEAST]))
+	# The ultimates (M14): how fast the bar charges, the Knight's ring, the Huntress's volley, the Necromancer's skeletons.
+	_measure(m, "ultimate charge speed", [RunModifiers.HERO_ULT_CHARGE], 1.0, func(s: RunModifiers) -> float: return s.apply(1.0, [RunModifiers.HERO_ULT_CHARGE]))
+	_measure(m, "ultimate radius (px)", [RunModifiers.HERO_ULT_RADIUS], 160.0, func(s: RunModifiers) -> float: return s.apply(160.0, [RunModifiers.HERO_ULT_RADIUS]))
+	_measure(m, "volley impacts", [RunModifiers.HERO_ULT_BOLTS], 12.0, func(s: RunModifiers) -> float: return 12.0 + s.apply(0.0, [RunModifiers.HERO_ULT_BOLTS]))
+	_measure(m, "ultimate skeletons", [RunModifiers.HERO_ULT_SKELETONS], 5.0, func(s: RunModifiers) -> float: return 5.0 + s.apply(0.0, [RunModifiers.HERO_ULT_SKELETONS]))
 	_measure(m, "hero lives", [RunModifiers.HERO_LIVES], HERO["lives"], func(s: RunModifiers) -> float: return s.apply(HERO["lives"], [RunModifiers.HERO_LIVES]))
 	_measure(m, "dash cooldown", [RunModifiers.HERO_DASH_COOLDOWN], HERO["dash"], func(s: RunModifiers) -> float:
 		return maxf(s.apply(HERO["dash"], [RunModifiers.HERO_DASH_COOLDOWN]), HERO["min_dash"]))

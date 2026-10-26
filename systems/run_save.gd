@@ -43,6 +43,7 @@ static func capture(run: RunStateNode, level: Level) -> Dictionary:
 		"events": level.events.save_state() if level.events != null else {},
 		"merchant": level.merchant.save_state() if level.merchant != null else {},
 		"quartermaster": level.quartermaster.save_state() if level.quartermaster != null else {},
+		"ultimate": level.get_ultimate_state(),
 	}
 
 
@@ -108,3 +109,4 @@ static func restore_level(level: Level, saved: Dictionary) -> void:
 		level.merchant.load_state(saved.get("merchant", {}))
 	if level.quartermaster != null:
 		level.quartermaster.load_state(saved.get("quartermaster", {}))
+	level.load_ultimate_state(saved.get("ultimate", {}))

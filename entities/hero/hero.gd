@@ -15,6 +15,8 @@ signal revived
 signal struck(damage: int)
 ## Its bolt killed an enemy, which fell at `at` (the Necromancer raises a skeleton there).
 signal slew(at: Vector2)
+## Its sword or bolt hurt `enemy` for `damage`, or a skeleton of its did (the ultimate's bar charges from it).
+signal dealt(enemy: Enemy, damage: int)
 ## It lost `amount` HP (a hit got through).
 signal hurt(amount: int)
 ## An enemy's hit landed on the hero (Crown of Thorns answers it).
@@ -92,6 +94,7 @@ var _wading_speed: float = 1.0
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _attack_hitbox: Hitbox = %AttackHitbox
 @onready var _dash: HeroDash = %Dash
+@onready var _ultimate: HeroUltimate = %Ultimate
 @onready var _ripple: AnimatedSprite2D = %Ripple
 
 
@@ -105,6 +108,8 @@ func _ready() -> void:
 	_base_damage = _attack_hitbox.damage
 	_dash.modifiers = modifiers
 	_dash.setup(self, _sprite)
+	_ultimate.modifiers = modifiers
+	_ultimate.setup(data.ultimate if data != null else null)
 	_attack_hitbox.hit.connect(_on_attack_landed)
 	_hurtbox.hit_received.connect(_on_hit_received)
 	if modifiers != null:
@@ -119,6 +124,8 @@ func _physics_process(delta: float) -> void:
 		return
 	if Input.is_action_just_pressed("dash"):
 		dash(_input_direction())
+	if Input.is_action_just_pressed("ultimate") and not _dash.is_dashing():
+		_ultimate.use()
 	if _dash.is_dashing():
 		velocity = _dash.get_velocity()
 		move_and_slide()
@@ -126,7 +133,8 @@ func _physics_process(delta: float) -> void:
 	else:
 		_move()
 	_update_attack_timers(delta)
-	health.damage_taken_multiplier = _bulwark_multiplier()
+	health.damage_taken_multiplier = _bulwark_multiplier() * _ultimate.get_damage_taken()
+	_attack_hitbox.scale = Vector2.ONE * _reach_scale()
 	# Holding the button keeps swinging, limited by the cooldown. Clicks on UI (e.g. the build menu)
 	# are not swings.
 	if Input.is_action_pressed("attack") and get_viewport().gui_get_hovered_control() == null:
@@ -226,6 +234,16 @@ func is_wading() -> bool:
 	return _wading_speed < 1.0
 
 
+## The ultimate component (the bar, for the HUD and the runner).
+func get_ultimate() -> HeroUltimate:
+	return _ultimate
+
+
+## One blow's damage under the run's upgrades (what ultimates scale from).
+func get_attack_damage() -> int:
+	return _attack_hitbox.damage
+
+
 ## The dash component (cooldown, for the HUD).
 func get_dash() -> HeroDash:
 	return _dash
@@ -249,8 +267,12 @@ func _apply_data() -> void:
 func _apply_modifiers() -> void:
 	health.set_max_health(modifiers.apply_int(_base_max_health, [RunModifiers.HERO_MAX_HEALTH]))
 	_attack_hitbox.damage = modifiers.apply_int(_base_damage, [RunModifiers.HERO_DAMAGE])
-	# Scaling the hitbox (an Area2D, not a sprite) lengthens the swing's reach; the trail art stays.
-	_attack_hitbox.scale = Vector2.ONE * modifiers.apply(1.0, [RunModifiers.HERO_REACH])
+	_attack_hitbox.scale = Vector2.ONE * _reach_scale()
+
+
+## Scaling the hitbox (an Area2D, not a sprite) lengthens the swing's reach; the trail art stays. Last Stand widens it for a while.
+func _reach_scale() -> float:
+	return RunModifiers.value(modifiers, 1.0, [RunModifiers.HERO_REACH]) * _ultimate.get_reach()
 
 
 ## Brings a fallen hero back at `at` with full HP, idle and targetable again, and immune to hits for
@@ -388,6 +410,8 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 func _on_bolt_hit(enemy: Enemy) -> void:
 	Sfx.play(self, &"hero_hit")
 	struck.emit(_attack_hitbox.damage)
+	if is_instance_valid(enemy):
+		dealt.emit(enemy, _attack_hitbox.damage)
 	if is_instance_valid(enemy) and not enemy.is_alive():
 		slew.emit(enemy.global_position)
 
@@ -431,6 +455,7 @@ func _on_attack_landed(target: Hurtbox) -> void:
 	if enemy != null:
 		enemy.knock_back(knockback)
 		_oathkeeper(enemy)
+		dealt.emit(enemy, _attack_hitbox.damage)
 	struck.emit(_attack_hitbox.damage)
 
 
