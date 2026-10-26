@@ -18,7 +18,8 @@ uniform float haze_top_y = -500.0;
 uniform float haze_bottom_y = 400.0;
 uniform float haze_strength = 0.34;
 uniform vec3 haze_color : source_color = vec3(0.22, 0.3, 0.46);
-uniform float exposure = 1.38;
+uniform float exposure = 1.7;
+uniform float shadow_lift = 0.88;  // gamma below 1 lifts the darks, where most of the map is
 uniform float saturation = 1.16;
 uniform float contrast = 1.05;
 
@@ -75,6 +76,7 @@ void fragment() {
 	float fog = clamp((n - 0.28) * 1.9, 0.0, 1.0) * fog_strength * (0.4 + 0.6 * away);
 	col = mix(col, fog_color * (luma * 0.6 + 0.3), fog);
 	col = col / (1.0 + max(col - vec3(0.82), vec3(0.0)) * 0.9);
+	col = pow(max(col, vec3(0.0)), vec3(shadow_lift));
 	float l2 = dot(col, vec3(0.299, 0.587, 0.114));
 	col = mix(vec3(l2), col, saturation);
 	col = (col - 0.5) * contrast + 0.5;

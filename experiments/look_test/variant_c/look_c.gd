@@ -1,7 +1,7 @@
 extends "res://experiments/look_test/variant_a/look_a.gd"
 ## Variant C, variant A's lighting with a fake depth, all in 2D (look-test; no 3D stage, no gameplay change):
 ## sprites draw smaller toward the top of the map (visual scale only: bodies, collisions and the mouse are
-## untouched), a distance haze by world height, a dark blurred foreground strip with parallax, a tilt-shift that is
+## untouched), a distance haze by world height, a tilt-shift that is
 ## stronger at the bottom, a parallax backdrop beyond the top wall, and a gentler bloom. The post pass lives in the
 ## world canvas between the sprites and the damage numbers / health bars, which therefore stay sharp.
 
@@ -9,12 +9,10 @@ const POST_C: Shader = preload("res://experiments/look_test/variant_c/post_c.gds
 const DepthArt: GDScript = preload("res://experiments/look_test/variant_c/depth_art.gd")
 const DEPTH_TOP: float = 0.87
 const POST_Z: int = 150
-const FOREGROUND_Z: int = 160
 const BARS_Z: int = 199
 const LABELS_Z: int = 200
 ## How far above the top wall the camera may look (px), where the backdrop shows.
 const BACKDROP_HEIGHT: float = 170.0
-const FOREGROUND_PARALLAX: float = 1.4
 const POST_MARGIN: float = 24.0
 ## Backdrop layers: kind, colour, art height, how much of the camera's movement it follows (0: still, 1: the world).
 const LAYERS: Array = [
@@ -28,7 +26,6 @@ var _floor_bottom: float = 400.0
 var _wall_top: float = -532.0
 var _depth_sprites: Array[Dictionary] = []
 var _backdrop_layers: Array[Dictionary] = []
-var _foreground: Sprite2D
 
 
 func attach(level: Level) -> void:
@@ -42,7 +39,6 @@ func attach(level: Level) -> void:
 	super.attach(level)
 	_camera.limit_top = int(_wall_top - BACKDROP_HEIGHT)
 	_build_backdrop()
-	_build_foreground()
 
 
 func _process(delta: float) -> void:
@@ -59,8 +55,6 @@ func _process(delta: float) -> void:
 		var width: float = view.x + 64.0
 		sprite.region_rect = Rect2(center.x * float(layer["follow"]) / 2.0 - width * 0.25, 0, width / 2.0, sprite.texture.get_height())
 		sprite.global_position = Vector2(center.x - width * 0.5, _wall_top + 6.0 - sprite.texture.get_height() * 2.0)
-	_foreground.region_rect = Rect2(fposmod(center.x * FOREGROUND_PARALLAX, float(_foreground.texture.get_width())), 0, view.x + 64.0, _foreground.texture.get_height())
-	_foreground.global_position = Vector2(center.x - view.x * 0.5 - 32.0, center.y + view.y * 0.5 - _foreground.texture.get_height())
 
 
 func _inspect(node: Node) -> void:
@@ -173,18 +167,6 @@ func _build_backdrop() -> void:
 		sprite.scale = Vector2(2, 2)
 		holder.add_child(sprite)
 		_backdrop_layers.append({"sprite": sprite, "follow": spec[3]})
-
-
-func _build_foreground() -> void:
-	_foreground = Sprite2D.new()
-	_foreground.texture = DepthArt.foreground()
-	_foreground.centered = false
-	_foreground.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
-	_foreground.region_enabled = true
-	_foreground.light_mask = 0
-	_foreground.z_as_relative = false
-	_foreground.z_index = FOREGROUND_Z
-	_level.add_child(_foreground)
 
 
 const SKY_BANDS: Array[Color] = [Color("0a0d1c"), Color("0d1226"), Color("121a33"), Color("19243f"), Color("22304c"),

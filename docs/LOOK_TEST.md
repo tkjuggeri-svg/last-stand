@@ -29,8 +29,7 @@ and right at the mouse, a build slot highlights under the mouse and not away fro
   1.0x at the bottom, scaled about their feet (visual only: bodies, collisions, hit areas and the mouse are untouched; if
   the game itself moves or scales a sprite, that becomes the new base).
 - **Haze by world height**, cooler and darker toward the top of the map (it belongs to the map, not the screen).
-- **Foreground strip:** dark, blurred grass, gravestones, crosses and dead branches along the bottom edge that scroll
-  1.4x as fast as the world (parallax).
+- **Foreground strip: removed** at the owner's request (a dark blurred strip along the bottom edge).
 - **Tilt-shift stronger at the bottom** (6.5 px) than at the top (1.8 px, so enemies at the spawns stay readable).
 - **Parallax backdrop beyond the top wall:** dusk sky with stars and a moon, far hills, ruins and a treeline at
   0.18 / 0.38 / 0.62 of the camera's speed. Nothing exists beyond the wall in the real camera, so the camera may look
@@ -45,7 +44,7 @@ Findings and cost: it reads as depth without the 3D stage's problems (no mirrori
 existing game code in this step). Frame rate in the table below. What it is not: the ground and the unit/tower
 art still have no perspective, so the "tilted" feeling is a suggestion; the depth scale is subtle at 0.87;
 the scaled sprites' hit areas, health bars and baked soft shadows do not scale with them (a 1-2 px mismatch at the very
-top); the haze and blur tuning is by eye on one map; the foreground strip hides the bottom ~60 px of play (worth a setting).
+top); the haze and blur tuning is by eye on one map.
 Adoption: about 520 lines (look_c.gd 200, depth_art.gd 170, shader 70), an opt-in layer in `Level`/Main, the z-order
 raise of numbers and bars (their scenes), and a decision on the camera's top limit.
 
@@ -110,3 +109,8 @@ rule stays true but the visuals double in size.
 - Screenshots and videos use the hero bot; the video format is MJPEG AVI (no ffmpeg on this machine).
 - `tests/tools/perf_report.gd` and `trailer_capture.gd` index a 10-entry tower list with the new 16 slots (found
   here, not caused by this branch; fix with `% TOWERS.size()` on the art branch).
+
+## Later changes to C
+
+- Brighter (owner: "too dark but looks okay"): exposure 1.38 -> 1.7 and a shadow lift (gamma 0.88).
+- The foreground strip is gone (owner: "ditch the black overlay from the bottom").
