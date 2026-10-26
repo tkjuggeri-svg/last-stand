@@ -5,7 +5,27 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
-## What to focus on in this build (m13-playtest)
+## What changed since m13-playtest (this is m13-playtest-2)
+
+Everything below comes from your feedback on the last build. Please check each one:
+
+1. **War Room and every menu fit the screen** (windowed, fullscreen, ultrawide): no cut-off titles or buttons any
+   more. An automatic test now checks 21 screens at 100%, 120% and 70% interface size.
+2. **Interface size** (Settings, 70-120%, default 100%): the battle HUD and every menu scale. Is 100% still too
+   big for you? Which size do you pick, and does anything look wrong at 70% or 120%?
+3. **More build slots on every map** (the graveyard 16, the others 13-15) and **Masterwork ranks**: a tower of level
+   3 or higher can be improved again and again (M1, M2, ...: +8% power a rank, the price rises each time; shown on
+   the tower and in its build menu). Chapter 2 used to leave thousands of gold unspent. Do you spend your gold now?
+   Do you fill the slots, or do you still have too many? Does Masterwork feel worth its price?
+4. **Necromancer soul bolts home in a little** toward the nearest enemy ahead. Better, too strong, or still missing?
+5. **The run map has art:** a ground per biome, roads, framed nodes, warm light from the fortress against the cold
+   of the dead, and weather (embers, snow, mist, spores). Does it read well? Is any node or road hard to see?
+6. **F12 (dev menu) is not in this build**, on purpose. A separate developer build has it.
+
+Known gap: the bot (`map_balance`) dies in chapter 1 whatever the slots, so it cannot tell us how chapter 2's economy
+feels now. Only you can.
+
+## Still open from the last build (m13-playtest)
 
 Please write down, with the version from `BUILD_INFO.txt` and the seed from the pause menu, what you see. The bot
 data says little about chapters 2 and 3, so those matter most.
