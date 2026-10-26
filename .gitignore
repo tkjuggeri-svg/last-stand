@@ -13,3 +13,4 @@ builds/
 
 # Sprite exports for outside tools (tools/art/export_knight.py)
 /exports/
+__pycache__/
