@@ -5,9 +5,23 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
-## What changed since m13-playtest (this is m13-playtest-2)
+## What changed since m13-playtest-2 (this is m13-playtest-3)
 
 Everything below comes from your feedback on the last build. Please check each one:
+
+1. **The War Room has pages** (Heroes, Unlocks, Council, Records) instead of one crowded screen. Heroes: pick your hero,
+   read their story, Pressure. Unlocks: the shop. Council: the three characters and the Chronicle. Records: your records,
+   Tips and Reset. The footer is only your shards, Title screen and Start a run. Does everything fit on your screen, and do
+   you find things where you look for them?
+2. **Stories scroll** inside a box that never leaves the screen (the hero's story, and each character's). Does any text still
+   run off?
+3. **Upgrade cards only for towers you can build:** the Necromancer no longer sees Deep Freeze (a Frost tower card).
+   Do you still see any card that does nothing for your build?
+4. **Chapter 2, rows 5 and 6 are a little easier** (about 10% less enemy health in waves 9-12). Do you get past row 6 now, and
+   where is the next wall?
+5. Not in this build: **hero ultimates** (designed in `docs/M14_ULTIMATES.md`, waiting for the answers to its questions).
+
+## Changes in m13-playtest-2 (check them if you have not)
 
 1. **War Room and every menu fit the screen** (windowed, fullscreen, ultrawide): no cut-off titles or buttons any
    more. An automatic test now checks 21 screens at 100%, 120% and 70% interface size.

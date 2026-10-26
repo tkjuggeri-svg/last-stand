@@ -26,6 +26,10 @@ enum Page { HEROES, UNLOCKS, COUNCIL, RECORDS }
 ## Width of the story dialog (px) and the most of the screen it may take.
 const STORY_WIDTH: float = 900.0
 const STORY_SCREEN_SHARE: float = 0.9
+## The tallest the scrolling text may be (of the screen's height), its least height and the room around the text (px).
+const STORY_HEIGHT_SHARE: float = 0.55
+const STORY_MIN_HEIGHT: float = 120.0
+const STORY_PADDING: float = 24.0
 
 var _profile: SaveProfile
 var _book: StoryBook
@@ -308,6 +312,11 @@ func _tell(beat: StoryBeat, character: StoryCharacter) -> void:
 	beat_read.emit(beat.id)
 
 
+## The project theme for the dialog window (a Window does not inherit the screen's theme).
+func theme_of_screen() -> Theme:
+	return load("res://ui/theme/game_theme.tres") as Theme
+
+
 ## A story in the dialog: the text scrolls inside a box that never grows past the screen (the long ones used to run off it).
 func _show_story(title: String, text: String) -> void:
 	if _story_text == null:
@@ -319,8 +328,13 @@ func _show_story(title: String, text: String) -> void:
 		scroll.add_child(_story_text)
 		_story_scroll = scroll
 		_beat_dialog.add_child(scroll)
+		_beat_dialog.theme = theme_of_screen()
 	var view: Vector2 = get_viewport().get_visible_rect().size
-	_story_scroll.custom_minimum_size = Vector2(minf(STORY_WIDTH, view.x * STORY_SCREEN_SHARE), view.y * STORY_SCREEN_SHARE * 0.6)
+	var width: float = minf(STORY_WIDTH, view.x * STORY_SCREEN_SHARE)
+	# As tall as the text needs, up to most of the screen (the rest of the dialog is its title and button).
+	var font: Font = _story_text.get_theme_font(&"font")
+	var needed: float = font.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, width - STORY_PADDING, _story_text.get_theme_font_size(&"font_size")).y
+	_story_scroll.custom_minimum_size = Vector2(width, clampf(needed + STORY_PADDING, STORY_MIN_HEIGHT, view.y * STORY_HEIGHT_SHARE))
 	_beat_dialog.title = title
 	_story_text.text = text
 	_beat_dialog.reset_size()
