@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/gloam_wood.tres" id="look_gloam_wood"]
 [ext_resource type="PackedScene" path="res://levels/gloam_wood.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"gloam_wood"
 display_name = "The Gloam Wood"
 tier = 2
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_gloam_wood")
 blurb = "A dark wood of narrow roads. Four of them reach the fortress, and three lamps light the way."
 mechanic_text = "Gloom: a tower sees only 70% of its range unless a lamp stands near it; Stalkers hide until they are close."
 difficulty_note = "medium: build near the lamps, and keep the hero near the roads"

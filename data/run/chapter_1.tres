@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/crypt_road.tres" id="look_crypt_road"]
 [ext_resource type="PackedScene" path="res://levels/prototype_arena.tscn" id="2_level"]
 [ext_resource type="Resource" path="res://data/run/ch1_battle_1.tres" id="b1"]
 [ext_resource type="Resource" path="res://data/run/ch1_battle_2.tres" id="b2"]
@@ -40,6 +41,7 @@ script = ExtResource("1_chapter")
 id = &"crypt_road"
 display_name = "Chapter 1: The Crypt Road"
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_crypt_road")
 battles = Array[ExtResource("s_enc")]([ExtResource("b1"), ExtResource("b2"), ExtResource("b3"), ExtResource("b4"), ExtResource("b5"), ExtResource("b6")])
 elites = Array[ExtResource("s_enc")]([ExtResource("e3"), ExtResource("e4"), ExtResource("e5"), ExtResource("e6")])
 affixes = Array[ExtResource("s_affix")]([ExtResource("a_swift"), ExtResource("a_warded"), ExtResource("a_swarming"), ExtResource("a_siege"), ExtResource("a_ironclad")])

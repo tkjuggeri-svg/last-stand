@@ -23,7 +23,7 @@ const NAMES: Dictionary = {
 	RunMap.Kind.MERCHANT: "Merchant",
 	RunMap.Kind.BOSS: "Boss",
 }
-const DIM: Color = Color(0.45, 0.42, 0.5, 0.75)
+const DIM: Color = Color(0.68, 0.64, 0.74, 0.9)
 const VISITED: Color = Color(0.7, 0.66, 0.6, 1)
 const PULSE_SPEED: float = 4.0
 
@@ -46,6 +46,7 @@ func _process(delta: float) -> void:
 	if not visible or _map == null:
 		return
 	_time += delta
+	_view.time = _time
 	_view.pulse = 0.5 + 0.5 * sin(_time * PULSE_SPEED)
 
 
@@ -55,6 +56,7 @@ func open(map: RunMap, title: String, status: String) -> void:
 	_title.text = title
 	_status.text = status
 	_view.map = map
+	_view.look = map.chapter.map_look
 	for child: Node in _view.get_children():
 		child.queue_free()
 	_buttons.clear()

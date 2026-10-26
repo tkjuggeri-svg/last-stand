@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/sunless_mines.tres" id="look_sunless_mines"]
 [ext_resource type="PackedScene" path="res://levels/sunless_mines.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"sunless_mines"
 display_name = "The Sunless Mines"
 tier = 3
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_sunless_mines")
 blurb = "Mine tunnels lit by glowing crystal. Three roads, and the ground is not safe."
 mechanic_text = "Cave-ins: a tunnel falls in now and then (a warning first): the rubble holds the dead in place for 8 s."
 difficulty_note = "hard: Burrowers skip the road and Lamp Wights heal the pack"

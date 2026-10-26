@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/ember_orchard.tres" id="look_ember_orchard"]
 [ext_resource type="PackedScene" path="res://levels/ember_orchard.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"ember_orchard"
 display_name = "The Ember Orchard"
 tier = 1
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_ember_orchard")
 blurb = "A burned orchard of blackened trees and dry, yellow grass. Three roads wind through it."
 mechanic_text = "Dry grass: patches catch fire from burning ground or burning enemies, and the fire hurts you as well as them."
 difficulty_note = "easy, and fire is a weapon here: a Brazier lights the grass"

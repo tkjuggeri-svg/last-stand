@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/ashen_keep.tres" id="look_ashen_keep"]
 [ext_resource type="PackedScene" path="res://levels/ashen_keep.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"ashen_keep"
 display_name = "The Ashen Keep"
 tier = 3
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_ashen_keep")
 blurb = "A burned fortress, the walls still falling. Four roads run through the ruin."
 mechanic_text = "Falling walls: a wall section collapses now and then (a warning first), hurting what is below and burning out the nearest slot for the fight."
 difficulty_note = "the hardest road: the dead are tougher from the first wave"

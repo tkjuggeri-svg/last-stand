@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/frostbound_pass.tres" id="look_frostbound_pass"]
 [ext_resource type="PackedScene" path="res://levels/frostbound_pass.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"frostbound_pass"
 display_name = "The Frostbound Pass"
 tier = 2
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_frostbound_pass")
 blurb = "A mountain pass under a grey sky. One long, winding road and two short ones."
 mechanic_text = "Blizzard: now and then a gale blows for 8 s: your towers lose a fifth of their range and the dead walk faster."
 difficulty_note = "medium: slows are weaker against the Rime Brutes, and the long road gives time"

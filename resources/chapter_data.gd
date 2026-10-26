@@ -16,6 +16,8 @@ extends Resource
 ## The level every fight of the chapter is played on (it stays, with its towers, for the chapter).
 @export var level_scene: PackedScene
 @export_group("Map")
+## The look of the run map (ground, roads, weather).
+@export var map_look: MapLook
 ## Rows including the boss row.
 @export var rows: int = 8
 ## Nodes per row (index 0 = row 1); the boss row always has one.

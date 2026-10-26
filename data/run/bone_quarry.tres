@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/bone_quarry.tres" id="look_bone_quarry"]
 [ext_resource type="PackedScene" path="res://levels/bone_quarry.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"bone_quarry"
 display_name = "The Bone Quarry"
 tier = 1
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_bone_quarry")
 blurb = "A quarry of cut stone and heaped bones. Two broad roads run down and merge before the fortress."
 mechanic_text = "Rockfall: boulders crash onto the roads now and then (a warning first) and block them for 8 s: the dead queue up behind."
 difficulty_note = "easy: Bone Hurlers silence your towers one at a time"

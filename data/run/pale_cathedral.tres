@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ChapterData" format=3]
 
 [ext_resource type="Script" path="res://resources/chapter_data.gd" id="1_chapter"]
+[ext_resource type="Resource" path="res://data/run/looks/pale_cathedral.tres" id="look_pale_cathedral"]
 [ext_resource type="PackedScene" path="res://levels/pale_cathedral.tscn" id="2_level"]
 [ext_resource type="Script" path="res://resources/encounter_data.gd" id="s_enc"]
 [ext_resource type="Script" path="res://resources/affix_data.gd" id="s_affix"]
@@ -41,6 +42,7 @@ id = &"pale_cathedral"
 display_name = "The Pale Cathedral"
 tier = 3
 level_scene = ExtResource("2_level")
+map_look = ExtResource("look_pale_cathedral")
 blurb = "A ruined cathedral: three aisles lead to the fortress's door, and altars glow along them."
 mechanic_text = "Consecration: altars mend the dead near them unless burning ground covers them. Fire puts the light out."
 difficulty_note = "hard: Choristers shield the dead and Inquisitors mark you"

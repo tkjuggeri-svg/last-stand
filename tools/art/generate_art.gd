@@ -36,6 +36,7 @@ const FortressArt: GDScript = preload("res://tools/art/fortress_art.gd")
 const TowerArt: GDScript = preload("res://tools/art/tower_art.gd")
 const EvolutionArt: GDScript = preload("res://tools/art/evolution_art.gd")
 const MapArt: GDScript = preload("res://tools/art/map_art.gd")
+const MapGroundArt: GDScript = preload("res://tools/art/map_ground_art.gd")
 const EnvironmentArt: GDScript = preload("res://tools/art/environment_art.gd")
 const MarshArt: GDScript = preload("res://tools/art/marsh_art.gd")
 const BloaterArt: GDScript = preload("res://tools/art/bloater_art.gd")
@@ -166,6 +167,13 @@ func _initialize() -> void:
 		"map_icons": func() -> void:
 			for kind: String in MapArt.KINDS:
 				_save(MapArt.new().icon(kind), Layouts.UI_DIR + "map/node_%s.png" % kind),
+		"map_ground": func() -> void:
+			for id: String in MapGroundArt.new().ids():
+				_save(MapGroundArt.new().ground(id), Layouts.UI_DIR + "map/ground_%s.png" % id),
+		"map_frames": func() -> void:
+			for state: String in ["idle", "choice", "done"]:
+				_save(MapGroundArt.new().frame(state, false), Layouts.UI_DIR + "map/frame_%s.png" % state)
+				_save(MapGroundArt.new().frame(state, true), Layouts.UI_DIR + "map/frame_boss_%s.png" % state),
 		"frost": func() -> void: _save(_sheet(TowerArt.new().frost_rows(), Layouts.FROST_FX["size"]), Layouts.FROST_FX["png"]),
 		"slot": func() -> void: _save(_sheet([EnvironmentArt.new().slot_frames()], Layouts.BUILD_SLOT["size"]), Layouts.BUILD_SLOT["png"]),
 	}
