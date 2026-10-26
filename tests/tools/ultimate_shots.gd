@@ -34,7 +34,7 @@ func _hero(hero_data: HeroData) -> void:
 	for i: int in 10:
 		var enemy: Enemy = ENEMY_SCENE.instantiate()
 		enemy.data = GHOUL
-		enemy.position = origin + Vector2(90 + (i % 5) * 38, (i / 5 - 0.5) * 60 + 80)
+		enemy.position = origin + Vector2(90 + (i % 5) * 38, (floori(i / 5.0) - 0.5) * 60 + 80)
 		level.add_child(enemy)
 		enemy.get_health().max_health = 400
 		enemy.get_health().current_health = 400
