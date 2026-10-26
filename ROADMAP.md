@@ -1,7 +1,7 @@
 # LAST STAND — Roadmap
 
 Each milestone ends with something **playable**. Don't start the next milestone until the current one's "Done when" is met.
-Tick items as they're finished.
+Tick items as they're finished. M0-M13 are built; M14-M16 are planned and not started.
 
 ---
 
@@ -251,6 +251,34 @@ Music, credits, final art polish (e.g. side views for the bosses, an art pass ov
 
 ---
 
+## M14 — Fix & Finish
+Playtest fixes, balance, and finishing what is half done: the Knight's extra cards and relics, the hero stories, the
+Pressure switches that have never been tried by hand (Hardened Elites and Stronger Bosses have no tests yet), chapter 1's
+uneven row steps, chapter 2's economy as the first outside playtest sees it, and whatever the `m13-playtest-2` feedback adds.
+Not started.
+
+**Done when:** everything in the game works and feels finished.
+
+---
+
+## M15 — Art Overhaul
+Work through `docs/ART_BACKLOG.md`: replace every recoloured placeholder enemy, apply the new Knight design, and carry the
+theme through all art, warm defenders against the cold dead (the fortress, the towers and the hero warm; the dead and the
+far map cool). Follows `ART_DIRECTION.md`. Not started.
+
+**Done when:** there are no placeholders left, and the game passes the grayscale and readability checks
+(`test_readability`, the `--grayscale` review shots).
+
+---
+
+## M16 — Outside Playtest *(optional)*
+Builds for 3-5 new players, or a free itch.io demo; feedback comes in with the F8 tool (`tools/feedback_summary.py`, the
+`feedback-review` skill). Needs M14 and M15 first, and a decision on the release questions in the parking lot. Not started.
+
+**Done when:** strangers have played it and their feedback is sorted into what to fix and what to leave.
+
+---
+
 ## Current focus
 **M9-M13 are built** and the latest playtest build is **`m13-playtest-2`** (a developer build with F12 sits next to it as `-dev-` zips; tag on `art/handoff-integration`, not merged
 into `main`; zips in `builds/`, a focus checklist at the top of `PLAYTEST.md`). Waiting for a human playtest: the balance
@@ -262,3 +290,13 @@ chapter 1's own uneven row steps (x2.99 at row 2-3 in Crypt Road).
 m13-playtest-2 answers the first playtest's feedback: War Room and menu fit (tested at 100/120/70% interface size), the
 interface size setting, more slots and Masterwork ranks, homing soul bolts, the run map's art; the bot still dies in
 chapter 1, so only a human playtest can judge chapter 2's economy.
+
+---
+
+## Parking lot (not planned)
+Notes for a release, if and when we decide on one. We're making the best game we can first; none of this is scheduled.
+- **Store page key art** by a human artist (`CLAUDE.md` rule 3 allows only CC0 or self-made assets: a commissioned piece would need an exception there, with the rights logged in `assets/CREDITS.md`).
+- **AI content disclosure** for a store page (how the code and art were made).
+- **Controller support** (and a handheld-friendly UI).
+- **Signed store builds** (code signing, store build pipelines; the playtest presets and `tools/build_playtest.sh` exist since M6).
+- **Steam integration** (achievements, cloud saves; GodotSteam is an external dependency and needs explicit approval).
