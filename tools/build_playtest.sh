@@ -7,7 +7,10 @@
 # Templates > Download and Install, or unpack the .tpz from godotengine.org into the folder below).
 # --pack-check needs no templates: it exports only the game data (.pck), checks that no tests/ or
 # tools/ file went in, and runs it outside the project for 300 frames (what a build would contain).
-# Usage: tools/build_playtest.sh [--skip-tests | --pack-check]   (Godot binary from $GODOT)
+# --dev builds the developer version too (presets "Linux Dev" / "Windows Dev": a debug export that keeps tools/dev,
+# so F12 opens the dev menu; builds/LastStand-<version>-dev-<platform>.zip). The normal builds never have F12:
+# they are release exports without tools/. Hand the dev zips only to people who should jump around the run.
+# Usage: tools/build_playtest.sh [--skip-tests | --pack-check] [--dev]   (Godot binary from $GODOT)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -16,6 +19,15 @@ VERSION_DIR="4.7.2.stable"
 TEMPLATES="$HOME/.local/share/godot/export_templates/$VERSION_DIR"
 
 [[ -x "$GODOT" ]] || { echo "Godot not found at $GODOT (set GODOT=/path/to/godot)"; exit 1; }
+
+skip_tests=0
+dev=0
+for arg in "$@"; do
+	case "$arg" in
+		--skip-tests) skip_tests=1 ;;
+		--dev) dev=1 ;;
+	esac
+done
 
 if [[ "${1:-}" == "--pack-check" ]]; then
 	rm -rf builds/check && mkdir -p builds/check
@@ -41,7 +53,7 @@ if [[ $missing -eq 1 ]]; then
 	exit 1
 fi
 
-if [[ "${1:-}" != "--skip-tests" ]]; then
+if [[ $skip_tests -eq 0 ]]; then
 	tests/run_tests.sh | tail -n 1 | grep -q "ALL PASSED" || { echo "Tests failed: no build. Run tests/run_tests.sh"; exit 1; }
 fi
 
@@ -67,3 +79,24 @@ for platform in linux windows; do
 	(cd "builds/$platform" && rm -f "../LastStand-$version-$platform.zip" && zip -qr "../LastStand-$version-$platform.zip" .)
 	echo "  builds/LastStand-$version-$platform.zip"
 done
+
+if [[ $dev -eq 1 ]]; then
+	rm -rf builds/dev-linux builds/dev-windows
+	mkdir -p builds/dev-linux builds/dev-windows
+	for preset in "Linux Dev" "Windows Dev"; do
+		echo "  exporting $preset"
+		"$GODOT" --headless --path . --export-debug "$preset" 2>&1 | grep -iE "error|warning" || true
+	done
+	[[ -f builds/dev-linux/LastStandDev.x86_64 && -f builds/dev-windows/LastStandDev.exe ]] || { echo "Dev export failed"; exit 1; }
+	for platform in linux windows; do
+		{
+			echo "LAST STAND developer build (F12 opens the dev menu)"
+			echo "Version: $version-dev"
+			echo "Built:   $(date -u +%Y-%m-%dT%H:%MZ)"
+			echo "See PLAYTEST.md for how to play and what feedback we need."
+		} > "builds/dev-$platform/BUILD_INFO.txt"
+		cp PLAYTEST.md "builds/dev-$platform/"
+		(cd "builds/dev-$platform" && rm -f "../LastStand-$version-dev-$platform.zip" && zip -qr "../LastStand-$version-dev-$platform.zip" .)
+		echo "  builds/LastStand-$version-dev-$platform.zip"
+	done
+fi
