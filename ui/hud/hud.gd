@@ -318,4 +318,4 @@ func _on_tower_sold(_slot: BuildSlot, refund: int) -> void:
 
 
 func _update_slots() -> void:
-	_slots_label.text = "Tower slots free: %d / %d" % [builder.get_free_slot_count(), builder.get_slots().size()]
+	_slots_label.text = "Slots free: %d / %d" % [builder.get_free_slot_count(), builder.get_slots().size()]

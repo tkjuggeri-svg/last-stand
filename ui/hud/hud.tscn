@@ -187,13 +187,13 @@ layout_mode = 2
 text = "0"
 theme_type_variation = &"HeaderLabel"
 
-[node name="SlotsRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
+[node name="SlotsRow" type="HBoxContainer" parent="Margin/Panel/Bars/GoldRow"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 8
 
-[node name="SlotIcon" type="TextureRect" parent="Margin/Panel/Bars/SlotsRow"]
+[node name="SlotIcon" type="TextureRect" parent="Margin/Panel/Bars/GoldRow/SlotsRow"]
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_vertical = 4
@@ -201,10 +201,10 @@ mouse_filter = 2
 texture = ExtResource("9_slot")
 stretch_mode = 5
 
-[node name="SlotsLabel" type="Label" parent="Margin/Panel/Bars/SlotsRow"]
+[node name="SlotsLabel" type="Label" parent="Margin/Panel/Bars/GoldRow/SlotsRow"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Tower slots free: 0 / 0"
+text = "Slots free: 0 / 0"
 theme_type_variation = &"DimLabel"
 
 [node name="EnemyRow" type="HBoxContainer" parent="Margin/Panel/Bars"]

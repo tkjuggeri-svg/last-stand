@@ -67,6 +67,8 @@ func _initialize() -> void:
 	_check("a character with a story to tell offers it (Listen), the others have none yet", listen != null and listen.text.contains("The Ledger") and hub.get_listen_button(&"orm") != null)
 	hub.get_chronicle_button().pressed.emit()
 	_check("the Chronicle opens from the War Room", hub.get_chronicle().visible)
+	_check("the Chronicle and Pressure panels draw above the War Room, not behind it",
+		hub.get_chronicle().layer > hub.layer and (hub.get_node("%PressureScreen") as CanvasLayer).layer > hub.layer)
 	hub.get_chronicle().hide()
 	listen.pressed.emit()
 	await _frames(2)

@@ -36,7 +36,7 @@ func _test_slots_and_rules() -> void:
 	builder.build_failed.connect(func(_s: BuildSlot, _d: TowerData, reason: String) -> void: failures.append(reason))
 
 	_check("16 build slots, all empty", slots.size() == 16 and builder.get_free_slot_count() == 16)
-	_check("HUD shows free slots", (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 16 / 16")
+	_check("HUD shows free slots", (hud.get_node("%SlotsLabel") as Label).text == "Slots free: 16 / 16")
 	_check("slots keep clear of every lane, the fortress and the walls", _slots_placed_well(level, slots))
 
 	var slot: BuildSlot = slots[0]
@@ -44,7 +44,7 @@ func _test_slots_and_rules() -> void:
 	_check("the cost is deducted (gold %d)" % economy.get_gold(), economy.get_gold() == START_GOLD - ARCHER.cost)
 	_check("HUD gold and free slots update",
 		(hud.get_node("%GoldLabel") as Label).text == str(START_GOLD - ARCHER.cost)
-		and (hud.get_node("%SlotsLabel") as Label).text == "Tower slots free: 15 / 16")
+		and (hud.get_node("%SlotsLabel") as Label).text == "Slots free: 15 / 16")
 	_check("an occupied slot rejects a second tower",
 		not builder.build(slot, FROST) and slot.tower.data == ARCHER and failures.back() == TowerBuilder.SLOT_OCCUPIED)
 	_check("...and no gold is taken for it", economy.get_gold() == START_GOLD - ARCHER.cost)

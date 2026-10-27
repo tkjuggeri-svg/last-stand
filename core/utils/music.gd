@@ -43,7 +43,7 @@ static func play(node: Node, id: StringName) -> bool:
 	if history.size() > LOG_SIZE:
 		history.pop_front()
 	if not _headless:
-		_crossfade(node.get_tree(), id)
+		_start(node.get_tree(), id)
 	return true
 
 
@@ -80,8 +80,23 @@ static func _remember_position() -> void:
 		_positions[current] = _players[_active].get_playback_position()
 
 
-static func _crossfade(tree: SceneTree, id: StringName) -> void:
+## The first track is asked for while the tree's root is still setting up its children (the title, from Main's
+## _ready), when add_child fails: the players join the tree deferred and the track starts once they are in.
+static func _start(tree: SceneTree, id: StringName) -> void:
 	_ensure_players(tree)
+	if _players_ready():
+		_crossfade(tree, id)
+		return
+	tree.process_frame.connect(func() -> void:
+		if current == id and _players_ready():
+			_crossfade(tree, id), CONNECT_ONE_SHOT)
+
+
+static func _players_ready() -> bool:
+	return _players.size() == 2 and _players.all(func(p: AudioStreamPlayer) -> bool: return is_instance_valid(p) and p.is_inside_tree())
+
+
+static func _crossfade(tree: SceneTree, id: StringName) -> void:
 	var outgoing: AudioStreamPlayer = _players[_active]
 	_active = 1 - _active
 	var incoming: AudioStreamPlayer = _players[_active]
@@ -107,7 +122,7 @@ static func _ensure_players(tree: SceneTree) -> void:
 		var player: AudioStreamPlayer = AudioStreamPlayer.new()
 		player.bus = BUS
 		player.process_mode = Node.PROCESS_MODE_ALWAYS
-		tree.root.add_child(player)
+		tree.root.add_child.call_deferred(player)
 		_players.append(player)
 
 

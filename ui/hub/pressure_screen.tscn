@@ -4,7 +4,7 @@
 [ext_resource type="Theme" path="res://ui/theme/game_theme.tres" id="2_theme"]
 
 [node name="PressureScreen" type="CanvasLayer" groups=["ui_scaled"]]
-layer = 12
+layer = 21
 visible = false
 script = ExtResource("1_screen")
 
