@@ -22,7 +22,7 @@
 
 | # | Modifier | Points | What it does | How |
 |---|---|---|---|---|
-| 1 | Hardened Elites | 1 | elites have 40% more HP and always carry an affix | map flow: elite scale, affix |
+| 1 | Hardened Elites | 1 | elites have 40% more HP (the affix rule was dropped in M14: elites always carry one already) | map flow: elite scale |
 | 2 | No Repairs | 2 | the Quartermaster, merchants, rewards and chapters never repair the fortress | rule: `can_repair` |
 | 3 | Swift Dead | 2 | every enemy walks 10% faster | spawner speed scale |
 | 4 | Fewer Slots | 2 | two build slots are unusable each chapter (chosen from the seed) | level: slots disabled |
@@ -102,6 +102,6 @@ at the recommendation of each choice (from: recommendation). Save points: git ta
   five points (Lean Purses, Hasty Waves, Hardened Elites, Fewer Cards, Swift Dead) 4.8, all ten 0.8. Pressure
   is monotonically harder; only a human playtest says whether 1-3 points is a gentle first step.
 - **Tests:** `test_pressure`, `test_endless`; `test_story` and `test_roads` follow the new rules.
-- **Not done / honest gaps:** no sound or art of its own (the rubble is a darkened pad); Hardened Elites does not
-  force an affix (elites already carry one); the Hasty Waves countdown has no sound; Endless has no leaderboard
-  beyond the per-hero record.
+- **Not done / honest gaps:** no art of its own (the rubble is a darkened pad); Endless has no leaderboard
+  beyond the per-hero record. *(M14: Hardened Elites and Stronger Bosses have tests, the forced affix was dropped,
+  Hasty Waves ticks at 10 s left; `docs/M14_SCOPE.md`.)*
