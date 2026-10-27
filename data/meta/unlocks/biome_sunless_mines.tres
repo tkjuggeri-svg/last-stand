@@ -10,5 +10,6 @@ id = &"biome_sunless_mines"
 display_name = "The Sunless Mines"
 description = "A new road for chapter 3: mine tunnels where the ceiling falls in."
 cost = 90
+seller = &"ilse"
 requires_first = "chapter:Chapter 3 reached"
 biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

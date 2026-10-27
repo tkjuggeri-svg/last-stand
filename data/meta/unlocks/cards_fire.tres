@@ -11,5 +11,6 @@ id = &"cards_fire"
 display_name = "Cards: Fire"
 description = "Hellfire Shells and Cinder Dash join the upgrade cards."
 cost = 60
+seller = &"quartermaster"
 requires = Array[StringName]([&"brazier"])
 cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4")])

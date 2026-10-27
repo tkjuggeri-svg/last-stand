@@ -1,5 +1,5 @@
 extends SceneTree
-## Screenshots of every War Room page (Heroes, Unlocks, Council, Records) and the story boxes (a hero's, a
+## Screenshots of every War Room page (Heroes, Council, Records) and the story boxes (a hero's, a
 ## character's), on a throwaway save with shards, unlocks and a finished run so every page has content.
 ## godot --path . --resolution 1280x720 --script res://tests/tools/hub_pages_shots.gd -- --out=<dir> [--tag=720p]
 

@@ -18,6 +18,7 @@ id = &"quartermaster"
 display_name = "Quartermaster Dunmore"
 role = "keeper of the stores"
 portrait = 3
+sale_lines = Array[String](["Written in the ledger. Don't make me cross it out.", "Fresh hands for the walls. Feed them and they'll hold.", "A fair trade. The dead pay well, if you live to collect."])
 
 [sub_resource type="Resource" id="s2"]
 script = ExtResource("1")
@@ -25,6 +26,7 @@ id = &"ilse"
 display_name = "Sister Ilse"
 role = "last of the bell-keepers"
 portrait = 4
+sale_lines = Array[String](["Carry it close. Old things remember who held them last.", "The bells marked that one. Walk softly where it leads.", "I'll light a candle for it. And for you, while I'm at it."])
 
 [sub_resource type="Resource" id="s3"]
 script = ExtResource("1")
@@ -32,6 +34,7 @@ id = &"orm"
 display_name = "Orm"
 role = "the smith"
 portrait = 5
+sale_lines = Array[String](["Tempered and true. It'll burn hotter than any forge of mine.", "Swing it at the dead, not at my anvil.", "Iron's the only friend that never lies to you. Take care of it."])
 
 [sub_resource type="Resource" id="s4"]
 script = ExtResource("2")

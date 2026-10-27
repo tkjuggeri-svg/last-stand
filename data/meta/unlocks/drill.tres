@@ -8,4 +8,5 @@ id = &"drill"
 display_name = "Drill"
 description = "A convenience: one free card reroll in each chapter."
 cost = 110
+seller = &"quartermaster"
 perk = &"drill"

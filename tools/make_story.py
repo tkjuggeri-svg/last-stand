@@ -11,6 +11,25 @@ CHARACTERS = [  # id, name, role, portrait index
     ("orm", "Orm", "the smith", 5),
 ]
 
+# What each says when something they sell is bought (M14: the Council runs the War Room's shop).
+SALE_LINES = {
+    "quartermaster": [
+        "Written in the ledger. Don't make me cross it out.",
+        "Fresh hands for the walls. Feed them and they'll hold.",
+        "A fair trade. The dead pay well, if you live to collect.",
+    ],
+    "ilse": [
+        "Carry it close. Old things remember who held them last.",
+        "The bells marked that one. Walk softly where it leads.",
+        "I'll light a candle for it. And for you, while I'm at it.",
+    ],
+    "orm": [
+        "Tempered and true. It'll burn hotter than any forge of mine.",
+        "Swing it at the dead, not at my anvil.",
+        "Iron's the only friend that never lies to you. Take care of it.",
+    ],
+}
+
 # Conditions: dict of StoryCondition fields.
 LINES = [  # character, priority, condition, text
     ("quartermaster", 0, {}, "First night on the walls? The dead leave Soul Shards behind. Spend them here."),
@@ -172,7 +191,8 @@ def array(typename, refs):
 
 def main():
     out = Out()
-    chars = [out.sub("story_character", {"id": '&"%s"' % i, "display_name": quote(n), "role": quote(r), "portrait": str(p)})
+    chars = [out.sub("story_character", {"id": '&"%s"' % i, "display_name": quote(n), "role": quote(r), "portrait": str(p),
+                                         "sale_lines": "Array[String]([%s])" % ", ".join(quote(t) for t in SALE_LINES.get(i, []))})
              for i, n, r, p in CHARACTERS]
     lines = [out.sub("hub_line", {"character": '&"%s"' % c, "text": quote(t), "priority": str(p), "condition": cond(out, f)})
              for c, p, f, t in LINES]

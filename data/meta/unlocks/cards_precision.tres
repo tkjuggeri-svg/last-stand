@@ -11,4 +11,5 @@ id = &"cards_precision"
 display_name = "Cards: Precision"
 description = "Piercing Arrows and Thorned Walls join the upgrade cards."
 cost = 30
+seller = &"quartermaster"
 cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4")])

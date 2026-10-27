@@ -10,5 +10,6 @@ id = &"evolutions_brazier"
 display_name = "Evolutions: Brazier"
 description = "A level-3 Brazier can evolve: Pyre of Souls or Beacon Flame."
 cost = 80
+seller = &"orm"
 requires = Array[StringName]([&"brazier", &"evolutions_archer"])
 evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

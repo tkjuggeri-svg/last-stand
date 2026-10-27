@@ -5,7 +5,23 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
-## What changed in m13-playtest-4
+## What changed in m13-playtest-5
+
+Everything below comes from your F8 reports on `m13-playtest-4`. Please check each one:
+
+1. **Music plays.** It was silent everywhere (a start-up bug); now the title, War Room, map, fights and bosses have their tracks.
+   Do you hear it, and is any track annoying after a while?
+2. **The Chronicle opens on top** of the War Room (it used to open behind it and only show once a run started). Same for the
+   Pressure panel and the Credits.
+3. **The Council runs the shop.** The War Room has three pages now: Heroes, **Council**, Records. Orm the smith sells towers
+   and evolutions, Sister Ilse relics, the Reliquary and new biomes, Quartermaster Dunmore the heroes, card sets and perks.
+   Buy something and its seller answers. Does the Council make sense now? Do you find the unlock you want?
+4. **The bottom-left HUD is one row shorter** (gold and free slots share a line). Still too big?
+5. **Hasty Waves** (Pressure) ticks when 10 seconds are left before the wave starts by itself.
+6. Not changed: the Huntress against big groups. The bot plays her about as well as the Knight; tell us if she still feels weak,
+   and in which fight.
+
+## Changes in m13-playtest-4 (check them if you have not)
 
 New: **hero ultimates**, one per hero, on **Q** (rebind it in Settings). The bar under the dash fills from your kills and
 damage (and your skeletons') and slowly from time in a wave; full = press Q. Knight **Last Stand** (a ring that holds and

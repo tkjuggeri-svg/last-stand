@@ -1,8 +1,8 @@
 class_name HubScreen
 extends CanvasLayer
-## The War Room between runs (M8): the Soul Shards, the Quartermaster's line about the last run, the
-## unlock board (each unlock with what it adds, its price or what it needs first, and Buy), the records,
-## and Start a run / Tips / Reset progress / back to the title. Display and intents only: Main's front
+## The War Room between runs (M8): the Soul Shards, a line about the last run, the hero of the next run, the
+## Council (M14: the three characters, each selling their share of the unlock board, UnlockData.seller), the
+## records, and Start a run / Tips / Reset progress / back to the title. Display and intents only: Main's front
 ## end applies the rules (MetaProgress) and refreshes it.
 
 signal start_requested
@@ -17,11 +17,8 @@ signal pressure_changed(ids: Array[String])
 ## The hero buttons: -1 the previous owned hero, 1 the next.
 signal hero_cycled(step: int)
 
-# What the Chronicle shows: the profile and story of the last refresh.
-## Width of a council card (px); the row wraps when the screen is narrower than the cards side by side.
-const CAST_CARD_WIDTH: float = 560.0
 ## The pages of the War Room, in the order of their tabs.
-enum Page { HEROES, UNLOCKS, COUNCIL, RECORDS }
+enum Page { HEROES, COUNCIL, RECORDS }
 
 ## Width of the story dialog (px) and the most of the screen it may take.
 const STORY_WIDTH: float = 900.0
@@ -31,8 +28,11 @@ const STORY_HEIGHT_SHARE: float = 0.55
 const STORY_MIN_HEIGHT: float = 120.0
 const STORY_PADDING: float = 24.0
 
+# What the Chronicle shows: the profile and story of the last refresh.
 var _profile: SaveProfile
 var _book: StoryBook
+# The unlock whose Buy was pressed last: once it is owned, its seller says one of their sale lines.
+var _just_bought: UnlockData
 var _pressure_options: Array[PressureData] = []
 var _pressure_selected: Array[String] = []
 
@@ -42,9 +42,9 @@ var _story_scroll: ScrollContainer
 var _story_text: Label
 
 @onready var _shards: Label = %Shards
-@onready var _tabs: Array[Button] = [%TabHeroes, %TabUnlocks, %TabCouncil, %TabRecords]
-@onready var _pages: Array[Control] = [%HeroPage, %UnlocksPage, %CouncilPage, %RecordsPage]
-@onready var _cast: HFlowContainer = %Cast
+@onready var _tabs: Array[Button] = [%TabHeroes, %TabCouncil, %TabRecords]
+@onready var _pages: Array[Control] = [%HeroPage, %CouncilPage, %RecordsPage]
+@onready var _cast: VBoxContainer = %Cast
 @onready var _greeting: Label = %Greeting
 @onready var _chronicle_button: Button = %ChronicleButton
 @onready var _chronicle: ChronicleScreen = %ChronicleScreen
@@ -74,7 +74,7 @@ func _ready() -> void:
 	for index: int in _tabs.size():
 		_tabs[index].button_group = group
 		_tabs[index].pressed.connect(show_page.bind(index))
-	show_page(Page.UNLOCKS)
+	show_page(Page.COUNCIL)
 	_pressure_button.pressed.connect(func() -> void: _pressure_screen.open(_pressure_options, _pressure_selected))
 	_pressure_screen.selection_changed.connect(func(ids: Array[String]) -> void:
 		_pressure_selected = ids
@@ -105,21 +105,18 @@ func refresh(profile: SaveProfile, board: UnlockBoard, hero: HeroData = null, ca
 	_hero_text.text = hero.description if hero != null else ""
 	_show_hero_story(hero)
 	_shards.text = "Soul Shards: %d" % profile.shards
-	_show_cast(profile, book)
+	_show_council(profile, board, book)
 	_pressure_options = pressure
 	_pressure_selected = profile.pressure_selection.duplicate()
 	_pressure_button.visible = profile.pressure_open() and not pressure.is_empty()
 	_refresh_pressure_button()
 	_tips_button.set_pressed_no_signal(not profile.hints_off)
-	for child: Node in _unlocks.get_children():
-		_unlocks.remove_child(child)  # now, so the new rows get their unlock's name
-		child.queue_free()
-	for unlock: UnlockData in board.unlocks:
-		_unlocks.add_child(_row(unlock, MetaProgress.blocker(profile, board, unlock)))
 	_records.text = "Best: %s\nRuns: %d   Won: %d\nBosses beaten: %s\nShards earned in all: %d" % [
 		"chapter %d, row %d" % [profile.best_chapter, profile.best_row] if profile.best_chapter > 0 else "no run yet",
 		profile.runs, profile.wins,
 		", ".join(profile.bosses) if not profile.bosses.is_empty() else "none yet", profile.shards_total]
+	var owned: int = board.unlocks.filter(func(u: UnlockData) -> bool: return MetaProgress.blocker(profile, board, u) == MetaProgress.OWNED).size()
+	_records.text += "\nUnlocked: %d of %d (the Council sells the rest)" % [owned, board.unlocks.size()]
 	if profile.pressure_best > 0:
 		_records.text += "\nHighest Pressure: %d (%s)" % [profile.pressure_best, PressureRules.title(profile.pressure_best)]
 	if not profile.pressure_wins.is_empty():
@@ -158,6 +155,7 @@ func show_page(page: int) -> void:
 	for index: int in _pages.size():
 		_pages[index].visible = index == page
 		_tabs[index].set_pressed_no_signal(index == page)
+	_greeting.visible = page != Page.COUNCIL  # there the first voice is on its own card already
 
 
 ## The page showing now (tests).
@@ -188,123 +186,70 @@ func get_cast_line(character: StringName) -> String:
 	return label.text if label != null else ""
 
 
-## The Buy button of unlock `id` (tests).
+## The Buy button of unlock `id` (tests), on its seller's card or in the plain list.
 func get_buy_button(id: StringName) -> Button:
-	var row: Node = _unlocks.get_node_or_null(NodePath(String(id)))
+	var row: Node = (_pages[Page.COUNCIL] as Node).find_child(String(id), true, false)
 	return row.find_child("Buy", true, false) as Button if row != null else null
+
+
+## The ids of the unlocks on `character`'s card (tests).
+func get_wares(character: StringName) -> Array[StringName]:
+	var ids: Array[StringName] = []
+	var card: Node = _cast.get_node_or_null(NodePath(String(character)))
+	var shelf: Node = card.find_child("Wares", true, false) if card != null else null
+	if shelf != null:
+		for row: Node in shelf.get_children():
+			ids.append(StringName(row.name))
+	return ids
 
 
 func get_start_button() -> Button:
 	return _start_button
 
 
-func _row(unlock: UnlockData, blocker: String) -> Control:
-	var row: PanelContainer = PanelContainer.new()
-	row.name = String(unlock.id)
-	row.theme_type_variation = &"CardPanel"
-	var line: HBoxContainer = HBoxContainer.new()
-	line.add_theme_constant_override("separation", 12)
-	row.add_child(line)
-	var icon: TextureRect = TextureRect.new()
-	# One width for every icon (towers are bigger than cards), so the names line up; never scaled.
-	icon.custom_minimum_size = Vector2(64, 64)
-	icon.clip_contents = true
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-	icon.texture = _icon(unlock)
-	line.add_child(icon)
-	var text: VBoxContainer = VBoxContainer.new()
-	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var title: Label = Label.new()
-	title.theme_type_variation = &"HeaderLabel"
-	title.text = unlock.display_name
-	text.add_child(title)
-	var description: Label = Label.new()
-	description.theme_type_variation = &"DimLabel"
-	description.text = unlock.description
-	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.add_child(description)
-	line.add_child(text)
-	var buy: Button = Button.new()
-	buy.name = "Buy"
-	buy.custom_minimum_size = Vector2(190, 44)
-	buy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a long reason wraps instead of widening the whole screen
-	buy.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	if blocker == MetaProgress.OWNED:
-		buy.text = "Unlocked"
-		buy.disabled = true
-	else:
-		buy.text = "Buy  %d" % unlock.cost if blocker.is_empty() or blocker == MetaProgress.NEEDS_SHARDS else blocker
-		buy.disabled = not blocker.is_empty()
-		buy.tooltip_text = "%d Soul Shards" % unlock.cost
-	buy.pressed.connect(func() -> void: buy_requested.emit(unlock))
-	line.add_child(buy)
-	return row
-
-
-func _icon(unlock: UnlockData) -> Texture2D:
-	if unlock.get_icon() != null:
-		return unlock.get_icon()
-	var towers: Array[TowerData] = unlock.towers + unlock.evolutions
-	return TowerIcons.for_level(towers[0], 1) if not towers.is_empty() else null
-
-
-func _show_cast(profile: SaveProfile, book: StoryBook) -> void:
+## The Council: each character's card with their line, Listen, and the unlocks they sell; unlocks nobody in the story
+## sells (or every unlock, without a story) in the plain list under the cards.
+func _show_council(profile: SaveProfile, board: UnlockBoard, book: StoryBook) -> void:
 	_profile = profile
 	_book = book
 	_chronicle_button.visible = book != null
-	for child: Node in _cast.get_children():
-		_cast.remove_child(child)
-		child.queue_free()
+	for box: Node in [_cast, _unlocks]:
+		for child: Node in box.get_children():
+			box.remove_child(child)  # now, so the new rows and cards get their names
+			child.queue_free()
 	_greeting.text = ""
+	var sellers: Array[StringName] = []
+	if book != null:
+		for character: StoryCharacter in book.characters:
+			sellers.append(character.id)
+	for unlock: UnlockData in board.unlocks:
+		if not sellers.has(unlock.seller):
+			_unlocks.add_child(_unlock_row(profile, board, unlock))
 	if book == null:
 		return
 	for character: StoryCharacter in book.characters:
 		var line: String = Story.line_for(book, profile, character.id)
-		_cast.add_child(_card(character, line, Story.next_beat(book, profile, character.id)))
+		var wares: Array[Control] = []
+		var for_sale: bool = false
+		for unlock: UnlockData in board.unlocks:
+			if unlock.seller == character.id:
+				wares.append(_unlock_row(profile, board, unlock))
+				for_sale = for_sale or MetaProgress.blocker(profile, board, unlock) != MetaProgress.OWNED
+		if _just_bought != null and _just_bought.seller == character.id and MetaProgress.blocker(profile, board, _just_bought) == MetaProgress.OWNED \
+				and not character.sale_lines.is_empty():
+			line = character.sale_lines[board.unlocks.find(_just_bought) % character.sale_lines.size()]
+		var beat: StoryBeat = Story.next_beat(book, profile, character.id)
+		_cast.add_child(HubCards.council_card(character, line, beat, func() -> void: _tell(beat, character), wares, not wares.is_empty() and not for_sale))
 		if _greeting.text.is_empty() and line != "":
 			# The first voice greets you on every page; the Council page has the rest.
 			_greeting.text = "%s: \"%s\"" % [character.display_name, line]
+	_just_bought = null
 
 
-func _card(character: StoryCharacter, line: String, beat: StoryBeat) -> Control:
-	var frame: PanelContainer = PanelContainer.new()
-	frame.name = String(character.id)
-	frame.theme_type_variation = &"CardPanel"
-	frame.custom_minimum_size = Vector2(CAST_CARD_WIDTH, 0)  # a flow row: at big interface sizes the cards wrap to a second line
-	var card: HBoxContainer = HBoxContainer.new()
-	card.add_theme_constant_override("separation", 12)
-	frame.add_child(card)
-	var face: TextureRect = TextureRect.new()
-	# The bust's top: the face and shoulders fit a short card; never scaled.
-	face.custom_minimum_size = Vector2(Portraits.FRAME, 80)
-	face.clip_contents = true
-	face.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	face.stretch_mode = TextureRect.STRETCH_KEEP
-	face.texture = Portraits.texture(character.portrait)
-	face.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	card.add_child(face)
-	var text: VBoxContainer = VBoxContainer.new()
-	text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var who: Label = Label.new()
-	who.text = character.display_name
-	who.theme_type_variation = &"HeaderLabel"
-	text.add_child(who)
-	var said: Label = Label.new()
-	said.name = "Line"
-	said.theme_type_variation = &"DimLabel"
-	said.text = "\"%s\"" % line if line != "" else ""
-	said.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	text.add_child(said)
-	if beat != null:
-		var listen: Button = Button.new()
-		listen.name = "Listen"
-		listen.text = "Listen: %s" % beat.title
-		listen.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART  # a long title wraps, so the card can shrink at big interface sizes
-		listen.pressed.connect(func() -> void: _tell(beat, character))
-		text.add_child(listen)
-	card.add_child(text)
-	return frame
+func _unlock_row(profile: SaveProfile, board: UnlockBoard, unlock: UnlockData) -> Control:
+	return HubCards.unlock_row(unlock, MetaProgress.blocker(profile, board, unlock), func() -> void:
+		_just_bought = unlock
+		buy_requested.emit(unlock))
 
 
 func _tell(beat: StoryBeat, character: StoryCharacter) -> void:

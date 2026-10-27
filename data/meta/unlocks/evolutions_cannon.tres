@@ -10,5 +10,6 @@ id = &"evolutions_cannon"
 display_name = "Evolutions: Cannon"
 description = "A level-3 Cannon can evolve: Siege Mortar or Grapeshot Battery."
 cost = 50
+seller = &"orm"
 requires = Array[StringName]([&"evolutions_archer"])
 evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

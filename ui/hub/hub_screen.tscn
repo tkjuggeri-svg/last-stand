@@ -29,13 +29,6 @@ custom_minimum_size = Vector2(170, 44)
 toggle_mode = true
 text = "Heroes"
 
-[node name="TabUnlocks" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Tabs"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(170, 44)
-toggle_mode = true
-text = "Unlocks"
-
 [node name="TabCouncil" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Tabs"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -148,18 +141,6 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 48)
 text = "Pressure"
 
-[node name="UnlocksPage" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="Unlocks" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages/UnlocksPage"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 6
-
 [node name="CouncilPage" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -171,18 +152,23 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 12
 
-[node name="Cast" type="HFlowContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages/CouncilPage/CouncilBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/h_separation = 12
-theme_override_constants/v_separation = 12
-
 [node name="ChronicleButton" type="Button" parent="Frame/Margin/Panel/Box/Content/Content/Pages/CouncilPage/CouncilBox"]
 unique_name_in_owner = true
 layout_mode = 2
 custom_minimum_size = Vector2(0, 48)
 text = "Chronicle"
+
+[node name="Cast" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages/CouncilPage/CouncilBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Unlocks" type="VBoxContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages/CouncilPage/CouncilBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
 
 [node name="RecordsPage" type="ScrollContainer" parent="Frame/Margin/Panel/Box/Content/Content/Pages"]
 unique_name_in_owner = true

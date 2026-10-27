@@ -10,4 +10,5 @@ id = &"ballista"
 display_name = "Bone Ballista"
 description = "A long-range tower whose bolts pierce a whole line."
 cost = 45
+seller = &"orm"
 towers = Array[ExtResource("s2")]([ExtResource("r3")])

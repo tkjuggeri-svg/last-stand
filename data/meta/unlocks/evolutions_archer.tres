@@ -10,4 +10,5 @@ id = &"evolutions_archer"
 display_name = "Evolutions: Archer"
 description = "A level-3 Archer can evolve: Sniper Nest or Volley Tower."
 cost = 40
+seller = &"orm"
 evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

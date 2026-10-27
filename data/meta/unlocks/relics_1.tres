@@ -12,4 +12,5 @@ id = &"relics_1"
 display_name = "Relics I"
 description = "Twin Banners, Drowned Bell and Siege Ledger can be found."
 cost = 50
+seller = &"ilse"
 relics = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4"), ExtResource("r5")])
