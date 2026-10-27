@@ -86,8 +86,20 @@ thousands of gold unspent". The bot dies in chapter 1, so there is no measuremen
 
 ## 7. Playtest findings
 
-*(empty: for the owner's F8 reports and notes on `m13-playtest-4`. Group them as: bug / balance / feel / content, with the
-build, seed and chapter if known; summarise reports with the `feedback-review` skill.)*
+Source: 7 F8 reports on `m13-playtest-4`, all from one session (2026-10-27, one tester, the owner; seed 2675351190 for the
+in-run ones). Nobody has said anything yet about the ultimates, chapter 2, the Pressure switches or the economy.
+
+| # | Kind | Report (quote) | Where | Status |
+|---|---|---|---|---|
+| F1 | bug | "the chronicle opens under the menu so when i start the run only then the screen shows" | War Room, Council page, Chronicle button | Needs a fix: the Chronicle is drawn below the hub (or opened behind it) and shows only once the hub closes. Not reproduced yet; `hub_screen.gd` owns `%ChronicleScreen`. |
+| F2 | feel | "the council has no meaning?" | War Room, Council page | The page is three lines of text and a Chronicle button; the characters do nothing the player can use. Needs a decision (Q8). |
+| F3 | bug? | "there is no music" | title / War Room (reported on `front_end`) | Cannot be judged from the code: `FrontEnd` calls `Music.play` for `title` and `war_room`. Needs the tester's answer (Q9): silent everywhere, or only in menus? |
+| F4 | feel | "the lower bar with health and stuff needs to more compact" | fight HUD, bottom-left panel (Fortress, Hero, Dash, Ultimate, gold, slots, next wave: seven rows) | The ultimate row added in M14 made it taller. Proposal: two columns or merge Dash and Ultimate into one row; HUD layout only. |
+| F5 | balance | "the huntress is kinda under powered because the towers dont really do damage to large groups" | chapter 1, row 5 elite, Huntress | Single report. Large groups need splash: the Huntress's towers are single-target (Archer, Trap Layer, Watchtower). Check with `map_balance.gd --hero-kind=huntress` (Q10). |
+| F6 | feel | "menus and all the ui is super simplistic. we need some uniquenes in them" | every menu | Not a bug: M8.5's shared style is plain frames and buttons. Looks like M15 work (Q11). |
+| F7 | feel | "the map art could better maybe have something on the backgound or maybe the roads should not be straight to give some feeling of adventure" | run map (chapter 1) | The roads are straight lines between nodes over a flat tiled ground. Landmarks and curved roads are map art. Looks like M15 work (Q11). |
+
+Not reported: any crash, wrong number or unfair fight.
 
 ## 8. How it would fit the code (sketch)
 
@@ -108,6 +120,10 @@ build, seed and chapter if known; summarise reports with the `feedback-review` s
 | Q5 | Chapter 2's economy: change anything before the playtest? | **No**; wait for how the owner spends gold, then pull the cheapest lever in 5. |
 | Q6 | Should M14 also include the Knight/Huntress/Necromancer balance pass (±20% of Knight rows)? | **No**, the bot can't separate the heroes beyond its noise; take the owner's feel first. |
 | Q7 | Merge `art/handoff-integration` into `main` at the end of M14? | **Owner's call after the playtest**; nothing is merged until they say so. |
+| Q8 | The Council page "has no meaning": give it a use, or fold the three characters into the Heroes/Records pages? | **Give it one small use**: each character sells or explains one thing (Dunmore the Quartermaster's repairs, Ilse the shrines, Orm the evolutions) with a line of what it does for the next run; decide with you before building. |
+| Q9 | No music: where did you hear none (title, War Room, map, fight, everywhere)? Is the Music volume above 0 in Settings? | **Need your answer** before I touch code. |
+| Q10 | Huntress and large groups: add splash/area to her kit (a card or a tower), or leave until more reports? | **Check with the bot first**, then one area card if she is clearly low; she is single-target by design. |
+| Q11 | Menu uniqueness and the map's look: fold into M15 (Art Overhaul), or a small M14 pass? | **M15**, as the first items of its backlog; the bugs F1 and F4 stay in M14. |
 
 ## 10. Decisions
 

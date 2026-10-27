@@ -27,8 +27,8 @@ Read `CLAUDE.md` first (its rules still apply), then this, then `ROADMAP.md` (Cu
 1. **The owner's playtest of `m13-playtest-4`**: F8 reports (`~/.local/share/godot/app_userdata/The Last Stand/feedback/`; use the
    `feedback-review` skill) and their words. The bot dies in chapter 1 (about 6.5 rows of 24), so only a human can judge chapter 2's
    economy, the music, the story texts, the map art and the ultimates.
-2. **Approval of M14's scope** (`docs/M14_SCOPE.md`, a proposal with open questions Q1-Q7; its "Playtest findings" section is
-   empty for the feedback). **Nothing gameplay is started before that** (CLAUDE.md rule 7).
+2. **Approval of M14's scope** (`docs/M14_SCOPE.md`, a proposal with open questions Q1-Q11; its "Playtest findings" section is
+   filled with the 7 F8 reports of `m13-playtest-4`: a Chronicle bug, no-music, the HUD bar, the Council, the Huntress, menu and map looks). **Nothing gameplay is started before that** (CLAUDE.md rule 7).
 3. **A look direction (undecided)** from the `look-test` branch / `exports/look-test/` (git-ignored: `compare_all_4.png`, `look_*.avi`,
    `REPORT.md`): current / A (2D lights, normals, bloom) / B (3D tilted camera, 79 fps vs 437, big adoption cost) / C (A + fake 2D
    depth; "too dark but looks okay", bottom overlay removed). Forward+ is not needed for any. Nothing is adopted.
