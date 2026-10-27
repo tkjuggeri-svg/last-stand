@@ -35,6 +35,9 @@ Read `CLAUDE.md` first (its rules still apply), then this, then `ROADMAP.md` (Cu
 
 ## Open items
 
+- **Pixellab for M15 (owner-approved 2026-10-27):** the `pixellab` MCP server is added to this machine's local config (project scope, token in `~/.claude.json`, not in the repo). Its tools load only in a **new** session. Rule: CLAUDE.md 3; log every piece in `assets/CREDITS.md`; check Pixellab's output licence before the first piece ships; the AI-disclosure item in the parking lot now matters. M15 itself still needs its scope approved (`docs/ART_BACKLOG.md`).
+- **Next M14 work (approved scope, not started):** tests for Hardened Elites / Stronger Bosses, the Hasty Waves tick, the Huntress-vs-large-groups bot check, then the Council's small use (agree with the owner first).
+
 - M14 (see the scope): tests for Hardened Elites and Stronger Bosses (none exist); Hardened Elites does not force an affix (the
   proposal drops that rule); the Hasty Waves countdown has no sound; chapter 1's row steps (x2.99, x2.41 in Crypt Road);
   chapter 2's economy.

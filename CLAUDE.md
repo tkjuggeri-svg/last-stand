@@ -11,7 +11,7 @@ The player controls a hero in real time, builds towers, and defends a fortress a
 
 1. **One feature at a time.** Implement, run, verify, then move on. Don't scaffold systems "for later".
 2. **Playable over pretty.** A new feature may start with placeholder shapes, but anything shipped in a level gets pixel art that follows the **Pixel art** rules below.
-3. **No external dependencies.** No addons, plugins, paid assets, or C#. Godot built-ins only. Any third-party asset must be CC0 or self-made, with its source and license logged in `assets/CREDITS.md`.
+3. **No external dependencies.** No addons, plugins, paid assets, or C#. Godot built-ins only. Any third-party asset must be CC0 or self-made, with its source and license logged in `assets/CREDITS.md`. **One exception (owner's decision, 2026-10-27): M15's art may be made with Pixellab** (an AI pixel-art service reached through the `pixellab` MCP server, a dev tool only, never in the game or its exports). Every Pixellab piece is logged in `assets/CREDITS.md` (what, when, the prompt) and still follows the Pixel art rules and `ART_DIRECTION.md`; the raw output is checked and kept next to the tool that placed it, never hand-edited in the generated PNGs.
 4. **Never overwrite existing files without reading them first.** Prefer small edits over rewrites.
 5. **Ask before** adding an autoload, changing physics layers, changing the input map, or restructuring folders.
 6. **Explain architectural decisions** in the response (and in `GAME_DESIGN.md` if it changes a system).
