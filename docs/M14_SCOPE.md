@@ -91,10 +91,10 @@ in-run ones). Nobody has said anything yet about the ultimates, chapter 2, the P
 
 | # | Kind | Report (quote) | Where | Status |
 |---|---|---|---|---|
-| F1 | bug | "the chronicle opens under the menu so when i start the run only then the screen shows" | War Room, Council page, Chronicle button | Needs a fix: the Chronicle is drawn below the hub (or opened behind it) and shows only once the hub closes. Not reproduced yet; `hub_screen.gd` owns `%ChronicleScreen`. |
+| F1 | bug | "the chronicle opens under the menu so when i start the run only then the screen shows" | War Room, Council page, Chronicle button | **Fixed.** The Chronicle and Pressure panels were CanvasLayers 12 under the hub's 20 (so were the Credits under the title); all three are layer 21 now, and `test_front_end` checks it. |
 | F2 | feel | "the council has no meaning?" | War Room, Council page | The page is three lines of text and a Chronicle button; the characters do nothing the player can use. Needs a decision (Q8). |
-| F3 | bug? | "there is no music" | title / War Room (reported on `front_end`) | Cannot be judged from the code: `FrontEnd` calls `Music.play` for `title` and `war_room`. Needs the tester's answer (Q9): silent everywhere, or only in menus? |
-| F4 | feel | "the lower bar with health and stuff needs to more compact" | fight HUD, bottom-left panel (Fortress, Hero, Dash, Ultimate, gold, slots, next wave: seven rows) | The ultimate row added in M14 made it taller. Proposal: two columns or merge Dash and Ultimate into one row; HUD layout only. |
+| F3 | bug? | "there is no music" | title / War Room (reported on `front_end`) | **Fixed** (tester: silent everywhere, volumes at 100). `Music.play(title)` ran while the tree root was still setting up its children, so `add_child` failed, the two players never entered the tree and every later track was silent. Players now join deferred and the track starts when they are in. Checked by recording the game: silent before, sound from the first second after. |
+| F4 | feel | "the lower bar with health and stuff needs to more compact" | fight HUD, bottom-left panel (Fortress, Hero, Dash, Ultimate, gold, slots, next wave: seven rows) | **Fixed**: gold and free slots share a line ("Slots free: 13 / 16"), six rows instead of seven. Dash and Ultimate stay separate; say if it is still too big. |
 | F5 | balance | "the huntress is kinda under powered because the towers dont really do damage to large groups" | chapter 1, row 5 elite, Huntress | Single report. Large groups need splash: the Huntress's towers are single-target (Archer, Trap Layer, Watchtower). Check with `map_balance.gd --hero-kind=huntress` (Q10). |
 | F6 | feel | "menus and all the ui is super simplistic. we need some uniquenes in them" | every menu | Not a bug: M8.5's shared style is plain frames and buttons. Looks like M15 work (Q11). |
 | F7 | feel | "the map art could better maybe have something on the backgound or maybe the roads should not be straight to give some feeling of adventure" | run map (chapter 1) | The roads are straight lines between nodes over a flat tiled ground. Landmarks and curved roads are map art. Looks like M15 work (Q11). |
@@ -127,4 +127,18 @@ Not reported: any crash, wrong number or unfair fight.
 
 ## 10. Decisions
 
-*(after approval: # / question / decision / from user or recommendation)*
+Approved by the owner on 2026-10-27 with "use your recommendations"; F1 and F4 (and the music bug, F3) were fixed first. Q9 was answered by the owner: no music anywhere, all volumes at 100.
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Forced affix | Drop it from the M12 doc | recommendation |
+| Q2 | Chapter 1 row steps | After the playtest feedback | recommendation |
+| Q3 | Hasty Waves sound | Yes, a tick at 10 s | recommendation |
+| Q4 | Bulwark flash | Only if the playtest asks | recommendation |
+| Q5 | Chapter 2 economy | Wait for the playtest | recommendation |
+| Q6 | Hero balance pass | No | recommendation |
+| Q7 | Merge into `main` | Owner's call after the playtest | recommendation |
+| Q8 | Council page | One small use per character, agreed with the owner before building | recommendation |
+| Q9 | No music | Cause found and fixed (above) | owner + fix |
+| Q10 | Huntress and big groups | Check with the bot first, then one area card if she is low | recommendation |
+| Q11 | Menu and map looks | M15 | recommendation |
