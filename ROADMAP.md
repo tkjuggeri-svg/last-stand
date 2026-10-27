@@ -257,6 +257,7 @@ Pressure switches that have never been tried by hand (Hardened Elites and Strong
 uneven row steps, chapter 2's economy as the first outside playtest sees it, and whatever the `m13-playtest-2` feedback adds.
 Started: the playtest fixes (cards filtered by the run's towers, the War Room in pages, scrolling hero stories, chapter 2 rows 5-6 eased).
 Hero ultimates (Q; one per hero, charged by play, two cards each): built, `docs/M14_ULTIMATES.md`; waiting for the playtest.
+Scope proposal (not approved): `docs/M14_SCOPE.md`. The Knight's cards and relics and the hero stories turned out to be built already.
 
 **Done when:** everything in the game works and feels finished.
 
