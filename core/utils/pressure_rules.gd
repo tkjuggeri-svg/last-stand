@@ -41,6 +41,30 @@ static func title(total_points: int) -> String:
 	return ""
 
 
+## The health scale Pressure puts on a fight's regular enemies: Hardened Elites on an elite node, else 1.
+static func fight_health_scale(list: Array[PressureData], is_elite: bool) -> float:
+	return ELITE_HEALTH if is_elite and has_rule(list, RULE_HARDENED_ELITES) else 1.0
+
+
+## The factor on a fight's boss-class groups (bosses and an elite's leader, which ignore the wave's scale):
+## Hardened Elites on an elite node, Stronger Bosses on a boss node, else 1.
+static func boss_health_scale(list: Array[PressureData], is_elite: bool, is_boss: bool) -> float:
+	var factor: float = ELITE_HEALTH if is_elite and has_rule(list, RULE_HARDENED_ELITES) else 1.0
+	if is_boss and has_rule(list, RULE_STRONGER_BOSSES):
+		factor *= BOSS_HEALTH
+	return factor
+
+
+## Multiplies the health of every boss-class group of `waves` by `factor` (they ignore the wave's scale).
+static func scale_boss_groups(waves: Array[WaveData], factor: float) -> void:
+	if is_equal_approx(factor, 1.0):
+		return
+	for wave: WaveData in waves:
+		for group: SpawnGroup in wave.groups:
+			if group.enemy != null and group.enemy.is_boss:
+				group.health_scale *= factor
+
+
 static func has_rule(list: Array[PressureData], rule: StringName) -> bool:
 	for data: PressureData in list:
 		if data.rule == rule:

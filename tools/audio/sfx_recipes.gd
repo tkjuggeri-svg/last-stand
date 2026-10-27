@@ -158,6 +158,10 @@ const RECIPES: Dictionary = {
 	&"hero_soul_bolt": {"layers": [{"wave": "sine", "freq": 900.0, "freq_end": 380.0, "sustain": 0.02, "decay": 0.12, "vibrato": 0.02, "vibrato_speed": 30.0},
 		{"wave": "noise", "freq": 2200.0, "sustain": 0.01, "decay": 0.06, "highpass": 0.3, "volume": 0.3}],
 		"mix": {"volume_db": -14.0, "voices": 2, "interval": 0.08, "jitter": 0.06, "world": true}},
+	# Hasty Waves (Pressure): a dry double tick when 10 s are left before the wave starts by itself
+	&"hasty_warning": {"layers": [{"wave": "square", "freq": 880.0, "sustain": 0.015, "decay": 0.06, "duty": 0.3, "lowpass": 0.7},
+		{"wave": "square", "freq": 880.0, "sustain": 0.015, "decay": 0.06, "duty": 0.3, "lowpass": 0.7, "delay": 0.16}],
+		"mix": {"volume_db": -10.0, "voices": 1, "interval": 0.5, "world": false}},
 	# ---------------------------------------------------------------- Hero ultimates (M14)
 	&"ultimate_ready": {"layers": [{"wave": "sine", "freq": 659.0, "sustain": 0.05, "decay": 0.2},
 		{"wave": "sine", "freq": 988.0, "sustain": 0.05, "decay": 0.3, "delay": 0.1},

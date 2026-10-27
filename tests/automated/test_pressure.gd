@@ -12,7 +12,9 @@ var _failures: int = 0
 
 func _initialize() -> void:
 	_test_data()
+	_test_fight_scales()
 	await _test_level_effects()
+	await _test_hasty_warning()
 	_test_save_and_meta()
 	await _test_screens()
 	await _test_summary_and_hub()
@@ -42,6 +44,36 @@ func _level(list: Array[PressureData]) -> Level:
 	level.apply_pressure(list, 7)
 	await process_frame
 	return level
+
+
+## Hardened Elites and Stronger Bosses, on the rules MapFlow's fights read (PressureRules).
+func _test_fight_scales() -> void:
+	var none: Array[PressureData] = []
+	var hardened: Array[PressureData] = _pick(["hardened_elites"])
+	var stronger: Array[PressureData] = _pick(["stronger_bosses"])
+	var both: Array[PressureData] = _pick(["hardened_elites", "stronger_bosses"])
+	_check("Hardened Elites: an elite node's enemies have 40%% more health, other nodes are unchanged",
+		is_equal_approx(PressureRules.fight_health_scale(hardened, true), 1.4) and is_equal_approx(PressureRules.fight_health_scale(hardened, false), 1.0))
+	_check("...and its boss-class leader too, but not a boss node's boss",
+		is_equal_approx(PressureRules.boss_health_scale(hardened, true, false), 1.4) and is_equal_approx(PressureRules.boss_health_scale(hardened, false, true), 1.0))
+	_check("Stronger Bosses: a boss node's boss has 25%% more health; elites, battles and the wave's regulars are unchanged",
+		is_equal_approx(PressureRules.boss_health_scale(stronger, false, true), 1.25) and is_equal_approx(PressureRules.boss_health_scale(stronger, true, false), 1.0)
+		and is_equal_approx(PressureRules.boss_health_scale(stronger, false, false), 1.0) and is_equal_approx(PressureRules.fight_health_scale(stronger, true), 1.0))
+	_check("without Pressure nothing changes, and the two switches never stack on one node (a node is an elite or a boss)",
+		is_equal_approx(PressureRules.boss_health_scale(none, true, false), 1.0) and is_equal_approx(PressureRules.fight_health_scale(none, true), 1.0)
+		and is_equal_approx(PressureRules.boss_health_scale(both, true, false), 1.4) and is_equal_approx(PressureRules.boss_health_scale(both, false, true), 1.25))
+	var boss: EnemyData = EnemyData.new()
+	boss.is_boss = true
+	var wave: WaveData = WaveData.new()
+	for enemy: EnemyData in [EnemyData.new(), boss]:
+		var group: SpawnGroup = SpawnGroup.new()
+		group.enemy = enemy
+		wave.groups.append(group)
+	PressureRules.scale_boss_groups([wave] as Array[WaveData], 1.4)
+	_check("only boss-class groups carry the extra health (regular 1.0, boss 1.4)",
+		is_equal_approx(wave.groups[0].health_scale, 1.0) and is_equal_approx(wave.groups[1].health_scale, 1.4))
+	PressureRules.scale_boss_groups([wave] as Array[WaveData], 1.25)
+	_check("it stacks with the descent's scale (1.4 x 1.25 = 1.75)", is_equal_approx(wave.groups[1].health_scale, 1.75))
 
 
 func _test_level_effects() -> void:
@@ -87,6 +119,29 @@ func _test_level_effects() -> void:
 	_check("the same chapter seed blocks the same slots", again_locked == third_locked and again_locked.size() == 2)
 	again.queue_free()
 	third.queue_free()
+	await process_frame
+
+
+## Hasty Waves ticks once when `hasty_warning_seconds` are left, and again in the next build phase.
+func _test_hasty_warning() -> void:
+	var level: Level = await _level(_pick(["hasty_waves"]))
+	var cycle: RunCycle = level.run_cycle
+	cycle.hasty_seconds = cycle.hasty_warning_seconds + 1.0
+	cycle.restart()
+	Sfx.reset()
+	_check("no warning while more than 10 s are left", not Sfx.history.has(&"hasty_warning"))
+	await _frames(40)
+	_check("no warning yet 0.7 s into an 11 s countdown", not Sfx.history.has(&"hasty_warning"))
+	await _frames(40)
+	_check("the tick sounds once when 10 s are left", Sfx.history.count(&"hasty_warning") == 1 and cycle.get_phase() == RunCycle.Phase.BUILD)
+	await _frames(60)
+	_check("...and not again in the same build phase", Sfx.history.count(&"hasty_warning") == 1)
+	Sfx.reset()  # the spacing between two plays is real time, and the test runs faster
+	cycle.hasty_seconds = cycle.hasty_warning_seconds - 1.0
+	cycle.restart()
+	await _frames(5)
+	_check("a countdown shorter than the warning ticks at once, once per phase", Sfx.history.count(&"hasty_warning") == 1)
+	level.queue_free()
 	await process_frame
 
 
