@@ -83,10 +83,10 @@ func _initialize() -> void:
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	(level.get_node("%Economy") as Economy).earn(100000, Economy.Source.KILL)
 	for i: int in (builder.get_slots().size() if _towers else 0):
-		var data: TowerData = builder.catalog[TOWERS[i] % builder.catalog.size()]
+		var data: TowerData = builder.catalog[TOWERS[i % TOWERS.size()] % builder.catalog.size()]
 		if _necromancer:
 			for candidate: TowerData in builder.catalog:
-				if String(candidate.id) == NECRO_TOWERS[i]:
+				if String(candidate.id) == NECRO_TOWERS[i % NECRO_TOWERS.size()]:
 					data = candidate
 		builder.build(builder.get_slots()[i], data)
 	for _i: int in 60:

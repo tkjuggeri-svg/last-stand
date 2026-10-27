@@ -80,7 +80,7 @@ func _fight(run: RunData, hero: HeroData, chapter: ChapterData, boss: bool, capt
 	var builder: TowerBuilder = level.get_node("%TowerBuilder")
 	(level.get_node("%Economy") as Economy).earn(100000, Economy.Source.KILL)
 	for i: int in builder.get_slots().size():
-		builder.build(builder.get_slots()[i], builder.catalog[TOWERS[i] % builder.catalog.size()])
+		builder.build(builder.get_slots()[i], builder.catalog[TOWERS[i % TOWERS.size()] % builder.catalog.size()])
 	await _frames(60)
 	for slot: BuildSlot in builder.get_slots():
 		builder.upgrade(slot)
