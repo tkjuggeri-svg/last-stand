@@ -5,7 +5,31 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
-## What changed in m13-playtest-5
+## What changed in m15-playtest-1: the vector look (chapter 1)
+
+This build is a test of a **new art direction**: the game redrawn as smooth vector art (painted shading, glows, warm
+light against cold dark) instead of pixel art. Only **chapter 1 (the graveyard, The Crypt Road)** is converted so far; the rest
+is still pixel art, so you will see both looks. What is vector now:
+- **Heroes and enemies:** the Knight, Ghoul, Hound, Brute and Cultist (more frames, so smoother motion; a bit larger).
+- **Towers:** Archer, Cannon, Frost, Brazier, Ballista, with their three levels, the build animation (rising on a scaffold)
+  and the sell animation (crumbling). The evolutions are still pixel.
+- **Effects:** the sword swing (it grows with Long Reach), hit sparks, dust, every tower's shots.
+- **The graveyard:** the ground and roads, the wall, the props, the crypts, the build pads, and the fortress with its four
+  damage looks, banners and fires.
+
+Still pixel art: the bosses, the Huntress and Necromancer, the other chapters and their enemies, explosions and status
+effects, the menus, the HUD and the font. They will follow, chapter by chapter.
+
+Please tell us, above all: **does it look epic and detailed, or like a flash game?** Then:
+1. Is every character readable and clearly in front of the ground (the Brute, the Hound, the Cultist)?
+2. Are the sizes right? The figures are a little larger than before.
+3. Do the towers feel like towers (three levels, building, firing, selling)? Which is best, which is weakest?
+4. Does the Knight's swing look and feel right? Does it still match where you hit?
+5. Does the vector look clash with the pixel parts (the bosses, the HUD, the next chapters)? Is it better to convert everything
+   before you play more?
+6. Frame rate on your PC (the new art costs about the same as the old).
+
+## Changes in m13-playtest-5 (check them if you have not)
 
 Everything below comes from your F8 reports on `m13-playtest-4`. Please check each one:
 

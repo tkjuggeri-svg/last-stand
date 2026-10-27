@@ -314,7 +314,7 @@ func _run(level: Level) -> void:
 	(level.get_node("%Economy") as Economy).earn(2000, Economy.Source.KILL)
 	var kinds: Array[int] = [0, 2, 0, 1, 0, 2, 0, 2, 0, 1]
 	for i: int in builder.get_slots().size():
-		builder.build(builder.get_slots()[i], builder.catalog[kinds[i]])
+		builder.build(builder.get_slots()[i], builder.catalog[kinds[i % kinds.size()]])
 	spawner.waves = spawner.waves.slice(7, 8)
 	hero.position = Vector2(-140, 40)
 	await WaveFixtures.start_wave(level)
