@@ -12,6 +12,9 @@ const KNIGHT_SCALE: float = 1.2
 const GHOUL_SCALE: float = 1.3
 const ARCHER: StringName = &"archer"
 
+## The ground is baked at this many texture pixels per world pixel (sharp at the camera's 2x zoom).
+const GROUND_BAKE_SCALE: float = 2.0
+
 ## Which parts get the vector look (the comparison tool's --parts, to measure each one's cost).
 static var parts: Array[String] = ["ground", "knight", "ghoul", "archer"]
 ## Bake the vector ground into one texture when the level starts (the tool's --live-ground draws it live:
@@ -19,6 +22,8 @@ static var parts: Array[String] = ["ground", "knight", "ghoul", "archer"]
 static var bake_ground: bool = true
 
 var level: Node2D
+## The baked poses, shared by every vector character and tower of the level.
+var cache: VectorPoseCache
 
 
 static func apply(target: Node2D) -> VectorSkin:
@@ -30,6 +35,9 @@ static func apply(target: Node2D) -> VectorSkin:
 
 
 func _ready() -> void:
+	cache = VectorPoseCache.new()
+	cache.name = "PoseCache"
+	add_child(cache)
 	if parts.has("ground"):
 		_ground()
 	_skin_tree(level)
@@ -62,6 +70,7 @@ func _skin(node: Node) -> void:
 		if rig != null:
 			rig.set("enabled", false)  # the earlier cutout-rig experiment on this branch
 		knight.scale = Vector2(KNIGHT_SCALE, KNIGHT_SCALE)
+		knight.cache = cache
 		_attach(hero, knight)
 	elif node is Enemy and parts.has("ghoul"):
 		var enemy: Enemy = node
@@ -71,6 +80,7 @@ func _skin(node: Node) -> void:
 		ghoul.sprite = enemy.get_node("%Sprite")
 		_hide(ghoul.sprite)
 		ghoul.scale = Vector2(GHOUL_SCALE, GHOUL_SCALE)
+		ghoul.cache = cache
 		_attach(enemy, ghoul)
 	elif node is Tower and parts.has("archer"):
 		var tower: Tower = node
@@ -79,6 +89,7 @@ func _skin(node: Node) -> void:
 		var archer: VectorArcher = VectorArcher.new()
 		archer.tower = tower
 		archer.sprite = tower.get_node("Sprite")
+		archer.cache = cache
 		_hide(archer.sprite)
 		_attach(tower, archer)
 
@@ -124,9 +135,11 @@ func _ground() -> void:
 		level.move_child(ground, pixel_ground.get_index() + 1)
 		return
 	var view: SubViewport = SubViewport.new()
-	view.size = Vector2i(ground.floor_rect.size)
+	view.size = Vector2i((ground.floor_rect.size * GROUND_BAKE_SCALE).ceil())
 	view.render_target_update_mode = SubViewport.UPDATE_ONCE
-	ground.position = -ground.floor_rect.position
+	view.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
+	ground.position = -ground.floor_rect.position * GROUND_BAKE_SCALE
+	ground.scale = Vector2(GROUND_BAKE_SCALE, GROUND_BAKE_SCALE)
 	view.add_child(ground)
 	level.add_child(view)
 	await get_tree().process_frame
@@ -135,6 +148,8 @@ func _ground() -> void:
 	baked.name = "VectorGround"
 	baked.texture = ImageTexture.create_from_image(view.get_texture().get_image())
 	baked.centered = false
+	baked.scale = Vector2.ONE / GROUND_BAKE_SCALE
+	baked.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	baked.position = ground.floor_rect.position
 	baked.z_index = pixel_ground.z_index
 	baked.light_mask = 0

@@ -96,3 +96,64 @@ their props (27 environment sheets), 18 effect sheets, the fortress with 4 damag
 path (the Knight and the Ghoul drawn in vector code into sprite sheets by the art tool) on one whole screen with the
 fortress, props and pads redone too. Only that shows the finished look and its real cost. Nothing on this branch is to be
 merged.
+
+## Round 2: more detail (the owner: "can it get more detailed? i want it to look epic, not like every other flash game")
+
+**What changed:**
+- **Painted shading** (`vector_paint.gd`): every shape gets a base gradient, a cool shadow band away from the light, warm
+  highlight bands toward it, and a cold moonlight rim on the far edge. The bands are the shape minus itself shifted
+  (`Geometry2D.clip_polygons`), sized to a third of the shape. Also tapered strands for hair, plumes, sinew and folds,
+  rivets, and curves.
+- **The Knight** (`knight_painter.gd`):
+  - Plate: a breastplate with a ridge and faulds, a chainmail skirt, layered riveted pauldrons, greaves with knee cops.
+  - Cloth: a cape with folds and a tabard with gold trim and the keep emblem.
+  - Shield and helm: a kite shield with a gold chevron and studded rim; a great helm with visor slit, breaths, brass band
+    and a plume of strands.
+  - The sword arm is live: a fullered blade, a gold guard with a glowing gem, a wrapped grip. The swing throws sparks.
+- **The Ghoul** (`ghoul_painter.gd`):
+  - Body: a starved frame under layered, holed, tattered rags, an open ribcage, sinewy arms with knobby joints and bone
+    claws, spine spurs from behind.
+  - Head: a skull with sunken sockets and red pinpoint eyes, a gaping jaw with teeth, lank hair; in profile it juts
+    forward on a long neck.
+  - Cold mist rises off it.
+- **The Archer tower** (`archer_painter.gd`):
+  - Stone and wood: masonry block by block in varied tones with moss and a crack, an octagonal plinth of dressed stones,
+    a plank deck with merlons, iron sconces.
+  - Level details: level 2 adds a gold band, level 3 gold merlon caps.
+  - Live: a red banner with the keep, a hooded archer drawing a recurve toward the target, flickering torches with embers.
+- **The ground:** a noise-textured base (grass tones, worn soil, cold near the crypt, warm near the fortress, dark edges),
+  2,600 grass clumps in three tones, flowers, leaves, mossy stones, roads with grit, bedded stones, ruts, puddles and grass
+  over their edges, a flagstone plaza, and glowing mushrooms by the crypt. It's baked at 2x.
+- **The bake path, built** (`vector_pose_cache.gd`): poses are painted once into textures at 2.5x on demand (a
+  SubViewport, premultiplied alpha) and reused:
+  - characters per facing, walk or idle and phase (12 / 8 / 6 attack steps);
+  - the tower body per level, the archer per aim (24) and draw (3), the pennant per wave (8).
+  - Death, dash and bob are transforms of baked poses.
+- **Bug found:** the tower's shot animations are `archer_fire[_N]`, not `attack`, so round 1's bow never recoiled.
+- **New tool:** `tests/tools/vector_model_sheet.gd` saves `model_characters.png` (the Knight and the Ghoul, all three
+  facings) and `model_towers.png` (the Archer at levels 1-3), pixel above vector, at 3x.
+
+**Performance** (same fight, vsync off): pixel 2.8 ms, vector round 2 **7.4 ms** (round 1 was 9.8 with far less detail).
+
+| Part | Extra per frame |
+|---|---|
+| Baked ground | about +0.3 ms, the same as today |
+| Knight | +0.7 ms |
+| 4 towers | about +1 ms (+3 before their archer and pennant were cached) |
+| 33 Ghouls | +2.9 ms |
+
+The Ghouls' remaining cost is per-node script work (their live glows and mist), not drawing. A production bake into
+SpriteFrames, with GPUParticles for the mist, would remove it.
+
+**What the model sheet shows (the honest part):**
+- **More detail, but it doesn't reach the pixel art:** the vector version is far more detailed than round 1, but at the
+  game's size (characters about 40-50 px tall) it still holds less detail than today's pixel art.
+- **The Knight:** the Pixellab Knight (top left) reads richer: every pixel is a decision, and pixel art is built to carry
+  detail at exactly this size. Vector detail under about 2 px blurs into the fills, which is where the "Flash" look comes
+  from.
+- **Where vector wins:**
+  - The Ghoul: creepier and more readable as a cold dead thing.
+  - The tower: warm, lit and alive.
+  - Light and atmosphere: glows, torch light, the swing arc, the ground's colour temperature.
+- **What makes a game look epic** at this camera distance is mostly lighting, atmosphere and effects (warm light against
+  cold dark, glows, particles, impact), and less the line art itself.
