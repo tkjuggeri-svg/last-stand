@@ -1,0 +1,115 @@
+{
+ "export": "exports/pixellab-test/v3/full",
+ "out": "assets/sprites/hero/hero_pixellab.png",
+ "columns": 6,
+ "cell": [
+  80,
+  96
+ ],
+ "feet_row": 84,
+ "shadow": [
+  44,
+  10
+ ],
+ "legacy": {
+  "png": "tools/art/pixellab/legacy/hero_code_drawn.png",
+  "cell": [
+   64,
+   80
+  ],
+  "feet_row": 76
+ },
+ "rows": [
+  {
+   "frames": 4,
+   "pixellab": [
+    "idle",
+    "south"
+   ]
+  },
+  {
+   "frames": 4,
+   "pixellab": [
+    "idle",
+    "north"
+   ]
+  },
+  {
+   "frames": 4,
+   "pixellab": [
+    "idle",
+    "east"
+   ]
+  },
+  {
+   "frames": 6,
+   "pixellab": [
+    "walk",
+    "south"
+   ]
+  },
+  {
+   "frames": 6,
+   "pixellab": [
+    "walk",
+    "north"
+   ]
+  },
+  {
+   "frames": 6,
+   "pixellab": [
+    "walk",
+    "east"
+   ]
+  },
+  {
+   "frames": 4,
+   "legacy_cell": [
+    0,
+    6
+   ]
+  },
+  {
+   "frames": 4,
+   "legacy_cell": [
+    0,
+    7
+   ]
+  },
+  {
+   "frames": 4,
+   "legacy_cell": [
+    0,
+    8
+   ]
+  },
+  {
+   "frames": 6,
+   "legacy_cell": [
+    0,
+    9
+   ]
+  },
+  {
+   "frames": 3,
+   "legacy_cell": [
+    0,
+    10
+   ]
+  },
+  {
+   "frames": 3,
+   "legacy_cell": [
+    0,
+    11
+   ]
+  },
+  {
+   "frames": 3,
+   "legacy_cell": [
+    0,
+    12
+   ]
+  }
+ ]
+}

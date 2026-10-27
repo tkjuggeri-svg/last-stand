@@ -18,9 +18,10 @@ were moved here), the owner's playtest of `m13-playtest-4` ("visuals of the ulti
 - **The test found three problems to solve before volume work:** Pixellab's character came out ~30% smaller than the current
   Knight (needs a larger canvas, about 88 px), more muted (palette snap helps), and its attack animation was the weakest part.
   Section 2 says how each is handled.
-- **The limit is credits, not time.** One character cost 19 generations (10 for the character, 3 for each of three animations
-  in three facings); with death about 22. At that rate the 21 placeholders need roughly 450 generations and every character
-  roughly 750. The trial plan has 22 left. Q1 is the plan decision and comes first.
+- **The limit is credits, not time.** Measured on the trial: a v3 character costs 2 generations (8 rotations, up to 88 px; the pro mode used in the
+  first test cost 10), each template animation 1 generation per facing, one facing at a time (the plan allows one job at once, ~1-4 min each). So
+  idle + walk in three facings is 8 generations per character, about 14 with a custom attack and death; the 21 placeholders need roughly 170-300 and
+  every character roughly 300-500. The trial has 1 generation left and ends in about 5 days. Q1 is the plan decision and comes first.
 - Done when: no placeholder is left, `test_readability` and the grayscale review shots pass, and the owner agrees the set looks
   like one game.
 
@@ -64,14 +65,14 @@ Gameplay stays untouched: hit boxes, timings and collisions come from data; art 
 
 ## 3. Credits arithmetic (estimate)
 
-From the Knight test: character 10 generations, idle 3, walk 3, attack 3 (one per facing), 19 in all; death adds about 3.
+Measured with the v3 Knight (2026-10-27): character 2, idle 3, walk 3 (one generation per facing); a custom v3 attack costs about 1-3 per facing (not measured); death about 3. About 8 without attack and death, about 14 with. The pro mode of the first test (19) is not needed.
 
 | Scope | Characters | Generations (approx.) |
 |---|---|---|
-| Phase B only | 21 | 450 |
-| B + C + D | 21 + 3 + (11 bosses, most already counted in B/C) | 550 |
-| Every character (36) | 36 | 780 |
-| Re-do a character once in five | +20% | +110 to +150 |
+| Phase B only | 21 | 170-300 |
+| B + C + D | 21 + 3 + (11 bosses, most already counted in B/C) | 220-380 |
+| Every character (36) | 36 | 300-500 |
+| Re-do a character once in five | +20% | +60 to +100 |
 
 Smaller canvases and quadrupeds may cost less; objects (towers) and images cost less per piece. I have not checked the price
 of a larger plan, so I cannot say what this is in money; Q1 asks you to look at the plan and tell me the quota.
@@ -111,7 +112,7 @@ enemies, towers or heroes, new music or sound.
 | # | Question | Recommendation |
 |---|---|---|
 | Q1 | Pixellab plan: how many generations can M15 use (the trial has 22 left)? Look at the plan's quota and price and tell me the number | **Decide this first.** If it is under ~120 a month, do phase A and B in the order of the most-seen enemies and stretch M15 over months |
-| Q2 | Spend the remaining 22 trial generations now on a correctly sized Knight (88 px)? | **Yes, but only on the create step plus idle and attack in one facing (~16)**, to check size and palette before buying credits; the full set waits for Q1 |
+| Q2 | Knight at the right size | **Done (2026-10-27, 76 px v3, 10 generations): idle and walk in three facings, in `hero_pixellab.png`, not yet in the game** (see "As tried" below) |
 | Q3 | Replace only the placeholders (phase B/D) or also the code-drawn Ghoul, Hound, Brute and Cultist? | **Placeholders only.** Replace the base four only if they look bad beside the new ones |
 | Q4 | Keep the 1 px outline, palette ramps and shadow rules for Pixellab art? | **Yes**, the importer enforces them; the set must stay one game |
 | Q5 | Output licence and the AI-use disclosure: do you want me to read Pixellab's terms and write the CREDITS entry before the first piece ships? | **Yes**, and you decide the store-page wording later |
@@ -124,3 +125,14 @@ enemies, towers or heroes, new music or sound.
 ## 9. Decisions
 
 *(empty until the owner answers)*
+
+## 10. As tried: the v3 Knight (2026-10-27, before approval, owner's "just do the knight")
+
+- `tools/art/pixellab/import_character.py` + `knight.json` turn a Pixellab export into a sheet in the hero's layout (cell 80x96, feet on one row,
+  palette snap, shadow alpha 86, rows Pixellab has not made yet kept from `legacy/hero_code_drawn.png`). It is generic: another character is a
+  new spec file with its rows. `tests/tools/pixellab_sheet_compare.gd` shoots it beside the live Knight.
+- Looks: richer and closer to the concept than the code-drawn Knight (visor, gold trim, tabard, belt), 74 px tall (the live one 72), clean
+  back view. Faults: the figure is wide (idle front 69 px, the live one 38) because shield and sword are held out, and `test_visuals` expects the
+  hero art to match its 32 px collision circle, so **it is not in the game**; the shield drops out of the walk-north frames; attack, death and
+  dash are still the code-drawn ones.
+- Open for you: adopt it anyway (the test's width rule changes, the hitbox stays 32 px), or ask for a narrower pose first (needs credits).
