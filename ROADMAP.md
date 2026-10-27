@@ -270,7 +270,7 @@ Playtest of `m13-playtest-4` (2026-10-27, owner, whole game with the Knight): no
 ## M15 — Art Overhaul
 Work through `docs/ART_BACKLOG.md`: replace every recoloured placeholder enemy, apply the new Knight design, and carry the
 theme through all art, made with Pixellab (the `pixellab` MCP server; the owner approved this on 2026-10-27, see CLAUDE.md rule 3), warm defenders against the cold dead (the fortress, the towers and the hero warm; the dead and the
-far map cool). Follows `ART_DIRECTION.md`. The test Knight (Pixellab, idle and walk) is in the game; the owner stopped further Pixellab use (2026-10-27), so `docs/M15_ART.md` is superseded and M15 needs a new scope (code-drawn art). Not started.
+far map cool). Follows `ART_DIRECTION.md`. The test Knight (Pixellab, idle and walk) is in the game; the owner stopped further Pixellab use (2026-10-27), so `docs/M15_ART.md` is superseded. **New direction (owner, 2026-10-27): the whole game in vector art**, after the `vector-test` branch (`docs/VECTOR_TEST.md`). Proposal (not approved): `docs/M15_VECTOR.md`. Not started.
 
 **Done when:** there are no placeholders left, and the game passes the grayscale and readability checks
 (`test_readability`, the `--grayscale` review shots).
