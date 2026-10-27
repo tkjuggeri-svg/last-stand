@@ -8,6 +8,9 @@ extends Resource
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var cost: int = 50
+## The War Room character who sells it (a StoryCharacter id, M14): their Council card lists it. Empty, or a
+## character the story doesn't have, puts it in the plain list under the cards.
+@export var seller: StringName = &""
 ## Unlocks to buy first (ids).
 @export var requires: Array[StringName] = []
 ## A one-off the profile must have earned first (SaveProfile.firsts, e.g. "boss:The Lich Warden").

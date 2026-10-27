@@ -24,6 +24,7 @@ id = &"hero_huntress"
 display_name = "The Huntress"
 description = "A new hero: a crossbow that marks enemies for your towers, her Trap Layer, Hawk Perch and Watchtower, six cards and two relics. Not stronger, different."
 cost = 60
+seller = &"quartermaster"
 requires_first = "boss:The Lich Warden"
 heroes = Array[ExtResource("s_hero")]([ExtResource("r_hero")])
 towers = Array[ExtResource("s_tower")]([ExtResource("r_trap"), ExtResource("r_hawk"), ExtResource("r_watch")])

@@ -10,5 +10,6 @@ id = &"evolutions_frost"
 display_name = "Evolutions: Frost"
 description = "A level-3 Frost tower can evolve: Glacier Spire or Shatter Shrine."
 cost = 70
+seller = &"orm"
 requires = Array[StringName]([&"evolutions_archer"])
 evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

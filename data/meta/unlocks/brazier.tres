@@ -10,4 +10,5 @@ id = &"brazier"
 display_name = "Brazier"
 description = "A tower that lobs burning pitch: the ground burns under a crowd."
 cost = 25
+seller = &"orm"
 towers = Array[ExtResource("s2")]([ExtResource("r3")])

@@ -13,5 +13,6 @@ id = &"relics_2"
 display_name = "Relics II"
 description = "Executioner's Mark, Iron Tithe, Merchant's Seal and Ember Heart can be found."
 cost = 90
+seller = &"ilse"
 requires = Array[StringName]([&"relics_1"])
 relics = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4"), ExtResource("r5"), ExtResource("r6")])

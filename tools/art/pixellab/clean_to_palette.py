@@ -28,6 +28,19 @@ def lab(rgb):
     return (116 * f(y) - 16, 500 * (f(x) - f(y)), 200 * (f(y) - f(z)))
 
 
+def snap_palette(colours):
+    """Returns a function that maps an RGB triple to the nearest of <colours> in CIE Lab."""
+    labs = [lab(c) for c in colours]
+    cache = {}
+
+    def nearest(rgb):
+        if rgb not in cache:
+            l = lab(rgb)
+            cache[rgb] = colours[min(range(len(colours)), key=lambda i: math.dist(l, labs[i]))]
+        return cache[rgb]
+    return nearest
+
+
 def main():
     sheet, src, dst = sys.argv[1:4]
     os.makedirs(dst, exist_ok=True)
@@ -55,4 +68,5 @@ def main():
     print("palette of %d colours, %d files" % (len(palette), len(os.listdir(dst))))
 
 
-main()
+if __name__ == "__main__":
+    main()

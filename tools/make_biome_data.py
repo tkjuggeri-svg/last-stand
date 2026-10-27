@@ -238,7 +238,7 @@ def write_unlock(u):
     out = ['[gd_resource type="Resource" script_class="UnlockData" format=3]', '', '[ext_resource type="Script" path="res://resources/unlock_data.gd" id="1_unlock"]',
            '[ext_resource type="Script" path="res://resources/chapter_data.gd" id="s_chapter"]',
            '[ext_resource type="Resource" path="res://data/run/%s.tres" id="r_chapter"]' % u["chapter"], '', '[resource]', 'script = ExtResource("1_unlock")',
-           'id = &"%s"' % u["id"], 'display_name = "%s"' % u["name"], 'description = "%s"' % u["text"], 'cost = %d' % u["cost"],
+           'id = &"%s"' % u["id"], 'display_name = "%s"' % u["name"], 'description = "%s"' % u["text"], 'cost = %d' % u["cost"], 'seller = &"ilse"',
            'requires_first = "%s"' % u["first"], 'biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])']
     open("data/meta/unlocks/%s.tres" % u["id"], "w").write("\n".join(out) + "\n")
 

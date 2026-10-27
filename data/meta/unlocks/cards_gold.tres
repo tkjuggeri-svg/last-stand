@@ -12,4 +12,5 @@ id = &"cards_gold"
 display_name = "Cards: Gold"
 description = "Treasury, War Tax and Guild Discount join the upgrade cards."
 cost = 70
+seller = &"quartermaster"
 cards = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4"), ExtResource("r5")])

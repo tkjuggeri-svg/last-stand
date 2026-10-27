@@ -38,12 +38,24 @@ func _initialize() -> void:
 	title.get_play_button().pressed.emit()
 	await _frames(2)
 	_check("Play: the War Room", hub.visible and not title.visible)
+	_check("the War Room opens on the Council, three pages (Heroes, Council, Records)", hub.get_page() == HubScreen.Page.COUNCIL and HubScreen.Page.size() == 3)
+	_check("the Council runs the shop: Orm sells towers and evolutions, Ilse relics and places, Dunmore heroes, cards and perks",
+		hub.get_wares(&"orm").has(&"brazier") and hub.get_wares(&"orm").has(&"evolutions_cannon") and hub.get_wares(&"ilse").has(&"relics_1")
+		and hub.get_wares(&"ilse").has(&"biome_gloam_wood") and hub.get_wares(&"quartermaster").has(&"hero_huntress") and hub.get_wares(&"quartermaster").has(&"muster"))
+	var board: UnlockBoard = load("res://data/meta/unlock_board.tres")
+	var on_cards: int = hub.get_wares(&"orm").size() + hub.get_wares(&"ilse").size() + hub.get_wares(&"quartermaster").size()
+	_check("every unlock is on exactly one card (%d of %d)" % [on_cards, board.unlocks.size()], on_cards == board.unlocks.size())
+	var orm: StoryCharacter = null
+	for character: StoryCharacter in (load("res://data/story/story_book.tres") as StoryBook).characters:
+		if character.id == &"orm":
+			orm = character
 	hub.get_buy_button(&"brazier").pressed.emit()
 	await _frames(2)
 	var saved: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SAVE_PATH))
 	_check("buying the Brazier: 25 shards taken, saved (%s left)" % saved.get("shards"),
 		save.profile.shards == 75 and (saved.get("unlocks", []) as Array).has("brazier") and hub.get_buy_button(&"brazier").disabled)
 	_check("an unlock that needs another can't be bought", hub.get_buy_button(&"evolutions_cannon").disabled)
+	_check("Orm, who sold it, says one of his sale lines", orm != null and orm.sale_lines.has(hub.get_cast_line(&"orm").trim_prefix("\"").trim_suffix("\"")))
 	hub.tips_toggled.emit(false)
 	_check("the tips switched off, saved", save.profile.hints_off)
 

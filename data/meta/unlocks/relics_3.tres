@@ -12,5 +12,6 @@ id = &"relics_3"
 display_name = "Relics III"
 description = "Bloodpact, Second Oath and Lantern of the Lost can be found."
 cost = 120
+seller = &"ilse"
 requires = Array[StringName]([&"relics_2"])
 relics = Array[ExtResource("s2")]([ExtResource("r3"), ExtResource("r4"), ExtResource("r5")])

@@ -8,4 +8,5 @@ id = &"muster"
 display_name = "Muster"
 description = "A starting choice: before the first fight of a run, choose 1 of 2 common upgrade cards."
 cost = 75
+seller = &"quartermaster"
 perk = &"muster"

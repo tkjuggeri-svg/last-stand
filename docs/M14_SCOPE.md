@@ -132,18 +132,20 @@ Approved by the owner on 2026-10-27 with "use your recommendations"; F1 and F4 (
 | # | Question | Decision | From |
 |---|---|---|---|
 | Q1 | Forced affix | Drop it from the M12 doc | recommendation |
-| Q2 | Chapter 1 row steps | After the playtest feedback | recommendation |
+| Q2 | Chapter 1 row steps | Left as is: the owner finished the game with the Knight and reported no problem (2026-10-27) | owner playtest |
 | Q3 | Hasty Waves sound | Yes, a tick at 10 s | recommendation |
 | Q4 | Bulwark flash | Only if the playtest asks | recommendation |
-| Q5 | Chapter 2 economy | Wait for the playtest | recommendation |
+| Q5 | Chapter 2 economy | Left as is, same playtest | owner playtest |
 | Q6 | Hero balance pass | No | recommendation |
 | Q7 | Merge into `main` | Owner's call after the playtest | recommendation |
 | Q8 | Council page | One small use per character, agreed with the owner before building | recommendation |
 | Q9 | No music | Cause found and fixed (above) | owner + fix |
 | Q10 | Huntress and big groups | Checked: bot 5.8 vs the Knight's 6.0 rows, so no card; revisit on more reports | recommendation |
 | Q11 | Menu and map looks | M15 | recommendation |
+| Q12 | The Council's use | The characters run the shop (section 11) | owner ("agree"), 2026-10-27 |
+| Q13 | A plain list of every unlock too? | No; Records shows "Unlocked x of 25" | owner ("agree"), 2026-10-27 |
 
-## 11. The Council's use (Q8, proposal: not approved)
+## 11. The Council's use (Q8; approved as Q12-Q13, built: see "As built" below)
 
 The tester: "the council has no meaning?". Today the page is three portraits with a line about the last run, a "Listen"
 button when a story beat is ready, and the Chronicle. Nothing on it changes the next run. M8's rule stays: unlocks add content
@@ -174,3 +176,16 @@ and an evolution it hasn't tried). Information only, no power. About a day; the 
 |---|---|---|
 | Q12 | The Council: the characters run the shop, the counsel lines, or leave it? | **The shop split.** It gives the page a use every visit, merges two pages, and adds no power. |
 | Q13 | If the shop split: keep a plain list of every unlock somewhere (for players who want one view)? | **No**; the Council's three cards are the list. Records keeps "unlocked x of 25". |
+
+**As built (2026-10-27):**
+- `UnlockData.seller` (a `StoryCharacter` id) on all 25 unlocks (`tools/make_biome_data.py` writes `ilse` for the biomes);
+  `StoryCharacter.sale_lines` (three each, `tools/make_story.py`'s `SALE_LINES`). An unlock with no seller in the story, or every
+  unlock when there is no story book, goes to a plain list under the cards, so nothing can go missing.
+- The War Room has three tabs (Heroes, Council, Records) and opens on the Council: the Chronicle button, then one full-width card
+  per character (portrait, name and role, line, Listen, then their unlock rows), sorted in the board's order. After a purchase the
+  seller says a sale line; a seller with everything bought says "Nothing more to sell you. For now." The greeting line is hidden
+  on the Council page (it repeated the first card). Records ends with "Unlocked x of 25".
+- Code: the row and card builders moved into `ui/hub/hub_cards.gd` (`HubCards`, display only); `hub_screen.gd` groups by seller
+  and keeps the intents (`buy_requested`, `beat_read`). Rules unchanged (`MetaProgress`, `UnlockBoard`).
+- Tests: `test_front_end` (three pages, opens on the Council, each character's wares, every unlock on exactly one card, the
+  seller's sale line after buying). Screenshot: `tests/tools/hub_pages_shots.gd`.

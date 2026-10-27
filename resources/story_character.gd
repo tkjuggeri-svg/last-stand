@@ -7,3 +7,5 @@ extends Resource
 @export var display_name: String = ""
 @export var role: String = ""
 @export var portrait: int = 0
+## What they say when something they sell is bought (M14: the Council runs the shop); one is picked per purchase.
+@export var sale_lines: Array[String] = []

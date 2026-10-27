@@ -51,7 +51,7 @@ const UltimateArt: GDScript = preload("res://tools/art/ultimate_art.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
 ## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
 ## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
-const HAND_DRAWN: Array[String] = ["swing", "swing_long", "spark", "dust",
+const HAND_DRAWN: Array[String] = ["hero", "swing", "swing_long", "spark", "dust",
 	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
 	"explosion", "explosion_large", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 

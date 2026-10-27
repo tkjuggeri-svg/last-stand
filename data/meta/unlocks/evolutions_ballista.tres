@@ -10,5 +10,6 @@ id = &"evolutions_ballista"
 display_name = "Evolutions: Bone Ballista"
 description = "A level-3 Ballista can evolve: Harpoon or Repeater."
 cost = 90
+seller = &"orm"
 requires = Array[StringName]([&"ballista", &"evolutions_archer"])
 evolutions = Array[ExtResource("s2")]([ExtResource("r3")])

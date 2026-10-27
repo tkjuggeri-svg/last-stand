@@ -10,5 +10,6 @@ id = &"biome_bone_quarry"
 display_name = "The Bone Quarry"
 description = "A new road for chapter 1: a quarry where boulders block the roads."
 cost = 60
+seller = &"ilse"
 requires_first = "boss:The Lich Warden"
 biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

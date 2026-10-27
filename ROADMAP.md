@@ -260,8 +260,8 @@ Hero ultimates (Q; one per hero, charged by play, two cards each): built, `docs/
 Scope: `docs/M14_SCOPE.md` (approved on the recommendations, 2026-10-27). Done: playtest fixes from `m13-playtest-4` (the Chronicle
 behind the War Room, no music anywhere, a shorter HUD bar), tests for Hardened Elites and Stronger Bosses (the forced affix dropped),
 the Hasty Waves tick, the Huntress checked with the bot (no change). The Knight's cards and relics and the hero stories were built
-already (hand check only). Waiting: the Council's use (proposal in the scope, section 11), chapter 1's row steps and chapter 2's
-economy (after the next playtest).
+already (hand check only). The Council runs the War Room's shop (Orm, Ilse, Dunmore sell the unlocks; three pages).
+Playtest of `m13-playtest-4` (2026-10-27, owner, whole game with the Knight): no problems reported, so chapter 1's row steps and chapter 2's economy are left as they are (Q2, Q5). Not yet hand-checked by the owner: the Huntress and Necromancer, the ultimates' feel, Pressure switches.
 
 **Done when:** everything in the game works and feels finished.
 
@@ -270,7 +270,7 @@ economy (after the next playtest).
 ## M15 — Art Overhaul
 Work through `docs/ART_BACKLOG.md`: replace every recoloured placeholder enemy, apply the new Knight design, and carry the
 theme through all art, made with Pixellab (the `pixellab` MCP server; the owner approved this on 2026-10-27, see CLAUDE.md rule 3), warm defenders against the cold dead (the fortress, the towers and the hero warm; the dead and the
-far map cool). Follows `ART_DIRECTION.md`. Not started.
+far map cool). Follows `ART_DIRECTION.md`. The test Knight (Pixellab, idle and walk) is in the game; the owner stopped further Pixellab use (2026-10-27), so `docs/M15_ART.md` is superseded and M15 needs a new scope (code-drawn art). Not started.
 
 **Done when:** there are no placeholders left, and the game passes the grayscale and readability checks
 (`test_readability`, the `--grayscale` review shots).
@@ -286,11 +286,12 @@ Builds for 3-5 new players, or a free itch.io demo; feedback comes in with the F
 ---
 
 ## Current focus
-**M0-M13 are built; M14-M16 are planned, not started.** The latest playtest build is **`m13-playtest-4`** (hero ultimates on Q; before it `m13-playtest-3`: War Room pages, scrolling stories, cards filtered by towers, chapter 2 rows 5-6 eased) (tag on
-`art/handoff-integration`, not merged into `main`; zips in `builds/`, including `-dev-` zips with F12; what to test is at
-the top of `PLAYTEST.md`). **Waiting for the owner's playtest of that build** (the bot, which dies in chapter 1, cannot judge
-chapter 2's economy, the music, the story texts or the new map art). Nothing is to be started until that feedback is
-in and M14's scope is approved (CLAUDE.md rule 7).
+**M0-M13 are built; M14 is in progress (scope approved, `docs/M14_SCOPE.md`); M15-M16 are planned, not started.** The latest
+playtest build is **`m13-playtest-5`** (the `m13-playtest-4` fixes: music plays, the Chronicle on top, a shorter HUD bar; the Council
+runs the shop; Pressure tests and the Hasty Waves tick) (tag on `art/handoff-integration`, not merged into `main`; zips in
+`builds/`, including `-dev-` zips with F12; what to test is at the top of `PLAYTEST.md`). **Waiting for the owner's playtest of
+that build**: it decides chapter 1's row steps and chapter 2's economy (the bot, which dies in chapter 1, cannot judge them).
+M15 (art with Pixellab) needs its own scope approved first.
 
 Also open: the **look test** on branch `look-test` (variants A, B, C of a "HD-2D" look on the graveyard; report in
 `docs/LOOK_TEST.md`; C was brightened and its bottom strip removed on request). The owner has not chosen a direction; none of it

@@ -10,5 +10,6 @@ id = &"biome_gloam_wood"
 display_name = "The Gloam Wood"
 description = "A new road for chapter 2: a dark wood where towers see less unless lamps light them."
 cost = 90
+seller = &"ilse"
 requires_first = "chapter:Chapter 2 reached"
 biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

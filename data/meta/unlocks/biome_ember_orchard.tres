@@ -10,5 +10,6 @@ id = &"biome_ember_orchard"
 display_name = "The Ember Orchard"
 description = "A new road for chapter 1: a burned orchard where dry grass catches fire."
 cost = 40
+seller = &"ilse"
 requires_first = "boss:The Lich Warden"
 biomes = Array[ExtResource("s_chapter")]([ExtResource("r_chapter")])

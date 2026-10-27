@@ -13,7 +13,8 @@ const FINE: int = 2
 const HERO: Dictionary = {
 	"png": "res://assets/sprites/hero/hero.png",
 	"frames": "res://entities/hero/hero_frames.tres",
-	"size": Vector2i(64, 80),
+	# Pixellab sheet (M15, tools/art/pixellab/import_character.py): a taller, wider cell with the feet on the same distance below its centre.
+	"size": Vector2i(80, 96),
 	"anims": [
 		["idle_down", 0, 4, 5.0, true],
 		["idle_up", 1, 4, 5.0, true],
@@ -31,11 +32,11 @@ const HERO: Dictionary = {
 	],
 }
 
-## The Huntress (M9): the Knight's sheet layout with her own sheet.
+## The Huntress (M9): the Knight's animation rows with her own sheet (64x80 frames, the Knight's code-drawn size).
 const HUNTRESS: Dictionary = {
 	"png": "res://assets/sprites/hero/huntress.png",
 	"frames": "res://entities/hero/huntress_frames.tres",
-	"size": HERO["size"],
+	"size": Vector2i(64, 80),
 	"anims": HERO["anims"],
 }
 
@@ -189,7 +190,7 @@ const PALE_BISHOP: Dictionary = {
 const NECROMANCER: Dictionary = {
 	"png": "res://assets/sprites/hero/necromancer.png",
 	"frames": "res://entities/hero/necromancer_frames.tres",
-	"size": HERO["size"],
+	"size": Vector2i(64, 80),
 	"anims": HERO["anims"],
 }
 
