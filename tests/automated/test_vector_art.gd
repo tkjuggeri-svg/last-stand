@@ -49,7 +49,7 @@ func _check_sprites() -> void:
 	await process_frame
 	_check("a vector sheet draws at half size with linear filtering", vector_sprite.scale.is_equal_approx(Vector2(0.5, 0.5))
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR)
-	vector_sprite.sprite_frames = load(Layouts.GHOUL["frames"])
+	vector_sprite.sprite_frames = load(Layouts.HUNTRESS["frames"])  # still a pixel sheet
 	_check("swapping to a pixel sheet goes back to scale 1 and the project's filter", vector_sprite.scale.is_equal_approx(Vector2.ONE)
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_PARENT_NODE)
 	vector_sprite.queue_free()

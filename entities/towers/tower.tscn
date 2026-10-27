@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://entities/towers/tower.gd" id="1_tower"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/tower_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="4_status"]
 [ext_resource type="Script" path="res://entities/towers/tower_silence.gd" id="5_silence"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_tower"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 14.0
@@ -22,10 +23,11 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(0, -36)
+position = Vector2(0, -44)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_frames")
 animation = &"archer_idle"
+script = ExtResource("sheet_tower")
 
 [node name="Glow" type="PointLight2D" parent="."]
 unique_name_in_owner = true

@@ -23,6 +23,10 @@ const RAG: Color = Color("8592a6")
 const RAG_DARK: Color = Color("404a5c")
 const EYE_RED: Color = Color("ff3b30")
 const COLD_GLOW: Color = Color("7fd8ff")
+## The role eye colours (entities/enemies/enemy_roles.gd): fast, tank, ranged. Red (grunt) is EYE_RED.
+const ROLE_FAST: Color = Color("ffe14a")
+const ROLE_TANK: Color = Color("7fb4ff")
+const ROLE_RANGED: Color = Color("7fd13b")
 const SHADOW: Color = Color(0, 0, 0, 0.32)
 ## The direction light comes from (top-left), for gradients.
 const LIGHT_DIR: Vector2 = Vector2(-0.6, -0.8)

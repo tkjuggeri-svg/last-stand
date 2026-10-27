@@ -1,5 +1,5 @@
 class_name ArcherPainter
-## Paints the vector Archer tower (branch vector-test, never merge), detailed. The body (baked once per level by
+## Paints the vector Archer tower (M15, docs/M15_VECTOR.md), detailed. The body (baked once per level by
 ## VectorPoseCache): an octagonal plinth with dressed stones, a tapered tower built block by block with varied
 ## tones, moss and cracks, a lit arrow slit, iron torch sconces, a plank deck with merlons, a red banner with the gold
 ## keep and a fringe; level 2 adds a gold band, level 3 gold merlon caps. Live (paint_archer, paint_flame): a hooded
@@ -15,6 +15,8 @@ const RED: Color = Color("ac2b2a")
 const GOLD: Color = Color("e8b54e")
 const CLOAK: Color = Color("6e3a26")
 const TOP: Vector2 = Vector2(0, -54)
+## Where the archer aims on the sheet (down and to the right, toward the road).
+const AIM: float = 0.45
 const TORCHES: Array[Vector2] = [Vector2(-14.5, -44), Vector2(14.5, -44)]
 const BOX: Rect2 = Rect2(-34, -84, 68, 98)
 
@@ -31,8 +33,43 @@ static func paint_body(ci: CanvasItem, level: int) -> void:
 	_banner(ci)
 
 
-static func _plinth(ci: CanvasItem) -> void:
-	var top: PackedVector2Array = VectorStyle.regular(Vector2(0, -3), 8, 24, 11.5, PI / 8.0)
+static func plinth(ci: CanvasItem, scale_by: float = 1.0) -> void:
+	_plinth(ci, scale_by)
+
+
+## The tower as a sheet frame (TowerPainter): idle breathes (banner, flames, the archer's draw), fire looses an arrow
+## toward the front-right and recoils. `t` is the idle cycle (0..1), `fire` the shot's progress (0..1, -1 when not firing).
+static func paint(ci: CanvasItem, level: int, t: float, fire: float) -> void:
+	paint_body(ci, level)
+	var firing: bool = fire >= 0.0
+	var pull: float = 0.6 + sin(t * TAU) * 0.08
+	if firing:
+		pull = smoothstep(0.0, 0.3, fire) * (1.0 - smoothstep(0.3, 0.45, fire)) if fire < 0.45 else 0.0
+	var wave: float = sin(t * TAU) * 2.0
+	paint_pennant(ci, wave)
+	paint_archer(ci, AIM, pull)
+	for at: Vector2 in TORCHES:
+		paint_flame(ci, at, t + at.x * 0.01)
+	var flash: float = (1.0 - smoothstep(0.3, 0.7, fire)) if firing and fire > 0.3 else 0.0
+	for at: Vector2 in TORCHES:
+		VectorStyle.draw_glow(ci, VectorStyle.WARM_GLOW, at + Vector2(0, -6), 14.0, 0.5)
+		VectorStyle.draw_glow(ci, VectorStyle.WARM_GLOW, at + Vector2(0, -5), 30.0, 0.14)
+	VectorStyle.draw_glow(ci, VectorStyle.WARM_GLOW, Vector2(0, -26), 11.0, 0.5)
+	if flash > 0.0:
+		VectorStyle.draw_glow(ci, VectorStyle.GOLD, TOP + Vector2.from_angle(AIM) * 15.0, 9.0, flash)
+
+
+static func paint_pennant(ci: CanvasItem, wave: float) -> void:
+	var pole: Vector2 = Vector2(-12, -52)
+	VectorPaint.line(ci, pole, pole + Vector2(0, -24), Color("4a2e1c"), 1.6)
+	ci.draw_circle(pole + Vector2(0, -24.5), 1.1, GOLD, true, -1.0, true)
+	var cloth: PackedVector2Array = PackedVector2Array([pole + Vector2(0, -23), pole + Vector2(7, -22 + wave * 0.5), pole + Vector2(14, -20 + wave), pole + Vector2(10, -18 + wave * 0.6),
+		pole + Vector2(14, -15.5 + wave), pole + Vector2(6, -16 + wave * 0.4), pole + Vector2(0, -16)])
+	VectorPaint.painted(ci, cloth, RED, 1.4, 0.3, 0.8)
+
+
+static func _plinth(ci: CanvasItem, scale_by: float = 1.0) -> void:
+	var top: PackedVector2Array = VectorStyle.regular(Vector2(0, -3), 8, 24 * scale_by, 11.5 * scale_by, PI / 8.0)
 	var front: PackedVector2Array = PackedVector2Array()
 	var lower: Array[Vector2] = []
 	for p: Vector2 in top:

@@ -90,7 +90,8 @@ The rules below stay true for the pixel art not yet converted. For vector art:
   nearest filtering.
 - **Sizes:** figures may be up to 1.25x the old figure height, with collision unchanged. Animations have about twice the
   frames at the same durations.
-- **Converted so far:** the Knight (`HERO`). A vector layout's pixel job never runs: it is in `HAND_DRAWN` or has no job.
+- **Converted so far:** the Knight, the Ghoul, Hound, Brute and Cultist, and the five base towers (Archer, Cannon, Frost, Brazier, Ballista; their evolutions are pixel in `TOWER_EVOLUTIONS` until P6). A vector layout's pixel job never runs: it is in `HAND_DRAWN` or has no job. `tests/tools/m15_lineup.gd` shows the converted art at game scale in the arena.
+- **Scenes:** a sprite showing a vector sheet must be a `SheetSprite` (death-effect scenes, the tower scenes); an `AnimatedSprite2D` would draw it at twice the size.
 
 - **World sprites are at double resolution** (`docs/ART_HANDOFF.md`): one sheet pixel = 1 world pixel, sprite nodes at `scale = Vector2(1, 1)`. The towers, effects, fortress, props and spawns come from the art pack; the hero, enemies, bosses and the map grounds are drawn in code at the same resolution (`Canvas` with `detail = Layouts.FINE`: art-pixel shapes rasterised twice as fine, 1 px outlines and engraving). The remaining code art (motes, smoke, the bone pickup) keeps one art pixel = 2 world pixels (`ART_SCALE`, `scale = Vector2(2, 2)`). Never any other scale, rotation or skew. At 1080p the game's `Display` (the main scene) renders at 2x and filters down so pixels stay even (`smooth_scaling` setting; `perf_report --display` measures it).
 - Nearest-neighbour filtering and 2D pixel snapping are set project-wide; don't override them per node.

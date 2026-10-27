@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/spotters.tres" id="21_synergy"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/tower_evolution_frames.tres" id="evo_frames"]
 
 [sub_resource type="Resource" id="Resource_6glx1"]
 script = ExtResource("3_7ea86")
@@ -26,6 +27,7 @@ pierce = 6
 
 [sub_resource type="Resource" id="Resource_evo_harpoon"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"harpoon"
 display_name = "Harpoon"
 description = "A barbed harpoon drags the first enemy it hits back along its road. Bosses barely budge."
@@ -40,6 +42,7 @@ boss_drag_factor = 0.2
 
 [sub_resource type="Resource" id="Resource_evo_repeater"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"repeater"
 display_name = "Repeater"
 description = "Rapid smaller bolts, each passing through 2 more enemies."

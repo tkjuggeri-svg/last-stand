@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/blasted_pitch.tres" id="21_synergy"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/tower_evolution_frames.tres" id="evo_frames"]
 
 [sub_resource type="Resource" id="Resource_eo0ol"]
 script = ExtResource("3_afn0k")
@@ -28,6 +29,7 @@ burn_duration = 3.5
 
 [sub_resource type="Resource" id="Resource_evo_pyre_of_souls"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"pyre_of_souls"
 display_name = "Pyre of Souls"
 description = "Soul fire: an enemy dying in it bursts, hurting those around it and setting the ground alight."
@@ -43,6 +45,7 @@ death_burst_radius = 60.0
 
 [sub_resource type="Resource" id="Resource_evo_beacon_flame"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"beacon_flame"
 display_name = "Beacon Flame"
 description = "A weak fire, but every other tower in its reach fires 50% faster (boosts don't stack)."

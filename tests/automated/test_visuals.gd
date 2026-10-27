@@ -113,7 +113,8 @@ func _test_ghoul_and_effects() -> void:
 	var sprite: DirectionalSprite = ghoul.get_node("%Sprite")
 	var spark: AnimatedSprite2D = ghoul.get_node("%HitSpark")
 	var flash: ShaderMaterial = sprite.material
-	_check("ghoul art at scale 1 (double-resolution sheets)", sprite.scale == ART_SCALE and spark.scale == ART_SCALE)
+	var ghoul_sheet: float = float(sprite.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))
+	_check("ghoul art at its sheet's scale (vector at 1/%s, pixel at 1)" % ghoul_sheet, sprite.scale.is_equal_approx(ART_SCALE / ghoul_sheet) and spark.scale == ART_SCALE)
 	_check("ghoul walks right along the first lane segment", sprite.animation == &"walk_side" and not sprite.flip_h)
 	# First lane corner is at x = -300 (400 px from the start): then it walks down.
 	var frames: int = 0
@@ -165,8 +166,9 @@ func _test_art_matches_collision() -> void:
 	_check("hero art is centred and no wider than %d px (%s)" % [HERO_MAX_WIDTH, hero_rect.size],
 		hero_rect.size.x <= HERO_MAX_WIDTH and absf(hero_rect.get_center().x) <= 8.0)
 	var ghoul_rect: Rect2 = _solid_rect(Layouts.GHOUL, 0, 0)
+	# The vector Ghoul (M15) spreads its arms and claws: up to 1.5x the circle's width, still centred.
 	_check("ghoul art fits its 24 px collision circle (%s)" % ghoul_rect.size,
-		absf(ghoul_rect.size.x - 24.0) <= FIT_TOLERANCE and absf(ghoul_rect.get_center().x) <= 2.0)
+		ghoul_rect.size.x <= 24.0 * 1.5 and ghoul_rect.size.x >= 24.0 - FIT_TOLERANCE and absf(ghoul_rect.get_center().x) <= 2.0)
 	# 3/4 view: the walls stand on the 96x96 collision box and rise above it. The sprite sits 32 px up,
 	# so its art's bottom edge should meet the box's bottom edge (+48) give or take the rubble/shadow.
 	var fortress_rect: Rect2 = _solid_rect(Layouts.FORTRESS, 0, 0)

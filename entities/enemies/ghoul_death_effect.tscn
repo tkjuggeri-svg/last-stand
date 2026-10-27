@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://entities/effects/one_shot_effect.gd" id="1_effect"]
 [ext_resource type="SpriteFrames" path="res://entities/enemies/ghoul_frames.tres" id="2_ghoul"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/dust_frames.tres" id="3_dust"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="4_sheet"]
 
 [node name="GhoulDeathEffect" type="Node2D"]
 script = ExtResource("1_effect")
@@ -12,6 +13,7 @@ position = Vector2(0, -10)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_ghoul")
 animation = &"death"
+script = ExtResource("4_sheet")
 
 [node name="Dust" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 6)

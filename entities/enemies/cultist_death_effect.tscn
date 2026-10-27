@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://entities/effects/one_shot_effect.gd" id="1_effect"]
 [ext_resource type="SpriteFrames" path="res://entities/enemies/cultist_frames.tres" id="2_cultist"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/dust_frames.tres" id="3_dust"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="9_sheet"]
 
 [node name="CultistDeathEffect" type="Node2D"]
 script = ExtResource("1_effect")
@@ -12,6 +13,7 @@ position = Vector2(0, -12)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_cultist")
 animation = &"death"
+script = ExtResource("9_sheet")
 
 [node name="Dust" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 4)

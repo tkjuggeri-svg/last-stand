@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/packed_crowds.tres" id="21_synergy"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/tower_evolution_frames.tres" id="evo_frames"]
 
 [sub_resource type="Resource" id="Resource_yxcx4"]
 script = ExtResource("3_yxcx4")
@@ -27,6 +28,7 @@ large_blast = true
 
 [sub_resource type="Resource" id="Resource_evo_siege_mortar"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"siege_mortar"
 display_name = "Siege Mortar"
 description = "Reaches the whole field with huge, very slow blasts, but can't hit anything close."
@@ -42,6 +44,7 @@ min_range = 220.0
 
 [sub_resource type="Resource" id="Resource_evo_grapeshot_battery"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"grapeshot_battery"
 display_name = "Grapeshot Battery"
 description = "Sprays grapeshot at close range: everything in the cone is hit, fast."

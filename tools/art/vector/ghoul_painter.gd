@@ -1,8 +1,10 @@
 class_name GhoulPainter
-## Paints the vector Ghoul (branch vector-test, never merge), detailed: a starved, bony body under layered rags with
+## Paints the vector Ghoul (M15, docs/M15_VECTOR.md), detailed: a starved, bony body under layered rags with
 ## holes and hanging tatters, an open chest with ribs, sinewy arms with knobby elbows and long bone claws, a skull-like
 ## head with sunken sockets, a gaping jaw with teeth and lank hair, spine spurs from behind. Cold palette, a cyan
-## moonlight rim. Pose units: feet at y 0, about 32 tall. The eyes' glow is drawn live (VectorGhoul).
+## moonlight rim. Pose units: feet at y 0, about 32 tall. frame() paints one sheet frame of an animation
+## (sheet_layouts.gd GHOUL): idle sway, a walk cycle, an attack with a wind-up, a strike and a recovery timed to the
+## data's wind-up (0.35 s of the 0.5 s animation), and a collapse. The eye glow and the cold halo are baked in.
 
 const SKIN: Color = Color("c3d6cf")
 const SKIN_DARK: Color = Color("6d8a85")
@@ -13,7 +15,68 @@ const RAG: Color = Color("7f8ca0")
 const RAG_BACK: Color = Color("4b5568")
 const HAIR: Color = Color("3a3f4a")
 const MOUTH: Color = Color("140f18")
-const BOX: Rect2 = Rect2(-24, -44, 48, 50)
+## The figure's size against the old sprite (M15 Q2: up to 1.25x, collision unchanged).
+const SCALE: float = 1.15
+## The attack's shape over its progress (0..1): pull back until WINDUP_END, strike up to STRIKE_PEAK, then recover.
+const WINDUP_END: float = 0.55
+const STRIKE_PEAK: float = 0.727
+const PULL_BACK: float = -0.3
+
+
+## One frame of `anim` ("idle_down", "walk_side", "attack_up", "death"): frame `index` of `count`.
+static func frame(ci: CanvasItem, anim: String, index: int, count: int) -> void:
+	var cut: int = anim.find("_")
+	var state: String = anim.substr(0, cut) if cut > 0 else anim
+	var facing: String = anim.substr(cut + 1) if cut > 0 else "down"
+	var cycle: float = float(index) / count
+	var progress: float = float(index) / maxi(count - 1, 1)
+	if state == "death":
+		_death(ci, progress)
+		return
+	VectorStyle.shadow(ci, Vector2(0, 2), 12, 4.8)
+	var walking: bool = state == "walk"
+	var lunge: float = _lunge(progress) if state == "attack" else 0.0
+	var bob: float = -absf(sin(cycle * TAU)) * 1.2 if walking else sin(cycle * TAU) * 0.4
+	ci.draw_set_transform(Vector2(0, bob), 0.0, Vector2.ONE)
+	paint(ci, {"facing": facing, "walk": walking, "phase": cycle, "lunge": lunge})
+	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	_glows(ci, facing, lunge, bob)
+
+
+static func _lunge(progress: float) -> float:
+	if progress < WINDUP_END:
+		return PULL_BACK * smoothstep(0.0, WINDUP_END, progress)
+	if progress < STRIKE_PEAK:
+		return lerpf(PULL_BACK, 1.0, smoothstep(WINDUP_END, STRIKE_PEAK, progress))
+	return lerpf(1.0, 0.0, smoothstep(STRIKE_PEAK, 1.0, progress))
+
+
+## The eye glow and a faint cold halo, as normal-alpha halos in the sheet (additive blending doesn't survive a
+## transparent bake).
+static func _glows(ci: CanvasItem, facing: String, lunge: float, bob: float) -> void:
+	VectorStyle.draw_glow(ci, VectorStyle.COLD_GLOW, Vector2(0, -14 + bob), 24.0, 0.16)
+	var lift: float = maxf(lunge, 0.0)
+	match facing:
+		"up":
+			pass
+		"side":
+			VectorStyle.draw_glow(ci, VectorStyle.EYE_RED, Vector2(13.2 + lift * 4.0, -19.5 + lift + bob), 3.0, 0.75)
+		_:
+			for x: float in [-2.3, 2.3]:
+				VectorStyle.draw_glow(ci, VectorStyle.EYE_RED, Vector2(x, -27.0 + lift * 2.0 + bob), 2.8, 0.7)
+
+
+## The collapse: it folds forward, tips onto its side and lies in a darkening pool.
+static func _death(ci: CanvasItem, progress: float) -> void:
+	var fall: float = smoothstep(0.0, 0.8, progress)
+	var pool: float = smoothstep(0.35, 1.0, progress)
+	VectorStyle.shadow(ci, Vector2(0, 2), 12 + pool * 6.0, 4.8 + pool * 2.0)
+	ci.draw_colored_polygon(VectorStyle.ellipse(Vector2(4.0 * pool, 3), 9.0 * pool, 3.0 * pool, 16), Color(0.05, 0.07, 0.12, 0.6 * pool))
+	ci.draw_set_transform(Vector2(fall * 5.0, fall * 8.0), fall * 1.4, Vector2(1.0, 1.0 - fall * 0.25))
+	paint(ci, {"facing": "down", "walk": false, "phase": 0.0, "lunge": 0.0})
+	ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if progress < 0.7:
+		VectorStyle.draw_glow(ci, VectorStyle.EYE_RED, Vector2(fall * 5.0 - 2.0, -26.0 + fall * 10.0), 4.0, 0.9 * (1.0 - progress / 0.7))
 
 
 ## pose: {facing, phase: 0..1, walk: bool, lunge: 0..1}
@@ -151,7 +214,7 @@ static func _front(ci: CanvasItem, pose: Dictionary) -> void:
 		var hand: Vector2 = Vector2(side * (10 + sw * side * 1.5), -8 + reach * 0.35)
 		_limb(ci, Vector2(side * 6.5, -21), Vector2(side * 9.5, -14), hand, 2.2)
 		_claws(ci, hand, Vector2(side * 0.3, 1).normalized())
-	_head(ci, Vector2(0, -26 + lunge * 2.0), "down", lunge * 1.6)
+	_head(ci, Vector2(0, -26 + lunge * 2.0), "down", maxf(lunge, 0.0) * 1.6)
 
 
 static func _back(ci: CanvasItem, pose: Dictionary) -> void:
@@ -191,7 +254,7 @@ static func _side(ci: CanvasItem, pose: Dictionary) -> void:
 	VectorPaint.strand(ci, Vector2(-7, -4), Vector2(-9, -1), Vector2(-11, 3), 1.6, RAG.darkened(0.15))
 	var head: Vector2 = Vector2(9.5 + lunge * 4.0, -18 + lunge)
 	VectorPaint.strand(ci, Vector2(5, -20), Vector2(7, -20), head + Vector2(-3, 0), 3.2, SKIN_DARK)
-	_head(ci, head, "side", lunge * 1.8)
+	_head(ci, head, "side", maxf(lunge, 0.0) * 1.8)
 	var hand: Vector2 = Vector2(11 + lunge * 9.0 + sw * 2.0, -12 + lunge * 2.0)
 	_limb(ci, Vector2(3.5, -19), Vector2(7 + lunge * 3.0, -14), hand, 2.2)
 	_claws(ci, hand, Vector2(1, 0.25).normalized())

@@ -32,6 +32,8 @@ static func for_animation(anim: StringName, frames: SpriteFrames = TOWER_FRAMES)
 	var frame: AtlasTexture = frames.get_frame_texture(anim, 0) as AtlasTexture
 	if frame == null:
 		return null
+	if frames.has_meta(SheetSprite.SHEET_SCALE):
+		return _vector_icon(frame)
 	var k: float = frame.region.size.x / ORIGINAL_WIDTH
 	var image: Image = frame.atlas.get_image().get_region(Rect2i(Rect2(frame.region.position + Vector2(0, ICON_TOP * k), ICON_SIZE * k)))
 	image.resize(SHOWN_SIZE.x, SHOWN_SIZE.y, Image.INTERPOLATE_NEAREST)
@@ -41,3 +43,24 @@ static func for_animation(anim: StringName, frames: SpriteFrames = TOWER_FRAMES)
 ## The sheet `data`'s animations are in (its own, or the shared one).
 static func _frames_of(data: TowerData) -> SpriteFrames:
 	return data.frames if data.frames != null else TOWER_FRAMES
+
+
+## An icon from a vector sheet (M15): the frame's opaque bounds, padded and widened to the icon's 64:80 shape, scaled
+## down smoothly (vector art is not pixel art, so it is not resized with nearest filtering).
+static func _vector_icon(frame: AtlasTexture) -> Texture2D:
+	var cell: Image = frame.atlas.get_image().get_region(Rect2i(frame.region))
+	var bounds: Rect2i = cell.get_used_rect()
+	if bounds.size.x <= 0 or bounds.size.y <= 0:
+		return null
+	var pad: int = roundi(maxi(bounds.size.x, bounds.size.y) / 14.0)  # a 14th of the figure all round
+	var box: Rect2i = bounds.grow(pad)
+	var aspect: float = float(SHOWN_SIZE.x) / SHOWN_SIZE.y
+	var width: int = maxi(box.size.x, int(ceil(box.size.y * aspect)))
+	var height: int = int(ceil(width / aspect))
+	var center: Vector2i = box.get_center()
+	var crop: Rect2i = Rect2i(center - Vector2i(roundi(width / 2.0), roundi(height / 2.0)), Vector2i(width, height))
+	var image: Image = Image.create(width, height, false, Image.FORMAT_RGBA8)
+	var source: Rect2i = Rect2i(Vector2i.ZERO, cell.get_size()).intersection(crop)
+	image.blit_rect(cell, source, source.position - crop.position)
+	image.resize(SHOWN_SIZE.x, SHOWN_SIZE.y, Image.INTERPOLATE_LANCZOS)
+	return ImageTexture.create_from_image(image)

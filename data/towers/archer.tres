@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="9_evolution"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="20_synergy_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/fire_arrows.tres" id="21_synergy"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/tower_evolution_frames.tres" id="evo_frames"]
 
 [sub_resource type="Resource" id="Resource_56gh1"]
 script = ExtResource("3_56gh1")
@@ -25,6 +26,7 @@ targets = 2
 
 [sub_resource type="Resource" id="Resource_evo_sniper_nest"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"sniper_nest"
 display_name = "Sniper Nest"
 description = "A marksman's perch: very long range, one huge shot at the toughest enemy in reach, slowly."
@@ -38,6 +40,7 @@ targeting = 1
 
 [sub_resource type="Resource" id="Resource_evo_volley_tower"]
 script = ExtResource("9_evolution")
+frames = ExtResource("evo_frames")
 id = &"volley_tower"
 display_name = "Volley Tower"
 description = "Every few seconds a rain of arrows on the thickest crowd in reach."

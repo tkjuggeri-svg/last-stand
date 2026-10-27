@@ -3,7 +3,7 @@ extends SceneTree
 ## frame by frame into its PNG, at the layout's "scale" (sheet pixels per world pixel). One transparent SubViewport per
 ## sheet, one canvas node per frame cell, a single render; the result is converted from premultiplied to straight alpha
 ## so the sprites' edges don't darken. Baking renders on the GPU, so it needs a window (not --headless):
-##   godot --path . --script res://tools/art/vector/bake_sheets.gd [-- --only=knight]
+##   godot --path . --script res://tools/art/vector/bake_sheets.gd [-- --only=knight] [--report-bad]
 ##   godot --headless --path . --import
 ##   godot --headless --path . --script res://tools/art/build_sprite_frames.gd
 
@@ -12,6 +12,11 @@ const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 ## The painter per "vector" id: frame(ci, anim, index, count) and the figure's scale against the old sprite.
 var _painters: Dictionary = {
 	"knight": [KnightPainter.frame, KnightPainter.SCALE],
+	"ghoul": [GhoulPainter.frame, GhoulPainter.SCALE],
+	"hound": [HoundPainter.frame, HoundPainter.SCALE],
+	"brute": [BrutePainter.frame, BrutePainter.SCALE],
+	"cultist": [CultistPainter.frame, CultistPainter.SCALE],
+	"tower": [TowerPainter.frame, TowerPainter.SCALE],
 }
 var _failures: int = 0
 
@@ -21,6 +26,8 @@ func _initialize() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=").split(",")
+		elif arg == "--report-bad":
+			VectorPaint.report_bad = true
 	await process_frame
 	for sheet: Dictionary in Layouts.ANIMATED:
 		if not sheet.has("vector"):

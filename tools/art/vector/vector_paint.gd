@@ -36,7 +36,19 @@ static func area(points: PackedVector2Array) -> float:
 
 static func fill(ci: CanvasItem, points: PackedVector2Array, color: Color) -> void:
 	if points.size() >= 3 and area(points) > MIN_AREA:
+		if Geometry2D.triangulate_polygon(points).is_empty():
+			_bad(points)
+			return
 		ci.draw_colored_polygon(points, color)
+
+
+## Set by the bake tool to list the shapes a painter drew badly (self-intersecting: they are skipped).
+static var report_bad: bool = false
+
+
+static func _bad(points: PackedVector2Array) -> void:
+	if report_bad:
+		print("bad polygon at ", points[0], " (", points.size(), " points)")
 
 
 ## `points` minus `points` shifted by `by`: a band along the edge facing away from `by`.
@@ -50,6 +62,9 @@ static func band(ci: CanvasItem, points: PackedVector2Array, by: Vector2, color:
 ## The full painted shape. `depth` is the shadow band's width; `rim` the moonlight's strength (0 = none).
 static func painted(ci: CanvasItem, points: PackedVector2Array, base: Color, depth: float = 3.0, rim: float = 0.55, outline: float = 1.2) -> void:
 	if points.size() < 3 or area(points) <= MIN_AREA:
+		return
+	if Geometry2D.triangulate_polygon(points).is_empty():
+		_bad(points)
 		return
 	# The bands scale with the shape (a third of its smaller side at least), or small parts look flat.
 	var bounds: Rect2 = Rect2(points[0], Vector2.ZERO)
@@ -107,3 +122,13 @@ static func rivet(ci: CanvasItem, at: Vector2, r: float = 0.9) -> void:
 
 static func line(ci: CanvasItem, a: Vector2, b: Vector2, color: Color, width: float = 1.0) -> void:
 	ci.draw_line(a, b, color, width, true)
+
+
+## A limb from `a` through `joint` to `b`, tapering, with a dark outline under its colour (legs, arms, tails).
+static func limb(ci: CanvasItem, a: Vector2, joint: Vector2, b: Vector2, width: float, color: Color, outline: Color = VectorStyle.INK) -> void:
+	strand(ci, a, a.lerp(joint, 0.5), joint, width + 1.5, outline)
+	strand(ci, joint, joint.lerp(b, 0.5), b, width * 0.9 + 1.4, outline)
+	strand(ci, a, a.lerp(joint, 0.5), joint, width, color)
+	strand(ci, joint, joint.lerp(b, 0.5), b, width * 0.85, color.lightened(0.08))
+	ci.draw_circle(joint, width * 0.5, color.lightened(0.14), true, -1.0, true)
+	line(ci, a + Vector2(-0.4, 0), joint + Vector2(-0.4, 0), Color(light_of(color), 0.5), 0.6)

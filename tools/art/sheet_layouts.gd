@@ -69,8 +69,8 @@ const HUNTRESS: Dictionary = {
 const SIEGE_RAM: Dictionary = {
 	"png": "res://assets/sprites/enemies/siege_ram.png",
 	"frames": "res://entities/enemies/siege_ram_frames.tres",
-	"size": BRUTE["size"] + Vector2i(24, 8),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": BRUTE["anims"],
+	"size": BRUTE_PIXEL["size"] + Vector2i(24, 8),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": BRUTE_PIXEL["anims"],
 }
 const BLACK_KNIGHT: Dictionary = {
 	"png": "res://assets/sprites/enemies/black_knight.png",
@@ -88,15 +88,15 @@ const FALLEN_MARSHAL: Dictionary = {
 const CINDER_GHOUL: Dictionary = {
 	"png": "res://assets/sprites/enemies/cinder_ghoul.png",
 	"frames": "res://entities/enemies/cinder_ghoul_frames.tres",
-	"size": GHOUL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": GHOUL["anims"],
+	"size": GHOUL_PIXEL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": GHOUL_PIXEL["anims"],
 }
 
 const SCARECROW: Dictionary = {
 	"png": "res://assets/sprites/enemies/scarecrow.png",
 	"frames": "res://entities/enemies/scarecrow_frames.tres",
-	"size": BRUTE["size"],
-	"anims": BRUTE["anims"],
+	"size": BRUTE_PIXEL["size"],
+	"anims": BRUTE_PIXEL["anims"],
 }
 
 const PYRE_WARDEN: Dictionary = {
@@ -109,15 +109,15 @@ const PYRE_WARDEN: Dictionary = {
 const FROST_WRAITH: Dictionary = {
 	"png": "res://assets/sprites/enemies/frost_wraith.png",
 	"frames": "res://entities/enemies/frost_wraith_frames.tres",
-	"size": CULTIST["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": CULTIST["anims"],
+	"size": CULTIST_PIXEL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": CULTIST_PIXEL["anims"],
 }
 
 const RIME_BRUTE: Dictionary = {
 	"png": "res://assets/sprites/enemies/rime_brute.png",
 	"frames": "res://entities/enemies/rime_brute_frames.tres",
-	"size": BRUTE["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": BRUTE["anims"],
+	"size": BRUTE_PIXEL["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": BRUTE_PIXEL["anims"],
 }
 
 const WINTER_WARDEN: Dictionary = {
@@ -130,8 +130,8 @@ const WINTER_WARDEN: Dictionary = {
 const BURROWER: Dictionary = {
 	"png": "res://assets/sprites/enemies/burrower.png",
 	"frames": "res://entities/enemies/burrower_frames.tres",
-	"size": HOUND["size"],
-	"anims": HOUND["anims"],
+	"size": HOUND_PIXEL["size"],
+	"anims": HOUND_PIXEL["anims"],
 }
 
 const LAMP_WIGHT: Dictionary = {
@@ -151,15 +151,15 @@ const DEEP_WARDEN: Dictionary = {
 const BONE_HURLER: Dictionary = {
 	"png": "res://assets/sprites/enemies/bone_hurler.png",
 	"frames": "res://entities/enemies/bone_hurler_frames.tres",
-	"size": CULTIST["size"] + Vector2i(12, 8),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": CULTIST["anims"],
+	"size": CULTIST_PIXEL["size"] + Vector2i(12, 8),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": CULTIST_PIXEL["anims"],
 }
 
 const RUBBLE_BRUTE: Dictionary = {
 	"png": "res://assets/sprites/enemies/rubble_brute.png",
 	"frames": "res://entities/enemies/rubble_brute_frames.tres",
-	"size": BRUTE["size"],
-	"anims": BRUTE["anims"],
+	"size": BRUTE_PIXEL["size"],
+	"anims": BRUTE_PIXEL["anims"],
 }
 
 const QUARRY_COLOSSUS: Dictionary = {
@@ -172,15 +172,15 @@ const QUARRY_COLOSSUS: Dictionary = {
 const STALKER: Dictionary = {
 	"png": "res://assets/sprites/enemies/stalker.png",
 	"frames": "res://entities/enemies/stalker_frames.tres",
-	"size": HOUND["size"] + Vector2i(16, 8),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": HOUND["anims"],
+	"size": HOUND_PIXEL["size"] + Vector2i(16, 8),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": HOUND_PIXEL["anims"],
 }
 
 const HOLLOW_TREANT: Dictionary = {
 	"png": "res://assets/sprites/enemies/hollow_treant.png",
 	"frames": "res://entities/enemies/hollow_treant_frames.tres",
-	"size": BRUTE["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": BRUTE["anims"],
+	"size": BRUTE_PIXEL["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": BRUTE_PIXEL["anims"],
 }
 
 const HOLLOW_STAG: Dictionary = {
@@ -301,9 +301,7 @@ const SWING_LONG: Dictionary = {
 	],
 }
 
-const GHOUL: Dictionary = {
-	"png": "res://assets/sprites/enemies/ghoul.png",
-	"frames": "res://entities/enemies/ghoul_frames.tres",
+const GHOUL_PIXEL: Dictionary = {
 	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 5.0, true],
@@ -319,11 +317,33 @@ const GHOUL: Dictionary = {
 	],
 }
 
+## The Ghoul (vector, GhoulPainter; M15). Twice the old frames at the same durations: idle 0.8 s, walk 0.75 s, attack
+## 0.5 s (the strike lands at 0.36 s, the data's 0.35 s wind-up), death 0.6 s. The cell is 80x80 world px with the feet
+## 23 px below its centre (the old sprite's 25).
+const GHOUL: Dictionary = {
+	"png": "res://assets/sprites/enemies/ghoul.png",
+	"frames": "res://entities/enemies/ghoul_frames.tres",
+	"vector": "ghoul",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(80, 80) * VECTOR_SCALE,
+	"origin": Vector2(0, 23),
+	"anims": [
+		["idle_down", 0, 8, 10.0, true],
+		["idle_up", 1, 8, 10.0, true],
+		["idle_side", 2, 8, 10.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 12, 24.0, false],
+		["attack_up", 8, 12, 24.0, false],
+		["attack_side", 9, 12, 24.0, false],
+	],
+}
+
 ## The Grave Hound: same rows as the Ghoul; "walk" is a fast gallop. Attack: 4 wind-up frames at
 ## 16 fps = the data's 0.25 s, then the bite.
-const HOUND: Dictionary = {
-	"png": "res://assets/sprites/enemies/hound.png",
-	"frames": "res://entities/enemies/hound_frames.tres",
+const HOUND_PIXEL: Dictionary = {
 	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
@@ -338,12 +358,32 @@ const HOUND: Dictionary = {
 		["attack_side", 9, 6, 16.0, false],
 	],
 }
+## The Grave Hound (vector, HoundPainter; M15): twice the old frames at the same durations (idle 0.67 s, gallop 0.43 s,
+## attack 0.375 s with the bite at 0.22 s against the data's 0.25 s wind-up, death 0.6 s).
+const HOUND: Dictionary = {
+	"png": "res://assets/sprites/enemies/hound.png",
+	"frames": "res://entities/enemies/hound_frames.tres",
+	"vector": "hound",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(72, 64) * VECTOR_SCALE,
+	"origin": Vector2(0, 22),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 28.0, true],
+		["walk_up", 4, 12, 28.0, true],
+		["walk_side", 5, 12, 28.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 12, 32.0, false],
+		["attack_up", 8, 12, 32.0, false],
+		["attack_side", 9, 12, 32.0, false],
+	],
+}
 
 ## The Brute: 48x48 frames (feet on art row 44). A slow, heavy walk; attack: 6 wind-up frames at
 ## 10 fps = the data's 0.6 s, then the slam and a recover frame.
-const BRUTE: Dictionary = {
-	"png": "res://assets/sprites/enemies/brute.png",
-	"frames": "res://entities/enemies/brute_frames.tres",
+const BRUTE_PIXEL: Dictionary = {
 	"size": Vector2i(96, 96),
 	"anims": [
 		["idle_down", 0, 4, 4.0, true],
@@ -358,12 +398,32 @@ const BRUTE: Dictionary = {
 		["attack_side", 9, 8, 10.0, false],
 	],
 }
+## The Brute (vector, BrutePainter; M15): idle 1.0 s, walk 1.0 s, attack 0.8 s (the slam lands at 0.6 s, the data's wind-up),
+## death 0.7 s. A 112x112 cell with the feet 38 px below its centre (the raised fists reach the top).
+const BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/brute.png",
+	"frames": "res://entities/enemies/brute_frames.tres",
+	"vector": "brute",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 112) * VECTOR_SCALE,
+	"origin": Vector2(0, 38),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 20.0, false],
+		["attack_up", 8, 16, 20.0, false],
+		["attack_side", 9, 16, 20.0, false],
+	],
+}
 
 ## The Cultist: same rows as the Ghoul; the walk is a glide. Attack: 6 wind-up frames at 12 fps
 ## = the data's 0.5 s (the witchfire swells overhead), then the release and a recover frame.
-const CULTIST: Dictionary = {
-	"png": "res://assets/sprites/enemies/cultist.png",
-	"frames": "res://entities/enemies/cultist_frames.tres",
+const CULTIST_PIXEL: Dictionary = {
 	"size": Vector2i(64, 64),
 	"anims": [
 		["idle_down", 0, 4, 6.0, true],
@@ -376,6 +436,28 @@ const CULTIST: Dictionary = {
 		["attack_down", 7, 8, 12.0, false],
 		["attack_up", 8, 8, 12.0, false],
 		["attack_side", 9, 8, 12.0, false],
+	],
+}
+## The Cultist (vector, CultistPainter; M15): idle 0.67 s, walk 0.75 s, attack 0.67 s (the orb is thrown at 0.5 s, the
+## data's wind-up), death 0.6 s.
+const CULTIST: Dictionary = {
+	"png": "res://assets/sprites/enemies/cultist.png",
+	"frames": "res://entities/enemies/cultist_frames.tres",
+	"vector": "cultist",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 64) * VECTOR_SCALE,
+	"origin": Vector2(0, 25),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 16, 24.0, false],
+		["attack_up", 8, 16, 24.0, false],
+		["attack_side", 9, 16, 24.0, false],
 	],
 }
 
@@ -501,74 +583,86 @@ const DUST: Dictionary = {
 ## that is +4 world px below the slot centre). Per tower: idle, fire, build (rising in scaffolding)
 ## and sell (dismantled into rubble, played by the TowerDismantle effect); levels 2 and 3 add their
 ## own idle and fire ("<id>_idle_2", ...).
+## The five base towers (vector; TowerPainter; M15): three levels with idle and fire, plus build and sell. Twice the old
+## frames at the same durations. The cell is 96x120 world px, the feet 56 px below its centre. The evolutions (level 4)
+## are in TOWER_EVOLUTIONS (pixel art until M15 phase P6).
 const TOWERS: Dictionary = {
 	"png": "res://assets/sprites/towers/towers.png",
 	"frames": "res://entities/towers/tower_frames.tres",
+	"vector": "tower",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(96, 120) * VECTOR_SCALE,
+	"origin": Vector2(0, 56),
+	"anims": [
+		["archer_idle", 0, 8, 10.0, true],
+		["archer_fire", 1, 8, 24.0, false],
+		["archer_build", 2, 12, 20.0, false],
+		["archer_sell", 3, 12, 20.0, false],
+		["cannon_idle", 4, 8, 10.0, true],
+		["cannon_fire", 5, 10, 24.0, false],
+		["cannon_build", 6, 12, 20.0, false],
+		["cannon_sell", 7, 12, 20.0, false],
+		["frost_idle", 8, 8, 12.0, true],
+		["frost_fire", 9, 8, 24.0, false],
+		["frost_build", 10, 12, 20.0, false],
+		["frost_sell", 11, 12, 20.0, false],
+		["archer_idle_2", 12, 8, 10.0, true],
+		["archer_fire_2", 13, 8, 24.0, false],
+		["archer_idle_3", 14, 8, 10.0, true],
+		["archer_fire_3", 15, 8, 24.0, false],
+		["cannon_idle_2", 16, 8, 10.0, true],
+		["cannon_fire_2", 17, 10, 24.0, false],
+		["cannon_idle_3", 18, 8, 10.0, true],
+		["cannon_fire_3", 19, 10, 24.0, false],
+		["frost_idle_2", 20, 8, 12.0, true],
+		["frost_fire_2", 21, 8, 24.0, false],
+		["frost_idle_3", 22, 8, 12.0, true],
+		["frost_fire_3", 23, 8, 24.0, false],
+		["brazier_idle", 24, 8, 12.0, true],
+		["brazier_fire", 25, 8, 24.0, false],
+		["brazier_build", 26, 12, 20.0, false],
+		["brazier_sell", 27, 12, 20.0, false],
+		["brazier_idle_2", 28, 8, 12.0, true],
+		["brazier_fire_2", 29, 8, 24.0, false],
+		["brazier_idle_3", 30, 8, 12.0, true],
+		["brazier_fire_3", 31, 8, 24.0, false],
+		["ballista_idle", 32, 8, 10.0, true],
+		["ballista_fire", 33, 8, 24.0, false],
+		["ballista_build", 34, 12, 20.0, false],
+		["ballista_sell", 35, 12, 20.0, false],
+		["ballista_idle_2", 36, 8, 10.0, true],
+		["ballista_fire_2", 37, 8, 24.0, false],
+		["ballista_idle_3", 38, 8, 10.0, true],
+		["ballista_fire_3", 39, 8, 24.0, false],
+	],
+}
+
+## The ten evolutions' idle and fire (level 4), still pixel art (cut from the old tower sheet; redrawn in M15 phase P6).
+const TOWER_EVOLUTIONS: Dictionary = {
+	"png": "res://assets/sprites/towers/tower_evolutions.png",
+	"frames": "res://entities/towers/tower_evolution_frames.tres",
 	"size": Vector2i(64, 96),
 	"anims": [
-		["archer_idle", 0, 4, 5.0, true],
-		["archer_fire", 1, 4, 12.0, false],
-		["archer_build", 2, 6, 10.0, false],
-		["archer_sell", 3, 6, 10.0, false],
-		["cannon_idle", 4, 4, 5.0, true],
-		["cannon_fire", 5, 5, 12.0, false],
-		["cannon_build", 6, 6, 10.0, false],
-		["cannon_sell", 7, 6, 10.0, false],
-		["frost_idle", 8, 4, 6.0, true],
-		["frost_fire", 9, 4, 12.0, false],
-		["frost_build", 10, 6, 10.0, false],
-		["frost_sell", 11, 6, 10.0, false],
-		# Upgraded levels (2 and 3): their own idle and fire.
-		["archer_idle_2", 12, 4, 5.0, true],
-		["archer_fire_2", 13, 4, 12.0, false],
-		["archer_idle_3", 14, 4, 5.0, true],
-		["archer_fire_3", 15, 4, 12.0, false],
-		["cannon_idle_2", 16, 4, 5.0, true],
-		["cannon_fire_2", 17, 5, 12.0, false],
-		["cannon_idle_3", 18, 4, 5.0, true],
-		["cannon_fire_3", 19, 5, 12.0, false],
-		["frost_idle_2", 20, 4, 6.0, true],
-		["frost_fire_2", 21, 4, 12.0, false],
-		["frost_idle_3", 22, 4, 6.0, true],
-		["frost_fire_3", 23, 4, 12.0, false],
-		# M5 towers: Brazier, Bone Ballista.
-		["brazier_idle", 24, 4, 6.0, true],
-		["brazier_fire", 25, 4, 12.0, false],
-		["brazier_build", 26, 6, 10.0, false],
-		["brazier_sell", 27, 6, 10.0, false],
-		["brazier_idle_2", 28, 4, 6.0, true],
-		["brazier_fire_2", 29, 4, 12.0, false],
-		["brazier_idle_3", 30, 4, 6.0, true],
-		["brazier_fire_3", 31, 4, 12.0, false],
-		["ballista_idle", 32, 4, 5.0, true],
-		["ballista_fire", 33, 4, 12.0, false],
-		["ballista_build", 34, 6, 10.0, false],
-		["ballista_sell", 35, 6, 10.0, false],
-		["ballista_idle_2", 36, 4, 5.0, true],
-		["ballista_fire_2", 37, 4, 12.0, false],
-		["ballista_idle_3", 38, 4, 5.0, true],
-		["ballista_fire_3", 39, 4, 12.0, false],
-		# Evolutions (level 4, evolution_art.gd): idle and fire, named by the evolution's id.
-		["sniper_nest_idle", 40, 4, 5.0, true],
-		["sniper_nest_fire", 41, 4, 12.0, false],
-		["volley_tower_idle", 42, 4, 5.0, true],
-		["volley_tower_fire", 43, 4, 12.0, false],
-		["siege_mortar_idle", 44, 4, 5.0, true],
-		["siege_mortar_fire", 45, 4, 12.0, false],
-		["grapeshot_battery_idle", 46, 4, 5.0, true],
-		["grapeshot_battery_fire", 47, 4, 12.0, false],
-		["glacier_spire_idle", 48, 4, 6.0, true],
-		["glacier_spire_fire", 49, 4, 12.0, false],
-		["shatter_shrine_idle", 50, 4, 6.0, true],
-		["shatter_shrine_fire", 51, 4, 12.0, false],
-		["pyre_of_souls_idle", 52, 4, 8.0, true],
-		["pyre_of_souls_fire", 53, 4, 12.0, false],
-		["beacon_flame_idle", 54, 4, 8.0, true],
-		["beacon_flame_fire", 55, 4, 12.0, false],
-		["harpoon_idle", 56, 4, 5.0, true],
-		["harpoon_fire", 57, 4, 12.0, false],
-		["repeater_idle", 58, 4, 5.0, true],
-		["repeater_fire", 59, 4, 12.0, false],
+		["sniper_nest_idle", 0, 4, 5.0, true],
+		["sniper_nest_fire", 1, 4, 12.0, false],
+		["volley_tower_idle", 2, 4, 5.0, true],
+		["volley_tower_fire", 3, 4, 12.0, false],
+		["siege_mortar_idle", 4, 4, 5.0, true],
+		["siege_mortar_fire", 5, 4, 12.0, false],
+		["grapeshot_battery_idle", 6, 4, 5.0, true],
+		["grapeshot_battery_fire", 7, 4, 12.0, false],
+		["glacier_spire_idle", 8, 4, 6.0, true],
+		["glacier_spire_fire", 9, 4, 12.0, false],
+		["shatter_shrine_idle", 10, 4, 6.0, true],
+		["shatter_shrine_fire", 11, 4, 12.0, false],
+		["pyre_of_souls_idle", 12, 4, 8.0, true],
+		["pyre_of_souls_fire", 13, 4, 12.0, false],
+		["beacon_flame_idle", 14, 4, 8.0, true],
+		["beacon_flame_fire", 15, 4, 12.0, false],
+		["harpoon_idle", 16, 4, 5.0, true],
+		["harpoon_fire", 17, 4, 12.0, false],
+		["repeater_idle", 18, 4, 5.0, true],
+		["repeater_fire", 19, 4, 12.0, false],
 	],
 }
 
@@ -787,7 +881,7 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {
