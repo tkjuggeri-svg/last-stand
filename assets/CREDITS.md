@@ -22,3 +22,11 @@ Every third-party asset must be CC0 or self-made. Log each one here before commi
 > Python and Pillow. [...] This provenance note is intended to merge into existing project credits. It
 > is not a legal opinion about copyright protection, and it does not assert that unspecified
 > third-party project assets are licensed by this pack.
+
+## Pixellab (M15 art tool, owner's exception of 2026-10-27, CLAUDE.md rule 3)
+
+Dev tool only (the `pixellab` MCP server); nothing generated is in the game or its exports until a piece is listed here as adopted.
+
+| What | When | Prompt / input | Cost | Where it lives | In the game? |
+|---|---|---|---|---|---|
+| Knight test: 8 rotations, idle (breathing-idle template), walk (walking-6-frames template), attack (v3 custom, 4 frames) in south, east, north | 2026-10-27 | `create_character` mode pro, 64 px, low top-down, concept `docs/reference/knight_concept.png` (cropped to 512x512), description "chunky dark-fantasy knight: round steel great helm with a gold-trimmed horizontal visor slit and a red plume, gold-trimmed round pauldrons, red tabard with a torn hem and brown belt, brown boots, kite shield with a gold griffin crest, steel longsword"; attack: "swinging a sword in a wide slashing arc, the shield arm braced" | 10 + 9 generations (trial plan) | `exports/pixellab-test/` (git-ignored: `raw/` as delivered, `clean/` snapped to the game palette by `tools/art/pixellab/clean_to_palette.py`) | No: a comparison only |
