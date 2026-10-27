@@ -58,7 +58,10 @@ func _test_hero_animation() -> void:
 	await _frames(2)
 	var sprite: DirectionalSprite = hero.get_node("%Sprite")
 	var swing: AnimatedSprite2D = hero.get_node("%AttackVisual")
-	_check("hero art at scale 1 (double-resolution sheets)", sprite.scale == ART_SCALE and swing.scale == ART_SCALE)
+	# A vector sheet (M15) is drawn at 1 / its sheet scale (SheetSprite); pixel sheets at 1.
+	var sheet_scale: float = float(sprite.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))
+	_check("hero art at its sheet's scale (vector at 1/%s, double-resolution pixel at 1)" % sheet_scale,
+		sprite.scale.is_equal_approx(ART_SCALE / sheet_scale) and swing.scale == ART_SCALE)
 	_check("hero idles facing down", sprite.animation == &"idle_down" and sprite.is_playing())
 
 	var expected: Dictionary = {"move_right": ["walk_side", false], "move_left": ["walk_side", true],
@@ -158,7 +161,7 @@ func _test_ghoul_and_effects() -> void:
 ## Solid (non-shadow) pixels of each character's main frame, at world scale, vs. its collision size.
 func _test_art_matches_collision() -> void:
 	var hero_rect: Rect2 = _solid_rect(Layouts.HERO, 0, 0)
-	# The Pixellab Knight (M15) holds shield and sword out, so its front view is about 70 px wide against the 32 px circle (owner: adopt anyway).
+	# The Knight holds shield and sword out, so his front view is wider than the 32 px circle (the vector Knight, M15: about 50 px).
 	_check("hero art is centred and no wider than %d px (%s)" % [HERO_MAX_WIDTH, hero_rect.size],
 		hero_rect.size.x <= HERO_MAX_WIDTH and absf(hero_rect.get_center().x) <= 8.0)
 	var ghoul_rect: Rect2 = _solid_rect(Layouts.GHOUL, 0, 0)
@@ -195,7 +198,9 @@ func _solid_rect(sheet: Dictionary, column: int, row: int) -> Rect2:
 				min_p = min_p.min(Vector2i(x, y))
 				max_p = max_p.max(Vector2i(x, y))
 	var rect: Rect2 = Rect2(Vector2(min_p), Vector2(max_p - min_p + Vector2i.ONE))
-	return Rect2((rect.position - Vector2(size) / 2.0) * ART_SCALE, rect.size * ART_SCALE)
+	# A vector sheet (M15) holds sheet["scale"] pixels per world pixel.
+	var world: Vector2 = ART_SCALE / float(sheet.get("scale", 1))
+	return Rect2((rect.position - Vector2(size) / 2.0) * world, rect.size * world)
 
 
 func _frames(count: int) -> void:

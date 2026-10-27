@@ -1,6 +1,6 @@
 # M15 — Vector Art: the whole game in the vector style (proposal)
 
-**Status: proposal, not approved, not implemented.** The owner chose the direction on 2026-10-27 ("lets go full on
+**Status: approved 2026-10-27 (the owner: "go", every recommendation; section 6). In progress on branch `m15-vector`.** The owner chose the direction on 2026-10-27 ("lets go full on
 vector baby") after two rounds of `vector-test` (`docs/VECTOR_TEST.md`, branch `vector-test`). This doc says how. Effort
 numbers are estimates from those tests (sessions = one working session like the ones that built the test), not
 measurements. It replaces `docs/M15_ART.md` (Pixellab, superseded). Art only: no gameplay, balance, input, physics
@@ -113,4 +113,16 @@ Nothing in the game reads art to make decisions (CLAUDE.md "visuals follow gamep
 
 ## 6. Decisions
 
-*(after approval: # / question / decision / from user or recommendation)*
+Approved by the owner on 2026-10-27 ("go": every recommendation).
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Offline sheets or runtime poses | Offline into sprite sheets at 2x | recommendation |
+| Q2 | Bigger characters | Up to 1.25x the figure height; collision and camera unchanged | recommendation |
+| Q3 | Fonts | SIL OFL fonts allowed (CLAUDE.md rule 3), credited in `assets/CREDITS.md` | recommendation |
+| Q4 | Branch | `m15-vector` from `art/handoff-integration`, merged back after each phase's playtest | recommendation |
+| Q5 | First playable | The chapter-1 slice; chapters 2-3 stay pixel until their phases | recommendation |
+| Q6 | The Pixellab Knight | Retired with the pixel art | recommendation |
+| Q7 | Animation frames | About twice for attacks and deaths; walk 12, idle 8; durations unchanged | recommendation |
+| Q8 | 2D lights | Kept; glows added on top | recommendation |
+| Q9 | `look-test` | Closed, never merged | recommendation |

@@ -10,34 +10,59 @@ extends RefCounted
 const ART_SCALE: int = 2
 const FINE: int = 2
 
+## Vector sheets (M15, docs/M15_VECTOR.md): baked by tools/art/vector/bake_sheets.gd at VECTOR_SCALE sheet pixels per
+## world pixel ("scale"; SheetSprite draws them at 1 / scale). "size" is in sheet pixels; "origin" is where the
+## painter's (0, 0), the feet, sits from the frame's centre in world pixels (the sprite node's offset, negated).
+const VECTOR_SCALE: int = 2
+
+## The Knight (vector, KnightPainter). About twice the old frames at the same durations (M15 Q7).
 const HERO: Dictionary = {
 	"png": "res://assets/sprites/hero/hero.png",
 	"frames": "res://entities/hero/hero_frames.tres",
-	# Pixellab sheet (M15, tools/art/pixellab/import_character.py): a taller, wider cell with the feet on the same distance below its centre.
-	"size": Vector2i(80, 96),
+	"vector": "knight",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 128) * VECTOR_SCALE,
+	"origin": Vector2(0, 16),
 	"anims": [
-		["idle_down", 0, 4, 5.0, true],
-		["idle_up", 1, 4, 5.0, true],
-		["idle_side", 2, 4, 5.0, true],
-		["walk_down", 3, 6, 11.0, true],
-		["walk_up", 4, 6, 11.0, true],
-		["walk_side", 5, 6, 11.0, true],
-		["attack_down", 6, 4, 20.0, false],
-		["attack_up", 7, 4, 20.0, false],
-		["attack_side", 8, 4, 20.0, false],
-		["death", 9, 6, 8.0, false],
-		["dash_down", 10, 3, 20.0, true],
-		["dash_up", 11, 3, 20.0, true],
-		["dash_side", 12, 3, 20.0, true],
+		["idle_down", 0, 8, 10.0, true],
+		["idle_up", 1, 8, 10.0, true],
+		["idle_side", 2, 8, 10.0, true],
+		["walk_down", 3, 12, 22.0, true],
+		["walk_up", 4, 12, 22.0, true],
+		["walk_side", 5, 12, 22.0, true],
+		["attack_down", 6, 8, 40.0, false],
+		["attack_up", 7, 8, 40.0, false],
+		["attack_side", 8, 8, 40.0, false],
+		["death", 9, 12, 16.0, false],
+		["dash_down", 10, 4, 20.0, true],
+		["dash_up", 11, 4, 20.0, true],
+		["dash_side", 12, 4, 20.0, true],
 	],
 }
+
+## The Knight's old 13 animation rows, which the Huntress and Necromancer sheets (pixel, 64x80) still use.
+const HERO_PIXEL_ANIMS: Array = [
+	["idle_down", 0, 4, 5.0, true],
+	["idle_up", 1, 4, 5.0, true],
+	["idle_side", 2, 4, 5.0, true],
+	["walk_down", 3, 6, 11.0, true],
+	["walk_up", 4, 6, 11.0, true],
+	["walk_side", 5, 6, 11.0, true],
+	["attack_down", 6, 4, 20.0, false],
+	["attack_up", 7, 4, 20.0, false],
+	["attack_side", 8, 4, 20.0, false],
+	["death", 9, 6, 8.0, false],
+	["dash_down", 10, 3, 20.0, true],
+	["dash_up", 11, 3, 20.0, true],
+	["dash_side", 12, 3, 20.0, true],
+]
 
 ## The Huntress (M9): the Knight's animation rows with her own sheet (64x80 frames, the Knight's code-drawn size).
 const HUNTRESS: Dictionary = {
 	"png": "res://assets/sprites/hero/huntress.png",
 	"frames": "res://entities/hero/huntress_frames.tres",
 	"size": Vector2i(64, 80),
-	"anims": HERO["anims"],
+	"anims": HERO_PIXEL_ANIMS,
 }
 
 ## Enemy variants (M10, variant_art.gd): the base enemy's sheet layout, their own sheets.
@@ -191,7 +216,7 @@ const NECROMANCER: Dictionary = {
 	"png": "res://assets/sprites/hero/necromancer.png",
 	"frames": "res://entities/hero/necromancer_frames.tres",
 	"size": Vector2i(64, 80),
-	"anims": HERO["anims"],
+	"anims": HERO_PIXEL_ANIMS,
 }
 
 ## The skeleton minion, side view facing right (the game mirrors it), 32x32 art.

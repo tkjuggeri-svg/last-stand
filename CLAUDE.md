@@ -11,7 +11,7 @@ The player controls a hero in real time, builds towers, and defends a fortress a
 
 1. **One feature at a time.** Implement, run, verify, then move on. Don't scaffold systems "for later".
 2. **Playable over pretty.** A new feature may start with placeholder shapes, but anything shipped in a level gets pixel art that follows the **Pixel art** rules below.
-3. **No external dependencies.** No addons, plugins, paid assets, or C#. Godot built-ins only. Any third-party asset must be CC0 or self-made, with its source and license logged in `assets/CREDITS.md`. **One exception, now closed (owner, 2026-10-27): the Knight's idle and walk frames came from Pixellab** (an AI pixel-art service, a dev tool only, never in the game or its exports; logged in `assets/CREDITS.md`, placed by `tools/art/pixellab/import_character.py`). **The owner stopped any further Pixellab use the same day:** new art is drawn in code, and nothing else is generated there.
+3. **No external dependencies.** No addons, plugins, paid assets, or C#. Godot built-ins only. Any third-party asset must be CC0 or self-made, with its source and license logged in `assets/CREDITS.md`. **One exception, now closed (owner, 2026-10-27): the Knight's idle and walk frames came from Pixellab** (an AI pixel-art service, a dev tool only, never in the game or its exports; logged in `assets/CREDITS.md`, placed by `tools/art/pixellab/import_character.py`). **The owner stopped any further Pixellab use the same day:** new art is drawn in code, and nothing else is generated there. **Fonts (owner, 2026-10-27, M15):** SIL Open Font License fonts are allowed too, each logged in `assets/CREDITS.md` with its licence.
 4. **Never overwrite existing files without reading them first.** Prefer small edits over rewrites.
 5. **Ask before** adding an autoload, changing physics layers, changing the input map, or restructuring folders.
 6. **Explain architectural decisions** in the response (and in `GAME_DESIGN.md` if it changes a system).
@@ -71,9 +71,26 @@ Rule of thumb: a scene and its script live **next to each other** in the folder 
 Empty folders hold a `.gitkeep` so Git tracks them; delete it once the folder has real files.
 Commit the `*.gd.uid` files Godot generates next to scripts; they keep references stable when files move.
 
-## Pixel art
+## Pixel art (becoming vector: M15)
 
 Full visual rules (palette ramps, light, sizes, animation timing, review checklist): **`ART_DIRECTION.md`**.
+
+**M15 (in progress, branch `m15-vector`, `docs/M15_VECTOR.md`): all art is being redrawn as vector, family by family.**
+The rules below stay true for the pixel art not yet converted. For vector art:
+- **Drawing:** painters in `tools/art/vector/` (`<family>_painter.gd` on `vector_paint.gd`: painted shading with a cool
+  shadow band, warm highlights, a cold moonlight rim and a thin dark outline; `vector_style.gd`: the theme colours,
+  shapes, glows) draw each animation frame as a function of the frame (`frame(ci, anim, index, count)`).
+- **Baking:** `tools/art/vector/bake_sheets.gd` bakes every layout in `sheet_layouts.gd` that has a `"vector"` painter into
+  its PNG at `"scale"` sheet pixels per world pixel (`VECTOR_SCALE` 2). It needs a window, not `--headless`:
+  `godot --path . --script res://tools/art/vector/bake_sheets.gd [-- --only=knight]` → `godot --headless --path . --import`
+  → `godot --headless --path . --script res://tools/art/build_sprite_frames.gd`.
+- **Sprites:** the SpriteFrames carry the sheet scale as metadata (`SheetSprite.SHEET_SCALE`). Sprites that use it
+  (`SheetSprite`, and `DirectionalSprite`, which extends it) draw at 1 / scale with linear filtering. This is the one
+  allowed exception to "never any other scale" and "don't override filtering per node". Pixel sheets keep scale 1 and
+  nearest filtering.
+- **Sizes:** figures may be up to 1.25x the old figure height, with collision unchanged. Animations have about twice the
+  frames at the same durations.
+- **Converted so far:** the Knight (`HERO`). A vector layout's pixel job never runs: it is in `HAND_DRAWN` or has no job.
 
 - **World sprites are at double resolution** (`docs/ART_HANDOFF.md`): one sheet pixel = 1 world pixel, sprite nodes at `scale = Vector2(1, 1)`. The towers, effects, fortress, props and spawns come from the art pack; the hero, enemies, bosses and the map grounds are drawn in code at the same resolution (`Canvas` with `detail = Layouts.FINE`: art-pixel shapes rasterised twice as fine, 1 px outlines and engraving). The remaining code art (motes, smoke, the bone pickup) keeps one art pixel = 2 world pixels (`ART_SCALE`, `scale = Vector2(2, 2)`). Never any other scale, rotation or skew. At 1080p the game's `Display` (the main scene) renders at 2x and filters down so pixels stay even (`smooth_scaling` setting; `perf_report --display` measures it).
 - Nearest-neighbour filtering and 2D pixel snapping are set project-wide; don't override them per node.

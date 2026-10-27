@@ -1,5 +1,5 @@
 class_name DirectionalSprite
-extends AnimatedSprite2D
+extends SheetSprite
 ## Plays "<state>_<facing>" animations, e.g. "walk_up", from SpriteFrames that have down/up/side
 ## variants. The side art faces right and is mirrored for left. Display only: no gameplay logic.
 

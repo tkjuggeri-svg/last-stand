@@ -16,6 +16,9 @@ func _initialize() -> void:
 		var frame_size: Vector2i = sheet["size"]
 		var frames: SpriteFrames = SpriteFrames.new()
 		frames.remove_animation(&"default")
+		if sheet.has("scale"):
+			# A vector sheet drawn at twice the world resolution (M15): SheetSprite draws it at 1 / scale.
+			frames.set_meta(SheetSprite.SHEET_SCALE, float(sheet["scale"]))
 		for anim: Array in sheet["anims"]:
 			var anim_name: StringName = StringName(anim[0])
 			var row: int = anim[1]

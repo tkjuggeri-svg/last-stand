@@ -27,6 +27,10 @@ Every third-party asset must be CC0 or self-made. Log each one here before commi
 
 **Stopped (owner, 2026-10-27): no further Pixellab use. Only the Knight below is kept; everything else stays code-drawn.**
 
+**Retired (M15, 2026-10-27):** the Knight's sheet (`assets/sprites/hero/hero.png`) is now the vector Knight drawn in code
+(`tools/art/vector/knight_painter.gd`, baked by `tools/art/vector/bake_sheets.gd`); no Pixellab output is in the game.
+The rows below stay as the record of the test.
+
 Dev tool only (the `pixellab` MCP server); nothing generated is in the game or its exports until a piece is listed here as adopted.
 
 | What | When | Prompt / input | Cost | Where it lives | In the game? |

@@ -3,6 +3,20 @@
 The visual rules every asset follows. If a new asset breaks one of these, fix the asset (or change
 this document on purpose — never drift silently).
 
+## 0. M15: vector art (in progress)
+
+The game is being redrawn as vector art (`docs/M15_VECTOR.md`, decided 2026-10-27); this document still describes the
+pixel art not yet converted. The vector look:
+- **Shapes:** smooth, each with a gradient lit from the top-left, a cool shadow band away from the light (a third of the
+  shape), warm highlights toward it, a cold moonlight rim on the far edge, and a thin `#1a141f` outline.
+- **Detail:** strands for hair, plumes, sinew and cloth folds; rivets, trims and emblems. Nothing smaller than 1.5 sheet
+  pixels at the character's size, since smaller detail blurs into the fills.
+- **Glow:** soft radial glows (eyes, torches, swings, magic), baked into the sheet as halos or added as additive sprites
+  and lights.
+- **Unchanged:** the theme (warm defenders, cold dead, red role eyes for the common dead), light from the top-left,
+  characters brighter than the ground, and the grayscale check.
+- **Motion:** sheets at 2x, about twice the old frames at the same durations; figures up to 1.25x the old height.
+
 ## 1. Identity in one line
 
 **A grim, candle-lit last bastion at the edge of a haunted graveyard**, in crisp 16-bit pixel art seen
