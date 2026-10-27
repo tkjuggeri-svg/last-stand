@@ -95,7 +95,7 @@ in-run ones). Nobody has said anything yet about the ultimates, chapter 2, the P
 | F2 | feel | "the council has no meaning?" | War Room, Council page | The page is three lines of text and a Chronicle button; the characters do nothing the player can use. Needs a decision (Q8). |
 | F3 | bug? | "there is no music" | title / War Room (reported on `front_end`) | **Fixed** (tester: silent everywhere, volumes at 100). `Music.play(title)` ran while the tree root was still setting up its children, so `add_child` failed, the two players never entered the tree and every later track was silent. Players now join deferred and the track starts when they are in. Checked by recording the game: silent before, sound from the first second after. |
 | F4 | feel | "the lower bar with health and stuff needs to more compact" | fight HUD, bottom-left panel (Fortress, Hero, Dash, Ultimate, gold, slots, next wave: seven rows) | **Fixed**: gold and free slots share a line ("Slots free: 13 / 16"), six rows instead of seven. Dash and Ultimate stay separate; say if it is still too big. |
-| F5 | balance | "the huntress is kinda under powered because the towers dont really do damage to large groups" | chapter 1, row 5 elite, Huntress | Single report. Large groups need splash: the Huntress's towers are single-target (Archer, Trap Layer, Watchtower). Check with `map_balance.gd --hero-kind=huntress` (Q10). |
+| F5 | balance | "the huntress is kinda under powered because the towers dont really do damage to large groups" | chapter 1, row 5 elite, Huntress | Single report. **Checked with the bot** (`map_balance.gd --seeds=1-8 --hero=bot --hero-kind=knight|huntress`, 2026-10-27): Knight 6.0 rows cleared per run, Huntress 5.8 (of 24), within the +-20% target and the bot's noise, so no area card for now (Q10's rule: only if clearly low). The bot cannot judge feel against big groups; more reports or the owner's next playtest decide. |
 | F6 | feel | "menus and all the ui is super simplistic. we need some uniquenes in them" | every menu | Not a bug: M8.5's shared style is plain frames and buttons. Looks like M15 work (Q11). |
 | F7 | feel | "the map art could better maybe have something on the backgound or maybe the roads should not be straight to give some feeling of adventure" | run map (chapter 1) | The roads are straight lines between nodes over a flat tiled ground. Landmarks and curved roads are map art. Looks like M15 work (Q11). |
 
@@ -140,5 +140,5 @@ Approved by the owner on 2026-10-27 with "use your recommendations"; F1 and F4 (
 | Q7 | Merge into `main` | Owner's call after the playtest | recommendation |
 | Q8 | Council page | One small use per character, agreed with the owner before building | recommendation |
 | Q9 | No music | Cause found and fixed (above) | owner + fix |
-| Q10 | Huntress and big groups | Check with the bot first, then one area card if she is low | recommendation |
+| Q10 | Huntress and big groups | Checked: bot 5.8 vs the Knight's 6.0 rows, so no card; revisit on more reports | recommendation |
 | Q11 | Menu and map looks | M15 | recommendation |
