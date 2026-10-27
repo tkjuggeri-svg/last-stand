@@ -163,5 +163,5 @@ Save points: git tags `save/m11-<stage>`.
 - **Tests:** `test_story` (conditions, lines, beats, lore, endings, the screens, the save), `test_events`
   (the 18 events), `test_front_end` and `test_hints` extended.
 
-**Not done:** the hero stories (Ser Aldric, Wren, Maren) in the hero panel and the hero portraits there; the
-play-test will say whether the texts land. Boss lines are the Chronicle text, not spoken lines in the fight.
+**Not done:** *(the hero stories and portraits in the hero panel were built in the M13 follow-up, see
+`docs/M9_HEROES.md` "Knight leftovers")* the play-test will say whether the texts land. Boss lines are the Chronicle text, not spoken lines in the fight.

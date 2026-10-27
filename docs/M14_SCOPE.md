@@ -142,3 +142,35 @@ Approved by the owner on 2026-10-27 with "use your recommendations"; F1 and F4 (
 | Q9 | No music | Cause found and fixed (above) | owner + fix |
 | Q10 | Huntress and big groups | Checked: bot 5.8 vs the Knight's 6.0 rows, so no card; revisit on more reports | recommendation |
 | Q11 | Menu and map looks | M15 | recommendation |
+
+## 11. The Council's use (Q8, proposal: not approved)
+
+The tester: "the council has no meaning?". Today the page is three portraits with a line about the last run, a "Listen"
+button when a story beat is ready, and the Chronicle. Nothing on it changes the next run. M8's rule stays: unlocks add content
+and options, never permanent power, so the Council can't sell stat bonuses.
+
+**Recommendation: the three characters run the War Room's shop.** The Unlocks page's 25 unlocks are split between them by
+what they are, and each card on the Council page shows that character's wares under their line. Nothing new is bought; the
+same unlocks, prices and rules (`UnlockBoard`, `MetaProgress`) are only sorted by who sells them.
+
+| Character | Role | Sells (from `data/meta/unlocks/`) |
+|---|---|---|
+| **Orm** (smith) | towers and steel | Brazier, Ballista, the five tower evolution sets |
+| **Sister Ilse** (priest) | relics, places, rites | the three relic sets, the Reliquary event, the six biomes |
+| **Quartermaster Dunmore** | soldiers and supplies | the Huntress, the Necromancer, the four card sets, the Muster and Drill perks |
+
+- What the player sees: a card per character, with their line, "Listen" when a beat is ready, then their 7-9 unlocks as rows
+  (name, price, Buy, owned/locked), as the Unlocks page shows them today. A character with nothing left to sell says so in a line.
+- Each character gets one line per purchase ("Orm: 'She'll burn hotter than any forge of mine.'"), data in `StoryCharacter`,
+  so buying feels like talking to someone.
+- The Unlocks page then becomes the Council page (four tabs become three: Heroes, Council, Records), which also answers
+  "where is everything" from the earlier playtest.
+
+**Alternative (smaller):** keep the Unlocks page; each character gives one piece of free **counsel** for the next run
+(Dunmore: the next chapter's biome and its new enemies; Ilse: which relics the run can find; Orm: the last run's best tower
+and an evolution it hasn't tried). Information only, no power. About a day; the shop split is two or three.
+
+| # | Question | Recommendation |
+|---|---|---|
+| Q12 | The Council: the characters run the shop, the counsel lines, or leave it? | **The shop split.** It gives the page a use every visit, merges two pages, and adds no power. |
+| Q13 | If the shop split: keep a plain list of every unlock somewhere (for players who want one view)? | **No**; the Council's three cards are the list. Records keeps "unlocked x of 25". |
