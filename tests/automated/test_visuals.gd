@@ -61,7 +61,7 @@ func _test_hero_animation() -> void:
 	# A vector sheet (M15) is drawn at 1 / its sheet scale (SheetSprite); pixel sheets at 1.
 	var sheet_scale: float = float(sprite.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))
 	_check("hero art at its sheet's scale (vector at 1/%s, double-resolution pixel at 1)" % sheet_scale,
-		sprite.scale.is_equal_approx(ART_SCALE / sheet_scale) and swing.scale == ART_SCALE)
+		sprite.scale.is_equal_approx(ART_SCALE / sheet_scale) and swing.scale.is_equal_approx(ART_SCALE / float(swing.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))))
 	_check("hero idles facing down", sprite.animation == &"idle_down" and sprite.is_playing())
 
 	var expected: Dictionary = {"move_right": ["walk_side", false], "move_left": ["walk_side", true],
@@ -114,7 +114,8 @@ func _test_ghoul_and_effects() -> void:
 	var spark: AnimatedSprite2D = ghoul.get_node("%HitSpark")
 	var flash: ShaderMaterial = sprite.material
 	var ghoul_sheet: float = float(sprite.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))
-	_check("ghoul art at its sheet's scale (vector at 1/%s, pixel at 1)" % ghoul_sheet, sprite.scale.is_equal_approx(ART_SCALE / ghoul_sheet) and spark.scale == ART_SCALE)
+	_check("ghoul art at its sheet's scale (vector at 1/%s, pixel at 1)" % ghoul_sheet, sprite.scale.is_equal_approx(ART_SCALE / ghoul_sheet)
+		and spark.scale.is_equal_approx(ART_SCALE / float(spark.sprite_frames.get_meta(SheetSprite.SHEET_SCALE, 1.0))))
 	_check("ghoul walks right along the first lane segment", sprite.animation == &"walk_side" and not sprite.flip_h)
 	# First lane corner is at x = -300 (400 px from the start): then it walks down.
 	var frames: int = 0

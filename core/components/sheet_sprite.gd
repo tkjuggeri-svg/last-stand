@@ -7,6 +7,9 @@ extends AnimatedSprite2D
 
 const SHEET_SCALE: StringName = &"sheet_scale"
 
+## A further factor on the drawn size (the swing trail grows with the hero's reach tier).
+@export var extra_scale: float = 1.0
+
 
 func _ready() -> void:
 	sprite_frames_changed.connect(fit_sheet)
@@ -15,5 +18,5 @@ func _ready() -> void:
 
 func fit_sheet() -> void:
 	var factor: float = float(sprite_frames.get_meta(SHEET_SCALE, 1.0)) if sprite_frames != null else 1.0
-	scale = Vector2.ONE / factor
+	scale = Vector2.ONE * extra_scale / factor
 	texture_filter = TEXTURE_FILTER_LINEAR if factor > 1.0 else TEXTURE_FILTER_PARENT_NODE

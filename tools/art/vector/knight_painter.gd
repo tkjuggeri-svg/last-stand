@@ -3,7 +3,7 @@ class_name KnightPainter
 ## cops, a chainmail skirt, a breastplate with a ridge and faulds, a tabard with gold trim and the keep emblem,
 ## layered riveted pauldrons, a kite shield with a chevron, a great helm with a visor slit, breaths and a brass band,
 ## and a plume of strands. Pose units: feet at y 0, about 46 tall (the sheet bakes it at SCALE). frame() paints one
-## sheet frame of an animation (sheet_layouts.gd HERO): idle and walk cycles, a swing per facing with a gold smear, the
+## sheet frame of an animation (sheet_layouts.gd HERO): idle and walk cycles, a swing per facing, the
 ## dash lean with speed streaks, and the death fall. Everything is a function of the frame, so the bake is repeatable.
 
 const STEEL: Color = Color("aab3bb")
@@ -19,7 +19,6 @@ const SCALE: float = 1.2
 const SHOULDERS: Dictionary = {"down": Vector2(10, -27), "up": Vector2(-10, -27), "side": Vector2(2, -27)}
 const REST: Dictionary = {"down": -1.25, "up": -1.9, "side": -1.25}
 const SWINGS: Dictionary = {"down": [-1.1, 2.5], "up": [-2.7, -0.3], "side": [-2.3, 0.95]}
-const SMEAR_RADIUS: float = 30.0
 const DASH_LEAN: float = 0.28
 
 
@@ -39,7 +38,7 @@ static func frame(ci: CanvasItem, anim: String, index: int, count: int) -> void:
 			var swing: Array = SWINGS[facing]
 			var eased: float = 1.0 - pow(1.0 - progress, 3.0)
 			var angle: float = lerpf(float(swing[0]), float(swing[1]), eased)
-			_smear(ci, facing, float(swing[0]), angle, progress)
+			# The trail is its own effect (EffectsPainter swing, 8 directions at the exact aim), not part of the sheet.
 			_with_sword(ci, {"facing": facing, "walk": false, "phase": 0.0}, angle)
 		"dash":
 			var lean: float = DASH_LEAN if facing == "side" else 0.0
@@ -63,18 +62,6 @@ static func _with_sword(ci: CanvasItem, pose: Dictionary, angle: float) -> void:
 	paint(ci, pose)
 	if facing != "up":
 		paint_sword_arm(ci, SHOULDERS[facing], angle)
-
-
-## The swing's trail: a warm smear from where it started to where the blade is now, fading as the swing ends.
-static func _smear(ci: CanvasItem, facing: String, from_angle: float, to_angle: float, progress: float) -> void:
-	if progress <= 0.05:
-		return
-	var center: Vector2 = SHOULDERS[facing] + Vector2(0, 4)
-	var fade: float = 1.0 - progress * 0.7
-	ci.draw_arc(center, SMEAR_RADIUS, from_angle, to_angle, 24, Color(VectorStyle.WARM_GLOW, 0.22 * fade), 12.0, true)
-	ci.draw_arc(center, SMEAR_RADIUS, from_angle, to_angle, 24, Color(1.0, 0.88, 0.6, 0.45 * fade), 5.0, true)
-	ci.draw_arc(center, SMEAR_RADIUS + 1.5, lerpf(from_angle, to_angle, 0.4), to_angle, 16, Color(1, 1, 1, 0.8 * fade), 1.4, true)
-	VectorStyle.draw_glow(ci, VectorStyle.GOLD, center + Vector2.from_angle(to_angle) * SMEAR_RADIUS, 9.0, 0.7 * fade)
 
 
 static func _streaks(ci: CanvasItem, facing: String) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://entities/enemies/enemy.gd" id="1_enemy"]
 [ext_resource type="Resource" path="res://data/enemies/ghoul.tres" id="2_data"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://entities/enemies/enemy_status.gd" id="15_status"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/status_frames.tres" id="16_status_fx"]
 [ext_resource type="Script" path="res://entities/enemies/enemy_attack.gd" id="17_attack"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -79,6 +80,7 @@ position = Vector2(0, -8)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("9_spark")
 animation = &"spark"
+script = ExtResource("sheet_fx")
 
 [node name="FrostAura" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://entities/fortress/fortress.gd" id="1_fortress"]
 [ext_resource type="Script" path="res://core/components/health_component.gd" id="2_health"]
@@ -7,6 +7,7 @@
 [ext_resource type="SpriteFrames" path="res://entities/fortress/fortress_fx_frames.tres" id="5_fx"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/smoke_puff.png" id="6_smoke"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="7_light"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fortress"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(96, 96)
@@ -28,8 +29,9 @@ shape = SubResource("RectangleShape2D_body")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+texture_filter = 2
 position = Vector2(0, -32)
-scale = Vector2(1, 1)
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("4_texture")
 hframes = 4
 
@@ -38,40 +40,44 @@ unique_name_in_owner = true
 process_mode = 3
 
 [node name="BannerSW" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(-38, -30)
+position = Vector2(-27, 12)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
 frame_progress = 0.00
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="BannerSE" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(58, -30)
+position = Vector2(27, 12)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
 frame_progress = 0.13
 metadata/until_look = 2
+script = ExtResource("sheet_fortress")
 
 [node name="BannerKeep" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(10, -119)
+position = Vector2(0, -76)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"banner"
 autoplay = "banner"
 frame_progress = 0.26
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="BrazierW" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(-20, -2)
+position = Vector2(-34, 28)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"brazier"
 autoplay = "brazier"
 frame_progress = 0.39
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="Light" type="PointLight2D" parent="LookDecor/BrazierW"]
 position = Vector2(0, 12)
@@ -82,13 +88,14 @@ texture = ExtResource("7_light")
 texture_scale = 1.2
 
 [node name="BrazierE" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(20, -2)
+position = Vector2(34, 28)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"brazier"
 autoplay = "brazier"
 frame_progress = 0.65
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="Light" type="PointLight2D" parent="LookDecor/BrazierE"]
 position = Vector2(0, 12)
@@ -99,7 +106,7 @@ texture = ExtResource("7_light")
 texture_scale = 1.2
 
 [node name="Fire1" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(48, -108)
+position = Vector2(44, -70)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
@@ -107,6 +114,7 @@ autoplay = "fire"
 frame_progress = 0.00
 metadata/from_look = 1
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire1"]
 position = Vector2(0, 12)
@@ -134,7 +142,7 @@ scale_amount_max = 3.0
 color_ramp = SubResource("Gradient_smoke")
 
 [node name="Fire2" type="AnimatedSprite2D" parent="LookDecor"]
-position = Vector2(6, -98)
+position = Vector2(2, -72)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("5_fx")
 animation = &"fire"
@@ -142,6 +150,7 @@ autoplay = "fire"
 frame_progress = 0.13
 metadata/from_look = 2
 metadata/until_look = 3
+script = ExtResource("sheet_fortress")
 
 [node name="Light" type="PointLight2D" parent="LookDecor/Fire2"]
 position = Vector2(0, 12)

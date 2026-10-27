@@ -126,3 +126,37 @@ Approved by the owner on 2026-10-27 ("go": every recommendation).
 | Q7 | Animation frames | About twice for attacks and deaths; walk 12, idle 8; durations unchanged | recommendation |
 | Q8 | 2D lights | Kept; glows added on top | recommendation |
 | Q9 | `look-test` | Closed, never merged | recommendation |
+
+## 7. As built
+
+**P0 (pipeline), done.** `tools/art/vector/`: `vector_style.gd` / `vector_paint.gd` (theme colours, painted shading with a
+cool shadow band, warm highlight band and cold rim, tapered strands, limbs, rivets), `vector_frames.gd` (animation names,
+the attack curve), one painter per family, `bake_sheets.gd` (draws every layout with a `"vector"` painter frame by frame
+into its PNG at 2x: one transparent SubViewport per sheet, one canvas node per cell, straight alpha; also static one-row
+sheets (`Layouts.STATIC`) and level grounds (`Layouts.GROUNDS`); needs a window, not `--headless`; `--only=<id>`,
+`--report-bad` lists self-intersecting polygons, which are skipped). `SheetSprite` (`core/components/sheet_sprite.gd`):
+the sprite fits its SpriteFrames' `sheet_scale` metadata (1 / scale, linear filtering; `extra_scale` for the swing's reach
+tiers); `DirectionalSprite` extends it. `test_vector_art` checks every vector sheet's size, empty frames and scale.
+
+**P1 (chapter 1 slice), in progress.** Converted:
+- **Heroes and enemies:** the Knight (idle 8, walk 12, attack 8, death 12, dash 4, three facings), the Ghoul, Hound, Brute and
+  Cultist (idle 8, walk 12, attack 12-16 timed to each enemy's data wind-up, death 12-14). Sizes up to 1.15-1.2x the old
+  figures; the Brute and Hound were brightened after `test_readability`.
+- **Towers:** the five base towers (Archer, Cannon, Frost, Brazier, Ballista): three levels with idle and fire, build (rising
+  on a scaffold) and sell (collapsing into rubble). Their evolutions moved to `tower_evolutions.png` /
+  `tower_evolution_frames.tres` (pixel, until P6); the ten evolution sub-resources point at them. Menu icons are cut from the
+  vector sheets by `TowerIcons._vector_icon`.
+- **Effects:** the sword swing (8 directions, one sheet; Long Reach scales it at runtime instead of five tier sheets), the hit
+  spark, the dust puff, and all 37 shot sheets.
+- **The graveyard:** the ground (noise base, 2,600 grass clumps, roads with grit, ruts and puddles, a flagstone plaza, the
+  wall band; 2728x1928 px, `TiledGround` at scale 0.5), twelve props (`graveyard_props.png`, the other maps keep `props.png`),
+  the crypt, the build pad (plain and highlighted) and the slot rubble.
+- **The fortress:** four looks (healthy, damaged, badly damaged, ruin) and its animated decor (banners, torn banner, torches,
+  fire).
+- **Tools and tests:** `tests/tools/m15_lineup.gd` (enemies, towers, effects at game scale in the arena); the roster, visuals
+  and vector tests follow the new frame counts and scales.
+
+**Rules learned (kept in CLAUDE.md):** a sprite showing a vector sheet must be a `SheetSprite` (scenes that put a vector
+`SpriteFrames` on a plain `AnimatedSprite2D` draw it twice as big); never run two Godot jobs at once (a bake while the suite
+runs corrupts both); additive blending doesn't survive a transparent bake, so baked glows are normal-alpha halos and the
+live additive glows come later (`GlowLayer`, P2).

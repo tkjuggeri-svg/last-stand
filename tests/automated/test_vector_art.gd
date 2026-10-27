@@ -35,7 +35,9 @@ func _check_sheet(sheet: Dictionary) -> void:
 	for anim: Array in sheet["anims"]:
 		for index: int in int(anim[2]):
 			var cell: Rect2i = Rect2i(Vector2i(index * size.x, int(anim[1]) * size.y), size)
-			if image.get_region(cell).is_invisible():
+			# An effect that plays once may end on a fully faded frame (the spark, the dust): only the last one.
+			var fades_out: bool = id == "effects" and not bool(anim[4]) and index == int(anim[2]) - 1
+			if image.get_region(cell).is_invisible() and not fades_out:
 				empty.append("%s %d" % [anim[0], index])
 	_check("%s: no empty frame %s" % [id, empty], empty.is_empty())
 	var frames: SpriteFrames = load(sheet["frames"])

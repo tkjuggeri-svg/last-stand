@@ -1,6 +1,7 @@
 extends SceneTree
 ## The vector art lineup (M15): each enemy in a row on the graveyard at game scale (the sprite where the game puts it:
 ## the enemy's data sprite_offset): idle facing down, up and side, a walk step, mid-attack, and the death's last frame.
+## --effects shows the swing in its 8 directions, the hit spark, the dust and the shots.
 ## --towers=archer,cannon,... shows the base towers instead (level 1-3 idle, a shot, a build step, a sell step), at the
 ## sprite position the tower scene uses.
 ## godot --path . --resolution 1280x720 --script res://tests/tools/m15_lineup.gd -- [--out=dev_screenshots/m15] [--enemies=ghoul,hound,brute,cultist] [--towers=archer,cannon] [--zoom=2]
@@ -21,6 +22,7 @@ var _out: String = "dev_screenshots/m15"
 var _enemies: PackedStringArray = PackedStringArray(["ghoul", "hound", "brute", "cultist"])
 var _zoom: float = 2.0
 var _towers: PackedStringArray = PackedStringArray()
+var _effects: bool = false
 
 
 func _initialize() -> void:
@@ -31,6 +33,8 @@ func _initialize() -> void:
 			_enemies = arg.trim_prefix("--enemies=").split(",")
 		elif arg.begins_with("--zoom="):
 			_zoom = float(arg.trim_prefix("--zoom="))
+		elif arg == "--effects":
+			_effects = true
 		elif arg.begins_with("--towers="):
 			_towers = arg.trim_prefix("--towers=").split(",")
 	DirAccess.make_dir_recursive_absolute(_out)
@@ -42,7 +46,12 @@ func _initialize() -> void:
 	var hero: Hero = level.get_node("Hero")
 	hero.hide()
 	var origin: Vector2 = Vector2(-330, -90)
-	if not _towers.is_empty():
+	if _effects:
+		_enemies = PackedStringArray()
+		origin = Vector2(-380, -170)
+		hero.position = origin + Vector2(400, 200)
+		_show_effects(level, origin)
+	elif not _towers.is_empty():
 		_enemies = PackedStringArray()
 		origin = Vector2(-380, -150)
 		hero.position = origin + Vector2(TOWER_COLUMN_WIDTH * TOWER_CELLS.size() * 0.5, TOWER_ROW_HEIGHT * _towers.size() * 0.5)
@@ -78,10 +87,50 @@ func _initialize() -> void:
 	var camera: Camera2D = hero.get_node("Camera2D")
 	camera.zoom = Vector2(_zoom, _zoom)
 	await _wait(4)
-	var path: String = "%s/lineup_%s.png" % [_out, "_".join(_enemies if _towers.is_empty() else _towers)]
+	var path: String = "%s/lineup_%s.png" % [_out, "effects" if _effects else "_".join(_enemies if _towers.is_empty() else _towers)]
 	root.get_texture().get_image().save_png(path)
 	print("saved ", path)
 	quit()
+
+
+func _show_effects(level: Node2D, origin: Vector2) -> void:
+	var swing: SpriteFrames = load("res://entities/hero/swing_frames.tres")
+	for i: int in 8:
+		for step: int in 3:
+			var sprite: SheetSprite = SheetSprite.new()
+			sprite.sprite_frames = swing
+			sprite.animation = StringName("swing_%d" % i)
+			sprite.frame = [2, 4, 6][step]
+			sprite.position = origin + Vector2(100.0 * i + 50.0, 60.0 + 110.0 * step)
+			level.add_child(sprite)
+			sprite.pause()
+	var spark: SpriteFrames = load("res://entities/effects/hit_spark_frames.tres")
+	for i: int in 8:
+		var sprite: SheetSprite = SheetSprite.new()
+		sprite.sprite_frames = spark
+		sprite.animation = &"spark"
+		sprite.frame = i
+		sprite.position = origin + Vector2(50.0 * i + 25.0, 400.0)
+		level.add_child(sprite)
+		sprite.pause()
+	var dust: SpriteFrames = load("res://entities/effects/dust_frames.tres")
+	for i: int in 6:
+		var sprite: SheetSprite = SheetSprite.new()
+		sprite.sprite_frames = dust
+		sprite.animation = &"dust"
+		sprite.frame = i * 2
+		sprite.position = origin + Vector2(60.0 * i + 440.0, 400.0)
+		level.add_child(sprite)
+		sprite.pause()
+	var shots: SpriteFrames = load("res://entities/towers/projectile_frames.tres")
+	var names: Array[String] = ["arrow_0", "arrow_1", "arrow_2", "arrow_4", "cannonball", "cannonball_heavy", "frost_bolt", "fire_glob", "bolt_0", "bolt_3", "sniper_shot_0", "sniper_shot_2", "harpoon_0", "harpoon_3", "mortar_shell"]
+	for i: int in names.size():
+		var sprite: SheetSprite = SheetSprite.new()
+		sprite.sprite_frames = shots
+		sprite.animation = StringName(names[i])
+		sprite.position = origin + Vector2(50.0 * i + 25.0, 470.0)
+		level.add_child(sprite)
+		sprite.pause()
 
 
 func _wait(count: int) -> void:

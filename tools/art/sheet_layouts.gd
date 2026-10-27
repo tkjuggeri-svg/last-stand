@@ -244,62 +244,28 @@ const SOUL_BOLT: Dictionary = {
 }
 
 ## Sword swing trail in 8 directions: swing_0 points right, then every 45 degrees clockwise.
+## The hero's sword swing (vector, EffectsPainter; M15): one crescent per 45 degrees, 8 frames at 48 fps (the old 4 at 24).
+## The reach tiers of Long Reach scale it at runtime (SheetSprite.extra_scale) instead of having sheets of their own. The
+## cell is 192x192 world px centred on the hero's origin.
 const SWING: Dictionary = {
 	"png": "res://assets/sprites/effects/swing.png",
 	"frames": "res://entities/hero/swing_frames.tres",
-	"size": Vector2i(144, 144),
+	"vector": "effects",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(192, 192) * VECTOR_SCALE,
 	"anims": [
-		["swing_0", 0, 4, 24.0, false],
-		["swing_1", 1, 4, 24.0, false],
-		["swing_2", 2, 4, 24.0, false],
-		["swing_3", 3, 4, 24.0, false],
-		["swing_4", 4, 4, 24.0, false],
-		["swing_5", 5, 4, 24.0, false],
-		["swing_6", 6, 4, 24.0, false],
-		["swing_7", 7, 4, 24.0, false],
+		["swing_0", 0, 8, 48.0, false],
+		["swing_1", 1, 8, 48.0, false],
+		["swing_2", 2, 8, 48.0, false],
+		["swing_3", 3, 8, 48.0, false],
+		["swing_4", 4, 8, 48.0, false],
+		["swing_5", 5, 8, 48.0, false],
+		["swing_6", 6, 8, 48.0, false],
+		["swing_7", 7, 8, 48.0, false],
 	],
 }
 
 ## Long Reach swing trails ("swing_<direction>_<tier>", tier 1-4 = reach x1.15 .. x1.6), 128x128.
-const SWING_LONG: Dictionary = {
-	"png": "res://assets/sprites/effects/swing_long.png",
-	"frames": "res://entities/hero/swing_long_frames.tres",
-	"size": Vector2i(256, 256),
-	"anims": [
-		["swing_0_1", 0, 4, 24.0, false],
-		["swing_1_1", 1, 4, 24.0, false],
-		["swing_2_1", 2, 4, 24.0, false],
-		["swing_3_1", 3, 4, 24.0, false],
-		["swing_4_1", 4, 4, 24.0, false],
-		["swing_5_1", 5, 4, 24.0, false],
-		["swing_6_1", 6, 4, 24.0, false],
-		["swing_7_1", 7, 4, 24.0, false],
-		["swing_0_2", 8, 4, 24.0, false],
-		["swing_1_2", 9, 4, 24.0, false],
-		["swing_2_2", 10, 4, 24.0, false],
-		["swing_3_2", 11, 4, 24.0, false],
-		["swing_4_2", 12, 4, 24.0, false],
-		["swing_5_2", 13, 4, 24.0, false],
-		["swing_6_2", 14, 4, 24.0, false],
-		["swing_7_2", 15, 4, 24.0, false],
-		["swing_0_3", 16, 4, 24.0, false],
-		["swing_1_3", 17, 4, 24.0, false],
-		["swing_2_3", 18, 4, 24.0, false],
-		["swing_3_3", 19, 4, 24.0, false],
-		["swing_4_3", 20, 4, 24.0, false],
-		["swing_5_3", 21, 4, 24.0, false],
-		["swing_6_3", 22, 4, 24.0, false],
-		["swing_7_3", 23, 4, 24.0, false],
-		["swing_0_4", 24, 4, 24.0, false],
-		["swing_1_4", 25, 4, 24.0, false],
-		["swing_2_4", 26, 4, 24.0, false],
-		["swing_3_4", 27, 4, 24.0, false],
-		["swing_4_4", 28, 4, 24.0, false],
-		["swing_5_4", 29, 4, 24.0, false],
-		["swing_6_4", 30, 4, 24.0, false],
-		["swing_7_4", 31, 4, 24.0, false],
-	],
-}
 
 const GHOUL_PIXEL: Dictionary = {
 	"size": Vector2i(64, 64),
@@ -565,18 +531,24 @@ const TOLLKEEPER: Dictionary = {
 	],
 }
 
+## The hit spark (vector, EffectsPainter; M15): 8 frames at 48 fps (the old 4 at 24), a 48x48 world cell.
 const HIT_SPARK: Dictionary = {
 	"png": "res://assets/sprites/effects/hit_spark.png",
 	"frames": "res://entities/effects/hit_spark_frames.tres",
-	"size": Vector2i(32, 32),
-	"anims": [["spark", 0, 4, 24.0, false]],
+	"vector": "effects",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(48, 48) * VECTOR_SCALE,
+	"anims": [["spark", 0, 8, 48.0, false]],
 }
 
+## The dust puff (vector, EffectsPainter; M15): 12 frames at 28 fps (the old 6 at 14), a 64x64 world cell.
 const DUST: Dictionary = {
 	"png": "res://assets/sprites/effects/dust.png",
 	"frames": "res://entities/effects/dust_frames.tres",
-	"size": Vector2i(48, 48),
-	"anims": [["dust", 0, 6, 14.0, false]],
+	"vector": "effects",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 64) * VECTOR_SCALE,
+	"anims": [["dust", 0, 12, 28.0, false]],
 }
 
 ## The three towers (32x48 art = 64x96 world px; the base rests on art row 45, the sprite is placed so
@@ -667,10 +639,13 @@ const TOWER_EVOLUTIONS: Dictionary = {
 }
 
 ## Arrows in 8 directions (arrow_0 points right, then every 45 degrees clockwise), cannonball, frost bolt.
+## The towers' shots (vector, EffectsPainter; M15): pre-drawn in 8 directions, a 40x40 world cell; the spinning ones have more frames.
 const PROJECTILES: Dictionary = {
 	"png": "res://assets/sprites/towers/projectiles.png",
 	"frames": "res://entities/towers/projectile_frames.tres",
-	"size": Vector2i(24, 24),
+	"vector": "effects",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(40, 40) * VECTOR_SCALE,
 	"anims": [
 		["arrow_0", 0, 1, 1.0, false],
 		["arrow_1", 1, 1, 1.0, false],
@@ -680,10 +655,10 @@ const PROJECTILES: Dictionary = {
 		["arrow_5", 5, 1, 1.0, false],
 		["arrow_6", 6, 1, 1.0, false],
 		["arrow_7", 7, 1, 1.0, false],
-		["cannonball", 8, 2, 10.0, true],
-		["frost_bolt", 9, 4, 12.0, true],
-		["cannonball_heavy", 10, 2, 10.0, true],
-		["fire_glob", 11, 2, 12.0, true],
+		["cannonball", 8, 4, 20.0, true],
+		["frost_bolt", 9, 8, 24.0, true],
+		["cannonball_heavy", 10, 4, 20.0, true],
+		["fire_glob", 11, 4, 24.0, true],
 		["bolt_0", 12, 1, 1.0, false],
 		["bolt_1", 13, 1, 1.0, false],
 		["bolt_2", 14, 1, 1.0, false],
@@ -709,7 +684,7 @@ const PROJECTILES: Dictionary = {
 		["harpoon_5", 33, 1, 1.0, false],
 		["harpoon_6", 34, 1, 1.0, false],
 		["harpoon_7", 35, 1, 1.0, false],
-		["mortar_shell", 36, 2, 10.0, true],
+		["mortar_shell", 36, 4, 20.0, true],
 	],
 }
 
@@ -881,7 +856,54 @@ const RIPPLE: Dictionary = {
 }
 
 ## All sheets that become SpriteFrames.
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, SWING_LONG, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+## The graveyard's twelve props (vector, EnvPainter.PROPS; M15): 64x96 world cells, the feet 40 px below the centre. The
+## other maps keep props.png (pixel) until their phases.
+const GRAVEYARD_PROPS: Dictionary = {
+	"png": "res://assets/sprites/environment/graveyard_props.png",
+	"vector": "env_props",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 96) * VECTOR_SCALE,
+	"origin": Vector2(0, 40),
+	"columns": 12,
+}
+## The crypt (vector; M15): a 128x128 world cell, the feet 58 px below the centre.
+const CRYPT: Dictionary = {
+	"png": "res://assets/sprites/environment/crypt.png",
+	"vector": "env_crypt",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(128, 128) * VECTOR_SCALE,
+	"origin": Vector2(0, 58),
+	"columns": 1,
+}
+## The build pad (two frames: plain and highlighted) and the rubble that blocks a slot (vector; M15): 56x40 world cells.
+const BUILD_PAD: Dictionary = {
+	"png": "res://assets/sprites/towers/build_slot.png",
+	"vector": "env_pad",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(56, 40) * VECTOR_SCALE,
+	"origin": Vector2.ZERO,
+	"columns": 2,
+}
+const SLOT_RUBBLE: Dictionary = {
+	"png": "res://assets/sprites/towers/slot_rubble.png",
+	"vector": "env_rubble",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(56, 40) * VECTOR_SCALE,
+	"origin": Vector2.ZERO,
+	"columns": 1,
+}
+
+## The arena grounds baked from a level's own geometry (floor, roads, fortress, crypts, pads) by bake_sheets.gd with
+## GroundPainter, at "scale" texture px per world px, floor plus the visible wall band all round (the level's TiledGround
+## draws it at 1 / scale). The other maps' grounds stay pixel until their phases.
+const GROUNDS: Array[Dictionary] = [
+	{"png": "res://assets/sprites/environment/prototype_arena_ground.png", "level": "res://levels/prototype_arena.tscn", "vector": "ground", "scale": VECTOR_SCALE, "band": 32.0},
+]
+
+## Static vector sheets (a Sprite2D's hframes: one row of cells), baked by bake_sheets.gd; no SpriteFrames.
+const STATIC: Array[Dictionary] = [FORTRESS, GRAVEYARD_PROPS, CRYPT, BUILD_PAD, SLOT_RUBBLE]
+
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
 const HUNTRESS_TOWERS: Dictionary = {
@@ -1023,22 +1045,34 @@ const BUILD_SLOT: Dictionary = {
 ## Single-row sheet used directly by a Sprite2D (hframes): healthy, damaged, badly damaged, destroyed.
 ## 3/4 view: the 48x48 footprint (= the 96 px collision box) is the lower part of each 96x96 frame
 ## (art rect 24,40 - 72,88); walls, towers and roofs rise above it.
+## The fortress's four looks (vector, FortressPainter; M15): healthy, damaged, badly damaged, destroyed; drawn at node
+## coordinates (the scene's origin is the keep's collision-box centre, "origin" puts it 32 px below the cell's centre,
+## where the sprite sits). A static sheet: one row of "columns" cells, baked by bake_sheets.gd.
 const FORTRESS: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress.png",
-	"size": Vector2i(192, 192),
+	"vector": "fortress",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(192, 192) * VECTOR_SCALE,
+	"origin": Vector2(0, 32),
+	"columns": 4,
 	"frames_count": 4,
+	"static": true,
 }
 
 ## Animated pieces placed on the fortress: waving banners, fires (damage) and wall braziers.
+## The fortress decor (vector, FortressPainter.decor_frame; M15): the hanging banner, the torn banner, a torch flame and a
+## fire, 48x64 world cells centred on each decor sprite.
 const FORTRESS_FX: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress_fx.png",
 	"frames": "res://entities/fortress/fortress_fx_frames.tres",
-	"size": Vector2i(32, 48),
+	"vector": "fortress_fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(48, 64) * VECTOR_SCALE,
 	"anims": [
-		["banner", 0, 4, 6.0, true],
-		["banner_torn", 1, 4, 6.0, true],
-		["fire", 2, 6, 12.0, true],
-		["brazier", 3, 4, 10.0, true],
+		["banner", 0, 8, 12.0, true],
+		["banner_torn", 1, 8, 12.0, true],
+		["fire", 2, 12, 24.0, true],
+		["brazier", 3, 8, 20.0, true],
 	],
 }
 

@@ -27,9 +27,8 @@ const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://entities/effects/damage_
 const DAMAGE_NUMBER_OFFSET: Vector2 = Vector2(0, -34)
 ## Respawn protection blink: the sprite fades to this alpha and back, this many times per second.
 const BLINK_ALPHA: float = 0.3
-## The swing trail art: normal reach, and the Long Reach tiers (reach x REACH_TIERS[i] is tier i + 1).
+## The swing trail art (one vector swing, drawn at the reach tier's size; reach x REACH_TIERS[i] is tier i + 1).
 const SWING_FRAMES: SpriteFrames = preload("res://entities/hero/swing_frames.tres")
-const SWING_LONG_FRAMES: SpriteFrames = preload("res://entities/hero/swing_long_frames.tres")
 const BOLT_SCENE: PackedScene = preload("res://entities/hero/hero_bolt.tscn")
 ## Where a bolt leaves the crossbow: this far (px) along the aim, at chest height.
 const MUZZLE_DISTANCE: float = 18.0
@@ -89,7 +88,7 @@ var _wading_speed: float = 1.0
 @onready var _hit_spark: AnimatedSprite2D = %HitSpark
 @onready var _attack_pivot: Node2D = %AttackPivot
 @onready var _attack_shape: CollisionPolygon2D = %AttackShape
-@onready var _attack_visual: AnimatedSprite2D = %AttackVisual
+@onready var _attack_visual: SheetSprite = %AttackVisual
 @onready var _sprite: DirectionalSprite = %Sprite
 @onready var _hurtbox: Hurtbox = %Hurtbox
 @onready var _attack_hitbox: Hitbox = %AttackHitbox
@@ -366,10 +365,13 @@ func _update_animation() -> void:
 func _play_swing_trail(angle: float) -> void:
 	var index: int = posmod(roundi(angle / (PI / 4.0)), 8)
 	var tier: int = get_reach_tier()
-	_attack_visual.sprite_frames = SWING_FRAMES if tier == 0 else SWING_LONG_FRAMES
+	# One vector swing (M15), drawn larger with the reach tier.
+	_attack_visual.sprite_frames = SWING_FRAMES
+	_attack_visual.extra_scale = REACH_TIERS[tier]
+	_attack_visual.fit_sheet()
 	_attack_visual.show()
 	_attack_visual.stop()
-	_attack_visual.play(StringName("swing_%d" % index if tier == 0 else "swing_%d_%d" % [index, tier]))
+	_attack_visual.play(StringName("swing_%d" % index))
 
 
 ## Which trail size fits the swing's reach: 0 = normal, 1-4 = the Long Reach tiers (nearest).

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnadgpctfm0gm"
-path="res://.godot/imported/swing_long.png-cbdda7863837fd1e885b486f5a1e92d4.ctex"
+uid="uid://cctwrxwdqoyg5"
+path="res://.godot/imported/graveyard_props.png-08b008143edc664dc6993ca81ce6d5ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/effects/swing_long.png"
-dest_files=["res://.godot/imported/swing_long.png-cbdda7863837fd1e885b486f5a1e92d4.ctex"]
+source_file="res://assets/sprites/environment/graveyard_props.png"
+dest_files=["res://.godot/imported/graveyard_props.png-08b008143edc664dc6993ca81ce6d5ca.ctex"]
 
 [params]
 

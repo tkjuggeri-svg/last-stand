@@ -90,15 +90,16 @@ func _test_upgrade(id: StringName) -> void:
 			mods.add_upgrade(data)
 			ok = hitbox.damage == 14
 		"long_reach":
-			var trail: AnimatedSprite2D = hero.get_node("%AttackVisual")
+			var trail: SheetSprite = hero.get_node("%AttackVisual")
 			mods.add_upgrade(data)
 			hero.attack(hero.global_position + Vector2.RIGHT * 50)
-			var one: bool = hitbox.scale.is_equal_approx(Vector2.ONE * 1.15) and trail.animation == &"swing_0_1"
+			# One vector swing (M15), drawn at the reach tier's size (SheetSprite.extra_scale) instead of a sheet per tier.
+			var one: bool = hitbox.scale.is_equal_approx(Vector2.ONE * 1.15) and trail.animation == &"swing_0" and is_equal_approx(trail.extra_scale, 1.15)
 			await _frames(30)
 			mods.add_upgrade(data)
 			hero.attack(hero.global_position + Vector2.RIGHT * 50)
 			label += " (the trail grows with it: %s, %s)" % [one, trail.animation]
-			ok = one and trail.animation == &"swing_0_2" and hero.get_reach_tier() == 2
+			ok = one and trail.animation == &"swing_0" and is_equal_approx(trail.extra_scale, 1.3) and hero.get_reach_tier() == 2
 		"battle_rhythm":
 			mods.add_upgrade(data)
 			ok = is_equal_approx(mods.apply(hero.attack_cooldown, [RunModifiers.HERO_ATTACK_COOLDOWN]), hero.attack_cooldown * 0.85)

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://entities/effects/one_shot_effect.gd" id="1_effect"]
 [ext_resource type="SpriteFrames" path="res://entities/enemies/brute_frames.tres" id="2_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/dust_frames.tres" id="3_dust"]
 [ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="9_sheet"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fx"]
 
 [node name="BruteDeathEffect" type="Node2D"]
 script = ExtResource("1_effect")
@@ -20,3 +21,5 @@ position = Vector2(0, 14)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("3_dust")
 animation = &"dust"
+script = ExtResource("sheet_fx")
+

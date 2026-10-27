@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -15,6 +15,7 @@
 [ext_resource type="SpriteFrames" path="res://entities/effects/ripple_frames.tres" id="13_ripple"]
 [ext_resource type="Script" path="res://entities/hero/hero_ultimate.gd" id="15_ult"]
 [ext_resource type="Resource" path="res://data/heroes/knight.tres" id="14_data"]
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -85,6 +86,7 @@ visible = false
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("6_swing")
 animation = &"swing_0"
+script = ExtResource("sheet_fx")
 
 [node name="HealthComponent" type="Node" parent="."]
 unique_name_in_owner = true
@@ -110,6 +112,7 @@ position = Vector2(0, -14)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("9_spark")
 animation = &"spark"
+script = ExtResource("sheet_fx")
 
 [node name="AttackerLimit" type="Node" parent="."]
 script = ExtResource("10_limit")
