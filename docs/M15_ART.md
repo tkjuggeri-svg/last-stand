@@ -1,6 +1,6 @@
 # M15 — Art Overhaul: scope (proposal)
 
-**Status: proposal, not approved, not implemented.** Numbers are estimates from one Knight test, not measurements of
+**Status: superseded (2026-10-27): the owner stopped all further Pixellab use ("use what we got from the test and thats it") and adopted the test Knight (section 10). Everything below that assumes Pixellab is void; M15 needs a new scope that is code-drawn or hand-drawn.** Original status: proposal, not approved. Numbers are estimates from one Knight test, not measurements of
 every character. Per CLAUDE.md rule 7 nothing is built until the owner answers section 8. Sources: `docs/ART_BACKLOG.md`,
 `ART_DIRECTION.md`, the Pixellab Knight test (`exports/pixellab-test/`, `assets/CREDITS.md`), M14 Q11 (menu and map looks
 were moved here), the owner's playtest of `m13-playtest-4` ("visuals of the ultimates can be upgraded later").
@@ -135,4 +135,4 @@ enemies, towers or heroes, new music or sound.
   back view. Faults: the figure is wide (idle front 69 px, the live one 38) because shield and sword are held out, and `test_visuals` expects the
   hero art to match its 32 px collision circle, so **it is not in the game**; the shield drops out of the walk-north frames; attack, death and
   dash are still the code-drawn ones.
-- Open for you: adopt it anyway (the test's width rule changes, the hitbox stays 32 px), or ask for a narrower pose first (needs credits).
+- **Adopted** (owner: "adopt anyway"): `hero.png` is the Pixellab sheet (80x96 cells; Huntress and Necromancer keep 64x80), `hero` is in `generate_art.gd`'s HAND_DRAWN list, and `test_visuals` now asks only that the hero art is centred and under 76 px wide (the hitbox stays 32 px).

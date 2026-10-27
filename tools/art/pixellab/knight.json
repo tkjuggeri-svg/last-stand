@@ -1,6 +1,6 @@
 {
  "export": "exports/pixellab-test/v3/full",
- "out": "assets/sprites/hero/hero_pixellab.png",
+ "out": "assets/sprites/hero/hero.png",
  "columns": 6,
  "cell": [
   80,

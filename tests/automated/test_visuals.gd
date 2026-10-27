@@ -9,6 +9,7 @@ const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 const ART_SCALE: Vector2 = Vector2(1, 1)
 ## How far (world px) a sprite's solid pixels may differ from its collision size.
 const FIT_TOLERANCE: float = 8.0
+const HERO_MAX_WIDTH: int = 76
 
 var _failures: int = 0
 
@@ -157,8 +158,9 @@ func _test_ghoul_and_effects() -> void:
 ## Solid (non-shadow) pixels of each character's main frame, at world scale, vs. its collision size.
 func _test_art_matches_collision() -> void:
 	var hero_rect: Rect2 = _solid_rect(Layouts.HERO, 0, 0)
-	_check("hero art fits its 32 px collision circle (%s)" % hero_rect.size,
-		absf(hero_rect.size.x - 32.0) <= FIT_TOLERANCE and absf(hero_rect.get_center().x) <= 2.0)
+	# The Pixellab Knight (M15) holds shield and sword out, so its front view is about 70 px wide against the 32 px circle (owner: adopt anyway).
+	_check("hero art is centred and no wider than %d px (%s)" % [HERO_MAX_WIDTH, hero_rect.size],
+		hero_rect.size.x <= HERO_MAX_WIDTH and absf(hero_rect.get_center().x) <= 8.0)
 	var ghoul_rect: Rect2 = _solid_rect(Layouts.GHOUL, 0, 0)
 	_check("ghoul art fits its 24 px collision circle (%s)" % ghoul_rect.size,
 		absf(ghoul_rect.size.x - 24.0) <= FIT_TOLERANCE and absf(ghoul_rect.get_center().x) <= 2.0)
