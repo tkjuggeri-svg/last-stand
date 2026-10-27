@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><defs>
+    
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9c6c9" />
+      <stop offset="0.45" stop-color="#8a999e" />
+      <stop offset="1" stop-color="#4f5b61" />
+    </linearGradient>
+    <linearGradient id="steelDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7d8b90" />
+      <stop offset="1" stop-color="#3c464c" />
+    </linearGradient>
+    <radialGradient id="helm" cx="0.38" cy="0.32" r="0.75">
+      <stop offset="0" stop-color="#d3dde0" />
+      <stop offset="0.45" stop-color="#93a3a8" />
+      <stop offset="1" stop-color="#46525a" />
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6d27a" />
+      <stop offset="0.5" stop-color="#d79c33" />
+      <stop offset="1" stop-color="#8f5a1c" />
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c0393f" />
+      <stop offset="0.6" stop-color="#8e2230" />
+      <stop offset="1" stop-color="#5a1420" />
+    </linearGradient>
+    <linearGradient id="crest" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d4434a" />
+      <stop offset="1" stop-color="#6e1a25" />
+    </linearGradient>
+    <linearGradient id="leather" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a5a37" />
+      <stop offset="1" stop-color="#4a2c1a" />
+    </linearGradient>
+    <linearGradient id="shieldField" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a3a2c" />
+      <stop offset="1" stop-color="#4b1d18" />
+    </linearGradient>
+    <linearGradient id="blade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e9f1f2" />
+      <stop offset="0.5" stop-color="#b3c2c6" />
+      <stop offset="1" stop-color="#6f7f85" />
+    </linearGradient>
+    <linearGradient id="mail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b777d" />
+      <stop offset="1" stop-color="#3b444a" />
+    </linearGradient>
+  </defs>
+
+  <g stroke="#161b1d" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M150 140 q22 -10 44 0 q2 34 -22 58 q-24 -24 -22 -58 z" fill="#5d6a70" />
+    <path d="M155 144 q17 -7 34 0 q1 28 -17 48 q-18 -20 -17 -48 z" fill="url(#shieldField)" stroke-width="2" />
+    
+    <path d="M168 154 q8 -4 10 4 q-4 2 -3 6 q6 2 4 10 q-4 -2 -7 0 q2 6 -3 10 q-1 -6 -5 -8 q3 -4 1 -8 q-4 -2 -2 -8 q2 2 5 -6 z" fill="url(#gold)" stroke="#5a3510" stroke-width="1.5" />
+
+    
+    </g></svg>

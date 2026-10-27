@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://entities/hero/hero.gd" id="1_hero"]
 [ext_resource type="Script" path="res://core/components/hitbox.gd" id="2_hitbox"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://entities/hero/hero_dash.gd" id="12_dash"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/ripple_frames.tres" id="13_ripple"]
 [ext_resource type="Script" path="res://entities/hero/hero_ultimate.gd" id="15_ult"]
+[ext_resource type="PackedScene" path="res://entities/hero/vector/hero_vector_rig.tscn" id="16_rig"]
 [ext_resource type="Resource" path="res://data/heroes/knight.tres" id="14_data"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
@@ -114,6 +115,11 @@ animation = &"spark"
 [node name="AttackerLimit" type="Node" parent="."]
 script = ExtResource("10_limit")
 max_attackers = 2
+
+[node name="VectorRig" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("16_rig")]
+unique_name_in_owner = true
+position = Vector2(0, 21)
+sprite = NodePath("../Sprite")
 
 [node name="Ultimate" type="Node" parent="."]
 unique_name_in_owner = true
