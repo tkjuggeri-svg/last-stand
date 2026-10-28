@@ -51,9 +51,9 @@ const UltimateArt: GDScript = preload("res://tools/art/ultimate_art.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
 ## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
 ## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
-const HAND_DRAWN: Array[String] = ["hero", "ghoul", "hound", "brute", "cultist", "gravelord", "colossus", "lich", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
+const HAND_DRAWN: Array[String] = ["hero", "ghoul", "hound", "brute", "cultist", "gravelord", "colossus", "lich", "huntress_towers", "necro_towers", "huntress", "necromancer", "skeleton", "soul_bolt", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
 	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
-	"explosion", "explosion_large", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
+	"explosion", "explosion_large", "huntress_fx", "ultimate_ring", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 
 
 func _initialize() -> void:
@@ -69,11 +69,13 @@ func _initialize() -> void:
 		"slot_rubble": func() -> void: _save(RubbleArt.new(Layouts.FINE).rubble(), "res://assets/sprites/towers/slot_rubble.png"),
 		"portraits": func() -> void: _save(_sheet(PortraitArt.new(Layouts.FINE).sheet_rows(), PortraitArt.SIZE * Layouts.FINE), "res://assets/sprites/ui/portraits.png"),
 		"hero": func() -> void: _save(_sheet(HeroArt.new(Layouts.FINE).sheet_rows(), Layouts.HERO["size"]), Layouts.HERO["png"]),
-		"huntress": func() -> void: _save(_sheet(HuntressArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS["size"]), Layouts.HUNTRESS["png"]),
-		"necromancer": func() -> void: _save(_sheet(NecromancerArt.new(Layouts.FINE).sheet_rows(), Layouts.NECROMANCER["size"]), Layouts.NECROMANCER["png"]),
-		"skeleton": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).sheet_rows(), Layouts.SKELETON["size"]), Layouts.SKELETON["png"]),
-		"soul_bolt": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).soul_bolt_rows(), Layouts.SOUL_BOLT["size"]), Layouts.SOUL_BOLT["png"]),
-		"huntress_towers": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS["size"]), Layouts.HUNTRESS_TOWERS["png"]),
+		"huntress": func() -> void: _save(_sheet(HuntressArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_PIXEL["size"]), Layouts.HUNTRESS_PIXEL["png"]),
+		"necromancer": func() -> void: _save(_sheet(NecromancerArt.new(Layouts.FINE).sheet_rows(), Layouts.NECROMANCER_PIXEL["size"]), Layouts.NECROMANCER_PIXEL["png"]),
+		"skeleton": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).sheet_rows(), Layouts.SKELETON_PIXEL["size"]), Layouts.SKELETON_PIXEL["png"]),
+		"soul_bolt": func() -> void: _save(_sheet(SkeletonArt.new(Layouts.FINE).soul_bolt_rows(), Layouts.SOUL_BOLT_PIXEL["size"]), Layouts.SOUL_BOLT_PIXEL["png"]),
+		"huntress_tower_evolutions": func() -> void: _save(_sheet(_rows_of(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS_PIXEL, Layouts.HUNTRESS_TOWER_EVOLUTIONS), Layouts.HUNTRESS_TOWER_EVOLUTIONS["size"]), Layouts.HUNTRESS_TOWER_EVOLUTIONS["png"]),
+		"necro_tower_evolutions": func() -> void: _save(_sheet(_rows_of(NecroTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.NECRO_TOWERS_PIXEL, Layouts.NECRO_TOWER_EVOLUTIONS), Layouts.NECRO_TOWER_EVOLUTIONS["size"]), Layouts.NECRO_TOWER_EVOLUTIONS["png"]),
+		"huntress_towers": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.HUNTRESS_TOWERS_PIXEL["size"]), Layouts.HUNTRESS_TOWERS_PIXEL["png"]),
 		"cinder_ghoul": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("cinder_ghoul"), Layouts.CINDER_GHOUL["size"]), Layouts.CINDER_GHOUL["png"]),
 		"scarecrow": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("scarecrow"), Layouts.SCARECROW["size"]), Layouts.SCARECROW["png"]),
 		"pyre_warden": func() -> void: _save(_sheet(VariantArt.new(Layouts.FINE).sheet_rows("pyre_warden"), Layouts.PYRE_WARDEN["size"]), Layouts.PYRE_WARDEN["png"]),
@@ -117,7 +119,7 @@ func _initialize() -> void:
 		"ashen_keep_props": func() -> void: _save(_sheet([BiomePropsArt.new(Layouts.FINE).prop_frames("ashen_keep")], BiomePropsArt.PROP_SIZE * Layouts.FINE), "res://assets/sprites/environment/ashen_keep_props.png"),
 		"ashen_keep_gate": func() -> void: _save(BiomePropsArt.new(Layouts.FINE).gate("ashen_keep"), "res://assets/sprites/environment/ashen_keep_gate.png"),
 		"combo_towers": func() -> void: _save(_sheet(ComboTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.COMBO_TOWERS["size"]), Layouts.COMBO_TOWERS["png"]),
-		"necro_towers": func() -> void: _save(_sheet(NecroTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.NECRO_TOWERS["size"]), Layouts.NECRO_TOWERS["png"]),
+		"necro_towers": func() -> void: _save(_sheet(NecroTowersArt.new(Layouts.FINE).sheet_rows(), Layouts.NECRO_TOWERS_PIXEL["size"]), Layouts.NECRO_TOWERS_PIXEL["png"]),
 		"huntress_fx": func() -> void: _save(_sheet(HuntressTowersArt.new(Layouts.FINE).fx_rows(), Layouts.HUNTRESS_FX["size"]), Layouts.HUNTRESS_FX["png"]),
 		"swing": func() -> void: _save(_sheet(EffectsArt.new().swing_rows(), Layouts.SWING["size"]), Layouts.SWING["png"]),
 		"swing_long": func() -> void: _save(_sheet(EffectsArt.new().swing_long_rows(), Layouts.SWING_LONG["size"]), Layouts.SWING_LONG["png"]),
@@ -187,6 +189,17 @@ func _initialize() -> void:
 		if only.is_empty() or only.has(job_name):
 			(jobs[job_name] as Callable).call()
 	quit()
+
+
+## The rows of a pixel sheet (`rows`, in the order of `source`'s anims) that `target` lists by name, in `target`'s order.
+func _rows_of(rows: Array[Array], source: Dictionary, target: Dictionary) -> Array[Array]:
+	var by_name: Dictionary = {}
+	for anim: Array in source["anims"]:
+		by_name[anim[0]] = int(anim[1])
+	var picked: Array[Array] = []
+	for anim: Array in target["anims"]:
+		picked.append(rows[by_name[anim[0]]])
+	return picked
 
 
 # ---------------------------------------------------------------- UI

@@ -8,7 +8,7 @@ const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 
 ## Sheets whose figures must stay inside their cells: an opaque pixel on a cell's outer edge means a pose overflowed and
 ## bleeds into the neighbouring frame (the floating tower bottoms of the m15-playtest-1 feedback).
-const CLEAR_EDGES: PackedStringArray = ["knight", "ghoul", "hound", "brute", "cultist", "tower", "gravelord", "colossus", "lich"]
+const CLEAR_EDGES: PackedStringArray = ["knight", "ghoul", "hound", "brute", "cultist", "tower", "gravelord", "colossus", "lich", "huntress", "necromancer", "skeleton"]
 const EDGE_WIDTH: int = 2
 const EDGE_ALPHA: float = 0.16
 
@@ -42,7 +42,7 @@ func _check_sheet(sheet: Dictionary) -> void:
 		for index: int in int(anim[2]):
 			var cell: Rect2i = Rect2i(Vector2i(index * size.x, int(anim[1]) * size.y), size)
 			# An effect that plays once may end on a fully faded frame (the spark, the dust): only the last one.
-			var fades_out: bool = id == "effects" and not bool(anim[4]) and index == int(anim[2]) - 1
+			var fades_out: bool = (id == "effects" and not bool(anim[4]) or id == "fx") and index == int(anim[2]) - 1
 			if image.get_region(cell).is_invisible() and not fades_out:
 				empty.append("%s %d" % [anim[0], index])
 	_check("%s: no empty frame %s" % [id, empty], empty.is_empty())
@@ -82,7 +82,7 @@ func _check_sprites() -> void:
 	await process_frame
 	_check("a vector sheet draws at half size with linear filtering", vector_sprite.scale.is_equal_approx(Vector2(0.5, 0.5))
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR)
-	vector_sprite.sprite_frames = load(Layouts.HUNTRESS["frames"])  # still a pixel sheet
+	vector_sprite.sprite_frames = load(Layouts.BLOATER["frames"])  # still a pixel sheet
 	_check("swapping to a pixel sheet goes back to scale 1 and the project's filter", vector_sprite.scale.is_equal_approx(Vector2.ONE)
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_PARENT_NODE)
 	vector_sprite.queue_free()

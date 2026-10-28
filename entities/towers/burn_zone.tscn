@@ -1,5 +1,6 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fx"]
 [ext_resource type="Script" path="res://entities/towers/burn_zone.gd" id="1_zone"]
 [ext_resource type="SpriteFrames" path="res://entities/effects/burn_frames.tres" id="2_frames"]
 
@@ -12,3 +13,4 @@ unique_name_in_owner = true
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("2_frames")
 animation = &"burn"
+script = ExtResource("sheet_fx")

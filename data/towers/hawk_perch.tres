@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_evolution_frames.tres" id="evo_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
@@ -26,6 +27,7 @@ attack_range = 340.0
 
 [sub_resource type="Resource" id="Evo_0"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"falconer"
 display_name = "Falconer"
 description = "Two hawks: every dive strikes two enemies."
@@ -37,6 +39,7 @@ targets = 2
 
 [sub_resource type="Resource" id="Evo_1"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"eye_of_the_hunt"
 display_name = "Eye of the Hunt"
 description = "The hawk marks what it strikes: towers deal 15% more to it for 3 s (the Huntress's Mark)."

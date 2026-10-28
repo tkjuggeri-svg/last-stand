@@ -16,10 +16,15 @@ const DUST: Color = Color("cdbfa8")
 
 
 static func frame(ci: CanvasItem, anim: String, index: int, count: int) -> void:
+	# "trap_layer_fire_2": the id may hold underscores, a trailing number is the level and the word before it the state.
 	var parts: PackedStringArray = anim.split("_")
-	var id: String = parts[0]
-	var state: String = parts[1]
-	var level: int = int(parts[2]) if parts.size() > 2 else 1
+	var level: int = 1
+	if parts[parts.size() - 1].is_valid_int():
+		level = int(parts[parts.size() - 1])
+		parts.remove_at(parts.size() - 1)
+	var state: String = parts[parts.size() - 1]
+	parts.remove_at(parts.size() - 1)
+	var id: String = "_".join(parts)
 	var cycle: float = float(index) / count
 	var progress: float = float(index) / maxi(count - 1, 1)
 	match state:
@@ -45,6 +50,18 @@ static func _paint(id: String, ci: CanvasItem, level: int, t: float, fire: float
 			BrazierTowerPainter.paint(ci, level, t, fire)
 		"ballista":
 			BallistaTowerPainter.paint(ci, level, t, fire)
+		"trap_layer":
+			HuntressTowerPainter.paint_trap_layer(ci, level, t, fire)
+		"hawk_perch":
+			HuntressTowerPainter.paint_hawk_perch(ci, level, t, fire)
+		"watchtower":
+			HuntressTowerPainter.paint_watchtower(ci, level, t, fire)
+		"bone_pit":
+			NecroTowerPainter.paint_bone_pit(ci, level, t, fire)
+		"soul_siphon":
+			NecroTowerPainter.paint_soul_siphon(ci, level, t, fire)
+		"ossuary":
+			NecroTowerPainter.paint_ossuary(ci, level, t, fire)
 
 
 ## The tower grows up from its foot (eased, slightly overshooting) inside a scaffold; the scaffold comes down at the end.

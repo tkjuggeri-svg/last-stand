@@ -5,6 +5,23 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
+## What changed in m15-playtest-3: the Huntress, the Necromancer and their towers in vector
+
+Everything you can pick or build in chapter 1 is now vector art. New in this build:
+- **The Huntress (Wren)** in forest green with an amber-trimmed jerkin and a red-brown scarf, her crossbow with a recoil and a muzzle
+  flash; **the Necromancer (Maren)** in deep teal robes with a gold sash and a skull staff with a pale-teal flame. Both have the
+  Knight's smooth animation set, a dash and a fall. **The Skeleton** minion has teal eyes and a teal glow in its ribs so your
+  skeletons read at a glance (the dead are red and violet).
+- **Their six towers** (Trap Layer, Hawk Perch, Watchtower, Bone Pit, Soul Siphon, Ossuary) with three levels, building and
+  selling, and the effects they use: snares, the hawk, the spiked patch, the soul beam. Their evolutions are still pixel art.
+- **Shot and effect art:** the Huntress's amber bolt, the soul bolt, explosions, the frost nova, burning ground (fire and teal soul
+  fire), the rising soul when something dies, the status marks (frozen, shattered, silenced, the Beacon's ember), and the golden
+  ring of **Last Stand** (the other two ultimates reuse the explosions).
+Please try each hero, build each of their towers and press **Q**. Tell us: are the heroes readable and clearly different from
+each other and from the Knight? Can you tell your skeletons from the enemies at a glance? Is the Huntress's shot readable
+(muzzle flash, bolt colour)? Do the six towers read at their size, and is each level a visible step up? Any frame-rate drop in a
+big fight (the explosions and ground fire are new)?
+
 ## What changed in m15-playtest-2: the new UI, the three bosses, and fixes from your m15-playtest-1 notes
 
 Chapter 1 is now vector art from the first wave to the last boss, and the interface has a new look. Please check:

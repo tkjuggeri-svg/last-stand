@@ -98,3 +98,4 @@ animations = [{
 "name": &"ring_wide",
 "speed": 20.0
 }]
+metadata/sheet_scale = 1.0

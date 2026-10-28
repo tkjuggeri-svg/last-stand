@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_evolution_frames.tres" id="evo_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_frames.tres" id="5_frames"]
 
 [sub_resource type="Resource" id="Tier_2"]
@@ -28,6 +29,7 @@ hero_bonus = 0.1
 
 [sub_resource type="Resource" id="Evo_0"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"signal_fire"
 display_name = "Signal Fire"
 description = "A beacon on the rail: towers within its reach fire 15% faster as well."
@@ -42,6 +44,7 @@ boost_fire_rate = 0.15
 
 [sub_resource type="Resource" id="Evo_1"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"marksmans_roost"
 display_name = "Marksman's Roost"
 description = "A marksman takes the roof: it fires itself, 60 damage every 3 s at long range, and keeps a smaller aura."

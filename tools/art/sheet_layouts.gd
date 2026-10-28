@@ -58,11 +58,22 @@ const HERO_PIXEL_ANIMS: Array = [
 ]
 
 ## The Huntress (M9): the Knight's animation rows with her own sheet (64x80 frames, the Knight's code-drawn size).
-const HUNTRESS: Dictionary = {
+const HUNTRESS_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/hero/huntress.png",
 	"frames": "res://entities/hero/huntress_frames.tres",
 	"size": Vector2i(64, 80),
 	"anims": HERO_PIXEL_ANIMS,
+}
+
+## The Huntress (vector, HuntressPainter; M15 P3): the Knight's rows and timings (the shot's recoil plays 0.2 s from the moment the bolt leaves).
+const HUNTRESS: Dictionary = {
+	"png": "res://assets/sprites/hero/huntress.png",
+	"frames": "res://entities/hero/huntress_frames.tres",
+	"vector": "huntress",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 128) * VECTOR_SCALE,
+	"origin": Vector2(0, 16),
+	"anims": HERO["anims"],
 }
 
 ## Enemy variants (M10, variant_art.gd): the base enemy's sheet layout, their own sheets.
@@ -212,15 +223,26 @@ const PALE_BISHOP: Dictionary = {
 }
 
 ## The Necromancer (M9): the Knight's layout again.
-const NECROMANCER: Dictionary = {
+const NECROMANCER_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/hero/necromancer.png",
 	"frames": "res://entities/hero/necromancer_frames.tres",
 	"size": Vector2i(64, 80),
 	"anims": HERO_PIXEL_ANIMS,
 }
 
+## The Necromancer (vector, NecromancerPainter; M15 P3): the Knight's rows and timings (the cast plays 0.2 s from the moment the bolt leaves).
+const NECROMANCER: Dictionary = {
+	"png": "res://assets/sprites/hero/necromancer.png",
+	"frames": "res://entities/hero/necromancer_frames.tres",
+	"vector": "necromancer",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 128) * VECTOR_SCALE,
+	"origin": Vector2(0, 16),
+	"anims": HERO["anims"],
+}
+
 ## The skeleton minion, side view facing right (the game mirrors it), 32x32 art.
-const SKELETON: Dictionary = {
+const SKELETON_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/minions/skeleton.png",
 	"frames": "res://entities/minions/skeleton_frames.tres",
 	"size": Vector2i(64, 64),
@@ -233,13 +255,43 @@ const SKELETON: Dictionary = {
 }
 
 ## The Necromancer's soul bolt in 8 directions (soul_bolt_0 flies right, then every 45 degrees clockwise).
-const SOUL_BOLT: Dictionary = {
+const SOUL_BOLT_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/hero/soul_bolt.png",
 	"frames": "res://entities/hero/soul_bolt_frames.tres",
 	"size": Vector2i(32, 32),
 	"anims": [
 		["soul_bolt_0", 0, 2, 12.0, true], ["soul_bolt_1", 1, 2, 12.0, true], ["soul_bolt_2", 2, 2, 12.0, true], ["soul_bolt_3", 3, 2, 12.0, true],
 		["soul_bolt_4", 4, 2, 12.0, true], ["soul_bolt_5", 5, 2, 12.0, true], ["soul_bolt_6", 6, 2, 12.0, true], ["soul_bolt_7", 7, 2, 12.0, true],
+	],
+}
+
+## The skeleton minion (vector, SkeletonPainter; M15 P3), side view facing right (the game mirrors it): idle 0.8 s, walk 0.6 s,
+## attack 0.25 s, death 0.6 s. An 80 px cell with the feet 29 px below its centre (the old 64 px cell's feet were 29 below too).
+const SKELETON: Dictionary = {
+	"png": "res://assets/sprites/minions/skeleton.png",
+	"frames": "res://entities/minions/skeleton_frames.tres",
+	"vector": "skeleton",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(80, 80) * VECTOR_SCALE,
+	"origin": Vector2(0, 29),
+	"anims": [
+		["idle", 0, 8, 10.0, true],
+		["walk", 1, 12, 20.0, true],
+		["attack", 2, 8, 32.0, false],
+		["death", 3, 10, 16.0, false],
+	],
+}
+
+## The Necromancer's soul bolt (vector, EffectsPainter; M15 P3): 4 frames per direction at 16 fps (the tail waves).
+const SOUL_BOLT: Dictionary = {
+	"png": "res://assets/sprites/hero/soul_bolt.png",
+	"frames": "res://entities/hero/soul_bolt_frames.tres",
+	"vector": "effects",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(40, 40) * VECTOR_SCALE,
+	"anims": [
+		["soul_bolt_0", 0, 4, 16.0, true], ["soul_bolt_1", 1, 4, 16.0, true], ["soul_bolt_2", 2, 4, 16.0, true], ["soul_bolt_3", 3, 4, 16.0, true],
+		["soul_bolt_4", 4, 4, 16.0, true], ["soul_bolt_5", 5, 4, 16.0, true], ["soul_bolt_6", 6, 4, 16.0, true], ["soul_bolt_7", 7, 4, 16.0, true],
 	],
 }
 
@@ -781,7 +833,9 @@ const PROJECTILES: Dictionary = {
 const EXPLOSION: Dictionary = {
 	"png": "res://assets/sprites/effects/explosion.png",
 	"frames": "res://entities/effects/explosion_frames.tres",
-	"size": Vector2i(112, 112),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 112) * VECTOR_SCALE,
 	"anims": [["explosion", 0, 7, 16.0, false]],
 }
 
@@ -789,7 +843,9 @@ const EXPLOSION: Dictionary = {
 const EXPLOSION_LARGE: Dictionary = {
 	"png": "res://assets/sprites/effects/explosion_large.png",
 	"frames": "res://entities/effects/explosion_large_frames.tres",
-	"size": Vector2i(144, 144),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(144, 144) * VECTOR_SCALE,
 	"anims": [["explosion_large", 0, 7, 16.0, false]],
 }
 
@@ -797,7 +853,9 @@ const EXPLOSION_LARGE: Dictionary = {
 const FROST_NOVA: Dictionary = {
 	"png": "res://assets/sprites/effects/frost_nova.png",
 	"frames": "res://entities/effects/frost_nova_frames.tres",
-	"size": Vector2i(96, 96),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(96, 96) * VECTOR_SCALE,
 	"anims": [["frost_nova", 0, 6, 16.0, false]],
 }
 
@@ -805,6 +863,8 @@ const FROST_NOVA: Dictionary = {
 const ULTIMATE_RING: Dictionary = {
 	"png": "res://assets/sprites/effects/ultimate_ring.png",
 	"frames": "res://entities/effects/ultimate_ring_frames.tres",
+	"vector": "fx",
+	"scale": 1.0,
 	"size": Vector2i(480, 480),
 	"anims": [["ring", 0, 6, 20.0, false], ["ring_wide", 1, 6, 20.0, false]],
 }
@@ -813,7 +873,9 @@ const ULTIMATE_RING: Dictionary = {
 const BURN: Dictionary = {
 	"png": "res://assets/sprites/effects/burn.png",
 	"frames": "res://entities/effects/burn_frames.tres",
-	"size": Vector2i(96, 64),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(96, 64) * VECTOR_SCALE,
 	"anims": [["burn", 0, 4, 10.0, true], ["soul_burn", 1, 4, 10.0, true]],
 }
 
@@ -821,7 +883,9 @@ const BURN: Dictionary = {
 const SOUL_BURST: Dictionary = {
 	"png": "res://assets/sprites/effects/soul_burst.png",
 	"frames": "res://entities/effects/soul_burst_frames.tres",
-	"size": Vector2i(112, 112),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 112) * VECTOR_SCALE,
 	"anims": [["soul_burst", 0, 7, 16.0, false]],
 }
 
@@ -847,7 +911,9 @@ const GRAPESHOT: Dictionary = {
 const STATUS: Dictionary = {
 	"png": "res://assets/sprites/effects/status.png",
 	"frames": "res://entities/effects/status_frames.tres",
-	"size": Vector2i(48, 56),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(48, 56) * VECTOR_SCALE,
 	"anims": [["frozen", 0, 2, 3.0, true], ["shattered", 1, 4, 8.0, true], ["beacon_ember", 2, 4, 8.0, true],
 		["silenced", 3, 4, 6.0, true]],
 }
@@ -855,7 +921,9 @@ const STATUS: Dictionary = {
 const FROST_FX: Dictionary = {
 	"png": "res://assets/sprites/effects/frost.png",
 	"frames": "res://entities/effects/frost_frames.tres",
-	"size": Vector2i(40, 40),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(40, 40) * VECTOR_SCALE,
 	"anims": [["frost_burst", 0, 5, 16.0, false], ["frost_aura", 1, 4, 6.0, true]],
 }
 
@@ -993,10 +1061,10 @@ const GROUNDS: Array[Dictionary] = [
 ## Static vector sheets (a Sprite2D's hframes: one row of cells), baked by bake_sheets.gd; no SpriteFrames.
 const STATIC: Array[Dictionary] = [FORTRESS, GRAVEYARD_PROPS, CRYPT, BUILD_PAD, SLOT_RUBBLE]
 
-const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS]
+const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS, HUNTRESS_TOWER_EVOLUTIONS, NECRO_TOWER_EVOLUTIONS]
 
 ## The Huntress's towers (M9, huntress_towers_art.gd): rows of 4-6 frames, 64x96 each.
-const HUNTRESS_TOWERS: Dictionary = {
+const HUNTRESS_TOWERS_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/towers/huntress_towers.png",
 	"frames": "res://entities/towers/huntress_tower_frames.tres",
 	"size": Vector2i(64, 96),
@@ -1040,8 +1108,66 @@ const HUNTRESS_TOWERS: Dictionary = {
 	],
 }
 
+## The Huntress's three towers (vector, HuntressTowerPainter; M15 P3): like the base five (idle 8, fire 8, build 12, sell 12, levels 2 and 3 idle and fire).
+const HUNTRESS_TOWERS: Dictionary = {
+	"png": "res://assets/sprites/towers/huntress_towers.png",
+	"frames": "res://entities/towers/huntress_tower_frames.tres",
+	"vector": "tower",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 160) * VECTOR_SCALE,
+	"origin": Vector2(0, 56),
+	"anims": [
+		["trap_layer_idle", 0, 8, 10.0, true],
+		["trap_layer_fire", 1, 8, 24.0, false],
+		["trap_layer_build", 2, 12, 20.0, false],
+		["trap_layer_sell", 3, 12, 20.0, false],
+		["hawk_perch_idle", 4, 8, 10.0, true],
+		["hawk_perch_fire", 5, 8, 24.0, false],
+		["hawk_perch_build", 6, 12, 20.0, false],
+		["hawk_perch_sell", 7, 12, 20.0, false],
+		["watchtower_idle", 8, 8, 10.0, true],
+		["watchtower_fire", 9, 8, 24.0, false],
+		["watchtower_build", 10, 12, 20.0, false],
+		["watchtower_sell", 11, 12, 20.0, false],
+		["trap_layer_idle_2", 12, 8, 10.0, true],
+		["trap_layer_fire_2", 13, 8, 24.0, false],
+		["trap_layer_idle_3", 14, 8, 10.0, true],
+		["trap_layer_fire_3", 15, 8, 24.0, false],
+		["hawk_perch_idle_2", 16, 8, 10.0, true],
+		["hawk_perch_fire_2", 17, 8, 24.0, false],
+		["hawk_perch_idle_3", 18, 8, 10.0, true],
+		["hawk_perch_fire_3", 19, 8, 24.0, false],
+		["watchtower_idle_2", 20, 8, 10.0, true],
+		["watchtower_fire_2", 21, 8, 24.0, false],
+		["watchtower_idle_3", 22, 8, 10.0, true],
+		["watchtower_fire_3", 23, 8, 24.0, false],
+	],
+}
+
+## The six evolutions of these towers stay pixel art until P6 (their own sheet).
+const HUNTRESS_TOWER_EVOLUTIONS: Dictionary = {
+	"png": "res://assets/sprites/towers/huntress_tower_evolutions.png",
+	"frames": "res://entities/towers/huntress_tower_evolution_frames.tres",
+	"size": Vector2i(64, 96),
+	"anims": [
+		["bear_pit_idle", 0, 4, 5.0, true],
+		["bear_pit_fire", 1, 4, 12.0, false],
+		["caltrop_field_idle", 2, 4, 5.0, true],
+		["caltrop_field_fire", 3, 4, 12.0, false],
+		["falconer_idle", 4, 4, 5.0, true],
+		["falconer_fire", 5, 4, 12.0, false],
+		["eye_of_the_hunt_idle", 6, 4, 5.0, true],
+		["eye_of_the_hunt_fire", 7, 4, 12.0, false],
+		["signal_fire_idle", 8, 4, 5.0, true],
+		["signal_fire_fire", 9, 4, 12.0, false],
+		["marksmans_roost_idle", 10, 4, 5.0, true],
+		["marksmans_roost_fire", 11, 4, 12.0, false],
+	],
+}
+
+
 ## The Necromancer's towers (M9, necro_towers_art.gd): the Huntress's towers' layout.
-const NECRO_TOWERS: Dictionary = {
+const NECRO_TOWERS_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/towers/necro_towers.png",
 	"frames": "res://entities/towers/necro_tower_frames.tres",
 	"size": Vector2i(64, 96),
@@ -1085,6 +1211,64 @@ const NECRO_TOWERS: Dictionary = {
 	],
 }
 
+## The Necromancer's three towers (vector, NecroTowerPainter; M15 P3): like the base five.
+const NECRO_TOWERS: Dictionary = {
+	"png": "res://assets/sprites/towers/necro_towers.png",
+	"frames": "res://entities/towers/necro_tower_frames.tres",
+	"vector": "tower",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 160) * VECTOR_SCALE,
+	"origin": Vector2(0, 56),
+	"anims": [
+		["bone_pit_idle", 0, 8, 10.0, true],
+		["bone_pit_fire", 1, 8, 24.0, false],
+		["bone_pit_build", 2, 12, 20.0, false],
+		["bone_pit_sell", 3, 12, 20.0, false],
+		["soul_siphon_idle", 4, 8, 10.0, true],
+		["soul_siphon_fire", 5, 8, 24.0, false],
+		["soul_siphon_build", 6, 12, 20.0, false],
+		["soul_siphon_sell", 7, 12, 20.0, false],
+		["ossuary_idle", 8, 8, 10.0, true],
+		["ossuary_fire", 9, 8, 24.0, false],
+		["ossuary_build", 10, 12, 20.0, false],
+		["ossuary_sell", 11, 12, 20.0, false],
+		["bone_pit_idle_2", 12, 8, 10.0, true],
+		["bone_pit_fire_2", 13, 8, 24.0, false],
+		["bone_pit_idle_3", 14, 8, 10.0, true],
+		["bone_pit_fire_3", 15, 8, 24.0, false],
+		["soul_siphon_idle_2", 16, 8, 10.0, true],
+		["soul_siphon_fire_2", 17, 8, 24.0, false],
+		["soul_siphon_idle_3", 18, 8, 10.0, true],
+		["soul_siphon_fire_3", 19, 8, 24.0, false],
+		["ossuary_idle_2", 20, 8, 10.0, true],
+		["ossuary_fire_2", 21, 8, 24.0, false],
+		["ossuary_idle_3", 22, 8, 10.0, true],
+		["ossuary_fire_3", 23, 8, 24.0, false],
+	],
+}
+
+## The six evolutions of these towers stay pixel art until P6 (their own sheet).
+const NECRO_TOWER_EVOLUTIONS: Dictionary = {
+	"png": "res://assets/sprites/towers/necro_tower_evolutions.png",
+	"frames": "res://entities/towers/necro_tower_evolution_frames.tres",
+	"size": Vector2i(64, 96),
+	"anims": [
+		["charnel_gate_idle", 0, 4, 5.0, true],
+		["charnel_gate_fire", 1, 4, 12.0, false],
+		["plague_pit_idle", 2, 4, 5.0, true],
+		["plague_pit_fire", 3, 4, 12.0, false],
+		["soul_harvester_idle", 4, 4, 5.0, true],
+		["soul_harvester_fire", 5, 4, 12.0, false],
+		["wither_beam_idle", 6, 4, 5.0, true],
+		["wither_beam_fire", 7, 4, 12.0, false],
+		["bone_storm_idle", 8, 4, 5.0, true],
+		["bone_storm_fire", 9, 4, 12.0, false],
+		["death_knell_idle", 10, 4, 5.0, true],
+		["death_knell_fire", 11, 4, 12.0, false],
+	],
+}
+
+
 ## The six combo evolutions (M9, combo_towers_art.gd): an idle and a fire row each, 64x96 frames.
 const COMBO_TOWERS: Dictionary = {
 	"png": "res://assets/sprites/towers/combo_towers.png",
@@ -1110,7 +1294,9 @@ const COMBO_TOWERS: Dictionary = {
 const HUNTRESS_FX: Dictionary = {
 	"png": "res://assets/sprites/towers/huntress_fx.png",
 	"frames": "res://entities/towers/huntress_fx_frames.tres",
-	"size": Vector2i(64, 64),
+	"vector": "fx",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 64) * VECTOR_SCALE,
 	"anims": [
 		["snare_armed", 0, 2, 3.0, true],
 		["snare_sprung", 1, 3, 14.0, false],

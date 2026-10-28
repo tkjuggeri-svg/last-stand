@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
+[ext_resource type="Script" path="res://core/components/sheet_sprite.gd" id="sheet_fx"]
 [ext_resource type="Script" path="res://entities/towers/tower.gd" id="1_tower"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/tower_frames.tres" id="2_frames"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="3_light"]
@@ -55,6 +56,7 @@ scale = Vector2(1, 1)
 sprite_frames = ExtResource("4_status")
 animation = &"beacon_ember"
 autoplay = "beacon_ember"
+script = ExtResource("sheet_fx")
 
 [node name="SilenceMark" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
@@ -64,6 +66,7 @@ position = Vector2(-16, -80)
 scale = Vector2(1, 1)
 sprite_frames = ExtResource("4_status")
 animation = &"silenced"
+script = ExtResource("sheet_fx")
 
 [node name="RankMark" type="Label" parent="."]
 unique_name_in_owner = true

@@ -1,6 +1,6 @@
 # M15 P3: the other heroes and their towers in vector (Huntress, Necromancer, Skeleton, six towers, ultimate effects)
 
-**Status: proposal, not approved, not implemented.** Sizes, frame counts and memory numbers are starting points, to be checked
+**Status: approved by the owner on 2026-10-28 ("go": every recommendation); in progress.** Sizes, frame counts and memory numbers are starting points, to be checked
 with the lineup tool, `test_readability` and `perf_report`. Chapter 1's Knight, the five base towers and the three bosses are done
 (`docs/M15_VECTOR.md` P1, `docs/M15_P2_*.md`).
 
@@ -143,4 +143,38 @@ windows, the lanterns) on the Huntress towers, **pale teal** on the Necromancer 
 
 ## 6. Decisions
 
-(Filled in after approval: # / question / decision / from.)
+Approved 2026-10-28 ("go").
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Looks | Huntress green and amber, Necromancer teal, ivory and gold | recommendation |
+| Q2 | Sheet scale | 2 like the Knight, measured afterwards; 1.5 as the fallback | recommendation |
+| Q3 | Frame counts | idle 8, walk 12, attack 8, death 12, dash 4 | recommendation |
+| Q4 | Shared effects | Explosion, frost nova, burn, status, soul burst redrawn in this phase | recommendation |
+| Q5 | Skeleton | Teal eyes and ribs | recommendation |
+| Q6 | Evolutions | Stay pixel until P6 | recommendation |
+| Q7 | Playtest | `m15-playtest-3` at the end | recommendation |
+
+## 7. As built
+
+**Done 2026-10-28.** Painters in `tools/art/vector/`: `huntress_painter.gd`, `necromancer_painter.gd`, `skeleton_painter.gd`,
+`huntress_tower_painter.gd` (Trap Layer, Hawk Perch, Watchtower), `necro_tower_painter.gd` (Bone Pit, Soul Siphon, Ossuary) and
+`fx_painter.gd` (explosions, frost nova and burst, frost aura, soul burst, burning ground in fire and soul fire, the four status
+marks, snare armed and sprung, the spiked patch, the hawk in 8 directions, the ultimates' ring). Added to the effects painter: the
+Huntress's bolt (amber, replacing P1's green) and the Necromancer's soul bolt (4 frames, a teal wisp with a skull head).
+**Layouts:** the heroes at 112 x 128 world px (the Knight's rows and timings, scale 2, 2688 x 3328 sheets: about 36 MB each; the
+Knight's, widened for his swings, is 46 MB; measure with `perf_report` if load or memory matters, the 1.5 fallback of Q2 is
+unused); the skeleton 80 x 80 with the feet 29 px below the centre (the old 64 px cell's); the six towers like the base five
+(112 x 160, 24 rows each); the effects on one `fx` painter at 2 sheet px per world px, except the ultimate ring at 1 (a 480 px cell
+at 2 would make a 5760 px wide sheet). **Evolutions:** the six evolutions of each tower set moved to their own pixel sheets
+(`huntress_tower_evolutions.png`, `necro_tower_evolutions.png`, built by `generate_art.gd` from the old generator rows with
+`_rows_of`) and their own SpriteFrames, which the `TowerEvolution`s name (`frames`), as the base five's do; the old pixel layouts
+live on as `HUNTRESS_TOWERS_PIXEL`, `NECRO_TOWERS_PIXEL`, `HUNTRESS_PIXEL`, `NECROMANCER_PIXEL`, `SKELETON_PIXEL`,
+`SOUL_BOLT_PIXEL`. **Scenes:** the minion, the burn zone, snare, explosion, frost nova and burst, the tower's boost and silence marks
+and the enemy's frost, frozen and shatter marks use `SheetSprite`; `UltimateRunner` makes its ring and impact sprites as
+`SheetSprite`s. `TowerPainter` now reads ids with underscores (`trap_layer_fire_2`). **Learned (again):** the cell-edge check found
+the Necromancer's tall staff and flame glow (shortened to about her height), the Huntress's fall (tipped less) and the skeleton
+sheet needed an 80 px cell. **Not done:** `tests/tools/m15_lineup.gd --towers=` still lists only the base five (use the staging in
+the review notes or extend it); the Huntress's Mark glyph over an enemy is not drawn (the proposal's 2.1 mentioned it; no such
+sprite exists in the game, marked enemies are tinted); the Frost tower's evolutions, the combo towers and the evolution FX stay
+pixel for P6.

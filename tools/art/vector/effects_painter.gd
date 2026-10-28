@@ -115,6 +115,8 @@ static func _shot(ci: CanvasItem, anim: String, index: int, count: int) -> void:
 		_harpoon(ci, angle)
 	elif anim.begins_with("bolt_"):
 		_bolt(ci, angle)
+	elif anim.begins_with("soul_bolt_"):
+		_soul_bolt(ci, angle, spin)
 	elif anim == "cannonball":
 		_cannonball(ci, 6.0, spin)
 	elif anim == "cannonball_heavy":
@@ -158,12 +160,33 @@ static func _harpoon(ci: CanvasItem, angle: float) -> void:
 	ci.draw_line(-d * 11.0, -d * 15.0 + s * 3.0, Color(0.85, 0.7, 0.4, 0.8), 1.0, true)
 
 
+## The Huntress's crossbow bolt (M15 P3): a short dark shaft with an amber head, amber fletching and a thin amber streak.
 static func _bolt(ci: CanvasItem, angle: float) -> void:
 	var d: Vector2 = Vector2.from_angle(angle)
 	var s: Vector2 = d.orthogonal()
-	VectorStyle.draw_glow(ci, Color("a8f070"), Vector2.ZERO, 10.0, 0.55)
-	VectorPaint.fill(ci, PackedVector2Array([d * 9.0, d * 1.0 + s * 2.2, -d * 7.0, d * 1.0 - s * 2.2]), Color("d8ffb0"))
-	ci.draw_line(-d * 5.0, d * 7.0, Color.WHITE, 1.2, true)
+	VectorStyle.draw_glow(ci, Color("ffb050"), d * 3.0, 9.0, 0.5)
+	ci.draw_line(-d * 12.0, -d * 6.0, Color(AMBER, 0.5), 1.0, true)
+	ci.draw_line(-d * 7.0, d * 6.0, Color(VectorStyle.INK, 0.9), 3.0, true)
+	ci.draw_line(-d * 7.0, d * 6.0, Color("6a4a30"), 1.8, true)
+	VectorPaint.fill(ci, PackedVector2Array([d * 11.0, d * 5.0 + s * 2.4, d * 4.0, d * 5.0 - s * 2.4]), Color("ffd890"))
+	for k: float in [-1.0, 1.0]:
+		VectorPaint.fill(ci, PackedVector2Array([-d * 7.0, -d * 7.0 + d * 3.4 + s * k * 2.6, -d * 7.0 + d * 4.4]), AMBER)
+	ci.draw_line(-d * 3.0, d * 8.0, Color(1, 1, 1, 0.6), 0.8, true)
+
+
+## The Necromancer's soul bolt: a pale-teal wisp with a small skull for a head and a wavering tail.
+static func _soul_bolt(ci: CanvasItem, angle: float, spin: float) -> void:
+	var d: Vector2 = Vector2.from_angle(angle)
+	var s: Vector2 = d.orthogonal()
+	var teal: Color = Color("8ff0dc")
+	VectorStyle.draw_glow(ci, teal, d * 1.0, 11.0, 0.55)
+	for k: int in 3:
+		var wave: float = sin(spin * TAU + k * 1.6) * 2.4
+		VectorPaint.strand(ci, -d * 3.0 + s * (k - 1) * 1.6, -d * (9.0 + k * 3.0) + s * wave, -d * (14.0 + k * 3.5) + s * wave * 1.5, 4.0 - k * 0.8, Color(teal, 0.8 - k * 0.15))
+	VectorPaint.painted(ci, VectorStyle.ellipse(d * 2.0, 5.2, 4.6, 14), Color("e2fff6"), 1.4, 0.4, 1.0)
+	for k: float in [-1.0, 1.0]:
+		ci.draw_circle(d * 3.2 + s * k * 1.9, 1.1, Color("123a3a"), true, -1.0, true)
+	ci.draw_circle(d * 0.0, 0.6, Color("123a3a"), true, -1.0, true)
 
 
 static func _cannonball(ci: CanvasItem, radius: float, spin: float) -> void:

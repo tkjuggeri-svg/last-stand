@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="TowerData" format=3]
 
 [ext_resource type="PackedScene" path="res://entities/towers/tower.tscn" id="1_scene"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/necro_tower_evolution_frames.tres" id="evo_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/combo_tower_frames.tres" id="combo_frames"]
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
@@ -35,6 +36,7 @@ minion_cap = 4
 
 [sub_resource type="Resource" id="Evo_0"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"charnel_gate"
 display_name = "Charnel Gate"
 description = "Its dead are bone knights: 150 HP and a heavier blow, and enemies in reach attack them first."
@@ -47,6 +49,7 @@ minion_cap = 4
 
 [sub_resource type="Resource" id="Evo_1"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"plague_pit"
 display_name = "Plague Pit"
 description = "Its skeletons burst when they fall: 50 damage to every enemy around them."

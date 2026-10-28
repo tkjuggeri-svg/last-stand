@@ -125,7 +125,7 @@ func _rise(data: UltimateData) -> void:
 
 ## One-shot visuals (display only): a ring of light around the hero (its size follows Wider Circle), a blast where an impact lands.
 func _show_ring(at: Vector2, scale_of_radius: float) -> void:
-	var ring: AnimatedSprite2D = AnimatedSprite2D.new()
+	var ring: AnimatedSprite2D = SheetSprite.new()
 	ring.sprite_frames = RING_FRAMES
 	ring.z_index = -1
 	ring.position = _effects.to_local(at)
@@ -135,7 +135,7 @@ func _show_ring(at: Vector2, scale_of_radius: float) -> void:
 
 
 func _flash(at: Vector2) -> void:
-	var sprite: AnimatedSprite2D = AnimatedSprite2D.new()
+	var sprite: AnimatedSprite2D = SheetSprite.new()
 	sprite.sprite_frames = VOLLEY_FRAMES
 	sprite.position = _effects.to_local(at)
 	sprite.animation_finished.connect(sprite.queue_free)

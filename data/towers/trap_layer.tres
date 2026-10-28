@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_evolution_frames.tres" id="evo_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/huntress_tower_frames.tres" id="5_frames"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/pinned_prey.tres" id="8_syn"]
@@ -28,6 +29,7 @@ snare_hold = 1.5
 
 [sub_resource type="Resource" id="Evo_0"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"bear_pit"
 display_name = "Bear Pit"
 description = "Iron jaws: a snare holds 2.5 s, and even a boss for 0.8 s."
@@ -41,6 +43,7 @@ boss_hold = 0.8
 
 [sub_resource type="Resource" id="Evo_1"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"caltrop_field"
 display_name = "Caltrop Field"
 description = "A sprung snare becomes a spiked patch for 3 s: 12 damage a second, and enemies on it are slowed."

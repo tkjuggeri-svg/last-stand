@@ -70,7 +70,7 @@ func _test_data() -> void:
 		for anim: String in ["idle", "fire", "build", "sell", "idle_2", "fire_2", "idle_3", "fire_3"]:
 			ok = ok and data.frames.has_animation(StringName("%s_%s" % [data.id, anim]))
 		for evolution: TowerEvolution in data.evolutions:
-			ok = ok and data.frames.has_animation(StringName("%s_idle" % evolution.id)) and data.frames.has_animation(StringName("%s_fire" % evolution.id))
+			ok = ok and evolution.frames.has_animation(StringName("%s_idle" % evolution.id)) and evolution.frames.has_animation(StringName("%s_fire" % evolution.id))
 		ok = ok and TowerIcons.for_level(data, 3) != null and TowerIcons.for_evolution(data, data.evolutions[1]) != null
 	_check("every look has its art and an icon", ok)
 

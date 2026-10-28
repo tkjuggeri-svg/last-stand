@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://resources/tower_data.gd" id="2_data"]
 [ext_resource type="Script" path="res://resources/tower_tier.gd" id="3_tier"]
 [ext_resource type="Script" path="res://resources/tower_evolution.gd" id="4_evo"]
+[ext_resource type="SpriteFrames" path="res://entities/towers/necro_tower_evolution_frames.tres" id="evo_frames"]
 [ext_resource type="SpriteFrames" path="res://entities/towers/necro_tower_frames.tres" id="5_frames"]
 [ext_resource type="Script" path="res://resources/tower_synergy.gd" id="7_syn_script"]
 [ext_resource type="Resource" path="res://data/towers/synergies/bone_meal.tres" id="8_syn"]
@@ -30,6 +31,7 @@ souls_needed = 8
 
 [sub_resource type="Resource" id="Evo_0"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"bone_storm"
 display_name = "Bone Storm"
 description = "The blast also raises 3 skeletons."
@@ -44,6 +46,7 @@ minion = ExtResource("m_pit_skeleton_3")
 
 [sub_resource type="Resource" id="Evo_1"]
 script = ExtResource("4_evo")
+frames = ExtResource("evo_frames")
 id = &"death_knell"
 display_name = "Death Knell"
 description = "The blast also slows every enemy it reaches to half speed for 3 s."

@@ -4,35 +4,35 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fmoq7"]
 atlas = ExtResource("1_357at")
-region = Rect2(0, 0, 96, 64)
+region = Rect2(0, 0, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ler8v"]
 atlas = ExtResource("1_357at")
-region = Rect2(96, 0, 96, 64)
+region = Rect2(192, 0, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ts567"]
 atlas = ExtResource("1_357at")
-region = Rect2(192, 0, 96, 64)
+region = Rect2(384, 0, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_na4ag"]
 atlas = ExtResource("1_357at")
-region = Rect2(288, 0, 96, 64)
+region = Rect2(576, 0, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qt3su"]
 atlas = ExtResource("1_357at")
-region = Rect2(0, 64, 96, 64)
+region = Rect2(0, 128, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wclff"]
 atlas = ExtResource("1_357at")
-region = Rect2(96, 64, 96, 64)
+region = Rect2(192, 128, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_c657e"]
 atlas = ExtResource("1_357at")
-region = Rect2(192, 64, 96, 64)
+region = Rect2(384, 128, 192, 128)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qd6al"]
 atlas = ExtResource("1_357at")
-region = Rect2(288, 64, 96, 64)
+region = Rect2(576, 128, 192, 128)
 
 [resource]
 animations = [{
@@ -70,3 +70,4 @@ animations = [{
 "name": &"soul_burn",
 "speed": 10.0
 }]
+metadata/sheet_scale = 2.0
