@@ -156,11 +156,19 @@ func _dismantle(tower_data: TowerData) -> void:
 
 func _process(_delta: float) -> void:
 	update_hover(get_global_mouse_position())
+	if _prompt.visible:
+		_update_prompt()  # an evolution under the hero's feet renames the tower at once
 
 
 func _update_prompt() -> void:
 	if _prompt != null:
-		_prompt.text = "Rubble" if locked else ("E  Build" if is_empty() else "E  " + tower.data.display_name)
+		_prompt.text = "Rubble" if locked else ("E  Build" if is_empty() else "E  " + _tower_name())
+
+
+## What the tower standing here is called: its evolution's name once it has evolved (a Sniper's Nest, not an Archer Tower).
+func _tower_name() -> String:
+	var evolution: TowerEvolution = tower.get_evolution()
+	return evolution.display_name if evolution != null else tower.data.display_name
 
 
 func _draw() -> void:

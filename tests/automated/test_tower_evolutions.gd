@@ -73,6 +73,9 @@ func _test_rules() -> void:
 	_check("evolving costs its price (%d)" % cost, builder.evolve(slot, 1) and economy.get_gold() == 0 and tower.invested == invested + cost)
 	_check("...and makes it level 4 with the branch's stats", tower.get_level() == 4 and tower.get_evolution() == choice
 		and tower.get_stats().damage == choice.damage and is_equal_approx(tower.get_attack_range(), choice.attack_range))
+	slot.set_highlighted(true)
+	_check("the slot's prompt names the evolution (%s), not the base tower" % choice.display_name, (slot.get_node("%Prompt") as Label).text == "E  " + choice.display_name)
+	slot.set_highlighted(false)
 	economy.earn(5000, Economy.Source.REFUND)
 	_check("the choice is permanent: no second evolution, no other branch", not builder.evolve(slot, 0) and not builder.evolve(slot, 1)
 		and tower.get_evolution() == choice and builder.evolution_options(slot).is_empty())
