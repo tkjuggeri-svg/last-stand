@@ -5,6 +5,36 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
+## What changed in m15-playtest-2: the new UI, the three bosses, and fixes from your m15-playtest-1 notes
+
+Chapter 1 is now vector art from the first wave to the last boss, and the interface has a new look. Please check:
+
+**Fixes from your notes**
+1. **The Knight carries his sword lowered** (point to the ground) and raises it only for a swing, instead of holding it up
+   all the time. Does the swing still look right?
+2. **Floating tower bottoms are fixed.** Some towers showed another tower's base floating above them (a sprite-sheet cell was
+   too small); the same bleed is fixed on the Cultist, Ghoul, Brute and the fortress. Tell us if you still see anything
+   hovering above a tower or an enemy.
+3. **The bottom-left HUD is much smaller** (bars without word labels, about a third narrower, the enemy count is now in the
+   top-left wave panel). Is it small enough now? Is anything missing that you used to read there?
+
+**The new interface** (the pixel font and frames are gone): smooth fonts (Cinzel for titles, Alegreya Sans for text), dark
+panels with a gold rim and rounded corners, gold corner brackets on every pop-up (pause, settings, upgrade choice, merchant,
+events, Game Over, Victory), smaller upgrade and merchant cards with a gold glow for rare cards and a violet one for relics,
+a narrower build menu and a smaller tip panel. Please tell us: is it still bland? Is any text too small to read on your
+screen (the body text is 18 px, the secondary text 16)? Is any screen cramped or cut off? (The Interface size setting still
+works.)
+
+**The three chapter-1 bosses, in vector** (more detail, smoother motion, side views the pixel art never had):
+- **The Gravelord** (wave 5, and an elite): a tall gaunt gravedigger-lord with a shovel-scythe and a green lantern.
+- **The Bone Colossus** (wave 10): a hulking heap of bone with a violet soul in its ribs. Its brace, charge and stun are
+  easy to tell apart? It breaks apart when it dies.
+- **The Lich Warden** (wave 15): a hovering robed sorcerer-king with a crystal staff; its ward draws a rune ring.
+- **The warning rings are vector too:** dashed rune rings, grave mounds where the dead will rise, and the chevron lane
+  arrow before a charge; wards show a shimmering bubble.
+Tell us: are they readable against the ground (not lost in the dark)? Do you recognise each mechanic from its animation?
+Do any look wrong or odd from the side (the Colossus's profile is the least polished)? Frame rate during the boss waves?
+
 ## What changed in m15-playtest-1: the vector look (chapter 1)
 
 This build is a test of a **new art direction**: the game redrawn as smooth vector art (painted shading, glows, warm
