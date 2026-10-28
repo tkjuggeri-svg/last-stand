@@ -51,7 +51,7 @@ const UltimateArt: GDScript = preload("res://tools/art/ultimate_art.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
 ## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
 ## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
-const HAND_DRAWN: Array[String] = ["hero", "ghoul", "hound", "brute", "cultist", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
+const HAND_DRAWN: Array[String] = ["hero", "ghoul", "hound", "brute", "cultist", "gravelord", "colossus", "lich", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
 	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
 	"explosion", "explosion_large", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 
@@ -126,9 +126,9 @@ func _initialize() -> void:
 		"brute": func() -> void: _save(_sheet(BruteArt.new(Layouts.FINE).sheet_rows(), Layouts.BRUTE["size"]), Layouts.BRUTE["png"]),
 		"cultist": func() -> void: _save(_sheet(CultistArt.new(Layouts.FINE).sheet_rows(), Layouts.CULTIST["size"]), Layouts.CULTIST["png"]),
 		"cultist_fx": func() -> void: _save(_sheet(CultistArt.new(Layouts.FINE).fx_rows(), Layouts.CULTIST_FX["size"]), Layouts.CULTIST_FX["png"]),
-		"gravelord": func() -> void: _save(_sheet(GravelordArt.new(Layouts.FINE).sheet_rows(), Layouts.GRAVELORD["size"]), Layouts.GRAVELORD["png"]),
-		"colossus": func() -> void: _save(_sheet(ColossusArt.new(Layouts.FINE).sheet_rows(), Layouts.COLOSSUS["size"]), Layouts.COLOSSUS["png"]),
-		"lich": func() -> void: _save(_sheet(LichArt.new(Layouts.FINE).sheet_rows(), Layouts.LICH["size"]), Layouts.LICH["png"]),
+		"gravelord": func() -> void: _save(_sheet(GravelordArt.new(Layouts.FINE).sheet_rows(), Layouts.GRAVELORD_PIXEL["size"]), Layouts.GRAVELORD_PIXEL["png"]),
+		"colossus": func() -> void: _save(_sheet(ColossusArt.new(Layouts.FINE).sheet_rows(), Layouts.COLOSSUS_PIXEL["size"]), Layouts.COLOSSUS_PIXEL["png"]),
+		"lich": func() -> void: _save(_sheet(LichArt.new(Layouts.FINE).sheet_rows(), Layouts.LICH_PIXEL["size"]), Layouts.LICH_PIXEL["png"]),
 		"bloater": func() -> void: _save(_sheet(BloaterArt.new(false, Layouts.FINE).sheet_rows(), Layouts.BLOATER["size"]), Layouts.BLOATER["png"]),
 		"bloatling": func() -> void: _save(_sheet(BloaterArt.new(true, Layouts.FINE).sheet_rows(), Layouts.BLOATLING["size"]), Layouts.BLOATLING["png"]),
 		"mire_priest": func() -> void: _save(_sheet(MirePriestArt.new(Layouts.FINE).sheet_rows(), Layouts.MIRE_PRIEST["size"]), Layouts.MIRE_PRIEST["png"]),

@@ -81,8 +81,8 @@ const BLACK_KNIGHT: Dictionary = {
 const FALLEN_MARSHAL: Dictionary = {
 	"png": "res://assets/sprites/enemies/fallen_marshal.png",
 	"frames": "res://entities/enemies/bosses/fallen_marshal_frames.tres",
-	"size": COLOSSUS["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": COLOSSUS["anims"],
+	"size": COLOSSUS_PIXEL["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": COLOSSUS_PIXEL["anims"],
 }
 
 const CINDER_GHOUL: Dictionary = {
@@ -102,8 +102,8 @@ const SCARECROW: Dictionary = {
 const PYRE_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/pyre_warden.png",
 	"frames": "res://entities/enemies/bosses/pyre_warden_frames.tres",
-	"size": LICH["size"] + Vector2i(16, 28),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": LICH["anims"],
+	"size": LICH_PIXEL["size"] + Vector2i(16, 28),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": LICH_PIXEL["anims"],
 }
 
 const FROST_WRAITH: Dictionary = {
@@ -123,8 +123,8 @@ const RIME_BRUTE: Dictionary = {
 const WINTER_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/winter_warden.png",
 	"frames": "res://entities/enemies/bosses/winter_warden_frames.tres",
-	"size": LICH["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": LICH["anims"],
+	"size": LICH_PIXEL["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": LICH_PIXEL["anims"],
 }
 
 const BURROWER: Dictionary = {
@@ -165,8 +165,8 @@ const RUBBLE_BRUTE: Dictionary = {
 const QUARRY_COLOSSUS: Dictionary = {
 	"png": "res://assets/sprites/enemies/quarry_colossus.png",
 	"frames": "res://entities/enemies/bosses/quarry_colossus_frames.tres",
-	"size": COLOSSUS["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": COLOSSUS["anims"],
+	"size": COLOSSUS_PIXEL["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": COLOSSUS_PIXEL["anims"],
 }
 
 const STALKER: Dictionary = {
@@ -186,8 +186,8 @@ const HOLLOW_TREANT: Dictionary = {
 const HOLLOW_STAG: Dictionary = {
 	"png": "res://assets/sprites/enemies/hollow_stag.png",
 	"frames": "res://entities/enemies/bosses/hollow_stag_frames.tres",
-	"size": GRAVELORD["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": GRAVELORD["anims"],
+	"size": GRAVELORD_PIXEL["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": GRAVELORD_PIXEL["anims"],
 }
 
 const CHORISTER: Dictionary = {
@@ -207,8 +207,8 @@ const INQUISITOR: Dictionary = {
 const PALE_BISHOP: Dictionary = {
 	"png": "res://assets/sprites/enemies/pale_bishop.png",
 	"frames": "res://entities/enemies/bosses/pale_bishop_frames.tres",
-	"size": LICH["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": LICH["anims"],
+	"size": LICH_PIXEL["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": LICH_PIXEL["anims"],
 }
 
 ## The Necromancer (M9): the Knight's layout again.
@@ -438,7 +438,13 @@ const CULTIST_FX: Dictionary = {
 ## Bosses: 64x64 frames (feet on art row 58, boss_art_kit.gd). Attack: 6 wind-up frames at 10 fps =
 ## the data's 0.6 s, then the blow. Abilities: "cast" is 6 frames at 5 fps = the 1.2 s telegraph.
 ## The Gravelord (wave 5): raises the dead.
-const GRAVELORD: Dictionary = {
+## The three chapter-1 bosses' vector sheets (M15 P2, docs/M15_P2_BOSSES.md) bake at 1.5 sheet px per world px in 140 px
+## cells (the Colossus's 19 rows would pass the 4096 px texture height at 2); the pixel variants keep the old 128 px size.
+const BOSS_SCALE: float = 1.5
+const BOSS_CELL: Vector2i = Vector2i(210, 210)
+const BOSS_PIXEL_SIZE: Vector2i = Vector2i(128, 128)
+
+const GRAVELORD_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/gravelord.png",
 	"frames": "res://entities/enemies/bosses/gravelord_frames.tres",
 	"size": Vector2i(128, 128),
@@ -459,8 +465,34 @@ const GRAVELORD: Dictionary = {
 	],
 }
 
+## The Gravelord (vector, GravelordPainter; M15 P2): idle 1.0 s, walk 1.0 s, attack 0.8 s (the blow lands on frame 9, 0.6 s: the
+## data's wind-up), cast 1.2 s (the pose holds through the telegraph), death 0.8 s. 140 px cells, feet 58 px below the centre.
+const GRAVELORD: Dictionary = {
+	"png": "res://assets/sprites/enemies/gravelord.png",
+	"frames": "res://entities/enemies/bosses/gravelord_frames.tres",
+	"vector": "gravelord",
+	"scale": BOSS_SCALE,
+	"size": BOSS_CELL,
+	"origin": Vector2(0, 58),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 15.0, false],
+		["attack_up", 8, 12, 15.0, false],
+		["attack_side", 9, 12, 15.0, false],
+		["cast_down", 10, 12, 10.0, false],
+		["cast_up", 11, 12, 10.0, false],
+		["cast_side", 12, 12, 10.0, false],
+	],
+}
+
 ## The Bone Colossus (wave 10): braces (looped through the 1.0 s telegraph), charges, is stunned.
-const COLOSSUS: Dictionary = {
+const COLOSSUS_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/colossus.png",
 	"frames": "res://entities/enemies/bosses/colossus_frames.tres",
 	"size": Vector2i(128, 128),
@@ -487,8 +519,40 @@ const COLOSSUS: Dictionary = {
 	],
 }
 
+## The Bone Colossus (vector, ColossusPainter; M15 P2): the brace loops through the data's 1.0 s telegraph (8 frames at 16 fps
+## = 0.5 s, looped), the slam lands on frame 9 (0.6 s) of its 0.8 s, charge and stun loop, death 0.8 s. 140 px cells, feet 58 px below the centre.
+const COLOSSUS: Dictionary = {
+	"png": "res://assets/sprites/enemies/colossus.png",
+	"frames": "res://entities/enemies/bosses/colossus_frames.tres",
+	"vector": "colossus",
+	"scale": BOSS_SCALE,
+	"size": BOSS_CELL,
+	"origin": Vector2(0, 58),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 15.0, false],
+		["attack_up", 8, 12, 15.0, false],
+		["attack_side", 9, 12, 15.0, false],
+		["brace_down", 10, 8, 16.0, true],
+		["brace_up", 11, 8, 16.0, true],
+		["brace_side", 12, 8, 16.0, true],
+		["charge_down", 13, 8, 24.0, true],
+		["charge_up", 14, 8, 24.0, true],
+		["charge_side", 15, 8, 24.0, true],
+		["stun_down", 16, 8, 12.0, true],
+		["stun_up", 17, 8, 12.0, true],
+		["stun_side", 18, 8, 12.0, true],
+	],
+}
+
 ## The Lich Warden (wave 15): wards the enemies around it.
-const LICH: Dictionary = {
+const LICH_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/lich.png",
 	"frames": "res://entities/enemies/bosses/lich_frames.tres",
 	"size": Vector2i(128, 128),
@@ -506,6 +570,32 @@ const LICH: Dictionary = {
 		["cast_down", 10, 6, 5.0, false],
 		["cast_up", 11, 6, 5.0, false],
 		["cast_side", 12, 6, 5.0, false],
+	],
+}
+
+## The Lich Warden (vector, LichPainter; M15 P2): the cast holds through the ward's telegraph (12 frames at 10 fps = 1.2 s), the
+## staff thrust lands on frame 9 (0.6 s) of its 0.8 s, death 0.8 s. 140 px cells, feet (the shadow) 58 px below the centre.
+const LICH: Dictionary = {
+	"png": "res://assets/sprites/enemies/lich.png",
+	"frames": "res://entities/enemies/bosses/lich_frames.tres",
+	"vector": "lich",
+	"scale": BOSS_SCALE,
+	"size": BOSS_CELL,
+	"origin": Vector2(0, 58),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 15.0, false],
+		["attack_up", 8, 12, 15.0, false],
+		["attack_side", 9, 12, 15.0, false],
+		["cast_down", 10, 12, 10.0, false],
+		["cast_up", 11, 12, 10.0, false],
+		["cast_side", 12, 12, 10.0, false],
 	],
 }
 

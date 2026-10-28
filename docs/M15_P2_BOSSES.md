@@ -1,6 +1,6 @@
 # M15 P2: the chapter-1 bosses in vector (Gravelord, Bone Colossus, Lich Warden)
 
-**Status: proposal, not approved, not implemented.** Numbers (sizes, frame counts, sheet dimensions) are starting points to be
+**Status: approved by the owner on 2026-10-28 ("go": every recommendation); in progress.** Numbers (sizes, frame counts, sheet dimensions) are starting points to be
 checked with the lineup tool, `test_readability` and `perf_report`. The UI half of P2 is done (`docs/M15_P2_UI.md`).
 
 ## 0. Summary
@@ -37,7 +37,7 @@ checked with the lineup tool, `test_readability` and `perf_report`. The UI half 
 | The Bone Colossus | 10 | 2200 | braces (1.0 s, red arrow on the lane), charges along it, then is stunned 1.6 s | 128x128, pixel | 19: + brace, charge, stun |
 | The Lich Warden | 15 | 3600 | wards nearby enemies (a ring grows, then a shield) | 128x128, pixel | 13: idle, walk, death, attack, cast |
 
-Facts the art must respect: `sprite_offset` and `body_radius` in the `EnemyData` (Gravelord r 24, Colossus r 28, Lich r 22);
+Facts the art must respect: `sprite_offset` and `body_radius` in the `EnemyData` (Gravelord r 24, Colossus r 28, Lich r 22; the feet sit about 57 px below the cell centre);
 `health_bar_y` (the boss bar is in the HUD, no bar over its head); the abilities play `cast`, `brace`, `charge` and `stun`
 by name (`_play("cast")`); `EnemyRoles` gives bosses a violet glow; the Colossus's charge and stun are readable states, so
 their silhouettes must differ clearly from walking.
@@ -49,7 +49,7 @@ their silhouettes must differ clearly from walking.
 | | Gravelord | Bone Colossus | Lich Warden |
 |---|---|---|---|
 | Idea | a tall gaunt gravedigger-lord: tattered black cloak with a high collar, bone-white skull face under a rusted iron circlet, a long shovel-scythe, a hanging lantern with green fire | a hulking heap of fused bones and ribs with a slab-like skull, spiked shoulder tusks, oversized bone fists, glowing violet eye-pits | a thin robed sorcerer-king: layered purple-black robes with silver trim, a floating crown of shards, a staff topped with a violet crystal, a hovering skull face with violet flames |
-| Height (world px) | ~64 (was ~52) | ~66 (was ~56) | ~62 (was ~50) |
+| Height (world px) | ~115 (was ~120 incl. the raised tool) | ~115 wide-bodied (was ~118) | ~108 (was ~108) |
 | Silhouette | tall and narrow, cloak spreading at the bottom | wide and low, arms to the ground | tall, hovering (no feet), robe hem fading |
 | Light | green lantern glow on the cloak, warm rim | warm rim on the bone, violet in the eyes | violet crystal glow on the robe, cold rim |
 | Walk | slow stride, cloak sways, shovel dragged | heavy swaying lumber, knuckles drag | glides, robe trails, bob |
@@ -125,7 +125,7 @@ The cell is 140 (was 128) so the 1.25x figure and its swing do not touch the edg
 | # | Question | Recommendation |
 |---|---|---|
 | Q1 | Sheet scale 1.5 for the bosses (scale 2 passes the 4096 px height for the Colossus)? | **Yes**, 1.5, 140 px cells. The linear filter hides the difference, and VRAM stays near 95 MB for the three (checked with `perf_report`). |
-| Q2 | Figures up to 1.25x the old height (Q2 of M15)? | **Yes**: about 64-66 px tall; collision, `body_radius` and the camera stay. |
+| Q2 | Figures up to 1.25x the old height (Q2 of M15, which says "up to")? | **Yes in principle, but the old bosses are already about 110-120 px tall** (measured on the pixel sheets: the Gravelord 121 px, the Colossus 118, the Lich 108 with a 128 px cell), so the vector figures keep that height and gain detail, not size; collision, `body_radius` and the camera stay. |
 | Q3 | Frame counts as in 2.2 (idle 8, walk 12, attack/cast/death 12, special 8)? | **Yes.** |
 | Q4 | Keep the variants (Quarry Colossus, Winter Warden, ...) pixel until their phase? | **Yes**; they keep their own sheets and the old size constants. |
 | Q5 | Redraw the telegraph marker, summon graves and ward bubble now? | **Yes**: a vector boss on pixel rings would be the one jarring piece left in chapter 1. |
@@ -134,4 +134,30 @@ The cell is 140 (was 128) so the 1.25x figure and its swing do not touch the edg
 
 ## 6. Decisions
 
-(Filled in after approval: # / question / decision / from.)
+Approved 2026-10-28 ("go").
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Sheet scale | 1.5 for the three boss sheets, 140 px cells | recommendation |
+| Q2 | Figure size | Keep the old height (~110-120 px), more detail; "up to 1.25x" not used | recommendation (corrected by measurement) |
+| Q3 | Frame counts | idle 8, walk 12, attack/cast/death 12, brace/charge/stun 8 | recommendation |
+| Q4 | Variants | Stay pixel until P4/P5 | recommendation |
+| Q5 | Effects | Telegraph marker, summon graves, ward bubble redrawn | recommendation |
+| Q6 | Designs | As in 2.1 | recommendation |
+| Q7 | Playtest | `m15-playtest-2` at the end | recommendation |
+
+## 7. As built
+
+**Done 2026-10-28.** `tools/art/vector/{gravelord,colossus,lich}_painter.gd` (on `VectorPaint`/`VectorFrames`, registered in
+`bake_sheets.gd`), the layouts `GRAVELORD`, `COLOSSUS` and `LICH` in `sheet_layouts.gd` (`BOSS_SCALE` 1.5, `BOSS_CELL` 210
+sheet px = 140 world px, feet 58 px below the centre; the pixel layouts live on as `*_PIXEL` for the variants and the
+dormant pixel jobs, which are in `HAND_DRAWN`). Frame counts as designed (2.2); the blow lands on frame 9 of 12 at
+15 fps (0.6 s), which `test_bosses` checks. **Corrections to the proposal:** the old bosses are ~110-120 px tall (the
+draft said ~64), so the vector figures keep that height (body ~94 px, ~120 with the raised tool or fists); sheets are
+2520 x 2730 (Gravelord, Lich) and 2520 x 3990 (Colossus). **Learned:** a painter's overflow bleeds into the neighbouring
+cell, so `test_vector_art` now checks that nothing opaque touches a cell's outer 2 px on every converted sheet (it found
+the Gravelord's soft glows, the Colossus's flying arms and the Lich's rune ring); long tools are foreshortened when swung
+level (`reach`), as the cell is narrower than the tool is long. **Effects:** `TelegraphMarker` (rings, the new `GRAVE` shape
+for the Gravelord's summon spots, the chevron lane arrow) and `ShieldBubble` are vector (they serve every chapter's
+bosses); the three death-effect scenes use `SheetSprite`. The Colossus's side views are the least refined (a narrow boxy
+skull in profile); tell me if they bother you in play.

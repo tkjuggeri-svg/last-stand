@@ -51,7 +51,7 @@ func _begin_telegraph() -> void:
 	for i: int in count:
 		var spot: Vector2 = enemy.global_position + Vector2.from_angle(turn + TAU * (i + 0.5) / count) * spread
 		_spots.append(spot)
-		_markers.append(_marker(TelegraphMarker.Shape.RING, spot, RING_COLOR, ring_radius))
+		_markers.append(_marker(TelegraphMarker.Shape.GRAVE, spot, RING_COLOR, ring_radius))
 	_play("cast")
 
 

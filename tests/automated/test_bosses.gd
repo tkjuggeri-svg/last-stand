@@ -12,6 +12,8 @@ const GHOUL: EnemyData = preload("res://data/enemies/ghoul.tres")
 const GRAVELORD: EnemyData = preload("res://data/enemies/gravelord.tres")
 const COLOSSUS: EnemyData = preload("res://data/enemies/colossus.tres")
 const LICH: EnemyData = preload("res://data/enemies/lich.tres")
+## The vector bosses' attack is 12 frames at 15 fps whose blow lands on frame 9 (0.6 s: the data's wind-up).
+const STRIKE_FRAME: int = 9
 const HERO_AWAY: Vector2 = Vector2(380, 380)
 const ABILITY_ANIMS: Dictionary = {"The Gravelord": ["cast"], "The Bone Colossus": ["brace", "charge", "stun"], "The Lich Warden": ["cast"]}
 
@@ -35,7 +37,7 @@ func _test_data() -> void:
 			for facing: String in ["down", "up", "side"]:
 				anims = anims and frames.has_animation(StringName("%s_%s" % [state, facing]))
 		anims = anims and frames.has_animation(&"death")
-		var strike: float = 6.0 / frames.get_animation_speed(&"attack_down")
+		var strike: float = float(STRIKE_FRAME) / frames.get_animation_speed(&"attack_down")
 		_check("%s: a boss with %d HP (> 20 Ghouls), a mechanic, every animation, its blow on the %.1f s wind-up"
 			% [boss.display_name, boss.max_health, boss.attack_windup],
 			boss.is_boss and boss.max_health >= GHOUL.max_health * 20 and boss.ability != null and anims

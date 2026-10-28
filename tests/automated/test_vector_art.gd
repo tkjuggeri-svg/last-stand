@@ -6,6 +6,12 @@ extends SceneTree
 
 const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 
+## Sheets whose figures must stay inside their cells: an opaque pixel on a cell's outer edge means a pose overflowed and
+## bleeds into the neighbouring frame (the floating tower bottoms of the m15-playtest-1 feedback).
+const CLEAR_EDGES: PackedStringArray = ["knight", "ghoul", "hound", "brute", "cultist", "tower", "gravelord", "colossus", "lich"]
+const EDGE_WIDTH: int = 2
+const EDGE_ALPHA: float = 0.16
+
 var _failures: int = 0
 
 
@@ -40,8 +46,33 @@ func _check_sheet(sheet: Dictionary) -> void:
 			if image.get_region(cell).is_invisible() and not fades_out:
 				empty.append("%s %d" % [anim[0], index])
 	_check("%s: no empty frame %s" % [id, empty], empty.is_empty())
+	if CLEAR_EDGES.has(id):
+		var touching: Array[String] = _edge_touching(image, sheet)
+		_check("%s: every figure stays inside its cell %s" % [id, touching.slice(0, 6)], touching.is_empty())
 	var frames: SpriteFrames = load(sheet["frames"])
 	_check("%s: its SpriteFrames carry the sheet scale %s" % [id, sheet["scale"]], is_equal_approx(float(frames.get_meta(SheetSprite.SHEET_SCALE, 1.0)), float(sheet["scale"])))
+
+
+func _edge_touching(image: Image, sheet: Dictionary) -> Array[String]:
+	var size: Vector2i = sheet["size"]
+	var found: Array[String] = []
+	for anim: Array in sheet["anims"]:
+		for index: int in int(anim[2]):
+			var origin: Vector2i = Vector2i(index * size.x, int(anim[1]) * size.y)
+			if _opaque_on_edge(image, origin, size):
+				found.append("%s %d" % [anim[0], index])
+	return found
+
+
+func _opaque_on_edge(image: Image, origin: Vector2i, size: Vector2i) -> bool:
+	for step: int in EDGE_WIDTH:
+		for x: int in size.x:
+			if image.get_pixel(origin.x + x, origin.y + step).a > EDGE_ALPHA or image.get_pixel(origin.x + x, origin.y + size.y - 1 - step).a > EDGE_ALPHA:
+				return true
+		for y: int in size.y:
+			if image.get_pixel(origin.x + step, origin.y + y).a > EDGE_ALPHA or image.get_pixel(origin.x + size.x - 1 - step, origin.y + y).a > EDGE_ALPHA:
+				return true
+	return false
 
 
 func _check_sprites() -> void:
