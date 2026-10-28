@@ -165,3 +165,10 @@ panel, the panel container 268 px wide (was 420). **Q4 as built:** the ultimate 
 (it was already hidden otherwise); "hide until charging" would hide it never, so nothing changed. **Step 2 (done 2026-10-28):** upgrade and merchant cards 236x236 with a gold (rare) or violet (relic) rim and glow (`CardPanelRare`, `CardPanelRelic`, `UiColors.card_panel`), the build menu 650 px wide with 196 px cards, a compact tip panel. **Left for steps 3-4 (and what step 1 noted for step 2):** the
 build menu and upgrade cards are still roomy (the cards are about 450 px wide and mostly empty), modal flourishes and the card
 rarity glow, the title's buttons, tips, and removing the pixel font and its textures.
+
+**Steps 3-4 (done 2026-10-28):** `ModalFrame` (`ui/theme/modal_frame.gd`, a StyleBox drawing the flat panel, a hairline inner
+rule and gold corner brackets with diamonds) frames every `ModalPanel` (pause, settings, choices, merchant, events, Game Over,
+Victory, feedback). The front-end screens, the feedback box and the map labels needed nothing beyond the theme (checked with
+`ui_shots`). The boss bar is a flat violet fill. **Retired:** the pixel font, the framed-panel, card, button and bar PNGs, and
+their generator code in `ui_art.gd` (it keeps only the 10x10 HUD icons). The title's key art, portraits and icons stay as
+they are until P7. No playtest build was made for this part: P2's three bosses are still to do, and the phase's build follows them.

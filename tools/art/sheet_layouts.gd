@@ -1096,9 +1096,6 @@ const RELIC_ICON_DIR: String = "res://assets/sprites/ui/relics/"
 const BONE_PNG: String = "res://assets/sprites/effects/bone_pickup.png"
 ## Run upgrade icons, one PNG per upgrade id (32x32, pre-scaled 2x).
 const UPGRADE_ICON_DIR: String = "res://assets/sprites/ui/upgrades/"
-## The pixel font (bitmap FontFile, 12 px cell incl. outline; the theme draws it at 24 = 2x).
-const FONT: String = "res://assets/fonts/pixel_font.res"
-const FONT_ATLAS_PNG: String = "res://assets/fonts/pixel_font_atlas.png"
 
 const GROUND_PNG: String = "res://assets/sprites/environment/prototype_arena_ground.png"
 ## The Drowned Marsh (chapter 2): its baked ground, props (Sprite2D, hframes 8; MarshArt.PROPS) and the

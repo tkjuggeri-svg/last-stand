@@ -171,15 +171,17 @@ Master palette: `tools/art/palette.gd`. Each material is a ramp from deep shadow
 
 ## 12. UI
 
-- **Pixel font:** original proportional 5×7 glyphs with a 1 px dark outline baked into every glyph
-  (`ui_art.gd`), a 12 px bitmap cell drawn at exactly **24 px (2×)**; titles at 48/72 (4×/6×). Never
-  use other sizes (the font only scales by whole multiples). The theme is project-wide
-  (`gui/theme/custom`), so world labels use it too.
-- **Frames:** dark panels with a bevelled gold-bronze rim and rivets (`panel.png`), stone-rimmed
-  cards (`CardPanel` variation) and buttons (gold rim on hover/focus). UI textures are saved
-  pre-scaled to 2× because StyleBoxTexture/TextureRect draw texels 1:1.
-- **Bars:** bronze-rimmed trough; fortress = steel blue, hero = red (life). Icons (keep, helm, coin,
-  foundation, skull) lead every HUD row.
+- **Fonts (M15 P2):** Alegreya Sans (body 18 px, secondary 16) and Cinzel (titles 32, headers 20), both SIL OFL
+  (`assets/fonts/`, `assets/CREDITS.md`), any size works. The theme is project-wide (`gui/theme/custom`), so world
+  labels use it too, with a thin dark outline for legibility over the arena.
+- **Frames:** vector `StyleBoxFlat` panels: `#14111c` at 92 %, a 2 px gold-bronze rim, rounded corners, a soft shadow.
+  Modals (`ModalPanel`) add a hairline inner rule and gold corner brackets (`ModalFrame`); cards (`CardPanel`) have a
+  rarity edge and glow (`CardPanelRare` gold, `CardPanelRelic` violet); buttons are flat slate with a gold rim, the
+  primary one ember-red. The theme is built from one table by `tools/art/build_ui_theme.gd` (never edit
+  `game_theme.tres` by hand).
+- **Bars:** a dark trough with a thin rim and a flat fill with a light edge; fortress = steel blue, hero = red (life),
+  dash = cyan, ultimate = gold, boss = violet. Icons (keep, helm, coin, foundation, skull) lead every HUD row; the bottom-left
+  panel is kept small (about 315 px wide) so it hides little of the arena.
 - Gold always uses the coin icon and the gold colour `#efd07a`.
 - Layout: HUD bottom-left, notifications top-right, build panel bottom-right; nothing in the middle.
 - **One style for every screen (M8.5):** style through the theme's **type variations**, never per-node

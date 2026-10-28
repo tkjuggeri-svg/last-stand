@@ -193,21 +193,6 @@ func _initialize() -> void:
 
 func _ui() -> void:
 	var ui: RefCounted = UiArt.new()
-	var font: FontFile = ui.build_font(Layouts.FONT_ATLAS_PNG)
-	var err: Error = ResourceSaver.save(font, Layouts.FONT)
-	print("%s %s" % ["saved" if err == OK else "FAILED", Layouts.FONT])
-	var dark: Color = Color("16121b")
-	_save(ui.panel(P.GOLD, dark, true), Layouts.UI_DIR + "panel.png")
-	_save(ui.panel(P.STONE.slice(1, 6), Color("1e1a24"), false), Layouts.UI_DIR + "card.png")
-	_save(ui.panel(P.STONE.slice(1, 6), Color("2e2a38"), false), Layouts.UI_DIR + "button.png")
-	_save(ui.panel(P.GOLD, Color("3a3446"), false), Layouts.UI_DIR + "button_hover.png")
-	_save(ui.panel(P.GOLD, Color("1c1822"), false), Layouts.UI_DIR + "button_pressed.png")
-	_save(ui.panel(P.STONE.slice(0, 5), Color("1c1a22"), false), Layouts.UI_DIR + "button_disabled.png")
-	_save(ui.bar_frame(), Layouts.UI_DIR + "bar_frame.png")
-	_save(ui.bar_fill([Color("1d2a4a"), Color("2f4a7a"), Color("4a6fa8"), Color("86aedb")]), Layouts.UI_DIR + "bar_fortress.png")
-	_save(ui.bar_fill([Color("2c0f17"), Color("85282e"), Color("c0453a"), Color("ec7a5c")]), Layouts.UI_DIR + "bar_hero.png")
-	_save(ui.bar_fill([Color("102438"), Color("2f6596"), Color("5aa0c8"), Color("b8e4f0")]), Layouts.UI_DIR + "bar_dash.png")
-	_save(ui.bar_fill([Color("1f0d2a"), Color("4a1f5e"), Color("7d3a8f"), Color("c27ad0")]), Layouts.UI_DIR + "bar_boss.png")
 	for kind: String in ["keep", "helm", "skull", "slot", "dash"]:
 		_save(ui.icon(kind), Layouts.UI_DIR + "icon_%s.png" % kind)
 

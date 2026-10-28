@@ -91,8 +91,14 @@ func _panels(theme: Theme) -> void:
 	theme.set_stylebox("panel", "PanelContainer", panel)
 	var modal: StyleBoxFlat = _flat(PANEL_BG, RIM, 2, 8, 8)
 	_margins(modal, 28, 18)
+	var frame: StyleBox = (load("res://ui/theme/modal_frame.gd") as GDScript).new()
+	frame.set("base", modal)
+	frame.content_margin_left = 30.0
+	frame.content_margin_right = 30.0
+	frame.content_margin_top = 22.0
+	frame.content_margin_bottom = 22.0
 	theme.set_type_variation("ModalPanel", "PanelContainer")
-	theme.set_stylebox("panel", "ModalPanel", modal)
+	theme.set_stylebox("panel", "ModalPanel", frame)
 	var card: StyleBoxFlat = _flat(CARD_BG, RIM_DIM, 2, 6, 3)
 	_margins(card, 10, 8)
 	theme.set_type_variation("CardPanel", "PanelContainer")
