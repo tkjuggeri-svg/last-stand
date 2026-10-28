@@ -1,6 +1,6 @@
 # M15 P2: the vector UI (HUD, menus, cards, font)
 
-**Status: proposal, not approved, not implemented.** Sizes and numbers are starting points, to be tuned in the `ui_shots`
+**Status: approved by the owner on 2026-10-28 ("do the recommended": every recommendation); step 1 in progress.** Sizes and numbers are starting points, to be tuned in the `ui_shots`
 review. The three chapter-1 bosses are the other half of P2 and get their own proposal; this one is only the UI.
 
 ## 0. Summary
@@ -142,4 +142,26 @@ before (6 rows, ~420 wide)           after (4 rows, ~230 wide)
 
 ## 6. Decisions
 
-(Filled in after approval: # / question / decision / from.)
+Approved 2026-10-28.
+
+| # | Question | Decision | From |
+|---|---|---|---|
+| Q1 | Base size | 18 px body, 16 px secondary | recommendation |
+| Q2 | Fonts | Cinzel (titles) + Alegreya Sans (body), SIL OFL | recommendation |
+| Q3 | Pixel font | Retired, kept only on screens not yet redone until the end of M15 | recommendation |
+| Q4 | Ultimate bar | Shown only while charging or ready | recommendation |
+| Q5 | HUD see-through | Current `SeeThrough` rule at 60 % opacity | recommendation |
+| Q6 | UI scale | Range stays 70-120 %, the smaller look is the new 100 % | recommendation |
+| Q7 | Order | UI before the bosses | recommendation |
+
+## 7. As built
+
+**Step 1 (theme + HUD), done 2026-10-28.** `tools/art/build_ui_theme.gd` writes `ui/theme/game_theme.tres` (one table of
+colours and sizes): StyleBoxFlat panels, buttons, fields and bars with the gold-bronze rim and a soft shadow, Alegreya Sans
+(18/16) and Cinzel (32 titles, 20 headers, variable weight); the type variation names are unchanged, so every screen
+restyled at once and `ui_shots` shows no overflow. Fonts and licences are in `assets/fonts/`, logged in `assets/CREDITS.md`.
+HUD: flat gradient-free fills with a light rim, icon-only bars, bars 112x12, "13 / 16" for slots, the enemy count in the wave
+panel, the panel container 268 px wide (was 420). **Q4 as built:** the ultimate row shows whenever the hero has an ultimate
+(it was already hidden otherwise); "hide until charging" would hide it never, so nothing changed. **Left for steps 2-4:** the
+build menu and upgrade cards are still roomy (the cards are about 450 px wide and mostly empty), modal flourishes and the card
+rarity glow, the title's buttons, tips, and removing the pixel font and its textures.

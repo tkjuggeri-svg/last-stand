@@ -34,6 +34,9 @@ func _ready() -> void:
 	else:
 		var fill: StyleBoxFlat = StyleBoxFlat.new()
 		fill.bg_color = fill_color
+		fill.set_corner_radius_all(2)
+		fill.set_border_width_all(1)
+		fill.border_color = fill_color.lightened(0.35)
 		_bar.add_theme_stylebox_override("fill", fill)
 
 

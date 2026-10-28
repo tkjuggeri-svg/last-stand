@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://ui/widgets/health_bar.tscn" id="2_bar"]
@@ -9,10 +9,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_helm.png" id="7_helm"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_skull.png" id="8_skull"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_slot.png" id="9_slot"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_fortress.png" id="10_fill_f"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_hero.png" id="11_fill_h"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/icon_dash.png" id="12_dash"]
-[ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_dash.png" id="13_fill_d"]
 [ext_resource type="Texture2D" path="res://assets/sprites/ui/bar_boss.png" id="14_fill_b"]
 [ext_resource type="PackedScene" path="res://ui/hud/services_panel.tscn" id="15_services"]
 [ext_resource type="Script" path="res://ui/widgets/see_through.gd" id="16_see_through"]
@@ -25,12 +22,29 @@ expand_margin_top = -2.0
 expand_margin_right = -2.0
 expand_margin_bottom = -2.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dash"]
-texture = ExtResource("13_fill_d")
-expand_margin_left = -2.0
-expand_margin_top = -2.0
-expand_margin_right = -2.0
-expand_margin_bottom = -2.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dash"]
+bg_color = Color(0.45, 0.78, 0.9, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.75, 0.92, 0.98, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ultimate"]
+bg_color = Color(0.9, 0.7, 0.25, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.9, 0.55, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [node name="HUD" type="CanvasLayer" groups=["ui_scaled"]]
 layer = 2
@@ -40,8 +54,8 @@ script = ExtResource("1_hud")
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -200.0
-offset_right = 420.0
+offset_top = -150.0
+offset_right = 268.0
 grow_vertical = 0
 mouse_filter = 2
 theme = ExtResource("4_theme")
@@ -68,7 +82,6 @@ layout_mode = 2
 title = "Fortress"
 show_title = false
 fill_color = Color(0.45, 0.55, 0.8, 1)
-fill_texture = ExtResource("10_fill_f")
 icon = ExtResource("6_keep")
 
 [node name="HeroRow" type="HBoxContainer" parent="Margin/Panel/Bars"]
@@ -82,7 +95,6 @@ layout_mode = 2
 title = "Hero"
 show_title = false
 fill_color = Color(0.75, 0.27, 0.23, 1)
-fill_texture = ExtResource("11_fill_h")
 icon = ExtResource("7_helm")
 
 [node name="LivesIcons" type="HBoxContainer" parent="Margin/Panel/Bars/HeroRow"]
@@ -113,18 +125,18 @@ text = "Dash"
 
 [node name="DashBar" type="ProgressBar" parent="Margin/Panel/Bars/DashRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(132, 16)
+custom_minimum_size = Vector2(112, 12)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_styles/fill = SubResource("StyleBoxTexture_dash")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dash")
 max_value = 1.0
 value = 1.0
 show_percentage = false
 
 [node name="DashLabel" type="Label" parent="Margin/Panel/Bars/DashRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 0)
+custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.89, 0.94, 1)
 text = "Ready"
@@ -149,18 +161,17 @@ text = "Ultimate"
 
 [node name="UltimateBar" type="ProgressBar" parent="Margin/Panel/Bars/UltimateRow"]
 unique_name_in_owner = true
-modulate = Color(1, 0.82, 0.45, 1)
-custom_minimum_size = Vector2(132, 16)
+custom_minimum_size = Vector2(112, 12)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
-theme_override_styles/fill = SubResource("StyleBoxTexture_dash")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ultimate")
 max_value = 1.0
 show_percentage = false
 
 [node name="UltimateLabel" type="Label" parent="Margin/Panel/Bars/UltimateRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(84, 0)
+custom_minimum_size = Vector2(72, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
 text = "0%"
@@ -228,7 +239,7 @@ mouse_filter = 2
 theme_override_constants/separation = 6
 
 [node name="WavePanel" type="PanelContainer" parent="WaveMargin/WaveColumn"]
-custom_minimum_size = Vector2(232, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -286,7 +297,7 @@ layout_mode = 2
 
 [node name="UpgradeIcons" type="HFlowContainer" parent="WaveMargin/WaveColumn"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(232, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 2
@@ -295,7 +306,7 @@ script = ExtResource("rw_row")
 
 [node name="RelicIcons" type="HFlowContainer" parent="WaveMargin/WaveColumn"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(232, 0)
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/h_separation = 2
