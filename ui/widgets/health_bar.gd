@@ -7,6 +7,8 @@ extends HBoxContainer
 ## Pixel-art fill (stretched); when set it replaces fill_color.
 @export var fill_texture: Texture2D
 @export var icon: Texture2D
+## Hides the word when the icon already says it (the HUD's bottom-left panel keeps to a small footprint).
+@export var show_title: bool = true
 
 var _health: HealthComponent
 
@@ -18,6 +20,7 @@ var _health: HealthComponent
 
 func _ready() -> void:
 	_title_label.text = title
+	_title_label.visible = show_title
 	_icon.texture = icon
 	_icon.visible = icon != null
 	if fill_texture != null:

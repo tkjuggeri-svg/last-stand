@@ -17,8 +17,13 @@ const LEATHER: Color = Color("6b4428")
 const SCALE: float = 1.2
 ## The sword arm: where the shoulder is per facing, the resting angle, and a swing's start and end angles (radians).
 const SHOULDERS: Dictionary = {"down": Vector2(10, -27), "up": Vector2(-10, -27), "side": Vector2(2, -27)}
-const REST: Dictionary = {"down": -1.25, "up": -1.9, "side": -1.25}
-const SWINGS: Dictionary = {"down": [-1.1, 2.5], "up": [-2.7, -0.3], "side": [-2.3, 0.95]}
+## The sword hangs lowered at his side, point toward the ground, and is raised only for a swing. The up swing is
+## written past TAU so lerping from the rest angle turns the short way through "up".
+const REST: Dictionary = {"down": 1.0, "up": 2.14, "side": 1.0}
+const SWINGS: Dictionary = {"down": [-1.1, 2.5], "up": [3.58, 5.98], "side": [-2.3, 0.95]}
+## Shares of an attack: the wind-up from rest, the cut, then the sword settles back to rest.
+const WIND_UP: float = 0.3
+const RECOVER: float = 0.75
 const DASH_LEAN: float = 0.28
 
 
@@ -44,7 +49,7 @@ static func frame(ci: CanvasItem, anim: String, index: int, count: int) -> void:
 			var lean: float = DASH_LEAN if facing == "side" else 0.0
 			_streaks(ci, facing)
 			ci.draw_set_transform(Vector2.ZERO, lean, Vector2(1, 0.97))
-			_with_sword(ci, {"facing": facing, "walk": true, "phase": cycle}, float(REST[facing]) + 0.4)
+			_with_sword(ci, {"facing": facing, "walk": true, "phase": cycle}, float(REST[facing]) - 0.3 * (1.0 if facing != "up" else -1.0))
 			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		_:
 			var walking: bool = state == "walk"
@@ -52,6 +57,18 @@ static func frame(ci: CanvasItem, anim: String, index: int, count: int) -> void:
 			ci.draw_set_transform(Vector2(0, bob), 0.0, Vector2.ONE)
 			_with_sword(ci, {"facing": facing, "walk": walking, "phase": cycle}, float(REST[facing]) + (sin(cycle * TAU) * 0.08 if walking else 0.0))
 			ci.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+
+static func _attack_angle(rest: float, from: float, to: float, progress: float) -> float:
+	if progress < WIND_UP:
+		return lerpf(rest, from, _ease_out(progress / WIND_UP))
+	if progress < RECOVER:
+		return lerpf(from, to, _ease_out((progress - WIND_UP) / (RECOVER - WIND_UP)))
+	return lerpf(to, rest, (progress - RECOVER) / (1.0 - RECOVER))
+
+
+static func _ease_out(t: float) -> float:
+	return 1.0 - pow(1.0 - t, 3.0)
 
 
 ## The body and the sword arm in the right order (the arm is behind the body when he faces away).

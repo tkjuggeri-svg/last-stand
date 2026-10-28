@@ -289,9 +289,8 @@ Builds for 3-5 new players, or a free itch.io demo; feedback comes in with the F
 **M0-M13 are built; M14 is in progress (scope approved, `docs/M14_SCOPE.md`); M15 (the whole game in vector art, `docs/M15_VECTOR.md`, approved 2026-10-27) is in progress on branch `m15-vector`: P0 (the pipeline) and P1 (the chapter-1 slice: Knight, Ghoul, Hound, Brute, Cultist, the five base towers, the core effects, the graveyard, the fortress) are built; the playtest build is `m15-playtest-1`; M16 is planned.** The latest
 playtest build is **`m13-playtest-5`** (the `m13-playtest-4` fixes: music plays, the Chronicle on top, a shorter HUD bar; the Council
 runs the shop; Pressure tests and the Hasty Waves tick) (tag on `art/handoff-integration`, not merged into `main`; zips in
-`builds/`, including `-dev-` zips with F12; what to test is at the top of `PLAYTEST.md`). **Waiting for the owner's playtest of
-that build**: it decides chapter 1's row steps and chapter 2's economy (the bot, which dies in chapter 1, cannot judge them).
-M15 (art with Pixellab) needs its own scope approved first.
+`builds/`, including `-dev-` zips with F12; what to test is at the top of `PLAYTEST.md`). **The owner played it (2026-10-28):
+chapter 1's row steps and chapter 2's economy are fine as they are; no change needed.**
 
 Also open: the **look test** on branch `look-test` (variants A, B, C of a "HD-2D" look on the graveyard; report in
 `docs/LOOK_TEST.md`; C was brightened and its bottom strip removed on request). The owner has not chosen a direction; none of it

@@ -21,7 +21,7 @@ const HERO: Dictionary = {
 	"frames": "res://entities/hero/hero_frames.tres",
 	"vector": "knight",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(112, 128) * VECTOR_SCALE,
+	"size": Vector2i(144, 128) * VECTOR_SCALE,
 	"origin": Vector2(0, 16),
 	"anims": [
 		["idle_down", 0, 8, 10.0, true],
@@ -291,7 +291,7 @@ const GHOUL: Dictionary = {
 	"frames": "res://entities/enemies/ghoul_frames.tres",
 	"vector": "ghoul",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(80, 80) * VECTOR_SCALE,
+	"size": Vector2i(80, 112) * VECTOR_SCALE,
 	"origin": Vector2(0, 23),
 	"anims": [
 		["idle_down", 0, 8, 10.0, true],
@@ -331,7 +331,7 @@ const HOUND: Dictionary = {
 	"frames": "res://entities/enemies/hound_frames.tres",
 	"vector": "hound",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(72, 64) * VECTOR_SCALE,
+	"size": Vector2i(88, 80) * VECTOR_SCALE,
 	"origin": Vector2(0, 22),
 	"anims": [
 		["idle_down", 0, 8, 12.0, true],
@@ -371,7 +371,7 @@ const BRUTE: Dictionary = {
 	"frames": "res://entities/enemies/brute_frames.tres",
 	"vector": "brute",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(112, 112) * VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
 	"origin": Vector2(0, 38),
 	"anims": [
 		["idle_down", 0, 8, 8.0, true],
@@ -411,7 +411,7 @@ const CULTIST: Dictionary = {
 	"frames": "res://entities/enemies/cultist_frames.tres",
 	"vector": "cultist",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(64, 64) * VECTOR_SCALE,
+	"size": Vector2i(64, 96) * VECTOR_SCALE,
 	"origin": Vector2(0, 25),
 	"anims": [
 		["idle_down", 0, 8, 12.0, true],
@@ -563,7 +563,7 @@ const TOWERS: Dictionary = {
 	"frames": "res://entities/towers/tower_frames.tres",
 	"vector": "tower",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(96, 120) * VECTOR_SCALE,
+	"size": Vector2i(112, 160) * VECTOR_SCALE,
 	"origin": Vector2(0, 56),
 	"anims": [
 		["archer_idle", 0, 8, 10.0, true],
@@ -1052,7 +1052,7 @@ const FORTRESS: Dictionary = {
 	"png": "res://assets/sprites/fortress/fortress.png",
 	"vector": "fortress",
 	"scale": VECTOR_SCALE,
-	"size": Vector2i(192, 192) * VECTOR_SCALE,
+	"size": Vector2i(192, 208) * VECTOR_SCALE,
 	"origin": Vector2(0, 32),
 	"columns": 4,
 	"frames_count": 4,
