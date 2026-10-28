@@ -97,6 +97,18 @@ func _panels(theme: Theme) -> void:
 	_margins(card, 10, 8)
 	theme.set_type_variation("CardPanel", "PanelContainer")
 	theme.set_stylebox("panel", "CardPanel", card)
+	_rarity_card(theme, "CardPanelRare", GOLD, Color(0.94, 0.78, 0.35, 0.28))
+	_rarity_card(theme, "CardPanelRelic", RELIC, Color(0.7, 0.5, 1.0, 0.3))
+
+
+## A card whose edge and glow show its rarity (rare: gold, relic: violet).
+func _rarity_card(theme: Theme, name: StringName, edge: Color, glow: Color) -> void:
+	var box: StyleBoxFlat = _flat(CARD_BG, edge, 2, 6, 8)
+	box.shadow_color = glow
+	box.shadow_offset = Vector2.ZERO
+	_margins(box, 10, 8)
+	theme.set_type_variation(name, "CardPanel")
+	theme.set_stylebox("panel", name, box)
 
 
 func _buttons(theme: Theme) -> void:

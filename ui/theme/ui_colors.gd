@@ -22,3 +22,10 @@ static func card_title(data: UpgradeData) -> StringName:
 	if data is RelicData:
 		return &"RelicLabel"
 	return &"HeaderLabel" if data.rarity == UpgradeData.Rarity.RARE else &""
+
+
+## The card panel variation for an upgrade: a relic's violet glow, a rare card's gold, or the plain one.
+static func card_panel(data: UpgradeData) -> StringName:
+	if data is RelicData:
+		return &"CardPanelRelic"
+	return &"CardPanelRare" if data.rarity == UpgradeData.Rarity.RARE else &"CardPanel"

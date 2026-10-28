@@ -162,6 +162,6 @@ colours and sizes): StyleBoxFlat panels, buttons, fields and bars with the gold-
 restyled at once and `ui_shots` shows no overflow. Fonts and licences are in `assets/fonts/`, logged in `assets/CREDITS.md`.
 HUD: flat gradient-free fills with a light rim, icon-only bars, bars 112x12, "13 / 16" for slots, the enemy count in the wave
 panel, the panel container 268 px wide (was 420). **Q4 as built:** the ultimate row shows whenever the hero has an ultimate
-(it was already hidden otherwise); "hide until charging" would hide it never, so nothing changed. **Left for steps 2-4:** the
+(it was already hidden otherwise); "hide until charging" would hide it never, so nothing changed. **Step 2 (done 2026-10-28):** upgrade and merchant cards 236x236 with a gold (rare) or violet (relic) rim and glow (`CardPanelRare`, `CardPanelRelic`, `UiColors.card_panel`), the build menu 650 px wide with 196 px cards, a compact tip panel. **Left for steps 3-4 (and what step 1 noted for step 2):** the
 build menu and upgrade cards are still roomy (the cards are about 450 px wide and mostly empty), modal flourishes and the card
 rarity glow, the title's buttons, tips, and removing the pixel font and its textures.

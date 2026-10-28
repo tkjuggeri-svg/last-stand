@@ -11,7 +11,7 @@ const CATEGORY_NAMES: Dictionary = {
 	UpgradeData.Category.FORTRESS: "Fortress",
 	UpgradeData.Category.ECONOMY: "Economy",
 }
-const CARD_SIZE: Vector2 = Vector2(300, 320)
+const CARD_SIZE: Vector2 = Vector2(236, 236)
 const CARD_TITLE: String = "Choose an upgrade"
 const RELIC_TITLE: String = "Choose a relic"
 
@@ -83,7 +83,7 @@ func _close() -> void:
 
 func _make_card(data: UpgradeData, index: int) -> Control:
 	var card: PanelContainer = PanelContainer.new()
-	card.theme_type_variation = &"CardPanel"
+	card.theme_type_variation = UiColors.card_panel(data)
 	card.custom_minimum_size = CARD_SIZE
 	var column: VBoxContainer = VBoxContainer.new()
 	column.add_theme_constant_override("separation", 8)

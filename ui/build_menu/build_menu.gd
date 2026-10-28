@@ -153,7 +153,7 @@ func _fit_panel() -> void:
 func _make_card(data: TowerData) -> Control:
 	var card: PanelContainer = PanelContainer.new()
 	card.theme_type_variation = &"CardPanel"
-	card.custom_minimum_size = Vector2(240, 0)
+	card.custom_minimum_size = Vector2(196, 0)
 	var row: HBoxContainer = HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	card.add_child(row)

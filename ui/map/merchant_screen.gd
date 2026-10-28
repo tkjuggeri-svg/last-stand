@@ -99,7 +99,7 @@ func _refresh() -> void:
 
 func _card(data: UpgradeData, blocker: String, buy: Callable) -> Control:
 	var card: PanelContainer = PanelContainer.new()
-	card.theme_type_variation = &"CardPanel"
+	card.theme_type_variation = UiColors.card_panel(data)
 	card.custom_minimum_size = Vector2(250, 220)
 	var column: VBoxContainer = VBoxContainer.new()
 	column.add_theme_constant_override("separation", 6)
