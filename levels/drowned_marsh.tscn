@@ -70,7 +70,7 @@
 [ext_resource type="Resource" path="res://data/towers/ballista.tres" id="35_ballista"]
 [ext_resource type="PackedScene" path="res://entities/towers/build_slot.tscn" id="14_slot"]
 [ext_resource type="PackedScene" path="res://ui/build_menu/build_menu.tscn" id="15_menu"]
-[ext_resource type="Texture2D" path="res://assets/sprites/environment/props.png" id="20_props"]
+[ext_resource type="Texture2D" path="res://assets/sprites/environment/graveyard_props.png" id="20_props"]
 [ext_resource type="Texture2D" path="res://entities/effects/light_soft.tres" id="21_light"]
 [ext_resource type="Shader" path="res://assets/shaders/ground_fog.gdshader" id="23_fog"]
 [ext_resource type="Texture2D" path="res://assets/sprites/effects/mote.png" id="24_mote"]
@@ -200,10 +200,12 @@ color = Color(0.12, 0.17, 0.12, 1)
 [node name="Ground" type="Node2D" parent="."]
 unique_name_in_owner = true
 z_index = -1
+texture_filter = 2
 position = Vector2(-1072, -732)
+scale = Vector2(0.5, 0.5)
 script = ExtResource("36_tiled_ground")
 texture = ExtResource("7_ground")
-tile_size = Vector2i(128, 128)
+tile_size = Vector2i(256, 256)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color(0.56, 0.66, 0.74, 1)
@@ -220,21 +222,22 @@ mouse_filter = 2
 
 [node name="Chapel" type="Sprite2D" parent="."]
 position = Vector2(-915, -532)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_chapel")
-offset = Vector2(0, -56)
+offset = Vector2(0, -112)
 
 [node name="DoorGlow" type="PointLight2D" parent="Chapel"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 color = Color(0.45, 1, 0.8, 1)
 energy = 0.7
 texture = ExtResource("21_light")
 texture_scale = 2.0
 
 [node name="Souls" type="CPUParticles2D" parent="Chapel"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 amount = 7
 lifetime = 3.0
 texture = ExtResource("24_mote")
@@ -251,21 +254,22 @@ color_ramp = SubResource("Gradient_soul")
 
 [node name="Chapel2" type="Sprite2D" parent="."]
 position = Vector2(654, -554)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_chapel")
-offset = Vector2(0, -56)
+offset = Vector2(0, -112)
 
 [node name="DoorGlow" type="PointLight2D" parent="Chapel2"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 color = Color(0.45, 1, 0.8, 1)
 energy = 0.7
 texture = ExtResource("21_light")
 texture_scale = 2.0
 
 [node name="Souls" type="CPUParticles2D" parent="Chapel2"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 amount = 7
 lifetime = 3.0
 texture = ExtResource("24_mote")
@@ -282,21 +286,22 @@ color_ramp = SubResource("Gradient_soul")
 
 [node name="Chapel3" type="Sprite2D" parent="."]
 position = Vector2(-928, 469)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_chapel")
-offset = Vector2(0, -56)
+offset = Vector2(0, -112)
 
 [node name="DoorGlow" type="PointLight2D" parent="Chapel3"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 color = Color(0.45, 1, 0.8, 1)
 energy = 0.7
 texture = ExtResource("21_light")
 texture_scale = 2.0
 
 [node name="Souls" type="CPUParticles2D" parent="Chapel3"]
-position = Vector2(0, -12)
-scale = Vector2(1, 1)
+position = Vector2(0, -24)
+scale = Vector2(2, 2)
 amount = 7
 lifetime = 3.0
 texture = ExtResource("24_mote")
@@ -343,559 +348,628 @@ y_sort_enabled = true
 
 [node name="Prop1" type="Sprite2D" parent="Props"]
 position = Vector2(-248, -326)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop2" type="Sprite2D" parent="Props"]
 position = Vector2(-453, -276)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop3" type="Sprite2D" parent="Props"]
 position = Vector2(-663, -349)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop4" type="Sprite2D" parent="Props"]
 position = Vector2(-566, -475)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop5" type="Sprite2D" parent="Props"]
 position = Vector2(-299, -450)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop6" type="Sprite2D" parent="Props"]
 position = Vector2(-267, 275)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop7" type="Sprite2D" parent="Props"]
 position = Vector2(-464, 365)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop8" type="Sprite2D" parent="Props"]
 position = Vector2(-761, 272)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop9" type="Sprite2D" parent="Props"]
 position = Vector2(-683, 159)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop10" type="Sprite2D" parent="Props"]
 position = Vector2(-382, 165)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop11" type="Sprite2D" parent="Props"]
 position = Vector2(523, -394)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop12" type="Sprite2D" parent="Props"]
 position = Vector2(318, -342)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop13" type="Sprite2D" parent="Props"]
 position = Vector2(223, -428)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop14" type="Sprite2D" parent="Props"]
 position = Vector2(294, -510)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop15" type="Sprite2D" parent="Props"]
 position = Vector2(576, -461)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop16" type="Sprite2D" parent="Props"]
 position = Vector2(625, 419)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop17" type="Sprite2D" parent="Props"]
 position = Vector2(478, 446)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop18" type="Sprite2D" parent="Props"]
 position = Vector2(231, 398)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop19" type="Sprite2D" parent="Props"]
 position = Vector2(402, 208)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop20" type="Sprite2D" parent="Props"]
 position = Vector2(673, 306)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop21" type="Sprite2D" parent="Props"]
 position = Vector2(-5, -434)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 1
 
 [node name="Prop22" type="Sprite2D" parent="Props"]
 position = Vector2(-65, -375)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop23" type="Sprite2D" parent="Props"]
 position = Vector2(-173, -450)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop24" type="Sprite2D" parent="Props"]
 position = Vector2(-124, -486)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop25" type="Sprite2D" parent="Props"]
 position = Vector2(-7, -486)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop26" type="Sprite2D" parent="Props"]
 position = Vector2(-503, -36)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop27" type="Sprite2D" parent="Props"]
 position = Vector2(-472, -31)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop28" type="Sprite2D" parent="Props"]
 position = Vector2(379, -277)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 0
 
 [node name="Prop29" type="Sprite2D" parent="Props"]
 position = Vector2(180, 204)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop30" type="Sprite2D" parent="Props"]
 position = Vector2(2, 387)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop31" type="Sprite2D" parent="Props"]
 position = Vector2(-452, 575)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop32" type="Sprite2D" parent="Props"]
 position = Vector2(-71, -263)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop33" type="Sprite2D" parent="Props"]
 position = Vector2(-963, 562)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 4
 
 [node name="Prop34" type="Sprite2D" parent="Props"]
 position = Vector2(-927, -612)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop35" type="Sprite2D" parent="Props"]
 position = Vector2(-982, -466)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop36" type="Sprite2D" parent="Props"]
 position = Vector2(45, -233)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop37" type="Sprite2D" parent="Props"]
 position = Vector2(595, 220)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop38" type="Sprite2D" parent="Props"]
 position = Vector2(360, 137)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 4
 
 [node name="Prop39" type="Sprite2D" parent="Props"]
 position = Vector2(731, -136)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 5
 
 [node name="Prop40" type="Sprite2D" parent="Props"]
 position = Vector2(-355, -254)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 7
 
 [node name="Prop41" type="Sprite2D" parent="Props"]
 position = Vector2(588, -75)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 7
 
 [node name="Prop42" type="Sprite2D" parent="Props"]
 position = Vector2(94, 170)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 10
 
 [node name="Prop43" type="Sprite2D" parent="Props"]
 position = Vector2(528, 500)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 1
 
 [node name="Prop44" type="Sprite2D" parent="Props"]
 position = Vector2(727, -17)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop45" type="Sprite2D" parent="Props"]
 position = Vector2(-839, -89)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop46" type="Sprite2D" parent="Props"]
 position = Vector2(-264, -550)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop47" type="Sprite2D" parent="Props"]
 position = Vector2(-566, 555)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop48" type="Sprite2D" parent="Props"]
 position = Vector2(276, 498)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 4
 
 [node name="Prop49" type="Sprite2D" parent="Props"]
 position = Vector2(336, 52)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop50" type="Sprite2D" parent="Props"]
 position = Vector2(-229, -473)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop51" type="Sprite2D" parent="Props"]
 position = Vector2(438, -35)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop52" type="Sprite2D" parent="Props"]
 position = Vector2(-839, 86)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop53" type="Sprite2D" parent="Props"]
 position = Vector2(-71, -640)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 4
 
 [node name="Prop54" type="Sprite2D" parent="Props"]
 position = Vector2(-904, 271)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 5
 
 [node name="Prop55" type="Sprite2D" parent="Props"]
 position = Vector2(14, 178)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 7
 
 [node name="Prop56" type="Sprite2D" parent="Props"]
 position = Vector2(-231, -391)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 7
 
 [node name="Prop57" type="Sprite2D" parent="Props"]
 position = Vector2(-922, -115)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 10
 
 [node name="Prop58" type="Sprite2D" parent="Props"]
 position = Vector2(674, 576)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 1
 
 [node name="Prop59" type="Sprite2D" parent="Props"]
 position = Vector2(111, -471)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop60" type="Sprite2D" parent="Props"]
 position = Vector2(162, 10)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 2
 
 [node name="Prop61" type="Sprite2D" parent="Props"]
 position = Vector2(-530, -262)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop62" type="Sprite2D" parent="Props"]
 position = Vector2(-5, 532)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 3
 
 [node name="Prop63" type="Sprite2D" parent="Props"]
 position = Vector2(-107, 508)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 4
 
 [node name="Prop64" type="Sprite2D" parent="Props"]
 position = Vector2(604, -250)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop65" type="Sprite2D" parent="Props"]
 position = Vector2(-567, -22)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 6
 
 [node name="Prop66" type="Sprite2D" parent="Props"]
 position = Vector2(-609, 380)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop67" type="Sprite2D" parent="Props"]
 position = Vector2(631, -188)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 7
 
 [node name="Prop68" type="Sprite2D" parent="Props"]
 position = Vector2(-677, 56)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("20_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 12
 frame = 4
 
 [node name="Lantern1" type="Sprite2D" parent="Props"]
 position = Vector2(-793, -390)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern1"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")
@@ -903,15 +977,16 @@ texture_scale = 1.4
 
 [node name="Lantern2" type="Sprite2D" parent="Props"]
 position = Vector2(-364, -208)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern2"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")
@@ -919,15 +994,16 @@ texture_scale = 1.4
 
 [node name="Lantern3" type="Sprite2D" parent="Props"]
 position = Vector2(676, -325)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern3"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")
@@ -935,15 +1011,16 @@ texture_scale = 1.4
 
 [node name="Lantern4" type="Sprite2D" parent="Props"]
 position = Vector2(-390, 540)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern4"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")
@@ -951,15 +1028,16 @@ texture_scale = 1.4
 
 [node name="Lantern5" type="Sprite2D" parent="Props"]
 position = Vector2(260, -156)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern5"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")
@@ -967,15 +1045,16 @@ texture_scale = 1.4
 
 [node name="Lantern6" type="Sprite2D" parent="Props"]
 position = Vector2(-78, 429)
-scale = Vector2(1, 1)
+texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("m_props")
-offset = Vector2(0, -40)
+offset = Vector2(0, -80)
 hframes = 8
 frame = 5
 
 [node name="Light" type="PointLight2D" parent="Props/Lantern6"]
-position = Vector2(10, -84)
-scale = Vector2(1, 1)
+position = Vector2(20, -168)
+scale = Vector2(2, 2)
 color = Color(0.5, 1, 0.8, 1)
 energy = 0.8
 texture = ExtResource("21_light")

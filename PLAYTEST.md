@@ -5,6 +5,21 @@ made in code). The game opens on a title screen; **Play** leads to the War Room,
 is **three chapters** (one biome of each tier, you choose the road) on a map of choices (about 60-80
 minutes if you win; the first chapter alone is about 15-20).
 
+## What changed in m15-playtest-4: every map in vector, and a small fix
+
+All **nine maps** are vector art now: the Crypt Road, Ember Orchard, Bone Quarry (chapter 1's choices), Drowned Marsh, Frostbound
+Pass, Gloam Wood (chapter 2's), Ashen Keep, Sunless Mines, Pale Cathedral (chapter 3's). Each has its own ground (scorched
+grass and cinders, gravel and bones, snow and ice cracks, moss and ferns and glowing mushrooms, ash, dark stone with ore
+glints, flagstones, the marsh's still pools), its roads, its stone wall, its gates where the dead come out (a burnt arch, a
+quarry mouth, an ice arch, a root arch, a broken keep gate, a timbered mine adit, a white doorway, the flooded chapel), and eight
+props of its own. Not yet vector: the enemies and bosses that live only in the later maps (they follow next), the hazard effects
+(blizzard, rockfall and so on) and the evolutions.
+Fix from your notes: **an evolved tower is named by its evolution** when you stand at it (Sniper's Nest, not Archer Tower).
+Please play a run through different maps and tell us: does each map feel like its own place at a glance? Is any ground too
+bright, too busy or too dark to see the dead on (the Pale Cathedral's flagstones were the worst and have been darkened)? Do the
+roads stand out from the ground? Are the gates readable as the place the dead come from? Which map's props are the best, which
+the weakest?
+
 ## What changed in m15-playtest-3: the Huntress, the Necromancer and their towers in vector
 
 Everything you can pick or build in chapter 1 is now vector art. New in this build:

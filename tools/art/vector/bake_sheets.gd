@@ -57,20 +57,31 @@ func _initialize() -> void:
 			_failures += 1
 			continue
 		await _bake(sheet, _painters[id])
-	for sheet: Dictionary in Layouts.STATIC:
+	var statics: Array[Dictionary] = []
+	statics.append_array(Layouts.STATIC)
+	statics.append_array(Layouts.MAP_ART)
+	for sheet: Dictionary in statics:
 		var id: String = sheet["vector"]
 		if not only.is_empty() and not only.has(id):
 			continue
-		if not _static_painters.has(id):
+		var paint_cell: Callable
+		if id.begins_with("props_"):
+			var map_id: String = id.trim_prefix("props_")
+			paint_cell = func(ci: CanvasItem, index: int) -> void: BiomePropsPainter.frame(ci, map_id, index)
+		elif id.begins_with("gate_"):
+			var gate_id: String = id.trim_prefix("gate_")
+			paint_cell = func(ci: CanvasItem, _index: int) -> void: GatePainter.paint(ci, gate_id)
+		elif _static_painters.has(id):
+			paint_cell = _static_painters[id]
+		else:
 			push_error("No painter for static vector sheet %s" % id)
 			_failures += 1
 			continue
 		var cells: Dictionary = sheet.duplicate()
 		cells["anims"] = [["static", 0, int(sheet["columns"]), 1.0, false]]
-		var paint_cell: Callable = _static_painters[id]
 		await _bake(cells, [func(ci: CanvasItem, _anim: String, index: int, _count: int) -> void: paint_cell.call(ci, index), 1.0])
 	for ground: Dictionary in Layouts.GROUNDS:
-		if only.is_empty() or only.has(String(ground["vector"])):
+		if only.is_empty() or only.has(String(ground["vector"])) or only.has(String(ground.get("biome", ""))):
 			await _bake_ground(ground)
 	quit(_failures)
 
@@ -121,6 +132,11 @@ func _bake_ground(spec: Dictionary) -> void:
 	root.add_child(level)
 	await process_frame
 	var painter: GroundPainter = GroundPainter.new()
+	var biome: String = String(spec.get("biome", "crypt_road"))
+	if biome != "crypt_road":
+		painter.style = BiomeStyles.of(biome)
+	painter.kind = String(BiomeStyles.KINDS.get(biome, "grass"))
+	painter.litter = String(BiomeStyles.LITTER.get(biome, "leaves"))
 	var floor_control: Control = level.get_node("%Floor")
 	painter.floor_rect = Rect2(floor_control.position, floor_control.size)
 	painter.band = float(spec["band"])
@@ -132,8 +148,15 @@ func _bake_ground(spec: Dictionary) -> void:
 			for p: Vector2 in path.curve.get_baked_points():
 				points.append(level.to_local(path.to_global(p)))
 			painter.lanes.append(points)
-		elif child is Sprite2D and String(child.name).begins_with("Crypt"):
-			painter.crypts.append((child as Node2D).position)
+		elif child is Sprite2D and (String(child.name).begins_with("Crypt") or String(child.name).begins_with("Gate") or String(child.name).begins_with("Chapel")):
+			painter.gates.append((child as Node2D).position)
+		elif child is Area2D and String(child.name) == "Water":
+			for pool: Node in child.get_children():
+				if pool is CollisionPolygon2D:
+					var shape: PackedVector2Array = PackedVector2Array()
+					for p: Vector2 in (pool as CollisionPolygon2D).polygon:
+						shape.append(level.to_local((pool as Node2D).to_global(p)))
+					painter.water.append(shape)
 	var slots: Node = level.get_node_or_null("BuildSlots")
 	if slots != null:
 		for slot: Node in slots.get_children():

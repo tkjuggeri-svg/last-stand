@@ -22,6 +22,11 @@ func _initialize() -> void:
 			vector_sheets += 1
 			_check_sheet(sheet)
 	_check("at least one vector sheet (the Knight)", vector_sheets >= 1)
+	var statics: Array[Dictionary] = []
+	statics.append_array(Layouts.STATIC)
+	statics.append_array(Layouts.MAP_ART)
+	for sheet: Dictionary in statics:
+		_check_static(sheet)
 	await _check_sprites()
 	print("RESULT: ", "PASS" if _failures == 0 else "FAIL (%d)" % _failures)
 	quit(_failures)
@@ -73,6 +78,19 @@ func _opaque_on_edge(image: Image, origin: Vector2i, size: Vector2i) -> bool:
 			if image.get_pixel(origin.x + step, origin.y + y).a > EDGE_ALPHA or image.get_pixel(origin.x + size.x - 1 - step, origin.y + y).a > EDGE_ALPHA:
 				return true
 	return false
+
+
+## A static vector sheet (the fortress, the props, the gates, the crypt, the pad): one row of cells, none empty.
+func _check_static(sheet: Dictionary) -> void:
+	var id: String = String(sheet["vector"])
+	var size: Vector2i = sheet["size"]
+	var columns: int = int(sheet["columns"])
+	var image: Image = (load(sheet["png"]) as Texture2D).get_image()
+	var empty: Array[int] = []
+	for index: int in columns:
+		if image.get_region(Rect2i(Vector2i(index * size.x, 0), size)).is_invisible():
+			empty.append(index)
+	_check("%s: %d cells of %s, none empty %s" % [id, columns, size, empty], image.get_size() == Vector2i(size.x * columns, size.y) and empty.is_empty())
 
 
 func _check_sprites() -> void:

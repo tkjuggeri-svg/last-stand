@@ -1055,11 +1055,40 @@ const SLOT_RUBBLE: Dictionary = {
 ## GroundPainter, at "scale" texture px per world px, floor plus the visible wall band all round (the level's TiledGround
 ## draws it at 1 / scale). The other maps' grounds stay pixel until their phases.
 const GROUNDS: Array[Dictionary] = [
-	{"png": "res://assets/sprites/environment/prototype_arena_ground.png", "level": "res://levels/prototype_arena.tscn", "vector": "ground", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/prototype_arena_ground.png", "level": "res://levels/prototype_arena.tscn", "vector": "ground", "biome": "crypt_road", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/ember_orchard_ground.png", "level": "res://levels/ember_orchard.tscn", "vector": "ground", "biome": "ember_orchard", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/bone_quarry_ground.png", "level": "res://levels/bone_quarry.tscn", "vector": "ground", "biome": "bone_quarry", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/drowned_marsh_ground.png", "level": "res://levels/drowned_marsh.tscn", "vector": "ground", "biome": "drowned_marsh", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/frostbound_pass_ground.png", "level": "res://levels/frostbound_pass.tscn", "vector": "ground", "biome": "frostbound_pass", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/gloam_wood_ground.png", "level": "res://levels/gloam_wood.tscn", "vector": "ground", "biome": "gloam_wood", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/ashen_keep_ground.png", "level": "res://levels/ashen_keep.tscn", "vector": "ground", "biome": "ashen_keep", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/sunless_mines_ground.png", "level": "res://levels/sunless_mines.tscn", "vector": "ground", "biome": "sunless_mines", "scale": VECTOR_SCALE, "band": 32.0},
+	{"png": "res://assets/sprites/environment/pale_cathedral_ground.png", "level": "res://levels/pale_cathedral.tscn", "vector": "ground", "biome": "pale_cathedral", "scale": VECTOR_SCALE, "band": 32.0},
 ]
 
 ## Static vector sheets (a Sprite2D's hframes: one row of cells), baked by bake_sheets.gd; no SpriteFrames.
 const STATIC: Array[Dictionary] = [FORTRESS, GRAVEYARD_PROPS, CRYPT, BUILD_PAD, SLOT_RUBBLE]
+## The other maps' props (eight 64x96 cells each, the feet 40 px below the centre), gates (96x96, the feet 40 below the centre)
+## and the marsh chapel (vector; M15 P4): static sheets baked by bake_sheets.gd with BiomePropsPainter and GatePainter.
+const MAP_ART: Array[Dictionary] = [
+	{"png": "res://assets/sprites/environment/ember_orchard_props.png", "vector": "props_ember_orchard", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/bone_quarry_props.png", "vector": "props_bone_quarry", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/frostbound_pass_props.png", "vector": "props_frostbound_pass", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/gloam_wood_props.png", "vector": "props_gloam_wood", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/ashen_keep_props.png", "vector": "props_ashen_keep", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/sunless_mines_props.png", "vector": "props_sunless_mines", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/pale_cathedral_props.png", "vector": "props_pale_cathedral", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/marsh_props.png", "vector": "props_drowned_marsh", "scale": VECTOR_SCALE, "size": Vector2i(64, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 8},
+	{"png": "res://assets/sprites/environment/ember_orchard_gate.png", "vector": "gate_ember_orchard", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/bone_quarry_gate.png", "vector": "gate_bone_quarry", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/frostbound_pass_gate.png", "vector": "gate_frostbound_pass", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/gloam_wood_gate.png", "vector": "gate_gloam_wood", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/ashen_keep_gate.png", "vector": "gate_ashen_keep", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/sunless_mines_gate.png", "vector": "gate_sunless_mines", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/pale_cathedral_gate.png", "vector": "gate_pale_cathedral", "scale": VECTOR_SCALE, "size": Vector2i(96, 96) * VECTOR_SCALE, "origin": Vector2(0, 40), "columns": 1},
+	{"png": "res://assets/sprites/environment/drowned_chapel.png", "vector": "gate_drowned_marsh", "scale": VECTOR_SCALE, "size": Vector2i(128, 128) * VECTOR_SCALE, "origin": Vector2(0, 56), "columns": 1},
+]
+
 
 const ANIMATED: Array[Dictionary] = [BLOATER, BLOATLING, MIRE_PRIEST, SHIELDBEARER, RIPPLE, HERO, HUNTRESS, NECROMANCER, SIEGE_RAM, BLACK_KNIGHT, FALLEN_MARSHAL, CINDER_GHOUL, SCARECROW, PYRE_WARDEN, FROST_WRAITH, RIME_BRUTE, WINTER_WARDEN, BURROWER, LAMP_WIGHT, DEEP_WARDEN, BONE_HURLER, RUBBLE_BRUTE, QUARRY_COLOSSUS, STALKER, HOLLOW_TREANT, HOLLOW_STAG, CHORISTER, INQUISITOR, PALE_BISHOP, SKELETON, SOUL_BOLT, SWING, GHOUL, HOUND, BRUTE, CULTIST, CULTIST_FX, GRAVELORD, COLOSSUS, LICH, TOLLKEEPER, HIT_SPARK, DUST, TOWERS, TOWER_EVOLUTIONS, HUNTRESS_TOWERS, NECRO_TOWERS, COMBO_TOWERS, HUNTRESS_FX, PROJECTILES, EXPLOSION, EXPLOSION_LARGE, FROST_NOVA, ULTIMATE_RING, BURN, FROST_FX, FORTRESS_FX, SOUL_BURST, EVOLUTION_FX, GRAPESHOT, STATUS, HUNTRESS_TOWER_EVOLUTIONS, NECRO_TOWER_EVOLUTIONS]
 
