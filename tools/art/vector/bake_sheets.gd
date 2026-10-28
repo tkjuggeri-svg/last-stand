@@ -9,7 +9,8 @@ extends SceneTree
 
 const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 
-## The painter per "vector" id: frame(ci, anim, index, count) and the figure's scale against the old sprite.
+## The painter per "vector" id: frame(ci, anim, index, count) and the figure's scale against the old sprite (a variant's
+## parts, VariantPainter.parts(): also its extras painter and the recolouring material).
 var _painters: Dictionary = {
 	"knight": [KnightPainter.frame, KnightPainter.SCALE],
 	"ghoul": [GhoulPainter.frame, GhoulPainter.SCALE],
@@ -51,6 +52,9 @@ func _initialize() -> void:
 			continue
 		var id: String = sheet["vector"]
 		if not only.is_empty() and not only.has(id):
+			continue
+		if VariantPainter.VARIANTS.has(id):
+			await _bake(sheet, VariantPainter.parts(id))
 			continue
 		if not _painters.has(id):
 			push_error("No painter for vector sheet %s" % id)
@@ -111,6 +115,12 @@ func _bake(sheet: Dictionary, painter: Array) -> void:
 			cell.scale = Vector2.ONE * scale_by * figure
 			cell.draw.connect(func() -> void: draw_frame.call(cell, anim_name, index, count))
 			view.add_child(cell)
+			if painter.size() > 2:
+				# A variant (VariantPainter): the base figure recoloured by the material, its own parts over it unrecoloured.
+				cell.material = painter[3]
+				var top: Node2D = Node2D.new()
+				top.draw.connect(func() -> void: (painter[2] as Callable).call(top, anim_name, index, count))
+				cell.add_child(top)
 	root.add_child(view)
 	for i: int in 3:
 		await process_frame

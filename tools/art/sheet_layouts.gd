@@ -86,56 +86,14 @@ const SIEGE_RAM: Dictionary = {
 const BLACK_KNIGHT: Dictionary = {
 	"png": "res://assets/sprites/enemies/black_knight.png",
 	"frames": "res://entities/enemies/black_knight_frames.tres",
-	"size": SHIELDBEARER["size"] + Vector2i(16, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": SHIELDBEARER["anims"],
+	"size": SHIELDBEARER_PIXEL["size"] + Vector2i(16, 24),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": SHIELDBEARER_PIXEL["anims"],
 }
 const FALLEN_MARSHAL: Dictionary = {
 	"png": "res://assets/sprites/enemies/fallen_marshal.png",
 	"frames": "res://entities/enemies/bosses/fallen_marshal_frames.tres",
 	"size": COLOSSUS_PIXEL["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
 	"anims": COLOSSUS_PIXEL["anims"],
-}
-
-const CINDER_GHOUL: Dictionary = {
-	"png": "res://assets/sprites/enemies/cinder_ghoul.png",
-	"frames": "res://entities/enemies/cinder_ghoul_frames.tres",
-	"size": GHOUL_PIXEL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": GHOUL_PIXEL["anims"],
-}
-
-const SCARECROW: Dictionary = {
-	"png": "res://assets/sprites/enemies/scarecrow.png",
-	"frames": "res://entities/enemies/scarecrow_frames.tres",
-	"size": BRUTE_PIXEL["size"],
-	"anims": BRUTE_PIXEL["anims"],
-}
-
-const PYRE_WARDEN: Dictionary = {
-	"png": "res://assets/sprites/enemies/pyre_warden.png",
-	"frames": "res://entities/enemies/bosses/pyre_warden_frames.tres",
-	"size": LICH_PIXEL["size"] + Vector2i(16, 28),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": LICH_PIXEL["anims"],
-}
-
-const FROST_WRAITH: Dictionary = {
-	"png": "res://assets/sprites/enemies/frost_wraith.png",
-	"frames": "res://entities/enemies/frost_wraith_frames.tres",
-	"size": CULTIST_PIXEL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": CULTIST_PIXEL["anims"],
-}
-
-const RIME_BRUTE: Dictionary = {
-	"png": "res://assets/sprites/enemies/rime_brute.png",
-	"frames": "res://entities/enemies/rime_brute_frames.tres",
-	"size": BRUTE_PIXEL["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": BRUTE_PIXEL["anims"],
-}
-
-const WINTER_WARDEN: Dictionary = {
-	"png": "res://assets/sprites/enemies/winter_warden.png",
-	"frames": "res://entities/enemies/bosses/winter_warden_frames.tres",
-	"size": LICH_PIXEL["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": LICH_PIXEL["anims"],
 }
 
 const BURROWER: Dictionary = {
@@ -148,71 +106,29 @@ const BURROWER: Dictionary = {
 const LAMP_WIGHT: Dictionary = {
 	"png": "res://assets/sprites/enemies/lamp_wight.png",
 	"frames": "res://entities/enemies/lamp_wight_frames.tres",
-	"size": MIRE_PRIEST["size"] + Vector2i(24, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": MIRE_PRIEST["anims"],
+	"size": MIRE_PRIEST_PIXEL["size"] + Vector2i(24, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": MIRE_PRIEST_PIXEL["anims"],
 }
 
 const DEEP_WARDEN: Dictionary = {
 	"png": "res://assets/sprites/enemies/deep_warden.png",
 	"frames": "res://entities/enemies/bosses/deep_warden_frames.tres",
-	"size": TOLLKEEPER["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": TOLLKEEPER["anims"],
-}
-
-const BONE_HURLER: Dictionary = {
-	"png": "res://assets/sprites/enemies/bone_hurler.png",
-	"frames": "res://entities/enemies/bone_hurler_frames.tres",
-	"size": CULTIST_PIXEL["size"] + Vector2i(12, 8),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": CULTIST_PIXEL["anims"],
-}
-
-const RUBBLE_BRUTE: Dictionary = {
-	"png": "res://assets/sprites/enemies/rubble_brute.png",
-	"frames": "res://entities/enemies/rubble_brute_frames.tres",
-	"size": BRUTE_PIXEL["size"],
-	"anims": BRUTE_PIXEL["anims"],
-}
-
-const QUARRY_COLOSSUS: Dictionary = {
-	"png": "res://assets/sprites/enemies/quarry_colossus.png",
-	"frames": "res://entities/enemies/bosses/quarry_colossus_frames.tres",
-	"size": COLOSSUS_PIXEL["size"] + Vector2i(16, 12),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": COLOSSUS_PIXEL["anims"],
-}
-
-const STALKER: Dictionary = {
-	"png": "res://assets/sprites/enemies/stalker.png",
-	"frames": "res://entities/enemies/stalker_frames.tres",
-	"size": HOUND_PIXEL["size"] + Vector2i(16, 8),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": HOUND_PIXEL["anims"],
-}
-
-const HOLLOW_TREANT: Dictionary = {
-	"png": "res://assets/sprites/enemies/hollow_treant.png",
-	"frames": "res://entities/enemies/hollow_treant_frames.tres",
-	"size": BRUTE_PIXEL["size"] + Vector2i(24, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": BRUTE_PIXEL["anims"],
-}
-
-const HOLLOW_STAG: Dictionary = {
-	"png": "res://assets/sprites/enemies/hollow_stag.png",
-	"frames": "res://entities/enemies/bosses/hollow_stag_frames.tres",
-	"size": GRAVELORD_PIXEL["size"] + Vector2i(24, 48),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": GRAVELORD_PIXEL["anims"],
+	"size": TOLLKEEPER_PIXEL["size"] + Vector2i(12, 12),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": TOLLKEEPER_PIXEL["anims"],
 }
 
 const CHORISTER: Dictionary = {
 	"png": "res://assets/sprites/enemies/chorister.png",
 	"frames": "res://entities/enemies/chorister_frames.tres",
-	"size": MIRE_PRIEST["size"] + Vector2i(16, 32),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": MIRE_PRIEST["anims"],
+	"size": MIRE_PRIEST_PIXEL["size"] + Vector2i(16, 32),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": MIRE_PRIEST_PIXEL["anims"],
 }
 
 const INQUISITOR: Dictionary = {
 	"png": "res://assets/sprites/enemies/inquisitor.png",
 	"frames": "res://entities/enemies/inquisitor_frames.tres",
-	"size": SHIELDBEARER["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
-	"anims": SHIELDBEARER["anims"],
+	"size": SHIELDBEARER_PIXEL["size"] + Vector2i(12, 24),  # + the art pass's padding (variant_decor.gd PADS)
+	"anims": SHIELDBEARER_PIXEL["anims"],
 }
 
 const PALE_BISHOP: Dictionary = {
@@ -652,7 +568,7 @@ const LICH: Dictionary = {
 }
 
 ## The Tollkeeper (chapter 2's boss, M7): the toll heaves the bell up and swings it.
-const TOLLKEEPER: Dictionary = {
+const TOLLKEEPER_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/tollkeeper.png",
 	"frames": "res://entities/enemies/bosses/tollkeeper_frames.tres",
 	"size": Vector2i(128, 128),
@@ -930,43 +846,7 @@ const FROST_FX: Dictionary = {
 ## Chapter 2's enemies (M7.5). The Bloater (40x40: swollen, pulsing gas sacs; its death bursts) and
 ## its Bloatlings (24x24, the same creature drawn small); the Mire Priest (its heal: 0-3 the staff
 ## rises, the telegraph; 4-5 the pulse); the Shieldbearer (its shield always toward where it walks).
-const BLOATER: Dictionary = {
-	"png": "res://assets/sprites/enemies/bloater.png",
-	"frames": "res://entities/enemies/bloater_frames.tres",
-	"size": Vector2i(80, 80),
-	"anims": [
-		["idle_down", 0, 4, 6.0, true],
-		["idle_up", 1, 4, 6.0, true],
-		["idle_side", 2, 4, 6.0, true],
-		["walk_down", 3, 6, 7.0, true],
-		["walk_up", 4, 6, 7.0, true],
-		["walk_side", 5, 6, 7.0, true],
-		["death", 6, 7, 12.0, false],
-		["attack_down", 7, 6, 10.0, false],
-		["attack_up", 8, 6, 10.0, false],
-		["attack_side", 9, 6, 10.0, false],
-	],
-}
-
-const BLOATLING: Dictionary = {
-	"png": "res://assets/sprites/enemies/bloatling.png",
-	"frames": "res://entities/enemies/bloatling_frames.tres",
-	"size": Vector2i(48, 48),
-	"anims": [
-		["idle_down", 0, 4, 6.0, true],
-		["idle_up", 1, 4, 6.0, true],
-		["idle_side", 2, 4, 6.0, true],
-		["walk_down", 3, 6, 14.0, true],
-		["walk_up", 4, 6, 14.0, true],
-		["walk_side", 5, 6, 14.0, true],
-		["death", 6, 7, 12.0, false],
-		["attack_down", 7, 6, 18.0, false],
-		["attack_up", 8, 6, 18.0, false],
-		["attack_side", 9, 6, 18.0, false],
-	],
-}
-
-const MIRE_PRIEST: Dictionary = {
+const MIRE_PRIEST_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/mire_priest.png",
 	"frames": "res://entities/enemies/mire_priest_frames.tres",
 	"size": Vector2i(64, 64),
@@ -987,7 +867,7 @@ const MIRE_PRIEST: Dictionary = {
 	],
 }
 
-const SHIELDBEARER: Dictionary = {
+const SHIELDBEARER_PIXEL: Dictionary = {
 	"png": "res://assets/sprites/enemies/shieldbearer.png",
 	"frames": "res://entities/enemies/shieldbearer_frames.tres",
 	"size": Vector2i(64, 64),
@@ -1049,6 +929,391 @@ const SLOT_RUBBLE: Dictionary = {
 	"size": Vector2i(56, 40) * VECTOR_SCALE,
 	"origin": Vector2.ZERO,
 	"columns": 1,
+}
+
+## The chapter 1-2 enemy and boss variants (vector, VariantPainter; M15 P4b): the base painter's rows with its attack
+## rate re-timed so the blow lands at the variant's own wind-up (strike frame / fps), the cell and feet from the data's body
+## radius and sprite offset (feet = radius + 1 below the body centre).
+
+const CINDER_GHOUL: Dictionary = {
+	"png": "res://assets/sprites/enemies/cinder_ghoul.png",
+	"frames": "res://entities/enemies/cinder_ghoul_frames.tres",
+	"vector": "cinder_ghoul",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(80, 112) * VECTOR_SCALE,
+	"origin": Vector2(0, 23),
+	"anims": [
+		["idle_down", 0, 8, 10.0, true],
+		["idle_up", 1, 8, 10.0, true],
+		["idle_side", 2, 8, 10.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 12, 24.0, false],
+		["attack_up", 8, 12, 24.0, false],
+		["attack_side", 9, 12, 24.0, false],
+	],
+}
+
+const SCARECROW: Dictionary = {
+	"png": "res://assets/sprites/enemies/scarecrow.png",
+	"frames": "res://entities/enemies/scarecrow_frames.tres",
+	"vector": "scarecrow",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
+	"origin": Vector2(0, 31),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 20.0, false],
+		["attack_up", 8, 16, 20.0, false],
+		["attack_side", 9, 16, 20.0, false],
+	],
+}
+
+const BONE_HURLER: Dictionary = {
+	"png": "res://assets/sprites/enemies/bone_hurler.png",
+	"frames": "res://entities/enemies/bone_hurler_frames.tres",
+	"vector": "bone_hurler",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 96) * VECTOR_SCALE,
+	"origin": Vector2(0, 25),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 16, 34.29, false],
+		["attack_up", 8, 16, 34.29, false],
+		["attack_side", 9, 16, 34.29, false],
+	],
+}
+
+const RUBBLE_BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/rubble_brute.png",
+	"frames": "res://entities/enemies/rubble_brute_frames.tres",
+	"vector": "rubble_brute",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
+	"origin": Vector2(0, 33),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 20.0, false],
+		["attack_up", 8, 16, 20.0, false],
+		["attack_side", 9, 16, 20.0, false],
+	],
+}
+
+const BLOATER: Dictionary = {
+	"png": "res://assets/sprites/enemies/bloater.png",
+	"frames": "res://entities/enemies/bloater_frames.tres",
+	"vector": "bloater",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
+	"origin": Vector2(0, 31),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 24.0, false],
+		["attack_up", 8, 16, 24.0, false],
+		["attack_side", 9, 16, 24.0, false],
+	],
+}
+
+const BLOATLING: Dictionary = {
+	"png": "res://assets/sprites/enemies/bloatling.png",
+	"frames": "res://entities/enemies/bloatling_frames.tres",
+	"vector": "bloatling",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 80) * VECTOR_SCALE,
+	"origin": Vector2(0, 17),
+	"anims": [
+		["idle_down", 0, 8, 10.0, true],
+		["idle_up", 1, 8, 10.0, true],
+		["idle_side", 2, 8, 10.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 12, 33.6, false],
+		["attack_up", 8, 12, 33.6, false],
+		["attack_side", 9, 12, 33.6, false],
+	],
+}
+
+const MIRE_PRIEST: Dictionary = {
+	"png": "res://assets/sprites/enemies/mire_priest.png",
+	"frames": "res://entities/enemies/mire_priest_frames.tres",
+	"vector": "mire_priest",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(64, 96) * VECTOR_SCALE,
+	"origin": Vector2(0, 23),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 16, 30.0, false],
+		["attack_up", 8, 16, 30.0, false],
+		["attack_side", 9, 16, 30.0, false],
+		["heal_down", 10, 12, 12.0, false],
+		["heal_up", 11, 12, 12.0, false],
+		["heal_side", 12, 12, 12.0, false],
+	],
+}
+
+const SHIELDBEARER: Dictionary = {
+	"png": "res://assets/sprites/enemies/shieldbearer.png",
+	"frames": "res://entities/enemies/shieldbearer_frames.tres",
+	"vector": "shieldbearer",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
+	"origin": Vector2(0, 25),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 26.67, false],
+		["attack_up", 8, 16, 26.67, false],
+		["attack_side", 9, 16, 26.67, false],
+	],
+}
+
+const FROST_WRAITH: Dictionary = {
+	"png": "res://assets/sprites/enemies/frost_wraith.png",
+	"frames": "res://entities/enemies/frost_wraith_frames.tres",
+	"vector": "frost_wraith",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(72, 104) * VECTOR_SCALE,
+	"origin": Vector2(0, 25),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 16.0, true],
+		["walk_up", 4, 12, 16.0, true],
+		["walk_side", 5, 12, 16.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 16, 34.29, false],
+		["attack_up", 8, 16, 34.29, false],
+		["attack_side", 9, 16, 34.29, false],
+	],
+}
+
+const RIME_BRUTE: Dictionary = {
+	"png": "res://assets/sprites/enemies/rime_brute.png",
+	"frames": "res://entities/enemies/rime_brute_frames.tres",
+	"vector": "rime_brute",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(112, 144) * VECTOR_SCALE,
+	"origin": Vector2(0, 33),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 20.0, false],
+		["attack_up", 8, 16, 20.0, false],
+		["attack_side", 9, 16, 20.0, false],
+	],
+}
+
+const STALKER: Dictionary = {
+	"png": "res://assets/sprites/enemies/stalker.png",
+	"frames": "res://entities/enemies/stalker_frames.tres",
+	"vector": "stalker",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(88, 80) * VECTOR_SCALE,
+	"origin": Vector2(0, 23),
+	"anims": [
+		["idle_down", 0, 8, 12.0, true],
+		["idle_up", 1, 8, 12.0, true],
+		["idle_side", 2, 8, 12.0, true],
+		["walk_down", 3, 12, 28.0, true],
+		["walk_up", 4, 12, 28.0, true],
+		["walk_side", 5, 12, 28.0, true],
+		["death", 6, 12, 20.0, false],
+		["attack_down", 7, 12, 26.67, false],
+		["attack_up", 8, 12, 26.67, false],
+		["attack_side", 9, 12, 26.67, false],
+	],
+}
+
+const HOLLOW_TREANT: Dictionary = {
+	"png": "res://assets/sprites/enemies/hollow_treant.png",
+	"frames": "res://entities/enemies/hollow_treant_frames.tres",
+	"vector": "hollow_treant",
+	"scale": VECTOR_SCALE,
+	"size": Vector2i(128, 176) * VECTOR_SCALE,
+	"origin": Vector2(0, 35),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 14, 20.0, false],
+		["attack_down", 7, 16, 17.14, false],
+		["attack_up", 8, 16, 17.14, false],
+		["attack_side", 9, 16, 17.14, false],
+	],
+}
+
+const PYRE_WARDEN: Dictionary = {
+	"png": "res://assets/sprites/enemies/pyre_warden.png",
+	"frames": "res://entities/enemies/bosses/pyre_warden_frames.tres",
+	"vector": "pyre_warden",
+	"scale": BOSS_SCALE,
+	"size": Vector2i(260, 300),
+	"origin": Vector2(0, 50),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 12.86, false],
+		["attack_up", 8, 12, 12.86, false],
+		["attack_side", 9, 12, 12.86, false],
+		["cast_down", 10, 12, 10.0, false],
+		["cast_up", 11, 12, 10.0, false],
+		["cast_side", 12, 12, 10.0, false],
+	],
+}
+
+const WINTER_WARDEN: Dictionary = {
+	"png": "res://assets/sprites/enemies/winter_warden.png",
+	"frames": "res://entities/enemies/bosses/winter_warden_frames.tres",
+	"vector": "winter_warden",
+	"scale": BOSS_SCALE,
+	"size": Vector2i(260, 300),
+	"origin": Vector2(0, 50),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 12.86, false],
+		["attack_up", 8, 12, 12.86, false],
+		["attack_side", 9, 12, 12.86, false],
+		["cast_down", 10, 12, 10.0, false],
+		["cast_up", 11, 12, 10.0, false],
+		["cast_side", 12, 12, 10.0, false],
+	],
+}
+
+const QUARRY_COLOSSUS: Dictionary = {
+	"png": "res://assets/sprites/enemies/quarry_colossus.png",
+	"frames": "res://entities/enemies/bosses/quarry_colossus_frames.tres",
+	"vector": "quarry_colossus",
+	"scale": BOSS_SCALE,
+	"size": Vector2i(210, 210),
+	"origin": Vector2(0, 58),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 15.0, false],
+		["attack_up", 8, 12, 15.0, false],
+		["attack_side", 9, 12, 15.0, false],
+		["brace_down", 10, 8, 16.0, true],
+		["brace_up", 11, 8, 16.0, true],
+		["brace_side", 12, 8, 16.0, true],
+		["charge_down", 13, 8, 24.0, true],
+		["charge_up", 14, 8, 24.0, true],
+		["charge_side", 15, 8, 24.0, true],
+		["stun_down", 16, 8, 12.0, true],
+		["stun_up", 17, 8, 12.0, true],
+		["stun_side", 18, 8, 12.0, true],
+	],
+}
+
+const HOLLOW_STAG: Dictionary = {
+	"png": "res://assets/sprites/enemies/hollow_stag.png",
+	"frames": "res://entities/enemies/bosses/hollow_stag_frames.tres",
+	"vector": "hollow_stag",
+	"scale": BOSS_SCALE,
+	"size": Vector2i(260, 340),
+	"origin": Vector2(0, 52),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 12.86, false],
+		["attack_up", 8, 12, 12.86, false],
+		["attack_side", 9, 12, 12.86, false],
+		["cast_down", 10, 12, 10.0, false],
+		["cast_up", 11, 12, 10.0, false],
+		["cast_side", 12, 12, 10.0, false],
+	],
+}
+
+const TOLLKEEPER: Dictionary = {
+	"png": "res://assets/sprites/enemies/tollkeeper.png",
+	"frames": "res://entities/enemies/bosses/tollkeeper_frames.tres",
+	"vector": "tollkeeper",
+	"scale": BOSS_SCALE,
+	"size": Vector2i(260, 300),
+	"origin": Vector2(0, 60),
+	"anims": [
+		["idle_down", 0, 8, 8.0, true],
+		["idle_up", 1, 8, 8.0, true],
+		["idle_side", 2, 8, 8.0, true],
+		["walk_down", 3, 12, 12.0, true],
+		["walk_up", 4, 12, 12.0, true],
+		["walk_side", 5, 12, 12.0, true],
+		["death", 6, 12, 15.0, false],
+		["attack_down", 7, 12, 12.86, false],
+		["attack_up", 8, 12, 12.86, false],
+		["attack_side", 9, 12, 12.86, false],
+		["toll_down", 10, 12, 10.0, false],
+		["toll_up", 11, 12, 10.0, false],
+		["toll_side", 12, 12, 10.0, false],
+	],
 }
 
 ## The arena grounds baked from a level's own geometry (floor, roads, fortress, crypts, pads) by bake_sheets.gd with

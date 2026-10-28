@@ -51,7 +51,8 @@ const UltimateArt: GDScript = preload("res://tools/art/ultimate_art.gd")
 ## Sheets now hand-drawn (the double-resolution art pack, docs/ART_HANDOFF.md): their jobs never run,
 ## so a regeneration can't overwrite them. Their drawing code stays for reference. The characters (hero,
 ## enemies, bosses) are drawn here again, at the pack's resolution (Layouts.FINE).
-const HAND_DRAWN: Array[String] = ["hero", "ghoul", "hound", "brute", "cultist", "gravelord", "colossus", "lich", "huntress_towers", "necro_towers", "huntress", "necromancer", "skeleton", "soul_bolt", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
+const HAND_DRAWN: Array[String] = ["cinder_ghoul", "scarecrow", "pyre_warden", "frost_wraith", "rime_brute", "winter_warden", "bone_hurler", "rubble_brute", "quarry_colossus", "stalker", "hollow_treant", "hollow_stag", "bloater", "bloatling", "mire_priest", "shieldbearer", "tollkeeper",
+	"hero", "ghoul", "hound", "brute", "cultist", "gravelord", "colossus", "lich", "huntress_towers", "necro_towers", "huntress", "necromancer", "skeleton", "soul_bolt", "ground", "slot_rubble", "swing", "swing_long", "spark", "dust",
 	"fortress", "fortress_fx", "props", "crypt", "marsh_props", "chapel", "ripple", "title", "towers", "projectiles",
 	"explosion", "explosion_large", "huntress_fx", "ultimate_ring", "frost_nova", "burn", "soul_burst", "evolution_fx", "grapeshot", "status", "frost", "slot"]
 

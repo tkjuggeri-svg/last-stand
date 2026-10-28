@@ -8,7 +8,9 @@ const Layouts: GDScript = preload("res://tools/art/sheet_layouts.gd")
 
 ## Sheets whose figures must stay inside their cells: an opaque pixel on a cell's outer edge means a pose overflowed and
 ## bleeds into the neighbouring frame (the floating tower bottoms of the m15-playtest-1 feedback).
-const CLEAR_EDGES: PackedStringArray = ["knight", "ghoul", "hound", "brute", "cultist", "tower", "gravelord", "colossus", "lich", "huntress", "necromancer", "skeleton"]
+const CLEAR_EDGES: PackedStringArray = ["knight", "ghoul", "hound", "brute", "cultist", "tower", "gravelord", "colossus", "lich", "huntress", "necromancer", "skeleton",
+	"cinder_ghoul", "scarecrow", "bone_hurler", "rubble_brute", "bloater", "bloatling", "mire_priest", "shieldbearer", "frost_wraith", "rime_brute", "stalker",
+	"hollow_treant", "pyre_warden", "winter_warden", "quarry_colossus", "hollow_stag", "tollkeeper"]
 const EDGE_WIDTH: int = 2
 const EDGE_ALPHA: float = 0.16
 
@@ -100,7 +102,7 @@ func _check_sprites() -> void:
 	await process_frame
 	_check("a vector sheet draws at half size with linear filtering", vector_sprite.scale.is_equal_approx(Vector2(0.5, 0.5))
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR)
-	vector_sprite.sprite_frames = load(Layouts.BLOATER["frames"])  # still a pixel sheet
+	vector_sprite.sprite_frames = load(Layouts.BURROWER["frames"])  # still a pixel sheet (until P5)
 	_check("swapping to a pixel sheet goes back to scale 1 and the project's filter", vector_sprite.scale.is_equal_approx(Vector2.ONE)
 		and vector_sprite.texture_filter == CanvasItem.TEXTURE_FILTER_PARENT_NODE)
 	vector_sprite.queue_free()

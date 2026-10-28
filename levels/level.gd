@@ -373,6 +373,7 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 	if enemy.data.death_effect != null:
 		var effect: Node2D = enemy.data.death_effect.instantiate()
 		effect.position = at
+		_dress_death_effect(effect, enemy.data)
 		_effects.add_child(effect)
 	if enemy.data.gold_reward > 0:
 		var gold_text: DamageNumber = FLOATING_TEXT_SCENE.instantiate()
@@ -381,6 +382,16 @@ func _on_enemy_killed(enemy: Enemy) -> void:
 		_effects.add_child(gold_text)
 	if enemy.data.is_boss:
 		_boss_moment()
+
+
+## A variant shares its base's death effect scene (a Cinder Ghoul's is the Ghoul's): its body falls in the variant's own
+## colours and at its own height. Display only.
+func _dress_death_effect(effect: Node2D, data: EnemyData) -> void:
+	var body: AnimatedSprite2D = effect.get_node_or_null("Body") as AnimatedSprite2D
+	if body == null or data.sprite_frames == null or body.sprite_frames == data.sprite_frames:
+		return
+	body.sprite_frames = data.sprite_frames
+	body.position = data.sprite_offset
 
 
 func _boss_moment() -> void:

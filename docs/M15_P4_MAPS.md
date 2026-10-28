@@ -75,3 +75,45 @@
 - **Not done / honest gaps:** the maps' hazard looks (blizzard overlay, rockfall, falling walls, dry-grass fire, caves-ins,
   consecration, gloom) are still the old code-drawn shapes and tints; the marsh's wading ripple is pixel; enemies and bosses of
   tiers 1-2 are P4b.
+
+## 5. P4b: the enemies and bosses of tiers 1 and 2 (as built, 2026-10-28)
+
+**Seventeen variants in vector**, with no new painter per enemy: a variant is a *base* painter's figure recoloured and
+dressed (`tools/art/vector/variant_painter.gd`, `variant_extras.gd`).
+
+| Variant | Base | Dressing |
+|---|---|---|
+| Cinder Ghoul | Ghoul | flames on head and shoulders, glowing chest cracks, sparks |
+| Scarecrow | Brute | straw hat, stitched sacking face, straw at the cuffs, stitched cross |
+| Bone Hurler | Cultist | bone thorns on the hood, a skull on the belt, a bone raised for the throw |
+| Rubble Brute | Brute | boulders on the shoulders and head, amber cracks, dust |
+| Bloater | Brute | a swollen belly of gas and pustules, gas puffs |
+| Bloatling | Ghoul at 0.62 | a green sac, a gas wisp |
+| Mire Priest | Cultist | reeds in the hood, a moss mantle and hem, the heal's ring and motes |
+| Shieldbearer | Brute at 0.9 | a kite shield (left arm, to the front when it walks) |
+| Frost Wraith | Cultist | ice crown, icicle hem, mist at the feet |
+| Rime Brute | Brute | ice clusters on the pauldrons, an icicle beard, breath |
+| Stalker | Hound | twig spines along the back, moss, thorn tufts |
+| Hollow Treant | Brute at 1.15 | branches and leaves from shoulders and crown, a glowing knot-hole, roots |
+| Pyre Warden | Lich | a crown of fire, embers, flame at the shoulders |
+| Winter Warden | Lich | an icicle crown, drifting shards, snow |
+| Quarry Colossus | Colossus | slabs on the shoulders, amber cracks, rubble at the feet |
+| Hollow Stag | Gravelord | great antlers, ferns, wisp lights |
+| Tollkeeper | Gravelord | a swinging bronze bell, a ferryman's hat, drowned weed |
+
+- **Recolouring:** a luminance gradient map (a shader on the baked cell: dark, mid, light colours per variant, `amount`) keeps
+  the painter's shading, outline and glows. Saturated colours (eyes, orbs, flames) are not mapped but **hue-turned** (`hue`),
+  which is how the Lich's violet fire becomes the Pyre Warden's orange and the Brute's blue visor an amber one. The extras are
+  drawn over it in their own colours, in the base's pose units and riding its bob and attack (`VariantExtras`).
+- **Layouts:** `sheet_layouts.gd` holds the 17 variants with the base's rows and frame counts; only the **attack rate** is
+  changed so the blow lands at the variant's own wind-up (`fps × base wind-up / variant wind-up`); the cell and the feet come
+  from the data's body radius and sprite offset. The tier-3 variants stay pixel until P5 and use the new `MIRE_PRIEST_PIXEL`,
+  `SHIELDBEARER_PIXEL` and `TOLLKEEPER_PIXEL` layouts. Their pixel jobs are in `HAND_DRAWN`.
+- **Bake:** `bake_sheets.gd --only=<id>,...` (the variants' ids are the enemies' data names).
+- **Death:** a variant shares its base's death-effect scene; `Level._dress_death_effect` swaps in the variant's own frames
+  and height so a Cinder Ghoul no longer collapses as a plain Ghoul (display only). The five marsh death scenes got `SheetSprite`.
+- **Tests:** `test_enemy_variants_vector` (animations, vector scale, the blow at the wind-up, the dressed death effect),
+  `test_vector_art` (every variant's figures stay inside their cells).
+- **Not done / honest gaps:** the brute-based variants (Scarecrow, Rubble, Rime, Treant, Bloater, Shieldbearer) share a body
+  and differ by colour and dressing; a hand-made body per enemy is future polish if the playtest asks. The variants' death
+  collapse is the base's (plus a few remaining shards or flames).
